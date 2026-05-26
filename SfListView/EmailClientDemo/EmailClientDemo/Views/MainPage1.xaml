@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ListView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:pulltoRefresh="clr-namespace:Syncfusion.Maui.PullToRefresh;assembly=Syncfusion.Maui.PullToRefresh"
+             xmlns:data="clr-namespace:Syncfusion.Maui.DataSource.Extensions;assembly=Syncfusion.Maui.DataSource"
+             xmlns:local="clr-namespace:EmailClientDemo"
+             x:DataType="local:EmailClientViewModel"
+             x:Class="EmailClientDemo.MainPage1"
+             Title="MainPage1">
+
+    <ContentPage.BindingContext>
+        <local:EmailClientViewModel x:Name="vm"/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <local:ImageSourceConverter x:Key="imageconverter"/>
+        <local:EmailDateTimeConverter x:Key="emailDateTimeConverter"/>
+        <local:EmailOpacityConverter x:Key="emailOpacityConverter"/>
+        <local:EmailFontAttributeConverter x:Key="emailFontAttributeConverter"/>
+        <local:EmailGroupHeaderConverter x:Key="emailGroupHeaderConverter"/>
+        <local:EmailFavoriteIconConverter x:Key="emailFavoriteIconConverter"/>
+        <local:EmailFavoriteColorConverter x:Key="emailFavoriteColorConverter"/>
+        <local:EmailUnreadIndicatorConverter x:Key="emailUnreadIndicatorConverter"/>
+        <local:TabBackgroundConverter x:Key="tabBackgroundConverter"/>
+        <local:TabTextColorConverter x:Key="tabTextColorConverter"/>
+        <local:TabFontFamilyConverter x:Key="tabFontFamilyConverter"/>
+        <local:TabBorderVisibilityConverter x:Key="tabBorderVisibilityConverter"/>
+        
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <local:EmailClientBehavior/>
+    </ContentPage.Behaviors>
+
+    <ContentPage.Content>
+        <Grid ColumnDefinitions="Auto, 1, *">
+            <pulltoRefresh:SfPullToRefresh x:Name="pullToRefresh"
+								   RefreshViewHeight="50"
+								   RefreshViewThreshold="30"
+								   PullingThreshold="150"
+								   RefreshViewWidth="50"
+								   TransitionMode="SlideOnTop"
+								   IsRefreshing="False">
+                <pulltoRefresh:SfPullToRefresh.PullableContent>
+                    <Grid x:Name="mainGrid" x:DataType="local:EmailClientViewModel">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border BackgroundColor="#EFEFEF"
+                                    Margin="16,10,16,12"
+                                    StrokeThickness="0"
+                                    Padding="4">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="14"/>
+                            </Border.StrokeShape>
+
+                            <!--SearchBar-->
+                            <Grid ColumnDefinitions="Auto,*"
+                            Margin="0, 0, 8, 0">
+                                <Label Text="&#xe715;"
+                                       FontFamily="MaterialAssets"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       FontSize="16"
+                                       Margin="10,0,12,0" />
+                                <local:SfEntry  x:Name="searchBar" 
+                                       Placeholder="Search"
+                                       Background="Transparent"
+                                       VerticalTextAlignment='{OnPlatform Default=Start, MacCatalyst=Center, iOS=Center}'
+                                       Grid.Column="1"
+                                       FontFamily="Roboto-Regular"
+                                       FontSize="16"
+                                       HeightRequest="38"
+                                       ClearButtonVisibility="Never" />
+                            </Grid>
+
+                        </Border>
+
+                        <!-- Filter Tabs -->
+                        <Grid Grid.Row="1" Margin="16,0,16,12">
+                            <Border BackgroundColor="#EDEDED"
+                                    StrokeThickness="0"
+                                    Padding="4">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="16"/>
+                                </Border.StrokeShape>
+
+                                <Grid ColumnDefinitions="*,*">
+
+                                    <!-- Focused Tab -->
+                                    <Border Grid.Column="0"
+                                            BackgroundColor="{Binding IsFocusedTabSelected, Converter={StaticResource tabBackgroundConverter}, ConverterParameter=Focused}"
+                                            StrokeThickness="0"
+                                            IsVisible="{Binding IsFocusedTabSelected, Converter={StaticResource tabBorderVisibilityConverter}, ConverterParameter=Focused}">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="14"/>
+                                        </Border.StrokeShape>
+
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                    Command="{Binding SwitchTabCommand}"
+                                                    CommandParameter="Focused"/>
+                                        </Border.GestureRecognizers>
+
+                                        <Label Text="Focused"
+                                               FontFamily="{Binding IsFocusedTabSelected, Converter={StaticResource tabFontFamilyConverter}, ConverterParameter=Focused}"
+                                               FontSize="16"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               Padding="10,6"
+                                               TextColor="{Binding IsFocusedTabSelected, Converter={StaticResource tabTextColorConverter}, ConverterParameter=Focused}">
+
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer 
+                                                    Command="{Binding SwitchTabCommand}"
+                                                    CommandParameter="Other"/>
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                    </Border>
+
+                                    <!-- Focused Tab (No Border - for unselected state) -->
+                                    <Label Grid.Column="0"
+                                           Text="Focused"
+                                           FontFamily="{Binding IsFocusedTabSelected, Converter={StaticResource tabFontFamilyConverter}, ConverterParameter=Focused}"
+                                           FontSize="16"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           Padding="10,6"
+                                           TextColor="{Binding IsFocusedTabSelected, Converter={StaticResource tabTextColorConverter}, ConverterParameter=Focused}"
+                                           IsVisible="{Binding IsFocusedTabSelected, Converter={StaticResource tabBorderVisibilityConverter}, ConverterParameter=Other}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                Command="{Binding SwitchTabCommand}"
+                                                CommandParameter="Focused"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+
+                                    <!-- Other Tab -->
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="{Binding IsFocusedTabSelected, Converter={StaticResource tabBackgroundConverter}, ConverterParameter=Other}"
+                                            StrokeThickness="0"
+                                            IsVisible="{Binding IsFocusedTabSelected, Converter={StaticResource tabBorderVisibilityConverter}, ConverterParameter=Other}">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="14"/>
+                                        </Border.StrokeShape>
+
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                    Command="{Binding SwitchTabCommand}"
+                                                    CommandParameter="Other"/>
+                                        </Border.GestureRecognizers>
+
+                                        <Label Text="Other"
+                                               FontFamily="{Binding IsFocusedTabSelected, Converter={StaticResource tabFontFamilyConverter}, ConverterParameter=Other}"
+                                               FontSize="16"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               Padding="10,6"
+                                               TextColor="{Binding IsFocusedTabSelected, Converter={StaticResource tabTextColorConverter}, ConverterParameter=Other}">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer 
+                                                        Command="{Binding SwitchTabCommand}"
+                                                        CommandParameter="Other"/>
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                    </Border>
+
+                                    <!-- Other Tab (No Border - for unselected state) -->
+                                    <Label Grid.Column="1"
+                                           Text="Other"
+                                           FontFamily="{Binding IsFocusedTabSelected, Converter={StaticResource tabFontFamilyConverter}, ConverterParameter=Other}"
+                                           FontSize="16"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           Padding="10,6"
+                                           TextColor="{Binding IsFocusedTabSelected, Converter={StaticResource tabTextColorConverter}, ConverterParameter=Other}"
+                                           IsVisible="{Binding IsFocusedTabSelected, Converter={StaticResource tabBorderVisibilityConverter}, ConverterParameter=Focused}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                Command="{Binding SwitchTabCommand}"
+                                CommandParameter="Other"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+
+                        <!-- ListView with Swipe Actions -->
+                        <ListView:SfListView Grid.Row="2"
+									 x:Name="listView"
+									 ItemsSource="{Binding EmailInfos}"
+									 AllowSwiping="True"
+									 SwipeThreshold="50"
+									 SwipeOffset="100"
+									 SelectionMode="SingleDeselect"
+									 ScrollBarVisibility="Always"
+									 AutoFitMode="Height"
+									 x:DataType="local:EmailClientViewModel" >
+
+                            <!-- Group Header Template -->
+                            <ListView:SfListView.GroupHeaderTemplate>
+                                <DataTemplate x:Name="GroupHeaderTemplate" x:DataType="data:GroupResult">
+                                    <Grid HeightRequest="32" Margin="16,8,16,0" >
+
+                                        <Label Text="{Binding Key, Converter={StaticResource emailGroupHeaderConverter}}"
+                                               FontSize="22"
+                                               FontFamily="Roboto-Medium"
+                                               TextColor="#444"
+                                               Margin="0,6,0,0"/>
+
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView:SfListView.GroupHeaderTemplate>
+
+                            <!-- End Swipe Template (Archive) -->
+                            <ListView:SfListView.EndSwipeTemplate>
+                                <DataTemplate x:DataType="local:EmailInfo">
+                                    <Grid BackgroundColor="#1B7A75">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                            Command="{Binding ArchiveCommand, Source={RelativeSource AncestorType={x:Type local:EmailClientViewModel}}}"
+                                            CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+
+                                        <Label Text="Archive"
+                                           TextColor="White"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           FontFamily="Roboto-Medium"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView:SfListView.EndSwipeTemplate>
+
+                            <!-- Start Swipe Template (Delete) -->
+                            <ListView:SfListView.StartSwipeTemplate>
+                                <DataTemplate x:DataType="local:EmailInfo">
+                                    <Grid BackgroundColor="#E14040">
+
+                                        <Label Text="Delete"
+                                           TextColor="White"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            FontFamily="Roboto-Medium"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView:SfListView.StartSwipeTemplate>
+
+                            <!-- Item Template -->
+                            <ListView:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:EmailInfo">
+                                    <Grid RowDefinitions="Auto, Auto">
+
+                                        <Grid Margin="16,12,16,12" ColumnSpacing="12">
+
+                                            <!-- ✅ Proper row structure -->
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <!-- Sender -->
+                                                <RowDefinition Height="Auto"/>
+                                                <!-- Subject -->
+                                                <RowDefinition Height="Auto"/>
+                                                <!-- Description -->
+
+                                            </Grid.RowDefinitions>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="60"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- ✅ LEFT SECTION (Avatar OR Blue Dot - not both) -->
+                                            <Grid Grid.RowSpan="3"
+                                               Grid.Column="0"
+                                               WidthRequest="60"
+                                               HorizontalOptions="Center">
+
+                                                <!-- Avatar (shown for READ emails) -->
+                                                <Border HeightRequest="48"
+                                                     WidthRequest="48"
+                                                     BackgroundColor="{Binding AvatarBackgroundColor}"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Start"
+                                                     IsVisible="{Binding IsOpened}">
+
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="24"/>
+                                                    </Border.StrokeShape>
+
+                                                    <Label Text="{Binding ProfileName}"
+                                                        TextColor="White"
+                                                        HorizontalOptions="Center"
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"
+                                                        FontFamily="Roboto-Medium"
+                                                        FontAttributes="Bold"/>
+                                                </Border>
+
+                                                <!-- Blue Dot (shown for UNREAD emails instead of avatar) -->
+                                                <Ellipse WidthRequest="14" 
+                                                      Grid.Column="1"
+                                                      HeightRequest="14"
+                                                      Fill="#1E6BD6"
+                                                      HorizontalOptions="Center"
+                                                      VerticalOptions="Start"
+                                                      IsVisible="{Binding IsOpened, Converter={StaticResource emailUnreadIndicatorConverter}}"/>
+
+                                            </Grid>
+
+                                            <!-- ✅ Sender -->
+                                            <Label Grid.Row="0"
+                                                Grid.Column="1"
+                                                Text="{Binding SenderName}"
+                                                FontSize="17"
+                                                FontFamily="Roboto-Medium"
+                                                FontAttributes="Bold"
+                                                LineBreakMode="TailTruncation"
+                                                Margin="0,2,0,0"/>
+
+                                            <!-- ✅ Time -->
+                                            <Label Grid.Row="0"
+                                                Grid.Column="2"
+                                                Text="{Binding Date, Converter={StaticResource emailDateTimeConverter}}"
+                                                FontSize="14"
+                                                TextColor="#999999"
+                                                Margin="8,2,0,0"/>
+
+                                            <!-- ✅ Subject (now visible ✅) -->
+                                            <Label Grid.Row="1" 
+                                            Grid.Column="1"
+                                            Text="{Binding Subject}"
+                                            FontSize="14"
+                                            Margin="0,4,0,0"
+                                            LineBreakMode="TailTruncation"
+                                            FontFamily="Roboto-Regular"
+                                            TextColor="#333333"/>
+
+                                            <!-- ✅ Description (now visible ✅) -->
+                                            <Label Grid.Row="2"
+                                                Grid.Column="1"
+                                                Text="{Binding Description}"
+                                                FontSize="13"
+                                                TextColor="#777777"
+                                                MaxLines="2"
+                                                Margin="0,4,0,0"
+                                                FontFamily="Roboto-Regular"
+                                                LineBreakMode="CharacterWrap"/>
+
+                                        </Grid>
+
+                                        <!-- ✅ Separator -->
+                                        <BoxView Grid.Row="1"
+                                              Color="{AppThemeBinding Light=#E0E0E0, Dark=#3C3C3C}"
+                                              Margin="76,0,0,0"
+                                              HeightRequest="0.8"/>
+                                    </Grid>
+
+                                </DataTemplate>
+                            </ListView:SfListView.ItemTemplate>
+
+                            <!-- Selected Item Template -->
+                            <ListView:SfListView.SelectedItemTemplate>
+                                <DataTemplate x:DataType="local:EmailInfo">
+
+                                    <Grid RowDefinitions="Auto, Auto">
+                                        <Grid ColumnSpacing="12" Margin="16,12,16,12">
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="0.8"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="60"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Avatar OR Blue Dot (not both) -->
+                                            <Grid Grid.RowSpan="3"
+                                          Grid.Column="0"
+                                          WidthRequest="60"
+                                          HorizontalOptions="Center">
+
+                                                <Border HeightRequest="48"
+                                                WidthRequest="48"
+                                                BackgroundColor="{Binding AvatarBackgroundColor}"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Start"
+                                                IsVisible="{Binding IsOpened}">
+
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="24"/>
+                                                    </Border.StrokeShape>
+
+                                                    <Label Text="{Binding ProfileName}"
+                                                   TextColor="White"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   FontSize="16"
+                                                   FontFamily="Roboto-Medium"
+                                                   FontAttributes="Bold"/>
+                                                </Border>
+
+                                                <Ellipse WidthRequest="14"
+                                                 HeightRequest="14"
+                                                 Fill="#1E6BD6"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Start"
+                                                 IsVisible="{Binding IsOpened, Converter={StaticResource emailUnreadIndicatorConverter}}"/>
+                                            </Grid>
+
+                                            <!-- Sender -->
+                                            <Label Grid.Row="0"
+                                           Grid.Column="1"
+                                           Text="{Binding SenderName}"
+                                           FontSize="17"
+                                           FontAttributes="Bold"
+                                           FontFamily="Roboto-Medium"
+                                           Margin="0,2,0,0"/>
+
+                                            <!-- Time -->
+                                            <Label Grid.Row="0" HorizontalTextAlignment="End"
+                                           Grid.Column="2"
+                                           Text="{Binding Date, Converter={StaticResource emailDateTimeConverter}}"
+                                           FontSize="14"
+                                           TextColor="#999999"
+                                           Margin="8,2,0,0"/>
+
+                                            <!-- Subject -->
+                                            <Label Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding Subject}"
+                                           FontSize="14"
+                                           FontFamily="Roboto-Regular"
+                                           TextColor="#333333"
+                                           Margin="0,4,0,0"/>
+
+                                            <!-- Description -->
+                                            <Label Grid.Row="2"
+                                           Grid.Column="1"
+                                           Text="{Binding Description}"
+                                           FontSize="13"
+                                           TextColor="#777777"
+                                           FontFamily="Roboto-Regular"
+                                           Margin="0,4,0,0"
+                                           LineBreakMode="CharacterWrap"/>
+
+                                            <!-- ✅ Delete Button -->
+                                            <Border Grid.Row="1"
+                                            Grid.RowSpan="2"
+                                            Grid.Column="2"
+                                            BackgroundColor="#E5E5E5"
+                                            Padding="20,10"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            StrokeThickness="0"
+                                           >
+
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="12"/>
+                                                </Border.StrokeShape>
+
+                                                <!--<Label Text="Delete"
+                                               FontSize="15"
+                                               TextColor="#666666"
+                                               FontFamily="Roboto-Regular"
+                                               VerticalOptions="Center" HorizontalOptions="Center">-->
+
+                                                <Label  Text="&#xE70F;"
+                                                        FontFamily="MaterialAssets"
+                                                        FontSize="24"
+                                                        TextColor="Black">
+
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer 
+                                                        Command="{Binding DeleteCommand, Source={RelativeSource AncestorType={x:Type local:EmailClientViewModel}}}"
+                                                        CommandParameter="{Binding .}"/>
+                                                    </Label.GestureRecognizers>
+
+                                                </Label>
+                                            </Border>
+                                        </Grid>
+
+                                        <!-- Separator -->
+                                        <BoxView Grid.Row="1"
+                                             Color="{AppThemeBinding Light=#E0E0E0, Dark=#3C3C3C}"
+                                             Margin="76,0,0,0"
+                                             HeightRequest="0.8"/>
+
+                                    </Grid>
+
+                                </DataTemplate>
+                            </ListView:SfListView.SelectedItemTemplate>
+
+                        </ListView:SfListView>
+
+                        <!-- Undo Popup -->
+                        <Border Grid.Row="2"
+						Margin="16,0,16,16"
+						HeightRequest="48"
+						VerticalOptions="End"
+						IsVisible="{Binding IsDeleted}"
+						Padding="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8"/>
+                            </Border.StrokeShape>
+                            <Grid HeightRequest="48" BackgroundColor="#3D454A">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0"
+							   FontSize="14"
+							   TextColor="#FFFFFF"
+							   Text="{Binding PopUpText}"
+							   VerticalOptions="Center"
+							   VerticalTextAlignment="Center"
+							   Margin="16,0,0,0"
+							   CharacterSpacing="0.25"/>
+                                <Label Grid.Column="1"
+							   FontSize="14"
+							   TextColor="#6DB6FE"
+							   HorizontalOptions="End"
+							   FontAttributes="Bold"
+							   VerticalOptions="Center"
+							   VerticalTextAlignment="Center"
+							   Text="Undo"
+							   Margin="0,0,16,0"
+							   CharacterSpacing="0.25">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding UndoCommand}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </pulltoRefresh:SfPullToRefresh.PullableContent>
+            </pulltoRefresh:SfPullToRefresh>
+
+            <BoxView WidthRequest="1" Color="Gray" Grid.Column="1"/>
+
+            <Grid x:Name="previewGrid"
+                Grid.Column="2" 
+                HorizontalOptions="Fill" 
+                VerticalOptions="Fill"
+                BackgroundColor="White"
+                Padding="0">
+                <!--Mail details of currently selected email item-->
+                <!-- Default View -->
+                <VerticalStackLayout x:Name="verticalStack"
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   Spacing="12">
+
+                    <Label Text="&#xE717;"
+                            FontFamily="MaterialAssets"
+                            FontAttributes="None"
+                            FontSize="40"
+                            TextColor="Black"
+                            WidthRequest="50" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                    <Label Text="Select an item to read"
+                           FontSize="18"
+                           HorizontalOptions="Center" />
+
+                    <Label Text="Click here to always preview messages"
+                           FontSize="14"
+                           TextColor="Blue"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+
+</ContentPage>
