@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sfchat="clr-namespace:Syncfusion.Maui.Chat;assembly=Syncfusion.Maui.Chat"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:syncTheme="clr-namespace:Syncfusion.Maui.Themes;assembly=Syncfusion.Maui.Core"
+             xmlns:local="clr-namespace:ChatSample"
+             x:Class="ChatSample.MainPage">
+
+    <ContentPage.BindingContext>
+        <local:IncomingOutgoingViewModel x:Name="viewModel" />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- IncomingContentView Style -->
+            <Style TargetType="sfchat:IncomingMessageContentView">
+                <Setter Property="ControlTemplate">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <local:CustomIncomingMessageTemplateGrid />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- OutgoingContentView Style -->
+            <Style TargetType="sfchat:OutgoingMessageContentView">
+                <Setter Property="ControlTemplate">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <local:CustomOutgoingMessageTemplateGrid />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+
+    <ContentPage.Content>
+        <Grid RowDefinitions="Auto, *">
+            <Grid ColumnDefinitions="Auto, *" >
+                <Label Text="&#xe707;"
+                   FontFamily="MaterialAssets" TextColor="Black"
+                   FontAttributes="Bold" FontSize="30" >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Grid Grid.Column="1" >
+                    <Label 
+                            Text="Chat UI" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                            FontAttributes="Bold" FontSize="20" FontFamily="Roboto_Regular"/>
+                </Grid>
+            </Grid>
+            <sfchat:SfChat x:Name="Chat" Grid.Row="1"
+                           Messages="{Binding Messages}"
+                           CurrentUser="{Binding CurrentUser}"
+                           TypingIndicator="{Binding TypingIndicator}"
+                           ShowTypingIndicator="{Binding ShowTypingIndicator}"
+                           ShowTimeBreak="True"
+                           StickyTimeBreak="True"
+                           ShowDeliveryState="True"
+                           ShowScrollToBottomButton="True"
+                           SendMessageCommand="{Binding SendMessageCommand}"
+                           ShowAttachmentButton="True"
+                       
+                           ShowIncomingMessageAvatar="False"
+                           ShowOutgoingMessageAvatar="False"
+                           ShowIncomingMessageTimestamp="False"
+                           ShowOutgoingMessageTimestamp="False"
+                            
+                           ShowIncomingMessageAuthorName="False"
+                           ShowOutgoingMessageAuthorName="False"
+                            
+                           MessageSpacing="8"
+                           AllowSwiping="True">
+
+                <sfchat:SfChat.StartSwipeTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="#009EDA" Padding="9">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="50"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label  Text="&#xE710;"
+                                    FontFamily="MaterialAssets"
+                                    FontSize="24"
+                                    TextColor="Black"
+                                    VerticalTextAlignment="Center"/>
+
+                            <Label Grid.Column="1"
+                               BackgroundColor="Transparent"
+                               LineBreakMode="NoWrap"
+                               Text="EDIT"
+                               TextColor="White"
+                               HorizontalTextAlignment="Start"
+                               VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </sfchat:SfChat.StartSwipeTemplate>
+
+                <sfchat:SfChat.EndSwipeTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="#DC595F" Padding="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label  Text="&#xE70F;"
+                                    FontFamily="MaterialAssets"
+                                    FontSize="24"
+                                    TextColor="Black"
+                                    VerticalTextAlignment="Center"/>
+
+                                <Label Grid.Column="1"
+                           BackgroundColor="Transparent"
+                           LineBreakMode="NoWrap"
+                           Text="DELETE"
+                           TextColor="White"
+                           HorizontalTextAlignment="Start"
+                           VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </sfchat:SfChat.EndSwipeTemplate>
+
+            </sfchat:SfChat>
+        </Grid>
+    </ContentPage.Content>
+
+</ContentPage>
