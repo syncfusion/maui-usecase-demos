@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.PullToRefresh;assembly=Syncfusion.Maui.PullToRefresh"
+             xmlns:local="clr-namespace:SocialMediaFeed"
+             x:Class="SocialMediaFeed.MainPage"
+             Title="Social Media Feed">
+
+    <ContentPage.BindingContext>
+        <local:MainViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <pullToRefresh:SfPullToRefresh RefreshCommand="{Binding RefreshCommand}" TransitionMode="Push" IsRefreshing="{Binding IsRefreshing}" PullingThreshold="100" RefreshViewWidth="40" RefreshViewHeight="40" ProgressThickness="2">
+            <pullToRefresh:SfPullToRefresh.PullableContent>
+
+                <syncfusion:SfListView x:Name="FeedListView"
+                                       Grid.Row="1"
+                                       ItemsSource="{Binding Posts}"
+                                       AutoFitMode="Height"
+                                       LoadMoreCommand="{Binding LoadMoreCommand}"
+                                       IsLazyLoading="{Binding IsBusy}"
+                                       LoadMoreOption="AutoOnScroll"
+                                       SelectionMode="None">
+
+                    <syncfusion:SfListView.LoadMoreTemplate>
+                        <DataTemplate>
+                            <Grid Padding="20" HorizontalOptions="Center" VerticalOptions="Center">
+                                <ActivityIndicator IsRunning="True" IsVisible="True" WidthRequest="25" HeightRequest="25" Color="LightGray" />
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.LoadMoreTemplate>
+
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout Padding="16" Spacing="12">
+
+                                <!-- Profile -->
+                                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                                    <Border WidthRequest="40" HeightRequest="40" StrokeShape="RoundRectangle 20" Stroke="Transparent">
+                                        <Image Source="{Binding ProfileImage}" Aspect="AspectFill"/>
+                                    </Border>
+                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+
+                                <!-- Caption -->
+                                <Label Text="{Binding Caption}" FontSize="14" TextColor="#444444" Margin="52,0,0,0"/>
+
+                                <!-- ✅ IMAGE POST -->
+                                <Border HorizontalOptions="Start" IsVisible="{Binding IsLinkPreview, Converter={StaticResource InverseBoolConverter}}" Padding="0" HeightRequest="300" WidthRequest="320" Margin="52,0,0,0" Stroke="Transparent" StrokeShape="RoundRectangle 6">
+                                    <Image Source="{Binding PostImage}" Aspect="AspectFill"/>
+                                </Border>
+
+                                <!-- ✅ LINK PREVIEW -->
+                                <Border IsVisible="{Binding IsLinkPreview}" WidthRequest="320" Margin="52,0,0,0" Stroke="#DDDDDD" StrokeShape="RoundRectangle 6" Padding="8" HorizontalOptions="Start">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Image Source="{Binding LinkImage}" HeightRequest="120" Aspect="AspectFill"/>
+                                        <Label Text="{Binding LinkTitle}" FontAttributes="Bold" FontSize="14"/>
+                                        <Label Text="{Binding LinkUrl}" FontSize="12" TextColor="Gray"/>
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!-- Actions -->
+                                <Grid Margin="52,4,0,0" WidthRequest="320" ColumnDefinitions="*,Auto" HorizontalOptions="Start">
+                                    <HorizontalStackLayout Grid.Column="0" Spacing="25">
+                                        <Label Text="&#xe7a3;" FontFamily="MaterialAssets" FontSize="22"/>
+                                        <Label Text="&#xe711;" FontFamily="MaterialAssets" FontSize="22" Margin="0,2,0,0"/>
+                                        <Label Text="&#xe726;" FontFamily="MaterialAssets" FontSize="22"/>
+                                        <Label Text="&#xe784;" FontFamily="MaterialAssets" FontSize="22"/>
+                                    </HorizontalStackLayout>
+                                    <Label Grid.Column="1" Text="&#xe728;" FontFamily="MaterialAssets" FontSize="22" HorizontalOptions="End"/>
+                                </Grid>
+
+                                <!-- Divider -->
+                                <BoxView HeightRequest="1" Margin="0,12,0,0" Color="#E0E0E0"/>
+
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+            </pullToRefresh:SfPullToRefresh.PullableContent>
+        </pullToRefresh:SfPullToRefresh>
+    </Grid>
+</ContentPage>
