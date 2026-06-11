@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sfListView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:pulltorefresh="clr-namespace:Syncfusion.Maui.PullToRefresh;assembly=Syncfusion.Maui.PullToRefresh"
+             xmlns:sfShimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
+             xmlns:local="clr-namespace:SmartNewsFeed"
+             x:Class="SmartNewsFeed.MainPage">
+
+    <ContentPage.BindingContext>
+        <local:NewsViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+
+        <Grid Padding="10">
+            <pulltorefresh:SfPullToRefresh IsRefreshing="{Binding IsRefreshing}" RefreshCommand="{Binding RefreshCommand}">
+                <pulltorefresh:SfPullToRefresh.PullableContent>
+                    <Grid x:Name="ContentGrid" RowDefinitions="Auto,*">
+                        <StackLayout Orientation="Horizontal" Padding="0,5,0,10" Spacing="8">
+                            <Label Text="📰 News Feed" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
+                            <Label Text="{Binding LastUpdatedText}" FontSize="12" TextColor="#888" VerticalOptions="Center"/>
+                        </StackLayout>
+
+                        <sfShimmer:SfShimmer 
+                            Grid.Row="1"
+                            x:Name="NewsShimmer"
+                            IsActive="{Binding IsRefreshing}"
+                            IsVisible="False"
+                            Padding="0,5">
+                            <StackLayout Spacing="10">
+                                <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="White" Padding="12" Margin="0,8">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#20000000" Offset="0,4" Radius="8" />
+                                    </Border.Shadow>
+                                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                        <BoxView HeightRequest="20" CornerRadius="5" BackgroundColor="#E0E0E0"/>
+                                        <BoxView Grid.Row="1" HeightRequest="16" CornerRadius="5" BackgroundColor="#E0E0E0"/>
+                                        <BoxView Grid.Row="2" HeightRequest="14" CornerRadius="5" BackgroundColor="#E0E0E0" WidthRequest="200" HorizontalOptions="Start"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="White" Padding="12" Margin="0,8">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#20000000" Offset="0,4" Radius="8" />
+                                    </Border.Shadow>
+                                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                        <BoxView HeightRequest="20" CornerRadius="5" BackgroundColor="#E0E0E0"/>
+                                        <BoxView Grid.Row="1" HeightRequest="16" CornerRadius="5" BackgroundColor="#E0E0E0"/>
+                                        <BoxView Grid.Row="2" HeightRequest="14" CornerRadius="5" BackgroundColor="#E0E0E0" WidthRequest="200" HorizontalOptions="Start"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="White" Padding="12" Margin="0,8">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#20000000" Offset="0,4" Radius="8" />
+                                    </Border.Shadow>
+                                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                        <BoxView HeightRequest="20" CornerRadius="5" BackgroundColor="#E0E0E0"/>
+                                        <BoxView Grid.Row="1" HeightRequest="16" CornerRadius="5" BackgroundColor="#E0E0E0"/>
+                                        <BoxView Grid.Row="2" HeightRequest="14" CornerRadius="5" BackgroundColor="#E0E0E0" WidthRequest="200" HorizontalOptions="Start"/>
+                                    </Grid>
+                                </Border>
+                            </StackLayout>
+                        </sfShimmer:SfShimmer>
+
+                        <sfListView:SfListView
+                            Grid.Row="1"
+                            x:Name="NewsListView"
+                            AutoFitMode="DynamicHeight"
+                            ItemsSource="{Binding Articles}"
+                            SelectionMode="None"
+                            IsVisible="True">
+
+                            <sfListView:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="0" Margin="0,8">
+                                        <sfShimmer:SfShimmer IsActive="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Padding="12">
+                                            <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="White" Padding="0">
+                                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8" Padding="12">
+                                                    <BoxView HeightRequest="20" CornerRadius="5" BackgroundColor="#E0E0E0" />
+                                                    <BoxView Grid.Row="1" HeightRequest="16" CornerRadius="5" BackgroundColor="#E0E0E0" />
+                                                    <BoxView Grid.Row="2" HeightRequest="14" CornerRadius="5" BackgroundColor="#E0E0E0" WidthRequest="200" HorizontalOptions="Start" />
+                                                </Grid>
+                                            </Border>
+                                        </sfShimmer:SfShimmer>
+
+                                        <Border
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10"
+                                            BackgroundColor="White"
+                                            Padding="12"
+                                            IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
+                                            <Border.Shadow>
+                                                <Shadow Brush="#20000000" Offset="0,4" Radius="8" />
+                                            </Border.Shadow>
+                                            <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                                                <Image Source="{Binding ImageUrl}" Aspect="AspectFit" HeightRequest="160" HorizontalOptions="Start" VerticalOptions="Start"/>
+                                                <Label Margin="0,10,0,0" Grid.Row="1" Text="{Binding Title}" FontSize="18" FontAttributes="Bold" LineBreakMode="WordWrap" TextColor="#1E1E1E" />
+                                                <Label Grid.Row="2" Text="{Binding Summary}" FontSize="14" LineBreakMode="WordWrap" TextColor="#555" Margin="0,6,0,0" />
+                                                <Grid Grid.Row="3" Margin="0,10,0,0" ColumnDefinitions="*,Auto">
+                                                    <Label Text="{Binding TimeAgo}" FontSize="12" TextColor="#888" VerticalOptions="Center" />
+                                                    <Border Grid.Column="1" Padding="6,2" BackgroundColor="#FF3B30" StrokeShape="RoundRectangle 10" IsVisible="{Binding IsNew}">
+                                                        <Label Text="NEW" FontSize="10" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                                                    </Border>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </sfListView:SfListView.ItemTemplate>
+
+                        </sfListView:SfListView>
+                    </Grid>
+                </pulltorefresh:SfPullToRefresh.PullableContent>
+            </pulltorefresh:SfPullToRefresh>
+        </Grid>
+    </ContentPage.Content>
+  
+
+</ContentPage>
