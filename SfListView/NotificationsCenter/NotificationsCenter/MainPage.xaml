@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:NotificationsCenter"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:pulltorefresh="clr-namespace:Syncfusion.Maui.PullToRefresh;assembly=Syncfusion.Maui.PullToRefresh"
+             x:Class="NotificationsCenter.MainPage"
+             Title="Notifications Center">
+
+    <ContentPage.Behaviors>
+        <local:NotificationsPullToRefreshBehavior />
+    </ContentPage.Behaviors>
+
+    <ContentPage.BindingContext>
+        <local:NotificationsViewModel />
+    </ContentPage.BindingContext>
+    
+    <Grid>
+        <pulltorefresh:SfPullToRefresh x:Name="pullToRefresh"
+                                       ProgressColor="Transparent"
+                                       RefreshViewHeight="0"
+                                       RefreshViewWidth="0"
+                                       BackgroundColor="Transparent"
+                                       PullingThreshold="300"
+                                       IsRefreshing="False">
+            <pulltorefresh:SfPullToRefresh.PullableContent>
+                <Grid>
+                    <syncfusion:SfListView x:Name="listView"
+                                   ItemsSource="{Binding Notifications}"
+                                   SelectionMode="None"
+                                   AllowSwiping="True"
+                                   AutoFitMode="Height"
+                                   ShowItemBorder="True"
+                                   ItemBorderRadius="3"
+                                   ItemBorderThickness="0.5">
+
+                    <syncfusion:SfListView.StartSwipeTemplate>
+                        <DataTemplate x:Name="StartSwipeTemplate">
+                            <Grid  BackgroundColor="#DC595F" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="0">
+                                <Label Text="&#xE70F;" FontFamily="MaterialAssets" FontSize="20" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.StartSwipeTemplate>
+
+                    <syncfusion:SfListView.EndSwipeTemplate>
+                        <DataTemplate x:Name="EndSwipeTemplate">
+                            <Grid  BackgroundColor="#DC595F" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="0">
+                                <Label Text="&#xE70F;" FontFamily="MaterialAssets" FontSize="20" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.EndSwipeTemplate>
+
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Padding="10,10,10,10" Spacing="0">
+                                <Grid ColumnDefinitions="50,*,Auto" ColumnSpacing="10">
+                                    <Label Text="{Binding Icon}" FontFamily="MaterialAssets" FontSize="24" VerticalTextAlignment="Center"/>
+                                    <Grid Grid.Column="1" RowDefinitions="Auto,Auto" RowSpacing="5">
+                                        <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16"/>
+                                        <Label Text="{Binding Preview}" Grid.Row="1" FontSize="13" TextColor="Gray"/>
+                                    </Grid>
+                                    <Label Text="{Binding FormattedTimestamp}" Grid.Column="2" FontSize="12" TextColor="Gray" VerticalTextAlignment="Start"/>
+                                </Grid>
+
+                                <Grid IsVisible="{Binding IsExpanded}" Margin="0,10,0,0">
+                                    <BoxView Grid.Column="1"
+                         HeightRequest="1"
+                         BackgroundColor="#E0E0E0"
+                         Margin="50,0,0,0"/>
+                                </Grid>
+
+                                <StackLayout Padding="60,10,10,10" Spacing="10" IsVisible="{Binding IsExpanded}">
+                                    <Label Text="{Binding FullMessage}" FontSize="14" LineBreakMode="WordWrap"/>
+                                    <HorizontalStackLayout Spacing="10" Padding="0,10,0,0">
+                                        <Button Text="IGNORE" Background="LightGray" TextColor="Black" FontSize="12" Padding="15,8"/>
+                                        <Button Text="VIEW" Background="LightGray" TextColor="Black" FontSize="12" Padding="15,8"/>
+                                    </HorizontalStackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
+                </Grid>
+            </pulltorefresh:SfPullToRefresh.PullableContent>
+        </pulltorefresh:SfPullToRefresh>
+    </Grid>
+</ContentPage>
