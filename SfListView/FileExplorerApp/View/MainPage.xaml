@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:sfBottomSheet="clr-namespace:Syncfusion.Maui.Toolkit.BottomSheet;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:sfPopup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:local="clr-namespace:FileExplorerApp"
+             x:Class="FileExplorerApp.MainPage"
+             >
+
+        <ContentPage.BindingContext>
+            <local:FileExplorerViewModel/>
+        </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid x:Name="mainGrid" RowDefinitions="70,*,Auto">
+
+            <!-- 🔷 Header -->
+            <Grid   Padding="16" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Back / Clear -->
+            <Label Text="&#xe70b;"
+        FontFamily="MaterialAssets"
+                   FontSize="20"
+                       IsVisible="{Binding IsSelectionMode}"
+                   VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearSelectionCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <!-- Title -->
+                <Label Grid.Column="1"
+                   Text="{Binding SelectedCount, StringFormat='{}{0} selected'}"
+                   IsVisible="{Binding IsSelectionMode}"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+
+                <Label Grid.Column="1"
+                   Text="Internal Storage"
+                   IsVisible="{Binding IsSelectionMode, Converter={StaticResource InverseBoolConverter}}"
+                   FontAttributes="Bold" FontSize="18"
+                   HorizontalOptions="Center" VerticalOptions="End"/>
+            </Grid>
+
+            <!-- 🔷 File List -->
+        <syncfusion:SfListView
+            ItemsSource="{Binding Files}"
+            SelectionMode="None"
+            TapCommand="{Binding ItemTappedCommand}"
+            RightTapCommand="{Binding RightTappedCommand}"
+            VerticalOptions="Start"
+            LongPressCommand="{Binding LongPressCommand}"
+            Grid.Row="1"
+            >
+
+            <!-- Template -->
+            <syncfusion:SfListView.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid Padding="20,12,12,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Icon -->
+
+                        <Image Source="foldericon.png"
+       WidthRequest="32"
+       HeightRequest="32"
+       HorizontalOptions="Start"
+       VerticalOptions="Center" />
+
+
+                        <!-- Text -->
+                        <StackLayout Grid.Column="1" Spacing="2" IsVisible="{OnPlatform WinUI=False, MacCatalyst=False}">
+                            <Label Text="{Binding Name}" 
+                                   FontSize="16"
+                                   />
+                            <Label Text="{Binding Details}" 
+                                   FontSize="13"
+                                   TextColor="DarkGrey"/>
+                        </StackLayout>
+
+                        <Grid Grid.Column="1" ColumnDefinitions="*,*" IsVisible="{OnPlatform Android=False, iOS=False}">
+                            <Label Text="{Binding Name}" VerticalTextAlignment="Center"
+           FontSize="16"
+           />
+                            <Label Text="{Binding Details}" Grid.Column="1" HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+           FontSize="13"
+           />
+                        </Grid>
+
+                        <!-- Checkbox -->
+                        <CheckBox Grid.Column="2"
+                                  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsSelectionMode}"
+                                  IsChecked="{Binding IsSelected}"
+                                  Color="#3B82F6"/>
+                    </Grid>
+
+                </DataTemplate>
+            </syncfusion:SfListView.ItemTemplate>
+
+        </syncfusion:SfListView>
+
+        <!-- ✅ SfPopup Bottom Sheet -->
+        <sfPopup:SfPopup Grid.Row="2"
+                    IsOpen="{Binding IsBottomSheetVisible}"
+                    ShowHeader="False"
+                    ShowFooter="False"
+                    HeightRequest="{OnPlatform Android=200, iOS=200}"
+                    WidthRequest="{Binding ScreenWidth}"
+                    StaysOpen="True"
+                    RelativeView="{x:Reference mainGrid}" RelativePosition="AlignBottom"
+                    AnimationMode="SlideOnBottom"
+                    ShowOverlayAlways="False">
+            <sfPopup:SfPopup.PopupStyle>
+                <sfPopup:PopupStyle
+                            CornerRadius="20,20,0,0" />
+            </sfPopup:SfPopup.PopupStyle>
+            <sfPopup:SfPopup.ContentTemplate>
+                <DataTemplate>
+
+                    <!-- Fullscreen container -->
+                    <Grid>
+
+                        <!-- ✅ Bottom Sheet -->
+
+                        <StackLayout Spacing="20">
+
+                            <!-- Drag indicator -->
+                            <BoxView HeightRequest="4"
+                                 WidthRequest="40"
+                                 CornerRadius="2"
+                                 BackgroundColor="#6B7280"
+                                 HorizontalOptions="Center"/>
+
+                            <!-- ✅ Vertical menu -->
+                            <StackLayout Spacing="18" Padding="20,10,10,10">
+
+                                <Grid ColumnDefinitions="30,*">
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding RenameCommand}" />
+                                    </Grid.GestureRecognizers>
+
+                                    <Label  Text="&#xe756;" VerticalTextAlignment="End"
+    FontFamily="MaterialAssets"
+    FontSize="20"
+    TextColor="Black"/>
+                                    <Label Grid.Column="1" VerticalTextAlignment="Center"
+                                       Text="Rename"
+                                       FontSize="16"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="30,*">
+                                    <Label  Text="&#xe712;" VerticalTextAlignment="End"
+    FontFamily="MaterialAssets"
+    FontSize="20"
+    TextColor="Black"/>
+                                    <Label Grid.Column="1" VerticalTextAlignment="Center"
+                                       Text="Move"
+                                       FontSize="16"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="30,*">
+                                    <Label  Text="&#xe784;" VerticalTextAlignment="End"
+    FontFamily="MaterialAssets"
+    FontSize="20"
+    TextColor="Black"/>
+                                    <Label Grid.Column="1" VerticalTextAlignment="Center"
+                                       Text="Share"
+                                       FontSize="16"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="30,*">
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding DeleteCommand}" />
+                                    </Grid.GestureRecognizers>
+
+                                    <Label  Text="&#xE70F;" VerticalTextAlignment="End"
+                                        FontFamily="MaterialAssets"
+                                        FontSize="20"
+                                        TextColor="Black"/>
+                                    <Label Grid.Column="1" VerticalTextAlignment="Center"
+                                       Text="Delete"
+                                       TextColor="#EF4444"
+                                       FontSize="16"/>
+                                </Grid>
+
+                            </StackLayout>
+
+                        </StackLayout>
+
+                    </Grid>
+
+                </DataTemplate>
+            </sfPopup:SfPopup.ContentTemplate>
+
+        </sfPopup:SfPopup>
+        
+    </Grid>
+
+    </ContentPage>
