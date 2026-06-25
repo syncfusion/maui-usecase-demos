@@ -1,0 +1,162 @@
+﻿[
+  {
+    "Id": "1",
+    "Category": "Salary",
+    "Type": "Income",
+    "Amount": 48000,
+    "Date": "2025-11-01"
+  },
+  {
+    "Id": "2",
+    "Category": "Food",
+    "Type": "Expense",
+    "Amount": 1000,
+    "Date": "2025-11-05"
+  },
+  {
+    "Id": "3",
+    "Category": "Bills",
+    "Type": "Expense",
+    "Amount": 2000,
+    "Date": "2025-12-10"
+  },
+
+  {
+    "Id": "4",
+    "Category": "Salary",
+    "Type": "Income",
+    "Amount": 50000,
+    "Date": "2026-01-01"
+  },
+  {
+    "Id": "5",
+    "Category": "Food",
+    "Type": "Expense",
+    "Amount": 1200,
+    "Date": "2026-01-05"
+  },
+  {
+    "Id": "6",
+    "Category": "Transport",
+    "Type": "Expense",
+    "Amount": 700,
+    "Date": "2026-01-10"
+  },
+
+  {
+    "Id": "7",
+    "Category": "Salary",
+    "Type": "Income",
+    "Amount": 52000,
+    "Date": "2026-02-01"
+  },
+  {
+    "Id": "8",
+    "Category": "Shopping",
+    "Type": "Expense",
+    "Amount": 2500,
+    "Date": "2026-02-14"
+  },
+  {
+    "Id": "9",
+    "Category": "Bills",
+    "Type": "Expense",
+    "Amount": 1800,
+    "Date": "2026-02-20"
+  },
+
+  {
+    "Id": "10",
+    "Category": "Salary",
+    "Type": "Income",
+    "Amount": 55000,
+    "Date": "2026-03-01"
+  },
+  {
+    "Id": "11",
+    "Category": "Food",
+    "Type": "Expense",
+    "Amount": 900,
+    "Date": "2026-03-06"
+  },
+  {
+    "Id": "12",
+    "Category": "Transport",
+    "Type": "Expense",
+    "Amount": 800,
+    "Date": "2026-03-09"
+  },
+
+  {
+    "Id": "13",
+    "Category": "Salary",
+    "Type": "Income",
+    "Amount": 50000,
+    "Date": "2026-04-01"
+  },
+  {
+    "Id": "14",
+    "Category": "Shopping",
+    "Type": "Expense",
+    "Amount": 3000,
+    "Date": "2026-04-16"
+  },
+  {
+    "Id": "15",
+    "Category": "Bills",
+    "Type": "Expense",
+    "Amount": 2100,
+    "Date": "2026-04-21"
+  },
+
+  {
+    "Id": "16",
+    "Category": "Salary",
+    "Type": "Income",
+    "Amount": 60000,
+    "Date": "2026-05-01"
+  },
+  {
+    "Id": "17",
+    "Category": "Food",
+    "Type": "Expense",
+    "Amount": 1300,
+    "Date": "2026-05-07"
+  },
+  {
+    "Id": "18",
+    "Category": "Transport",
+    "Type": "Expense",
+    "Amount": 750,
+    "Date": "2026-05-11"
+  },
+
+  {
+    "Id": "19",
+    "Category": "Salary",
+    "Type": "Income",
+    "Amount": 62000,
+    "Date": "2026-06-01"
+  },
+  {
+    "Id": "20",
+    "Category": "Food",
+    "Type": "Expense",
+    "Amount": 1400,
+    "Date": "2026-06-05"
+  },
+  {
+    "Id": "21",
+    "Category": "Shopping",
+    "Type": "Expense",
+    "Amount": 3500,
+    "Date": "2026-06-10"
+  },
+  {
+    "Id": "22",
+    "Category": "Bills",
+    "Type": "Expense",
+    "Amount": 2500,
+    "Date": "2026-06-18"
+  }
+]

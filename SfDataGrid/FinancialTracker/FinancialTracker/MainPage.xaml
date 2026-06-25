@@ -1,0 +1,512 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dataGrid="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+             xmlns:viewModels="clr-namespace:FinancialTracker.ViewModel"
+             xmlns:local="clr-namespace:FinancialTracker"
+             x:Class="FinancialTracker.MainPage"
+             BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}">
+
+    <ContentPage.BindingContext>
+        <viewModels:FinanceViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <local:ColorConverter x:Key="converter"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15"
+                             Spacing="15">
+
+            <!--Desktop HEADER-->
+
+            <Grid ColumnDefinitions="*,Auto,Auto"
+                  IsVisible="{OnIdiom Desktop=true, Phone=false}">
+                <Label Text="Financial Dashboard"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+                <!--✅ FIXED PICKER-->
+
+                <Picker Grid.Column="1"
+                        ItemsSource="{Binding DateFilters}"
+                        SelectedItem="{Binding SelectedFilter}"
+                        WidthRequest="150"
+                        Title="Select Period"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1E293B}"
+                        TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+                <ImageButton Grid.Column="2"
+                             Source="darktheme.png"
+                             Margin="10,20,5,0"
+                             WidthRequest="15"
+                             HeightRequest="15"
+                             Clicked="OnThemeToggle"
+                             BackgroundColor="Transparent"/>
+            </Grid>
+
+            <!-- MOBILE HEADER-->
+
+            <Grid ColumnDefinitions="*,Auto"
+                  RowDefinitions="Auto,Auto"
+                  IsVisible="{OnIdiom Phone=true, Desktop=false}">
+
+                <!-- LEFT SIDE TEXT -->
+                <VerticalStackLayout Grid.RowSpan="2"
+                                     Grid.Column="0"
+                                     Spacing="0">
+
+                    <Label Text="Financial"
+                           FontSize="32"
+                           VerticalTextAlignment="End"
+                           Margin="0,5,0,0"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+                    <Label Text="Dashboard"
+                           VerticalTextAlignment="End"
+                           VerticalOptions="End"
+                           FontSize="34"
+                           FontAttributes="Bold"
+                           Margin="0,5,0,0"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </VerticalStackLayout>
+
+                <!-- RIGHT SIDE THEME -->
+                <ImageButton Grid.Row="0"
+                             Grid.Column="1"
+                             Source="darktheme.png"
+                             WidthRequest="20"
+                             HeightRequest="5"
+                             Clicked="OnThemeToggle"
+                             HorizontalOptions="End"
+                             BackgroundColor="Transparent"/>
+
+                <!-- RIGHT SIDE PICKER -->
+
+                <VerticalStackLayout Grid.Row="1"
+                                     Grid.Column="1"
+                                     Spacing="2"
+                                     HorizontalOptions="End">
+
+                    <!-- ✅ Small theme-adaptive label -->
+                    <Label Text="Select Period"
+                           FontSize="10"
+                           HorizontalOptions="Start"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
+
+                    <Picker WidthRequest="110"
+                            ItemsSource="{Binding DateFilters}"
+                            SelectedItem="{Binding SelectedFilter}"
+                            Title="Select Period"
+                            TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </VerticalStackLayout>
+
+            </Grid>
+
+            <!-- Desktop SUMMARY -->
+
+            <Grid ColumnDefinitions="*,*,*"
+                  ColumnSpacing="10"
+                  IsVisible="{OnIdiom Desktop=true, Phone=false}">
+
+                <Border BackgroundColor="#22C55E"
+                        StrokeShape="RoundRectangle 25"
+                        Padding="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout>
+                            <Label Text="Income"
+                                   TextColor="White"/>
+                            <Label Text="{Binding TotalIncome, StringFormat='₹{0:N0}'}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label Text="{Binding IncomeChange, StringFormat='↑ {0:F1}% this month'}"
+                                   FontSize="12"
+                                   TextColor="White"/>
+                        </VerticalStackLayout>
+
+                        <Image Source="income.png"
+                               WidthRequest="40"
+                               Grid.Column="1"/>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1"
+                        BackgroundColor="#EF4444"
+                        StrokeShape="RoundRectangle 25"
+                        Padding="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout>
+                            <Label Text="Expense"
+                                   TextColor="White"/>
+                            <Label Text="{Binding TotalExpense, StringFormat='₹{0:N0}'}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label Text="{Binding ExpenseChange, StringFormat='↓ {0:F1}%'}"
+                                   FontSize="12"
+                                   TextColor="White"/>
+                        </VerticalStackLayout>
+
+                        <Image Source="expense.png"
+                               WidthRequest="40"
+                               Grid.Column="1"/>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="2"
+                        BackgroundColor="#3B82F6"
+                        StrokeShape="RoundRectangle 25"
+                        Padding="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout>
+                            <Label Text="Balance"
+                                   TextColor="White"/>
+                            <Label Text="{Binding Balance, StringFormat='₹{0:N0}'}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                        </VerticalStackLayout>
+
+                        <Image Source="wallet.png"
+                               WidthRequest="40"
+                               Grid.Column="1"/>
+                    </Grid>
+                </Border>
+
+            </Grid>
+
+            <!-- MOBILE SUMMARY -->
+            <Grid RowSpacing="10"
+                  ColumnSpacing="10"
+                  IsVisible="{OnIdiom Phone=true}">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*,*"
+                      ColumnSpacing="10">
+
+                    <!-- INCOME -->
+                    <Border BackgroundColor="#22C55E"
+                            StrokeShape="RoundRectangle 25"
+                            Padding="15">
+
+                        <VerticalStackLayout>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Income"
+                                       TextColor="White"/>
+                                <Image Source="income.png"
+                                       WidthRequest="28"
+                                       Grid.Column="1"/>
+                            </Grid>
+
+                            <Label Text="{Binding TotalIncome, StringFormat='₹{0:N0}'}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+
+                            <!-- ✅ FIXED % -->
+                            <Label Text="{Binding IncomeChange, StringFormat='↑ {0:F1}%'}"
+                                   FontSize="12"
+                                   TextColor="White"
+                                   Opacity="0.9"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- EXPENSE -->
+                    <Border Grid.Column="1"
+                            BackgroundColor="#EF4444"
+                            StrokeShape="RoundRectangle 25"
+                            Padding="15">
+
+                        <VerticalStackLayout>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Expense"
+                                       TextColor="White"/>
+                                <Image Source="expense.png"
+                                       WidthRequest="28"
+                                       Grid.Column="1"/>
+                            </Grid>
+
+                            <Label Text="{Binding TotalExpense, StringFormat='₹{0:N0}'}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+
+                            <!-- ✅ FIXED % -->
+                            <Label Text="{Binding ExpenseChange, StringFormat='↓ {0:F1}%'}"
+                                   FontSize="12"
+                                   TextColor="White"
+                                   Opacity="0.9"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- BALANCE -->
+                <Border Grid.Row="1"
+                        BackgroundColor="#3B82F6"
+                        StrokeShape="RoundRectangle 25"
+                        Padding="15">
+
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Balance"
+                                   TextColor="White"/>
+                            <Image Source="wallet.png"
+                                   WidthRequest="28"
+                                   Grid.Column="1"/>
+                        </Grid>
+
+                        <Label Text="{Binding Balance, StringFormat='₹{0:N0}'}"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+
+            <Label Text="Expense Breakdown"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+            <!-- Desktop CategoryList -->
+            <Grid ColumnDefinitions="*,Auto"
+                  VerticalOptions="Center"
+                  IsVisible="{OnIdiom Desktop=true, Phone=false}">
+
+                <listView:SfListView Grid.Column="0"
+                                     ItemsSource="{Binding Categories}"
+                                     SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                                     Orientation="Horizontal"
+                                     HeightRequest="70"
+                                     ItemSize="120"
+                                     SelectionMode="Single"
+                                     ScrollBarVisibility="Never"
+                                     SelectionBackground="Transparent">
+
+                    <listView:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10"
+                                    Margin="5"
+                                    StrokeShape="RoundRectangle 25"
+                                    BackgroundColor="{AppThemeBinding Light=#E5E7EB, Dark=#1E293B}">
+
+                                <Label Text="{Binding}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                            </Border>
+                        </DataTemplate>
+                    </listView:SfListView.ItemTemplate>
+
+                    <listView:SfListView.SelectedItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10"
+                                    Margin="5"
+                                    StrokeShape="RoundRectangle 25"
+                                    BackgroundColor="#3B82F6">
+
+                                <Label Text="{Binding}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       FontAttributes="Bold"
+                                       TextColor="White"/>
+                            </Border>
+                        </DataTemplate>
+                    </listView:SfListView.SelectedItemTemplate>
+
+                </listView:SfListView>
+
+                <VerticalStackLayout Grid.Column="1"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="End"
+                                     Padding="10,0">
+
+                    <Label Text="Total spent"
+                           FontSize="12"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
+
+                    <Label Text="{Binding SelectedCategoryTotal, StringFormat='₹{0:N0}'}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+                </VerticalStackLayout>
+
+            </Grid>
+
+            <!-- MOBILE CategoryList -->
+
+            <StackLayout IsVisible="{OnIdiom Phone=true}">
+
+                <listView:SfListView ItemsSource="{Binding Categories}"
+                                     SelectedItem="{Binding SelectedCategory}"
+                                     Orientation="Horizontal"
+                                     HeightRequest="70"
+                                     ItemSize="110"
+                                     SelectionMode="Single"
+                                     ScrollBarVisibility="Never">
+
+                    <listView:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10"
+                                    Margin="5"
+                                    StrokeShape="RoundRectangle 25"
+                                    BackgroundColor="{AppThemeBinding Light=#E5E7EB, Dark=#1E293B}">
+                                <Label Text="{Binding}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       FontAttributes="Bold"
+                                       LineBreakMode="TailTruncation"
+                                       TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                            </Border>
+                        </DataTemplate>
+                    </listView:SfListView.ItemTemplate>
+
+                    <listView:SfListView.SelectedItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10"
+                                    Margin="5"
+                                    StrokeShape="RoundRectangle 25"
+                                    BackgroundColor="#3B82F6">
+                                <Label Text="{Binding}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       FontAttributes="Bold"
+                                       TextColor="White"/>
+                            </Border>
+                        </DataTemplate>
+                    </listView:SfListView.SelectedItemTemplate>
+
+                </listView:SfListView>
+
+                <!-- ✅ NEW TOTAL SPENT UI -->
+                <Border Margin="5,5,5,0"
+                        Padding="10"
+                        StrokeShape="RoundRectangle 15"
+                        BackgroundColor="{AppThemeBinding Light=#F3F4F6, Dark=#1E293B}">
+
+                    <Grid ColumnDefinitions="Auto,*">
+
+                        <!-- label -->
+                        <Label Text="Total spent"
+                               FontSize="12"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=Gray, Dark=LightGray}"/>
+
+                        <!-- value -->
+                        <Label Grid.Column="1"
+                               Text="{Binding SelectedCategoryTotal, StringFormat='₹{0:N0}'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               HorizontalOptions="End"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    </Grid>
+
+                </Border>
+
+            </StackLayout>
+
+            <!-- Chart -->
+            <chart:SfCartesianChart HeightRequest="220"
+                                    InputTransparent="True"
+                                    Margin="5,0,5,0">
+
+                <chart:SfCartesianChart.XAxes>
+                    <chart:CategoryAxis ArrangeByIndex="True">
+                        <chart:CategoryAxis.LabelStyle>
+                            <chart:ChartAxisLabelStyle
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        </chart:CategoryAxis.LabelStyle>
+                    </chart:CategoryAxis>
+                </chart:SfCartesianChart.XAxes>
+
+                <chart:SfCartesianChart.YAxes>
+                    <chart:NumericalAxis
+                        Maximum="{Binding YMaximum}"
+                        Interval="{Binding AxisInterval}">
+                        <chart:NumericalAxis.LabelStyle>
+                            <chart:ChartAxisLabelStyle
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                        </chart:NumericalAxis.LabelStyle>
+                    </chart:NumericalAxis>
+                </chart:SfCartesianChart.YAxes>
+
+                <chart:ColumnSeries
+                    ItemsSource="{Binding ChartDataCollection}"
+                    XBindingPath="Category"
+                    YBindingPath="Amount"
+                    Width="{Binding ColumnWidth}"/>
+
+            </chart:SfCartesianChart>
+
+            <Label Text="Transactions"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+            <dataGrid:SfDataGrid ItemsSource="{Binding FilteredTransactions}"
+                                 AutoGenerateColumnsMode="None"
+                                 GridLinesVisibility="Both"
+                                 HeaderGridLinesVisibility="Both" 
+                                 HeightRequest="{OnPlatform MacCatalyst=500}"
+                                 ColumnWidthMode="{OnIdiom Phone=Auto, Tablet=Auto, Desktop=Fill}">
+
+                <dataGrid:SfDataGrid.DefaultStyle>
+                    <dataGrid:DataGridStyle
+                        HeaderRowBackground="{AppThemeBinding Light=#F3F4F6, Dark=#1E293B}"
+                        HeaderRowTextColor="{AppThemeBinding Light=#111827, Dark=#E5E7EB}"
+                        HeaderRowFontAttributes="Bold"
+                        RowBackground="{AppThemeBinding Light=White, Dark=#0F172A}"
+                        AlternateRowBackground="{AppThemeBinding Light=#F9FAFB, Dark=#111827}"
+                        RowTextColor="{AppThemeBinding Light=#111827, Dark=#E5E7EB}"
+                        SelectionBackground="{AppThemeBinding Light=#DBEAFE, Dark=#1D4ED8}"
+                        SelectedRowTextColor="{AppThemeBinding Light=#111827, Dark=White}"
+                        CurrentCellBorderColor="Transparent"/>
+                </dataGrid:SfDataGrid.DefaultStyle>
+
+                <dataGrid:SfDataGrid.Columns>
+                    <dataGrid:DataGridTextColumn HeaderText="Date"
+                                                 MappingName="Date"
+                                                 Format="dd MMM yyyy"/>
+                    <dataGrid:DataGridTextColumn HeaderText="Category"
+                                                 MappingName="Category"/>
+                    <dataGrid:DataGridTextColumn HeaderText="Type"
+                                                 MappingName="Type"/>
+
+                    <dataGrid:DataGridTextColumn HeaderText="Amount"
+                                                 MappingName="Amount"
+                                                 Format="₹#,##0">
+
+                        <dataGrid:DataGridTextColumn.CellStyle>
+                            <Style TargetType="dataGrid:DataGridCell">
+                                <Setter Property="TextColor"
+                                        Value="{Binding Converter={StaticResource converter}}"/>
+                            </Style>
+                        </dataGrid:DataGridTextColumn.CellStyle>
+
+                    </dataGrid:DataGridTextColumn>
+
+                    <dataGrid:DataGridTextColumn HeaderText="Balance"
+                                                 MappingName="Balance"
+                                                 Format="₹#,##0"/>
+                </dataGrid:SfDataGrid.Columns>
+
+            </dataGrid:SfDataGrid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
