@@ -1,0 +1,25 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:StockMonitor"
+             xmlns:converters="clr-namespace:StockMonitor.Converters"
+             x:Class="StockMonitor.App"
+             xmlns:syncTheme="clr-namespace:Syncfusion.Maui.Themes;assembly=Syncfusion.Maui.Core"
+             UserAppTheme="Light">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <syncTheme:SyncfusionThemeResourceDictionary VisualTheme="MaterialLight"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToReorderStatusConverter x:Key="BoolToReorderStatusConverter" />
+            <converters:BoolToChipColorConverter x:Key="BoolToChipColorConverter" />
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:QuantityToReorderStatusConverter x:Key="QuantityToReorderStatusConverter" />
+            <converters:QuantityToColorConverter x:Key="QuantityToColorConverter" />
+            <converters:IsEnabledToColorConverter x:Key="IsEnabledToColorConverter" />
+            <converters:IsEnabledToTextColorConverter x:Key="IsEnabledToTextColorConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

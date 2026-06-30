@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             x:Class="StockMonitor.Views.DashboardPage">
+
+    <Grid x:Name="MainGrid" 
+          Padding="12" 
+          ColumnSpacing="12"
+          RowSpacing="12"
+          
+          ColumnDefinitions="*,200"
+          RowDefinitions="*"
+          SizeChanged="OnGridSizeChanged">
+        
+        <!-- Data Grid (Left - Main view on Desktop, Row 0 on Mobile) -->
+        <syncfusion:SfDataGrid x:Name="InventoryGrid"
+                               Grid.Column="0"
+                               Grid.Row="0"
+                               ItemsSource="{Binding InventoryItems}"
+                               AllowFiltering="True"
+                               SelectionMode="Single"
+                               SelectedRow="{Binding SelectedRow, Mode=TwoWay}"
+                               MinimumHeightRequest="300">
+            <!-- Double-tap to navigate to edit -->
+            <syncfusion:SfDataGrid.GestureRecognizers>
+                <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                      Command="{Binding NavigateToDetailCommand}"/>
+            </syncfusion:SfDataGrid.GestureRecognizers>
+
+            <!-- Columns -->
+            <syncfusion:SfDataGrid.Columns>
+                <!-- ID Column -->
+                <syncfusion:DataGridNumericColumn MappingName="ItemId"
+                                               HeaderText="ID"
+                                               Format="N0"/>
+
+                <!-- Item Name Column -->
+                <syncfusion:DataGridTextColumn MappingName="ItemName"
+                                               HeaderText="Name"
+                                               Width="180"/>
+
+                <!-- Category Column -->
+                <syncfusion:DataGridTextColumn MappingName="Category"
+                                               HeaderText="Category"
+                                               Width="120"/>
+
+                <!-- Quantity Column -->
+                <syncfusion:DataGridNumericColumn MappingName="Quantity"
+                                                  HeaderText="Qty"
+                                                  Width="80"
+                                                  Format="N0"/>
+
+                <!-- Unit Price Column -->
+                <syncfusion:DataGridNumericColumn MappingName="UnitPrice"
+                                                  HeaderText="Unit Price"
+                                                  Width="100"
+                                                  Format="C2"/>
+
+                <!-- Supplier Column -->
+                <syncfusion:DataGridTextColumn MappingName="Supplier"
+                                               HeaderText="Supplier"
+                                               Width="130"/>
+
+                <!-- Location Column -->
+                <syncfusion:DataGridTextColumn MappingName="Location"
+                                               HeaderText="Location"
+                                               Width="130"/>
+
+                <!-- Reorder Status Column (based on actual Quantity threshold) -->
+                <syncfusion:DataGridTemplateColumn MappingName="Quantity"
+                                                   HeaderText="Reorder Status"
+                                                   Width="140">
+                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackLayout Margin="4" Padding="8" VerticalOptions="Center" HorizontalOptions="Fill"
+                                         BackgroundColor="{Binding Quantity, Converter={StaticResource QuantityToColorConverter}}">
+                                <Label Text="{Binding Quantity, Converter={StaticResource QuantityToReorderStatusConverter}}"
+                                       FontSize="12"
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       TextColor="White"/>
+                            </StackLayout>
+                        </DataTemplate>
+                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                </syncfusion:DataGridTemplateColumn>
+
+                <!-- Last Updated Column -->
+                <syncfusion:DataGridTextColumn MappingName="LastUpdated"
+                                               HeaderText="Last Updated"
+                                               Width="150"/>
+
+                <!-- Last Ordered Column -->
+                <syncfusion:DataGridTextColumn MappingName="LastOrdered"
+                                               HeaderText="Last Ordered"
+                                               Width="150"/>
+            </syncfusion:SfDataGrid.Columns>
+        </syncfusion:SfDataGrid>
+
+        <!-- Right Panel - Controls (200px width on Desktop, Full width on Mobile) -->
+        <StackLayout x:Name="ControlsPanel"
+                     Grid.Column="1" 
+                     Grid.Row="0"
+                     Orientation="Vertical" 
+                     Spacing="2" 
+                     Padding="0">
+            <!-- Reorder Count Chip -->
+            <core:SfChip Text="{Binding ReorderCount, StringFormat='Reorder Needed: {0}'}" 
+                           
+                           HorizontalOptions="Fill"
+                           HorizontalTextAlignment="Center"
+                           Padding="6,2"/>
+
+            <!-- Edit Button (Double-click grid row, or select + button) -->
+            <buttons:SfButton Text="Edit" 
+                             Command="{Binding NavigateToDetailCommand}"
+                             IsEnabled="{Binding SelectedRow, Converter={StaticResource IsNotNullConverter}}"
+                             CornerRadius="20"
+                             HorizontalOptions="Fill"
+                             Background="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToColorConverter}, ConverterParameter=Primary}"
+                             TextColor="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToTextColorConverter}}"
+                             Padding="8,4"/>
+
+            <!-- Delete Button (visible when item selected) -->
+            <buttons:SfButton Text="Delete" 
+                             Command="{Binding DeleteItemCommand}"
+                             CommandParameter="{Binding SelectedRow.ItemId}"
+                             IsEnabled="{Binding SelectedRow, Converter={StaticResource IsNotNullConverter}}"
+                             CornerRadius="20"
+                             HorizontalOptions="Fill"
+                             Background="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToColorConverter}, ConverterParameter=Delete}"
+                             TextColor="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToTextColorConverter}}"
+                             Padding="8,4"/>
+
+            <!-- Search Input -->
+            <core:SfTextInputLayout Hint="Search"
+                                      ContainerType="Outlined"
+                                      Padding="0"
+                                      HeightRequest="100">
+                <Entry Text="{Binding SearchText}"  VerticalOptions="Center" FontSize="14"/>
+            </core:SfTextInputLayout>
+        </StackLayout>
+    </Grid>
+</ContentPage>

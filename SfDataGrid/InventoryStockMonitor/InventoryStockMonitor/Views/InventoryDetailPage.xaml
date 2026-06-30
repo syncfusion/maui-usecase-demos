@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             x:Class="StockMonitor.Views.InventoryDetailPage"
+             Title="Edit Item"
+             Loaded="ContentPage_Loaded">
+
+    <Grid x:Name="DetailGrid" RowDefinitions="*,Auto" Padding="16" SizeChanged="OnDetailGridSizeChanged">
+        <!-- Scrollable Content -->
+        <ScrollView Grid.Row="0">
+            <StackLayout x:Name="FormStack" Spacing="12" Padding="0">
+                <!-- Selected Index Header -->
+                <Label Text="{Binding Item.ItemId, StringFormat='Selected Index: {0}'}" 
+                       FontSize="18" 
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#D0BCFF}"
+                       Margin="0,0,0,8"/>
+
+                <!-- ID Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="ID:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" 
+                           Text="{Binding Item.ItemId, StringFormat='{0}', Mode=OneWay}"
+                           IsReadOnly="True"
+                           
+                           FontSize="14"/>
+                </Grid>
+
+                <!-- Name Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Name:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" 
+                           Text="{Binding Item.ItemName, Mode=TwoWay}"
+                           Placeholder="Enter name"
+                           FontSize="14"/>
+                </Grid>
+
+                <!-- Category Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Category:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <inputs:SfComboBox Grid.Column="1"
+                                       ItemsSource="{Binding CategoryOptions}"
+                                       SelectedItem="{Binding Item.Category, Mode=TwoWay}"
+                                       IsEditable="False"
+                                       Placeholder="Select category"
+                                       FontSize="14"/>
+                </Grid>
+
+                <!-- Quantity Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Quantity:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <inputs:SfNumericEntry Grid.Column="1"
+                                           Value="{Binding Item.Quantity, Mode=TwoWay}"
+                                           Minimum="0"
+                                           AllowNull="False"
+                                           CustomFormat="N0"
+                                           FontSize="14"/>
+                </Grid>
+
+                <!-- Unit Price Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Unit Price:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <inputs:SfNumericEntry Grid.Column="1"
+                                           Value="{Binding Item.UnitPrice, Mode=TwoWay}"
+                                           Minimum="0"
+                                           AllowNull="False"
+                                           CustomFormat="C2"
+                                           FontSize="14"/>
+                </Grid>
+
+                <!-- Supplier Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Supplier:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" 
+                           Text="{Binding Item.Supplier, Mode=TwoWay}"
+                           Placeholder="Enter supplier"
+                           FontSize="14"/>
+                </Grid>
+
+                <!-- Location Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Location:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" 
+                           Text="{Binding Item.Location, Mode=TwoWay}"
+                           Placeholder="Enter location"
+                           FontSize="14"/>
+                </Grid>
+
+                <!-- Last Ordered Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Last Ordered:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" 
+                           Text="{Binding Item.LastOrdered, Mode=TwoWay}"
+                           Placeholder="MM/DD/YYYY"
+                           FontSize="14"/>
+                </Grid>
+
+                <!-- Last Updated Row (Read-only) -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8">
+                    <Label Text="Last Updated:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Entry Grid.Column="1" 
+                           Text="{Binding Item.LastUpdated, Mode=OneWay}"
+                           IsReadOnly="True"
+                          
+                           FontSize="14"/>
+                </Grid>
+
+                <!-- Reorder Status Row -->
+                <Grid ColumnDefinitions="120,*" ColumnSpacing="8" Padding="8" Margin="0,12,0,0">
+                    <Label Text="Reorder Status:" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <core:SfChip Grid.Column="1"
+                                 Text="{Binding Item.Quantity, Converter={StaticResource QuantityToReorderStatusConverter}}"
+                                 BackgroundColor="{Binding Item.Quantity, Converter={StaticResource QuantityToColorConverter}}"
+                                 TextColor="White"
+                                 IsEnabled="False"
+                                 HeightRequest="36"
+                                 FontSize="13"
+                                 HorizontalOptions="Start"/>
+                </Grid>
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Action Buttons -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="12" Margin="0,12,0,0">
+            <buttons:SfButton Text="Save"
+                             Command="{Binding SaveCommand}"
+                             CornerRadius="20"
+                             FontSize="14"
+                             Padding="16,12"
+                             Background="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToColorConverter}, ConverterParameter=Primary}"
+                             TextColor="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToTextColorConverter}}"/>
+            <buttons:SfButton Grid.Column="1"
+                             Text="Delete"
+                             Command="{Binding DeleteCommand}"
+                             CornerRadius="20"
+                             FontSize="14"
+                             Padding="16,12"
+                             Background="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToColorConverter}, ConverterParameter=Delete}"
+                             TextColor="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToTextColorConverter}}"/>
+            <buttons:SfButton Grid.Column="2"
+                             Text="Cancel"
+                             Command="{Binding CancelCommand}"
+                             CornerRadius="20"
+                             FontSize="14"
+                             Padding="16,12"
+                             Background="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToColorConverter}, ConverterParameter=Cancel}"
+                             TextColor="{Binding IsEnabled, Source={RelativeSource Self}, Converter={StaticResource IsEnabledToTextColorConverter}}"/>
+        </Grid>
+    </Grid>
+</ContentPage>
