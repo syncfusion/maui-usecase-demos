@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="EmployeeDirectory.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:EmployeeDirectory"
+    xmlns:views="clr-namespace:EmployeeDirectory.Views"
+    Title="EmployeeDirectory"
+    BackgroundColor="{DynamicResource ThemeBackgroundColor}">
+
+    <Shell.ToolbarItems>
+        <ToolbarItem 
+            x:Name="ThemeToggleButton"
+            Text="🌙"
+            Clicked="OnThemeToggleClicked"
+            Priority="1" />
+    </Shell.ToolbarItems>
+
+    <ShellContent
+        Title="Employee Directory"
+        ContentTemplate="{DataTemplate views:EmployeeListPage}"
+        Route="EmployeeListPage" />
+
+</Shell>

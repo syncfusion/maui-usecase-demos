@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:local="clr-namespace:EmployeeDirectory.ViewModels"
+             x:Class="EmployeeDirectory.Views.EmployeeListPage"
+             Title="Employee Directory">
+
+    <ContentPage.BindingContext>
+        <local:EmployeeViewModel/>
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="auto,*,auto" RowSpacing="16" Padding="16" BackgroundColor="{DynamicResource ThemeBackgroundColor}">
+        <!-- Search Bar -->
+        <SearchBar x:Name="SearchBar"
+                   Grid.Row="0"
+                   Placeholder="Search by name, email, department..."
+                   TextChanged="OnSearchTextChanged"/>
+
+        <!-- Syncfusion SfDataGrid for Employee Display -->
+        <syncfusion:SfDataGrid x:Name="EmployeeDataGrid"
+                               Grid.Row="1"
+                               ItemsSource="{Binding FilteredEmployees}"
+                               SelectionMode="Single"
+                               SortingMode="Multiple"
+                               ColumnWidthMode="{OnPlatform Android=None, WinUI=Fill, MacCatalyst=Fill, iOS=None}"
+                               AllowFiltering="True"
+                               EmptyView="No employees found. Click 'Add Employee' to get started."
+                               GridLinesVisibility="Both"
+                               HeaderGridLinesVisibility="Both">
+            
+            <!--Defining columns-->
+            <syncfusion:SfDataGrid.Columns>
+                <syncfusion:DataGridTextColumn MappingName="FirstName" HeaderText="First Name"/>
+                <syncfusion:DataGridTextColumn MappingName="LastName" HeaderText="Last Name"/>
+                <syncfusion:DataGridTextColumn MappingName="JobType" HeaderText="Job role"/>
+                <syncfusion:DataGridTextColumn MappingName="Birthdate" HeaderText="Birth date"/>
+                <syncfusion:DataGridNumericColumn MappingName="Amount" HeaderText="Salary"/>
+                <syncfusion:DataGridTextColumn MappingName="Sex" HeaderText="Gender"/>
+                <syncfusion:DataGridTextColumn MappingName="City" HeaderText="City"/>
+                <syncfusion:DataGridTextColumn MappingName="Country" HeaderText="Country"/>
+            </syncfusion:SfDataGrid.Columns>
+            
+        </syncfusion:SfDataGrid>
+
+        <!-- Action Buttons Below DataGrid -->
+        <HorizontalStackLayout Spacing="8"
+                   Grid.Row="2" HorizontalOptions="Center">
+            <Button x:Name="AddButton"
+        Text="+ Add Employee"
+        Clicked="OnAddEmployeeClicked"
+        Padding="16,8"
+        FontSize="14"
+        CornerRadius="8"
+        BackgroundColor="{DynamicResource ThemePrimaryColor}"
+        TextColor="{DynamicResource ThemeOnPrimaryColor}"/>
+            <Button x:Name="EditButton"
+                    Text="Edit"
+                    WidthRequest="90"
+                    Clicked="OnEditSelectedClicked"
+                    FontSize="14"
+                    CornerRadius="6"
+                    BackgroundColor="{DynamicResource ThemePrimaryColor}"
+                    TextColor="{DynamicResource ThemeOnPrimaryColor}">
+                <Button.ImageSource>
+                    <FontImageSource
+                        Glyph="&#xE710;"
+                        FontFamily="MauiMaterialAssets"
+                        Size="14"
+                        Color="{DynamicResource ThemeOnPrimaryColor}" />
+                </Button.ImageSource>
+
+            </Button>
+            <Button x:Name="DeleteButton"
+                    Text="Delete"
+                    Clicked="OnDeleteSelectedClicked"
+                    FontSize="14"
+                    WidthRequest="100"
+                    CornerRadius="6"
+                    BackgroundColor="{DynamicResource ThemeErrorColor}"
+                    TextColor="{DynamicResource ThemeOnPrimaryColor}">
+                <Button.ImageSource>
+                    <FontImageSource
+                        Glyph="&#xE70F;"
+                        FontFamily="MauiMaterialAssets"
+                        Size="14"
+                        Color="{DynamicResource ThemeOnPrimaryColor}" />
+                </Button.ImageSource>
+            </Button>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

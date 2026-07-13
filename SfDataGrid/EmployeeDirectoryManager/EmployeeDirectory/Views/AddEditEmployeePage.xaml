@@ -1,0 +1,167 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EmployeeDirectory.Views.AddEditEmployeePage"
+             Title="Employee Form">
+
+    <Grid RowDefinitions="auto,*,auto" BackgroundColor="{DynamicResource ThemeBackgroundColor}">
+        <!-- Form Title -->
+        <Label x:Name="FormTitleLabel"
+               Grid.Row="0"
+               Text="Add New Employee"
+               FontSize="24"
+               FontAttributes="Bold"
+               Margin="16,16,16,8"
+               HorizontalOptions="Center"
+               TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+
+        <!-- Container for Responsive Width -->
+        <ScrollView Grid.Row="1" HorizontalOptions="Fill" MaximumWidthRequest="600" Padding="16,0,16,16">
+            <VerticalStackLayout Spacing="12" Padding="12"
+                                 HorizontalOptions="Fill"
+                                 BackgroundColor="{DynamicResource ThemeBackgroundColor}">
+                <!-- First Name Field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="First Name *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+                    <Entry x:Name="FirstNameEntry"
+                           Placeholder="Enter first name"
+                           Text="{Binding SelectedEmployee.FirstName}"
+                           BackgroundColor="{DynamicResource ThemeSurfaceColor}"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                           PlaceholderColor="{DynamicResource ThemeOnSurfaceVariantColor}"
+                           HorizontalOptions="Fill"
+                           />
+                </VerticalStackLayout>
+
+                <!-- Last Name Field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Last Name *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+                    <Entry x:Name="LastNameEntry"
+                            Placeholder="Enter last name"
+                            Text="{Binding SelectedEmployee.LastName}"
+                            BackgroundColor="{DynamicResource ThemeSurfaceColor}"
+                            TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                            PlaceholderColor="{DynamicResource ThemeOnSurfaceVariantColor}"
+                            HorizontalOptions="Fill"
+                            />
+                </VerticalStackLayout>
+
+                <!-- User Name Field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="User Name *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+                    <Entry x:Name="UserNameEntry"
+                               Placeholder="Enter user name"
+                               Text="{Binding SelectedEmployee.UserName}"
+                               BackgroundColor="{DynamicResource ThemeSurfaceColor}"
+                               TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                               PlaceholderColor="{DynamicResource ThemeOnSurfaceVariantColor}"
+                               HorizontalOptions="Fill"
+                               />
+                </VerticalStackLayout>
+
+                <!-- Job Type Field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Job Type *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+                    <Entry x:Name="JobTypeEntry"
+                               Placeholder="Enter job type"
+                               Text="{Binding SelectedEmployee.JobType}"
+                               BackgroundColor="{DynamicResource ThemeSurfaceColor}"
+                               TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                               PlaceholderColor="{DynamicResource ThemeOnSurfaceVariantColor}"
+                               HorizontalOptions="Fill"
+                               />
+                </VerticalStackLayout>
+
+                <!-- Email Field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Email *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+                    <Entry x:Name="EmailEntry"
+                               Placeholder="Enter email address"
+                               Text="{Binding SelectedEmployee.Email}"
+                               Keyboard="Email"
+                               BackgroundColor="{DynamicResource ThemeSurfaceColor}"
+                               TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                               PlaceholderColor="{DynamicResource ThemeOnSurfaceVariantColor}"
+                               HorizontalOptions="Fill"
+                               />
+                </VerticalStackLayout>
+
+                <!-- City Field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="City"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+                    <Entry x:Name="CityEntry"
+                               Placeholder="Enter city"
+                               Text="{Binding SelectedEmployee.City}"
+                               BackgroundColor="{DynamicResource ThemeSurfaceColor}"
+                               TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                               PlaceholderColor="{DynamicResource ThemeOnSurfaceVariantColor}"
+                               HorizontalOptions="Fill"
+                               />
+                </VerticalStackLayout>
+
+                <!-- Country Field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Country"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ThemeOnSurfaceColor}"/>
+                    <Entry x:Name="CountryEntry"
+                               Placeholder="Enter country"
+                               Text="{Binding SelectedEmployee.Country}"
+                               BackgroundColor="{DynamicResource ThemeSurfaceColor}"
+                               TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                               PlaceholderColor="{DynamicResource ThemeOnSurfaceVariantColor}"
+                               HorizontalOptions="Fill"
+                               />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Buttons (Always Visible at Bottom) -->
+        <VerticalStackLayout Grid.Row="2" 
+                            Spacing="12" 
+                            Padding="16" 
+                            BackgroundColor="{DynamicResource ThemeBackgroundColor}"
+                            HorizontalOptions="Fill"
+                            MaximumWidthRequest="600">
+            
+            <Button x:Name="SaveButton"
+                    Text="Save Employee"
+                    Clicked="OnSaveClicked"
+                    Padding="16,12"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    CornerRadius="8"
+                    BackgroundColor="{DynamicResource ThemePrimaryColor}"
+                    TextColor="{DynamicResource ThemeOnPrimaryColor}"
+                    HorizontalOptions="Fill"/>
+
+            <Button x:Name="CancelButton"
+                    Text="Cancel"
+                    Clicked="OnCancelClicked"
+                    Padding="16,12"
+                    FontSize="16"
+                    CornerRadius="8"
+                    BackgroundColor="{DynamicResource ThemeSurfaceVariantColor}"
+                    TextColor="{DynamicResource ThemeOnSurfaceColor}"
+                    HorizontalOptions="Fill"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
