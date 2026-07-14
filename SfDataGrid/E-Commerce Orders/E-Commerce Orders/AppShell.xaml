@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="E_Commerce_Orders.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:E_Commerce_Orders"
+    Title="E-Commerce Orders"
+    Shell.NavBarIsVisible="False">
+
+    <TabBar>
+        <ShellContent
+            Title="Orders"
+            Icon="list.png"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+
+        <ShellContent
+            Title="Analytics"
+            Icon="chart.png"
+            ContentTemplate="{DataTemplate local:AnalyticsPage}"
+            Route="AnalyticsPage" />
+    </TabBar>
+
+    <!-- Routes -->
+    <ShellContent Route="orderdetail" ContentTemplate="{DataTemplate local:OrderDetailPage}" />
+
+</Shell>

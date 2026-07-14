@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:pager="clr-namespace:Syncfusion.Maui.DataGrid.DataPager;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:local="clr-namespace:E_Commerce_Orders.Converters"
+             x:Class="E_Commerce_Orders.MainPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource OffWhite}, Dark={StaticResource DarkBackground}}">
+
+    <ContentPage.Resources>
+        <local:StatusColorConverter x:Key="statusColorConverter"/>
+        <local:StatusBackgroundConverter x:Key="statusBackgroundConverter"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,*" RowSpacing="0" Padding="0">
+            <!-- Modern Header Section -->
+            <Grid Grid.Row="0" Padding="0" Background="{StaticResource AppHeaderGradientBrush}">
+                <VerticalStackLayout Padding="20,24,20,20" Spacing="8">
+                    <Label Text="📊 Orders Dashboard" Style="{StaticResource PageTitle}" TextColor="{StaticResource WhiteBrush}" Margin="0,0,0,4" />
+                    <Label Text="Real-time order management &amp; analytics" FontSize="14" TextColor="{StaticResource WhiteBrush}" Opacity="0.85" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Main Content Grid -->
+            <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="*" RowSpacing="0" Padding="0">
+                <!-- Summary Stats - Modern Cards -->
+                <ScrollView Grid.Row="0" Orientation="Horizontal" Padding="16,16">
+                    <HorizontalStackLayout Spacing="12">
+                        <!-- Revenue Card -->
+                        <Border Style="{StaticResource ElevatedCardBorder}" MinimumWidthRequest="220">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="💰 Revenue" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource PrimaryBrush}" />
+                                <Label Text="{Binding TotalRevenue, StringFormat='${0:N0}'}" FontSize="28" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                <Label Text="{Binding Orders.Count, StringFormat='{0} orders'}" FontSize="11" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Items Card -->
+                        <Border Style="{StaticResource ElevatedCardBorder}" MinimumWidthRequest="200">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="📦 Items" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource SecondaryBrush}" />
+                                <Label Text="{Binding TotalItems}" FontSize="28" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                <Label Text="Total quantity" FontSize="11" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Orders Count Card -->
+                        <Border Style="{StaticResource ElevatedCardBorder}" MinimumWidthRequest="200">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="📋 Total Orders" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource TertiaryBrush}" />
+                                <Label Text="{Binding Orders.Count}" FontSize="28" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                <Label Text="Displayed" FontSize="11" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </HorizontalStackLayout>
+                </ScrollView>
+
+                <!-- Filter & Actions Section - Unified Layout -->
+                <VerticalStackLayout Grid.Row="1" Padding="16" Spacing="12">
+
+                    <Border Style="{StaticResource ElevatedCardBorder}">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12"/>
+                        </Border.StrokeShape>
+
+                        <StackLayout Spacing="12">
+                            <!-- Search Bar with Label -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Search &amp; Filter" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                                <SearchBar Placeholder="Search by order ID, customer..."  HorizontalTextAlignment="Start"
+                                           Background="Transparent"
+                                       Text="{Binding SearchText}"
+                                       PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                       CancelButtonColor="{StaticResource PrimaryBrush}"
+                                       HorizontalOptions="Fill"
+                                       VerticalOptions="Center" />
+                            </VerticalStackLayout>
+
+                            <!-- Status Filter -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="Status" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                                <Border Style="{StaticResource CardFrame}" Padding="0">
+
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10"/>
+                                    </Border.StrokeShape>
+
+                                    <Picker SelectedItem="{Binding SelectedStatus}" 
+        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+        TitleColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+        HorizontalOptions="Fill">
+                                        <Picker.Items>
+                                            <x:String>All</x:String>
+                                            <x:String>Pending</x:String>
+                                            <x:String>Shipped</x:String>
+                                            <x:String>Delivered</x:String>
+                                        </Picker.Items>
+                                    </Picker>
+                                </Border>
+                            </VerticalStackLayout>
+                        </StackLayout>
+
+                    </Border>
+
+                    <VerticalStackLayout Grid.Row="1">
+
+                        <Border Style="{StaticResource ElevatedCardBorder}">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+
+                            <!-- Status Filter and Actions in Single Row for All Platforms -->
+                            <Grid RowDefinitions="auto,*" RowSpacing="5">
+
+                                <Label Grid.Row="0" Text="Actions" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+
+                                <StackLayout Orientation="{OnPlatform Android=Vertical, iOS=Vertical, WinUI=Horizontal, MacCatalyst=Horizontal}"
+                                 Spacing="10"
+                                 Grid.Row="1" >
+
+                                    <Button Grid.Column="0" Text="📥 Export" Clicked="OnExportClicked" Style="{StaticResource AccentButton}" FontAttributes="Bold" HorizontalOptions="Fill" />
+                                    <Button Grid.Column="1" Text="🔽 Download" Clicked="OnDownloadClicked" Style="{StaticResource AccentButton}" FontAttributes="Bold" HorizontalOptions="Fill" />
+
+                                </StackLayout>
+
+                            </Grid>
+
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Data Grid Container -->
+                <VerticalStackLayout Grid.Row="2" Padding="20,16" Spacing="12">
+                    <Label Text="📋 Orders List" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                    <syncfusion:SfDataGrid x:Name="OrdersGrid"
+                                       ItemsSource="{Binding Source={x:Reference dataPager}, Path=PagedSource}"
+                                       ColumnWidthMode="Auto"
+                                           HeaderRowHeight="60"
+                                           RowHeight="63"
+                                       GridLinesVisibility="Both"
+                                       CellTappedCommand="{Binding SelectOrderCommand}"
+                                       HorizontalOptions="Fill"
+                                       HeightRequest="350"
+                                       AllowFiltering="False">
+
+                        <syncfusion:SfDataGrid.DefaultStyle>
+                            <syncfusion:DataGridStyle 
+                                                GridLineColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                                                HeaderGridLineColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                                                HeaderRowBackground="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray700}}"
+                                                HeaderRowTextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                                RowBackground="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkSurface}}"
+                                                RowTextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"/>
+                        </syncfusion:SfDataGrid.DefaultStyle>
+
+                        <syncfusion:SfDataGrid.Columns>
+                            <syncfusion:DataGridTextColumn MappingName="OrderId" HeaderText="Order ID" Width="70" />
+                            <syncfusion:DataGridTextColumn MappingName="CustomerName" HeaderText="Customer" Width="110" />
+                            <syncfusion:DataGridTextColumn MappingName="ProductSummary" HeaderText="Products" Width="300" />
+                            <syncfusion:DataGridNumericColumn MappingName="Quantity" HeaderText="Qty" Width="60" />
+                            <syncfusion:DataGridNumericColumn MappingName="TotalPrice" HeaderText="💰 Total" Format="C2" Width="90" />
+                            <syncfusion:DataGridTextColumn MappingName="OrderStatus" HeaderText="Status" Width="100">
+                                <syncfusion:DataGridTextColumn.CellStyle>
+                                    <Style TargetType="syncfusion:DataGridCell">
+                                        <Setter Property="Background" Value="{Binding OrderStatus, Converter={StaticResource statusBackgroundConverter}}" />
+                                        <Setter Property="TextColor" Value="{Binding OrderStatus, Converter={StaticResource statusColorConverter}}" />
+                                        <Setter Property="FontAttributes" Value="Bold" />
+                                    </Style>
+                                </syncfusion:DataGridTextColumn.CellStyle>
+                            </syncfusion:DataGridTextColumn>
+                        </syncfusion:SfDataGrid.Columns>
+                    </syncfusion:SfDataGrid>
+                </VerticalStackLayout>
+
+                <!-- DataPager Control - Modern Styling -->
+                <Border Grid.Row="3" Style="{StaticResource CardFrame}" Padding="12" Margin="20,12,20,20">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <pager:SfDataPager x:Name="dataPager"
+                                   PageSize="8"
+                                   NumericButtonCount="5"
+                                   DisplayMode="FirstLastNumeric"
+                                   Source="{Binding Orders}">
+
+                        <pager:SfDataPager.DefaultStyle>
+                            <pager:DataPagerStyle NumericButtonTextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" NavigationButtonIconColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"/>
+                        </pager:SfDataPager.DefaultStyle>
+                        
+                    </pager:SfDataPager>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollView>
+</ContentPage>
