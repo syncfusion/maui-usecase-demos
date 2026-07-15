@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HospitalManagement.View.AddPatientPage"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             Title="Add New Patient"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Background}, Dark={StaticResource Color.Dark.Background}}">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="0" RowSpacing="0"
+          BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Background}, Dark={StaticResource Color.Dark.Background}}">
+        <!-- Header -->
+        <StackLayout Grid.Row="0" Padding="16" Spacing="8"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource Color.SurfaceVariant}, Dark={StaticResource md_sys_color_surface_variant}}">
+            <Label Text="Add New Patient" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+            <Label Text="Fill in the patient information below" 
+                   FontSize="14" 
+                   TextColor="{AppThemeBinding Light={StaticResource Color.Light.SecondaryText}, Dark={StaticResource Color.Dark.SecondaryText}}"/>
+        </StackLayout>
+
+        <!-- Form Content -->
+        <ScrollView Grid.Row="1">
+            <StackLayout Padding="16" Spacing="16"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Background}, Dark={StaticResource Color.Dark.Background}}">
+                
+                <!-- Basic Information Section -->
+                <StackLayout Spacing="12">
+                    <Label Text="Basic Information" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                    
+                    <!-- Full Name -->
+                    <StackLayout Spacing="6">
+                        <Label Text="Full Name" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                               BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                               CornerRadius="8" Padding="12" HasShadow="False">
+                            <Entry x:Name="NameEntry"
+                                   Placeholder="Enter patient name"
+                                   PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                   BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Age and Blood Type Row -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <StackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="Age" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                                   BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                                   CornerRadius="8" Padding="12" HasShadow="False">
+                                <Entry x:Name="AgeEntry"
+                                       Placeholder="Age"
+                                       PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                       Keyboard="Numeric"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Blood Type" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                                   BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                                   CornerRadius="8" Padding="12" HasShadow="False">
+                                <Entry x:Name="BloodTypeEntry"
+                                       Placeholder="e.g., O+, A-, B+"
+                                       PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                            </Frame>
+                        </StackLayout>
+                    </Grid>
+
+                    <!-- Phone and Email Row -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <StackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="Phone Number" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                                   BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                                   CornerRadius="8" Padding="12" HasShadow="False">
+                                <Entry x:Name="PhoneEntry"
+                                       Placeholder="Enter phone"
+                                       PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                       Keyboard="Telephone"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Email" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                                   BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                                   CornerRadius="8" Padding="12" HasShadow="False">
+                                <Entry x:Name="EmailEntry"
+                                       Placeholder="Enter email"
+                                       PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                       Keyboard="Email"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                            </Frame>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+
+                <!-- Medical Information Section -->
+                <StackLayout Spacing="12">
+                    <Label Text="Medical Information" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                    
+                    <!-- Diagnosis -->
+                    <StackLayout Spacing="6">
+                        <Label Text="Diagnosis" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                               BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                               CornerRadius="8" Padding="12" HasShadow="False">
+                            <Entry x:Name="DiagnosisEntry"
+                                   Placeholder="Enter diagnosis"
+                                   PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                              BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                        </Frame>
+                    </StackLayout>
+
+                    <!-- Department and Doctor Row -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <StackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="Department" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                                   BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                                   CornerRadius="8" Padding="12" HasShadow="False">
+                                <Entry x:Name="DepartmentEntry"
+                                       Placeholder="e.g., Cardiology"
+                                       PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                            </Frame>
+                        </StackLayout>
+
+                        <StackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Doctor Assigned" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                                   BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                                   CornerRadius="8" Padding="12" HasShadow="False">
+                                <Entry x:Name="DoctorEntry"
+                                       Placeholder="Enter doctor name"
+                                       PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource md_sys_color_surface}}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                            </Frame>
+                        </StackLayout>
+                    </Grid>
+
+                    <!-- Status -->
+                    <StackLayout Spacing="6">
+                        <Label Text="Status" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                               BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                               CornerRadius="8" Padding="12" HasShadow="False">
+                            <Picker x:Name="StatusPicker"
+                                    Title="Select Status"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"
+                                    TitleColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}">
+                                <Picker.Items>
+                                    <x:String>Admitted</x:String>
+                                    <x:String>Discharged</x:String>
+                                    <x:String>Under Treatment</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </Frame>
+                    </StackLayout>
+                </StackLayout>
+
+                <!-- Medical Notes Section -->
+                <StackLayout Spacing="6">
+                    <Label Text="Medical Notes" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                           BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}"
+                           CornerRadius="8" Padding="12" HasShadow="False">
+                        <Editor x:Name="NotesEditor"
+                                Placeholder="Enter any additional medical notes..."
+                                PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"
+                                HeightRequest="100"
+                                BackgroundColor="Transparent"
+                                TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"/>
+                    </Frame>
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Action Buttons -->
+        <Frame Grid.Row="2"
+               BorderColor="{AppThemeBinding Light={StaticResource Color.Light.Divider}, Dark={StaticResource Color.Dark.Divider}}"
+               CornerRadius="0" Padding="16" HasShadow="False"
+               BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Surface}, Dark={StaticResource Color.Dark.Surface}}">
+            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="12" HorizontalOptions="CenterAndExpand">
+                <button:SfButton Grid.Column="0"
+                               Text="Save Patient"
+                               Clicked="OnSaveClicked"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"
+                               TextColor="{AppThemeBinding Light={StaticResource Color.Light.OnPrimary}, Dark={StaticResource Color.Dark.OnPrimary}}"
+                               StrokeThickness="0"
+                               CornerRadius="14"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Padding="14,12"
+                               HeightRequest="54"
+                                 WidthRequest="{OnPlatform Android=125, WinUI=300, iOS=125,MacCatalyst=300}"
+                               HorizontalOptions="CenterAndExpand"/>
+
+                <button:SfButton Grid.Column="1"
+                               Text="Cancel"
+                               Clicked="OnCancelClicked"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                               TextColor="{AppThemeBinding Light={StaticResource Color.Light.ButtonText}, Dark={StaticResource Color.Dark.OnPrimary}}"
+                               Stroke="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"
+                               StrokeThickness="1"
+                               CornerRadius="14"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Padding="14,12"
+                               HeightRequest="54"
+                             WidthRequest="{OnPlatform Android=125, WinUI=300, iOS=125,MacCatalyst=300}"
+                               HorizontalOptions="CenterAndExpand"/>
+            </Grid>
+        </Frame>
+    </Grid>
+</ContentPage>

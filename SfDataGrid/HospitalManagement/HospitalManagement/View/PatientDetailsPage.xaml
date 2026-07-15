@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HospitalManagement.View.PatientDetailsPage"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             Title="Patient Details"
+             BackgroundColor="{StaticResource Background}">
+
+    <ScrollView>
+        <StackLayout Padding="16" Spacing="16" BackgroundColor="{StaticResource Background}">
+            <!-- Patient Information Header -->
+            <Frame BorderColor="{StaticResource OutlineVariant}" 
+                   CornerRadius="10" 
+                   HasShadow="True"
+                   Padding="16"
+                   BackgroundColor="{StaticResource Surface}">
+                <StackLayout Spacing="12">
+                    <Label Text="{Binding CurrentPatient.Name}" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource OnBackground}"/>
+                    <Label Text="{Binding CurrentPatient.PatientId, StringFormat='Patient ID: {0}'}" 
+                           FontSize="14" 
+                           TextColor="{StaticResource OnSurfaceVariant}"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Basic Information -->
+            <Frame BorderColor="{StaticResource OutlineVariant}" 
+                   CornerRadius="10" 
+                   HasShadow="True"
+                   Padding="16"
+                   BackgroundColor="{StaticResource Surface}">
+                <StackLayout Spacing="12">
+                    <Label Text="Basic Information" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource OnBackground}"/>
+                    
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+                        <StackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
+                            <Label Text="Age" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                            <Entry Text="{Binding CurrentPatient.Age}" 
+                                   IsEnabled="{Binding IsEditMode}"
+                                   Placeholder="Age"
+                                   BackgroundColor="{StaticResource SurfaceVariant}"
+                                   TextColor="{StaticResource OnBackground}"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                            <Label Text="Blood Type" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                            <Entry Text="{Binding CurrentPatient.BloodType}" 
+                                   IsEnabled="{Binding IsEditMode}"
+                                   Placeholder="Blood Type"
+                                   BackgroundColor="{StaticResource SurfaceVariant}"
+                                   TextColor="{StaticResource OnBackground}"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
+                            <Label Text="Phone Number" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                            <Entry Text="{Binding CurrentPatient.PhoneNumber}" 
+                                   IsEnabled="{Binding IsEditMode}"
+                                   Placeholder="Phone Number"
+                                   BackgroundColor="{StaticResource SurfaceVariant}"
+                                   TextColor="{StaticResource OnBackground}"/>
+                        </StackLayout>
+
+                        <StackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                            <Label Text="Email" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                            <Entry Text="{Binding CurrentPatient.EmailAddress}" 
+                                   IsEnabled="{Binding IsEditMode}"
+                                   Placeholder="Email"
+                                   BackgroundColor="{StaticResource SurfaceVariant}"
+                                   TextColor="{StaticResource OnBackground}"/>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- Medical Information -->
+            <Frame BorderColor="{StaticResource OutlineVariant}" 
+                   CornerRadius="10" 
+                   HasShadow="True"
+                   Padding="16"
+                   BackgroundColor="{StaticResource Surface}">
+                <StackLayout Spacing="12">
+                    <Label Text="Medical Information" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource OnBackground}"/>
+                    
+                    <StackLayout Spacing="4">
+                        <Label Text="Diagnosis" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                        <Entry Text="{Binding CurrentPatient.Diagnosis}" 
+                               IsEnabled="{Binding IsEditMode}"
+                               Placeholder="Diagnosis"
+                               BackgroundColor="{StaticResource SurfaceVariant}"
+                               TextColor="{StaticResource OnBackground}"/>
+                    </StackLayout>
+
+                    <StackLayout Spacing="4">
+                        <Label Text="Department" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                        <Entry Text="{Binding CurrentPatient.Department}" 
+                               IsEnabled="{Binding IsEditMode}"
+                               Placeholder="Department"
+                               BackgroundColor="{StaticResource SurfaceVariant}"
+                               TextColor="{StaticResource OnBackground}"/>
+                    </StackLayout>
+
+                    <StackLayout Spacing="4">
+                        <Label Text="Doctor Assigned" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                        <Entry Text="{Binding CurrentPatient.DoctorAssigned}" 
+                               IsEnabled="{Binding IsEditMode}"
+                               Placeholder="Doctor Assigned"
+                               BackgroundColor="{StaticResource SurfaceVariant}"
+                               TextColor="{StaticResource OnBackground}"/>
+                    </StackLayout>
+
+                    <StackLayout Spacing="4">
+                        <Label Text="Status" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                        <Entry Text="{Binding CurrentPatient.Status}" 
+                               IsEnabled="{Binding IsEditMode}"
+                               Placeholder="Status"
+                               BackgroundColor="{StaticResource SurfaceVariant}"
+                               TextColor="{StaticResource OnBackground}"/>
+                    </StackLayout>
+
+                    <StackLayout Spacing="4">
+                        <Label Text="Admission Date" FontSize="12" TextColor="{StaticResource OnSurfaceVariant}" FontAttributes="Bold"/>
+                        <Entry Text="{Binding CurrentPatient.AdmissionDate, StringFormat='{0:MM/dd/yyyy}'}" 
+                               IsEnabled="False"
+                               BackgroundColor="{StaticResource SurfaceVariant}"
+                               TextColor="{StaticResource OnBackground}"/>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- Notes -->
+            <Frame BorderColor="{StaticResource OutlineVariant}" 
+                   CornerRadius="10" 
+                   HasShadow="True"
+                   Padding="16"
+                   BackgroundColor="{StaticResource Surface}">
+                <StackLayout Spacing="8">
+                    <Label Text="Medical Notes" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource OnBackground}"/>
+                    <Editor Text="{Binding CurrentPatient.Notes}" 
+                            IsEnabled="{Binding IsEditMode}"
+                            Placeholder="Medical Notes"
+                            HeightRequest="100"
+                            BackgroundColor="{StaticResource SurfaceVariant}"
+                            TextColor="{StaticResource OnBackground}"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                <button:SfButton Grid.Column="0"
+                               Text="Edit"
+                               Clicked="OnEditClicked"
+                               BackgroundColor="{StaticResource Tertiary}"
+                               TextColor="{StaticResource OnTertiary}"
+                               CornerRadius="5"
+                               Padding="10"/>
+
+                <button:SfButton Grid.Column="1"
+                               Text="Save"
+                               Clicked="OnSaveClicked"
+                               BackgroundColor="{StaticResource Success}"
+                               TextColor="{StaticResource OnPrimary}"
+                               CornerRadius="5"
+                               Padding="10"
+                               IsVisible="{Binding IsEditMode}"/>
+
+                <button:SfButton Grid.Column="2"
+                               Text="Cancel"
+                               Clicked="OnCancelClicked"
+                               BackgroundColor="{StaticResource Error}"
+                               TextColor="{StaticResource OnError}"
+                               CornerRadius="5"
+                               Padding="10"
+                               IsVisible="{Binding IsEditMode}"/>
+            </Grid>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

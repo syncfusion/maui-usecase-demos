@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="HospitalManagement.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:HospitalManagement"
+    xmlns:view="clr-namespace:HospitalManagement.View"
+    Title="Hospital Management"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark=#121212}"
+    ForegroundColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark=#E6E1E5}"
+    TabBarBackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark=#1C1B1F}"
+    TabBarForegroundColor="{AppThemeBinding Light={StaticResource OnBackground}, Dark=#E6E1E5}"
+    FlyoutBackgroundColor="{AppThemeBinding Light={StaticResource SurfaceVariant}, Dark=#1E1B20}"
+    NavBarHasShadow="True">
+
+    <!-- No navigation structure in XAML. Navigation is handled in code-behind for platform-specific UI. -->
+
+</Shell>

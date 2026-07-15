@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HospitalManagement.View.DataGridPage"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:local="clr-namespace:HospitalManagement"
+             Title="Patient Records"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Background}, Dark={StaticResource Color.Dark.Background}}">
+
+    <Grid RowDefinitions="Auto,*" Padding="0" RowSpacing="0">
+        <!-- Header Section -->
+        <StackLayout Grid.Row="0" Padding="16" BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}" Spacing="12">
+            <Label Text="Hospital Patient Records Management" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+            
+            <!-- Search Bar -->
+            <SearchBar x:Name="SearchBar"
+                      Placeholder="Search by Name, ID, or Diagnosis..."
+                      TextChanged="OnSearchTextChanged"
+                      HorizontalOptions="FillAndExpand"
+                      VerticalOptions="Center"
+                      BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.InputBackground}, Dark={StaticResource Color.Dark.InputBackground}}"
+                      TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}"
+                      PlaceholderColor="{AppThemeBinding Light={StaticResource Color.Light.InputPlaceholder}, Dark={StaticResource Color.Dark.InputPlaceholder}}"/>
+
+            <!-- Filter and Action Buttons -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8" RowDefinitions="Auto">
+                <Picker x:Name="FilterPicker"
+                       Grid.Column="0"
+                       Title="Filter by Status"
+                       SelectedIndexChanged="OnFilterChanged"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.InputBackground}, Dark={StaticResource Color.Dark.InputBackground}}"
+                       TextColor="{AppThemeBinding Light={StaticResource Color.Light.InputText}, Dark={StaticResource Color.Dark.InputText}}">
+                    <Picker.Items>
+                        <x:String>All</x:String>
+                        <x:String>Admitted</x:String>
+                        <x:String>Discharged</x:String>
+                        <x:String>Under Treatment</x:String>
+                    </Picker.Items>
+                </Picker>
+
+                <button:SfButton Grid.Column="1"
+                               Text="Add Patient"
+                               Clicked="OnAddPatientClicked"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"
+                               TextColor="{AppThemeBinding Light={StaticResource Color.Light.OnPrimary}, Dark={StaticResource Color.Dark.OnPrimary}}"
+                               CornerRadius="5"
+                               Padding="10"/>
+
+                <button:SfButton Grid.Column="2"
+                               Text="Refresh"
+                               Clicked="OnRefreshClicked"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Secondary}, Dark={StaticResource Color.Dark.Secondary}}"
+                               TextColor="{AppThemeBinding Light={StaticResource Color.Light.OnSecondary}, Dark={StaticResource Color.Dark.OnSecondary}}"
+                               CornerRadius="5"
+                               Padding="10"/>
+            </Grid>
+        </StackLayout>
+
+        <!-- DataGrid Section -->
+        <syncfusion:SfDataGrid Grid.Row="1"
+                              x:Name="PatientDataGrid"
+                               GridLinesVisibility="Both"
+                               HeaderGridLinesVisibility="Both"
+                              ItemsSource="{Binding Patients}"
+                              SelectionMode="Single"
+                              VerticalOptions="FillAndExpand"
+                              ColumnWidthMode="Auto"
+                              HeaderRowHeight="50"
+                              RowHeight="60"
+                              SelectionChanged="OnDataGridSelectionChanged">
+            <syncfusion:SfDataGrid.DefaultStyle>
+                <syncfusion:DataGridStyle
+                            RowTextColor="{AppThemeBinding Light={StaticResource Color.OnBackground}, Dark={StaticResource White}}"
+                            HeaderRowTextColor="{AppThemeBinding Light={StaticResource Color.OnBackground}, Dark={StaticResource White}}"
+                            HeaderRowBackground="{AppThemeBinding Light={StaticResource Color.SurfaceVariant}, Dark=#5B566B}"
+                            RowBackground="{AppThemeBinding Light={StaticResource Color.Surface}, Dark={StaticResource md_sys_color_surface}}"
+                            GridLineColor="{AppThemeBinding Light={StaticResource Color.Outline}, Dark={StaticResource Gray600}}" />
+            </syncfusion:SfDataGrid.DefaultStyle>
+            <!-- Column Definitions -->
+            <syncfusion:SfDataGrid.Columns>
+                <syncfusion:DataGridNumericColumn MappingName="PatientId" 
+                                                  HeaderText="Patient ID"
+                                                  Width="100"/>
+                <syncfusion:DataGridTextColumn MappingName="Name" 
+                                              HeaderText="Name"
+                                              Width="140"/>
+                <syncfusion:DataGridNumericColumn MappingName="Age" 
+                                                  HeaderText="Age"
+                                                  Width="80"/>
+                <syncfusion:DataGridTextColumn MappingName="Diagnosis" 
+                                              HeaderText="Diagnosis"
+                                              Width="150"/>
+                <syncfusion:DataGridTextColumn MappingName="DoctorAssigned" 
+                                              HeaderText="Doctor Assigned"
+                                              Width="160"/>
+                <syncfusion:DataGridDateColumn MappingName="AdmissionDate" 
+                                              HeaderText="Admission Date"
+                                              Format="MM/dd/yyyy"
+                                              Width="140"/>
+                <syncfusion:DataGridTextColumn MappingName="Status" 
+                                              HeaderText="Status"
+                                              Width="120"/>
+                <syncfusion:DataGridTextColumn MappingName="Department" 
+                                              HeaderText="Department"
+                                              Width="140"/>
+            </syncfusion:SfDataGrid.Columns>
+
+        </syncfusion:SfDataGrid>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Dark Theme Color Palette (Material 3) -->
+
+    <!-- Primary Colors -->
+    <Color x:Key="Color.Dark.Primary">#D0BCFF</Color>
+    <Color x:Key="Color.Dark.OnPrimary">#381E72</Color>
+    <Color x:Key="Color.Dark.PrimaryContainer">#4F378B</Color>
+    <Color x:Key="Color.Dark.OnPrimaryContainer">#EADDFF</Color>
+
+    <!-- Secondary Colors -->
+    <Color x:Key="Color.Dark.Secondary">#CBC2DB</Color>
+    <Color x:Key="Color.Dark.OnSecondary">#332D41</Color>
+    <Color x:Key="Color.Dark.SecondaryContainer">#4A4458</Color>
+    <Color x:Key="Color.Dark.OnSecondaryContainer">#E8DEF8</Color>
+
+    <!-- Tertiary Colors -->
+    <Color x:Key="Color.Dark.Tertiary">#F4AEFF</Color>
+    <Color x:Key="Color.Dark.OnTertiary">#492532</Color>
+    <Color x:Key="Color.Dark.TertiaryContainer">#633B48</Color>
+    <Color x:Key="Color.Dark.OnTertiaryContainer">#FFD8E4</Color>
+
+    <!-- Error Colors -->
+    <Color x:Key="Color.Dark.Error">#F2B8B5</Color>
+    <Color x:Key="Color.Dark.OnError">#601410</Color>
+    <Color x:Key="Color.Dark.ErrorContainer">#8C1D18</Color>
+    <Color x:Key="Color.Dark.OnErrorContainer">#F9DEDC</Color>
+
+    <!-- Background and Surface Colors -->
+    <Color x:Key="Color.Dark.Background">#121212</Color>
+    <Color x:Key="Color.Dark.OnBackground">#E6E1E5</Color>
+    <Color x:Key="Color.Dark.Surface">#1C1B1F</Color>
+    <Color x:Key="Color.Dark.OnSurface">#E6E1E5</Color>
+    <Color x:Key="Color.Dark.SurfaceDim">#121212</Color>
+    <Color x:Key="Color.Dark.SurfaceBright">#353033</Color>
+    <Color x:Key="Color.Dark.SurfaceVariant">#49454E</Color>
+    <Color x:Key="Color.Dark.OnSurfaceVariant">#CAC4D0</Color>
+    <Color x:Key="White">#FFFFFF</Color>
+    <!-- Outline Colors -->
+    <Color x:Key="Color.Dark.Outline">#938F99</Color>
+    <Color x:Key="Color.Dark.OutlineVariant">#49454E</Color>
+    <Color x:Key="md_sys_color_surface">#1E1E1E</Color>
+    <!-- Text Colors -->
+    <Color x:Key="Color.Dark.PrimaryText">#E6E1E5</Color>
+    <Color x:Key="Color.Dark.SecondaryText">#CAC4D0</Color>
+    <Color x:Key="Color.Dark.TertiaryText">#CBC2DB</Color>
+    <Color x:Key="Color.Dark.DisabledText">#938F99</Color>
+    <Color x:Key="Color.Dark.HintText">#938F99</Color>
+
+    <!-- Button Colors -->
+    <Color x:Key="Color.Dark.ButtonBackground">#D0BCFF</Color>
+    <Color x:Key="Color.Dark.ButtonText">#E6E1E5</Color>
+    <Color x:Key="Color.Dark.ButtonBorder">#49454E</Color>
+    <Color x:Key="Color.Dark.DisabledButtonBackground">#424242</Color>
+    <Color x:Key="Color.Dark.DisabledButtonText">#616161</Color>
+
+    <!-- Input and TextField Colors -->
+    <Color x:Key="Color.Dark.InputBackground">#2A2A2A</Color>
+    <Color x:Key="Color.Dark.InputBorder">#49454E</Color>
+    <Color x:Key="Color.Dark.InputText">#E6E1E5</Color>
+    <Color x:Key="Color.Dark.InputPlaceholder">#938F99</Color>
+    <Color x:Key="Color.Dark.InputCursor">#D0BCFF</Color>
+    <Color x:Key="Color.Dark.InputFocusBorder">#D0BCFF</Color>
+
+    <!-- Header and Title Colors -->
+    <Color x:Key="Color.Dark.HeaderBackground">#4F378B</Color>
+    <Color x:Key="Color.Dark.HeaderText">#EADDFF</Color>
+    <Color x:Key="Color.Dark.SubHeaderText">#CAC4D0</Color>
+    <Color x:Key="Color.Dark.TitleText">#E6E1E5</Color>
+
+    <!-- Card and Panel Colors -->
+    <Color x:Key="Color.Dark.CardBackground">#1C1B1F</Color>
+    <Color x:Key="Color.Dark.CardBorder">#49454E</Color>
+    <Color x:Key="Color.Dark.CardShadow">#00000048</Color>
+    <Color x:Key="Color.Dark.PanelBackground">#2A2A2A</Color>
+    <Color x:Key="Color.Dark.PanelBorder">#3A3A3A</Color>
+
+    <!-- Semantic Colors -->
+    <Color x:Key="Color.Dark.Success">#4CAF50</Color>
+    <Color x:Key="Color.Dark.SuccessText">#FFFFFF</Color>
+    <Color x:Key="Color.Dark.Warning">#FF9800</Color>
+    <Color x:Key="Color.Dark.WarningText">#FFFFFF</Color>
+    <Color x:Key="Color.Dark.ErrorText">#601410</Color>
+    <Color x:Key="Color.Dark.Info">#64B5F6</Color>
+    <Color x:Key="Color.Dark.InfoText">#FFFFFF</Color>
+
+    <!-- Hospital-specific Status Colors -->
+    <Color x:Key="Color.Dark.Admitted">#EF9A9A</Color>
+    <Color x:Key="Color.Dark.AdmittedText">#C62828</Color>
+    <Color x:Key="Color.Dark.Discharged">#81C784</Color>
+    <Color x:Key="Color.Dark.DischargedText">#1B5E20</Color>
+    <Color x:Key="Color.Dark.UnderTreatment">#FFB74D</Color>
+    <Color x:Key="Color.Dark.UnderTreatmentText">#E65100</Color>
+    <Color x:Key="Color.Dark.Critical">#EF5350</Color>
+    <Color x:Key="Color.Dark.CriticalText">#FFFFFF</Color>
+
+    <!-- List and Table Colors -->
+    <Color x:Key="Color.Dark.ListItemBackground">#1C1B1F</Color>
+    <Color x:Key="Color.Dark.ListItemBorder">#3A3A3A</Color>
+    <Color x:Key="Color.Dark.ListItemHover">#2A2A2A</Color>
+    <Color x:Key="Color.Dark.ListItemSelected">#4F378B</Color>
+    <Color x:Key="Color.Dark.AlternateRowBackground">#252525</Color>
+    <Color x:Key="Color.Dark.TableHeader">#2A2A2A</Color>
+    <Color x:Key="Color.Dark.TableBorder">#3A3A3A</Color>
+
+    <!-- Navigation Colors -->
+    <Color x:Key="Color.Dark.NavBackground">#4F378B</Color>
+    <Color x:Key="Color.Dark.NavText">#E6E1E5</Color>
+    <Color x:Key="Color.Dark.NavItemSelected">#D0BCFF</Color>
+    <Color x:Key="Color.Dark.NavItemSelectedText">#FFFFFF</Color>
+    <Color x:Key="Color.Dark.NavItemHover">#623BAB</Color>
+
+    <!-- Divider and Separator Colors -->
+    <Color x:Key="Color.Dark.Divider">#3A3A3A</Color>
+    <Color x:Key="Color.Dark.DividerLight">#2A2A2A</Color>
+
+    <!-- Modal and Overlay Colors -->
+    <Color x:Key="Color.Dark.ModalBackground">#1C1B1F</Color>
+    <Color x:Key="Color.Dark.ModalBorder">#49454E</Color>
+    <Color x:Key="Color.Dark.OverlayBackground">#99000000</Color>
+
+    <!-- Neutral Colors -->
+    <Color x:Key="Color.Dark.White">#FFFFFF</Color>
+    <Color x:Key="Color.Dark.Black">#000000</Color>
+    <Color x:Key="Color.Dark.Gray50">#FAFAFA</Color>
+    <Color x:Key="Color.Dark.Gray100">#F5F5F5</Color>
+    <Color x:Key="Color.Dark.Gray200">#EEEEEE</Color>
+    <Color x:Key="Color.Dark.Gray300">#E0E0E0</Color>
+    <Color x:Key="Color.Dark.Gray400">#BDBDBD</Color>
+    <Color x:Key="Color.Dark.Gray500">#9E9E9E</Color>
+    <Color x:Key="Color.Dark.Gray600">#757575</Color>
+    <Color x:Key="Color.Dark.Gray700">#616161</Color>
+    <Color x:Key="Color.Dark.Gray800">#424242</Color>
+    <Color x:Key="Color.Dark.Gray900">#212121</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="Brush.Dark.Primary" Color="{StaticResource Color.Dark.Primary}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Secondary" Color="{StaticResource Color.Dark.Secondary}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Success" Color="{StaticResource Color.Dark.Success}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Warning" Color="{StaticResource Color.Dark.Warning}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Error" Color="{StaticResource Color.Dark.Error}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Info" Color="{StaticResource Color.Dark.Info}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Background" Color="{StaticResource Color.Dark.Background}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Surface" Color="{StaticResource Color.Dark.Surface}"/>
+
+</ResourceDictionary>

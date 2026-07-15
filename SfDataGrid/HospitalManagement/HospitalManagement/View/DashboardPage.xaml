@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HospitalManagement.View.DashboardPage"
+             Title="Dashboard"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Background}, Dark={StaticResource Color.Dark.Background}}">
+
+    <Grid>
+        <ScrollView>
+            <StackLayout Padding="16" Spacing="16">
+                <!-- Overview Title -->
+                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Overview of Hospital Operations" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                        
+                        <Label Text="Overview of Hospital Operations" 
+                               FontSize="14" 
+                               TextColor="{AppThemeBinding Light={StaticResource Color.Light.SecondaryText}, Dark={StaticResource Color.Dark.SecondaryText}}"/>
+                    </VerticalStackLayout>
+
+                    <Label Grid.Column="1"
+                           Text="&#xE716;"
+                           FontFamily="MaterialAssets"
+                           FontSize="30"
+                           TextColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"
+                           VerticalOptions="Start"
+                           HorizontalOptions="End"
+                           Padding="8,4"
+                           Margin="0,2,0,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSettingsTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+
+                <!-- Statistics Grid -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+                <!-- Total Patients Card -->
+                    <Frame Grid.Row="0" Grid.Column="0" 
+                           BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}" 
+                           CornerRadius="10" 
+                           HasShadow="True"
+                           Padding="16"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}">
+                        <StackLayout Spacing="12" HorizontalOptions="Center">
+                            <Label Text="Total Patients" 
+                                   FontSize="14" 
+                                   TextColor="{AppThemeBinding Light={StaticResource Color.Light.SecondaryText}, Dark={StaticResource Color.Dark.SecondaryText}}"
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding TotalPatients}" 
+                                   FontSize="48" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{AppThemeBinding Light={StaticResource Color.Light.Info}, Dark={StaticResource Color.Dark.Info}}"
+                                   HorizontalTextAlignment="Center"/>
+                            <BoxView Color="{AppThemeBinding Light={StaticResource Color.Light.Info}, Dark={StaticResource Color.Dark.Info}}" CornerRadius="3" HeightRequest="3" WidthRequest="40" HorizontalOptions="Center"/>
+                        </StackLayout>
+                    </Frame>
+
+                      <!-- Admitted Patients Card -->
+                      <Frame Grid.Row="0" Grid.Column="1" 
+                          BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}" 
+                          CornerRadius="10" 
+                          HasShadow="True"
+                          Padding="16"
+                          BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}">
+                       <StackLayout Spacing="12" HorizontalOptions="Center">
+                        <Label Text="Admitted" 
+                            FontSize="14" 
+                            TextColor="{AppThemeBinding Light={StaticResource Color.Light.SecondaryText}, Dark={StaticResource Color.Dark.SecondaryText}}"
+                            HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding AdmittedPatients}" 
+                            FontSize="48" 
+                            FontAttributes="Bold" 
+                            TextColor="{AppThemeBinding Light={StaticResource Color.Light.Admitted}, Dark={StaticResource Color.Dark.Admitted}}"
+                            HorizontalTextAlignment="Center"/>
+                        <BoxView Color="{AppThemeBinding Light={StaticResource Color.Light.Admitted}, Dark={StaticResource Color.Dark.Admitted}}" CornerRadius="3" HeightRequest="3" WidthRequest="40" HorizontalOptions="Center"/>
+                       </StackLayout>
+                      </Frame>
+
+                      <!-- Under Treatment Card -->
+                      <Frame Grid.Row="1" Grid.Column="0" 
+                          BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}" 
+                          CornerRadius="10" 
+                          HasShadow="True"
+                          Padding="16"
+                          BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}">
+                       <StackLayout Spacing="12" HorizontalOptions="Center">
+                        <Label Text="Under Treatment" 
+                            FontSize="14" 
+                            TextColor="{AppThemeBinding Light={StaticResource Color.Light.SecondaryText}, Dark={StaticResource Color.Dark.SecondaryText}}"
+                            HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding UnderTreatmentPatients}" 
+                            FontSize="48" 
+                            FontAttributes="Bold" 
+                            TextColor="{AppThemeBinding Light={StaticResource Color.Light.UnderTreatment}, Dark={StaticResource Color.Dark.UnderTreatment}}"
+                            HorizontalTextAlignment="Center"/>
+                        <BoxView Color="{AppThemeBinding Light={StaticResource Color.Light.UnderTreatment}, Dark={StaticResource Color.Dark.UnderTreatment}}" CornerRadius="3" HeightRequest="3" WidthRequest="40" HorizontalOptions="Center"/>
+                       </StackLayout>
+                      </Frame>
+
+                      <!-- Discharged Patients Card -->
+                      <Frame Grid.Row="1" Grid.Column="1" 
+                          BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}" 
+                          CornerRadius="10" 
+                          HasShadow="True"
+                          Padding="16"
+                          BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}">
+                       <StackLayout Spacing="12" HorizontalOptions="Center">
+                        <Label Text="Discharged" 
+                            FontSize="14" 
+                            TextColor="{AppThemeBinding Light={StaticResource Color.Light.SecondaryText}, Dark={StaticResource Color.Dark.SecondaryText}}"
+                            HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding DischargedPatients}" 
+                            FontSize="48" 
+                            FontAttributes="Bold" 
+                            TextColor="{AppThemeBinding Light={StaticResource Color.Light.Discharged}, Dark={StaticResource Color.Dark.Discharged}}"
+                            HorizontalTextAlignment="Center"/>
+                        <BoxView Color="{AppThemeBinding Light={StaticResource Color.Light.Discharged}, Dark={StaticResource Color.Dark.Discharged}}" CornerRadius="3" HeightRequest="3" WidthRequest="40" HorizontalOptions="Center"/>
+                       </StackLayout>
+                      </Frame>
+                  </Grid>
+
+            <!-- Additional Information -->
+            <Frame BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}" 
+                   CornerRadius="10" 
+                   HasShadow="True"
+                   Padding="16"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                   Margin="0,12,0,0">
+                <StackLayout Spacing="12">
+                    <Label Text="Operations Summary" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+                    
+                    <StackLayout Spacing="8" Padding="0,8">
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                            <Label Text="Hospital Capacity Utilization:" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Color.Light.PrimaryText}, Dark={StaticResource Color.Dark.PrimaryText}}"/>
+                            <Label Grid.Column="1" Text="85%" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                            <Label Text="Average Patient Age:" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Color.Light.PrimaryText}, Dark={StaticResource Color.Dark.PrimaryText}}"/>
+                            <Label Grid.Column="1" Text="42 years" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                            <Label Text="Active Departments:" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Color.Light.PrimaryText}, Dark={StaticResource Color.Dark.PrimaryText}}"/>
+                            <Label Grid.Column="1" Text="8" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                            <Label Text="Total Physicians:" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Color.Light.PrimaryText}, Dark={StaticResource Color.Dark.PrimaryText}}"/>
+                            <Label Grid.Column="1" Text="12" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,4">
+                            <Label Text="Last Updated:" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Color.Light.PrimaryText}, Dark={StaticResource Color.Dark.PrimaryText}}"/>
+                            <Label Grid.Column="1" Text="Today" FontSize="14" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.Primary}, Dark={StaticResource Color.Dark.Primary}}"/>
+                        </Grid>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- Quick Actions -->
+                <Frame BorderColor="{AppThemeBinding Light={StaticResource Color.Light.CardBorder}, Dark={StaticResource Color.Dark.CardBorder}}" 
+                   CornerRadius="10" 
+                   HasShadow="True"
+                   Padding="16"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+                   Margin="0,12,0,0">
+                    <StackLayout Spacing="12">
+                        <Label Text="Quick Actions" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"/>
+
+                        <Label Text="Navigate to Patient Records to view detailed information and manage patient data." 
+                           FontSize="13" 
+                           TextColor="{AppThemeBinding Light={StaticResource Color.Light.SecondaryText}, Dark={StaticResource Color.Dark.SecondaryText}}"
+                           LineBreakMode="WordWrap"/>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+            </ScrollView>
+
+        <!-- Settings popup overlay -->
+        <Grid x:Name="SettingsOverlay"
+              IsVisible="False"
+              BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.OverlayBackground}, Dark={StaticResource Color.Dark.OverlayBackground}}"
+              ZIndex="100">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSettingsOverlayTapped" />
+            </Grid.GestureRecognizers>
+
+            <Frame x:Name="SettingsPopup"
+                   WidthRequest="280"
+                   CornerRadius="16"
+                   Padding="20"
+                   HasShadow="True"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.ModalBackground}, Dark={StaticResource Color.Dark.ModalBackground}}"
+                   BorderColor="{AppThemeBinding Light={StaticResource Color.Light.ModalBorder}, Dark={StaticResource Color.Dark.ModalBorder}}">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Theme" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}" />
+                        <Label Grid.Column="1"
+                               Text="&#xE70B;"
+                               FontFamily="MaterialAssets"
+                               FontSize="18"
+                               TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"
+                               HorizontalOptions="End">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCloseSettingsTapped" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <Button x:Name="BtnLightTheme"
+                            Text="Light Theme"
+                            CornerRadius="12"
+                            Clicked="OnLightThemeClicked" />
+
+                    <Button x:Name="BtnDarkTheme"
+                            Text="Dark Theme"
+                            CornerRadius="12"
+                            Clicked="OnDarkThemeClicked" />
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+    </Grid>
+</ContentPage>

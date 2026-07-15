@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Light Theme Color Palette (Material 3) -->
+
+    <!-- Primary Colors -->
+    <Color x:Key="Color.Light.Primary">#6750A4</Color>
+    <Color x:Key="Color.Light.OnPrimary">#FFFFFF</Color>
+    <Color x:Key="Color.Light.PrimaryContainer">#EADDFF</Color>
+    <Color x:Key="Color.Light.OnPrimaryContainer">#21005D</Color>
+
+    <!-- Secondary Colors -->
+    <Color x:Key="Color.Light.Secondary">#625B71</Color>
+    <Color x:Key="Color.Light.OnSecondary">#FFFFFF</Color>
+    <Color x:Key="Color.Light.SecondaryContainer">#E8DEF8</Color>
+    <Color x:Key="Color.Light.OnSecondaryContainer">#1D192B</Color>
+
+    <!-- Tertiary Colors -->
+    <Color x:Key="Color.Light.Tertiary">#7D5260</Color>
+    <Color x:Key="Color.Light.OnTertiary">#FFFFFF</Color>
+    <Color x:Key="Color.Light.TertiaryContainer">#FFD8E4</Color>
+    <Color x:Key="Color.Light.OnTertiaryContainer">#31111D</Color>
+
+    <!-- Error Colors -->
+    <Color x:Key="Color.Light.Error">#B3261E</Color>
+    <Color x:Key="Color.Light.OnError">#FFFFFF</Color>
+    <Color x:Key="Color.Light.ErrorContainer">#F9DEDC</Color>
+    <Color x:Key="Color.Light.OnErrorContainer">#410E0B</Color>
+
+    <!-- Background and Surface Colors -->
+    <Color x:Key="Color.Light.Background">#FFFBFE</Color>
+    <Color x:Key="Color.Light.OnBackground">#1C1B1F</Color>
+    <Color x:Key="Color.Light.Surface">#FFFBFE</Color>
+    <Color x:Key="Color.Light.OnSurface">#1C1B1F</Color>
+    <Color x:Key="Color.Light.SurfaceDim">#DED8E0</Color>
+    <Color x:Key="Color.Light.SurfaceBright">#FFFBFE</Color>
+    <Color x:Key="Color.Light.SurfaceVariant">#E7E0EC</Color>
+    <Color x:Key="Color.Light.OnSurfaceVariant">#49454E</Color>
+
+    <!-- Outline Colors -->
+    <Color x:Key="Color.Light.Outline">#79747E</Color>
+    <Color x:Key="Color.Light.OutlineVariant">#CAC4D0</Color>
+
+    <!-- Text Colors -->
+    <Color x:Key="Color.Light.PrimaryText">#1C1B1F</Color>
+    <Color x:Key="Color.Light.SecondaryText">#49454E</Color>
+    <Color x:Key="Color.Light.TertiaryText">#625B71</Color>
+    <Color x:Key="Color.Light.DisabledText">#79747E</Color>
+    <Color x:Key="Color.Light.HintText">#79747E</Color>
+
+    <!-- Button Colors -->
+    <Color x:Key="Color.Light.ButtonBackground">#6750A4</Color>
+    <Color x:Key="Color.Light.ButtonText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.ButtonBorder">#CAC4D0</Color>
+    <Color x:Key="Color.Light.DisabledButtonBackground">#E0E0E0</Color>
+    <Color x:Key="Color.Light.DisabledButtonText">#9E9E9E</Color>
+
+    <!-- Input and TextField Colors -->
+    <Color x:Key="Color.Light.InputBackground">#F5F5F5</Color>
+    <Color x:Key="Color.Light.InputBorder">#CAC4D0</Color>
+    <Color x:Key="Color.Light.InputText">#1C1B1F</Color>
+    <Color x:Key="Color.Light.InputPlaceholder">#79747E</Color>
+    <Color x:Key="Color.Light.InputCursor">#6750A4</Color>
+    <Color x:Key="Color.Light.InputFocusBorder">#6750A4</Color>
+
+    <!-- Header and Title Colors -->
+    <Color x:Key="Color.Light.HeaderBackground">#6750A4</Color>
+    <Color x:Key="Color.Light.HeaderText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.SubHeaderText">#49454E</Color>
+    <Color x:Key="Color.Light.TitleText">#1C1B1F</Color>
+
+    <!-- Card and Panel Colors -->
+    <Color x:Key="Color.Light.CardBackground">#FFFFFF</Color>
+    <Color x:Key="Color.Light.CardBorder">#CAC4D0</Color>
+    <Color x:Key="Color.Light.CardShadow">#00000014</Color>
+    <Color x:Key="Color.Light.PanelBackground">#F5F5F5</Color>
+    <Color x:Key="Color.Light.PanelBorder">#E0E0E0</Color>
+
+    <!-- Semantic Colors -->
+    <Color x:Key="Color.Light.Success">#2E7D32</Color>
+    <Color x:Key="Color.Light.SuccessText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.Warning">#F57F17</Color>
+    <Color x:Key="Color.Light.WarningText">#FFFFFF</Color>
+    <!--<Color x:Key="Color.Light.Error">#B3261E</Color>-->
+    <Color x:Key="Color.Light.ErrorText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.Info">#01579B</Color>
+    <Color x:Key="Color.Light.InfoText">#FFFFFF</Color>
+    <Color x:Key="Color.Outline">#7A5C91</Color>
+    <!-- Hospital-specific Status Colors -->
+    <Color x:Key="Color.Light.Admitted">#EF5350</Color>
+    <Color x:Key="Color.Light.AdmittedText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.Discharged">#66BB6A</Color>
+    <Color x:Key="Color.Light.DischargedText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.UnderTreatment">#FFA726</Color>
+    <Color x:Key="Color.Light.UnderTreatmentText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.Critical">#D32F2F</Color>
+    <Color x:Key="Color.Light.CriticalText">#FFFFFF</Color>
+    <Color x:Key="Color.Surface">#FFFFFF</Color>
+    <!-- List and Table Colors -->
+    <Color x:Key="Color.Light.ListItemBackground">#FFFFFF</Color>
+    <Color x:Key="Color.Light.ListItemBorder">#E0E0E0</Color>
+    <Color x:Key="Color.Light.ListItemHover">#F5F5F5</Color>
+    <Color x:Key="Color.Light.ListItemSelected">#E8DEF8</Color>
+    <Color x:Key="Color.Light.AlternateRowBackground">#FAFAFA</Color>
+    <Color x:Key="Color.Light.TableHeader">#F5F5F5</Color>
+    <Color x:Key="Color.Light.TableBorder">#E0E0E0</Color>
+
+    <!-- Navigation Colors -->
+    <Color x:Key="Color.Light.NavBackground">#E8D8F5</Color>
+    <Color x:Key="Color.Light.NavText">#1C1B1F</Color>
+    <Color x:Key="Color.Light.NavItemSelected">#6750A4</Color>
+    <Color x:Key="Color.Light.NavItemSelectedText">#FFFFFF</Color>
+    <Color x:Key="Color.Light.NavItemHover">#F5F5F5</Color>
+
+    <!-- Divider and Separator Colors -->
+    <Color x:Key="Color.Light.Divider">#E0E0E0</Color>
+    <Color x:Key="Color.Light.DividerLight">#F5F5F5</Color>
+
+    <!-- Modal and Overlay Colors -->
+    <Color x:Key="Color.Light.ModalBackground">#FFFFFF</Color>
+    <Color x:Key="Color.Light.ModalBorder">#CAC4D0</Color>
+    <Color x:Key="Color.Light.OverlayBackground">#66000000</Color>
+
+    <!-- Neutral Colors -->
+    <Color x:Key="Color.Light.White">#FFFFFF</Color>
+    <Color x:Key="Color.Light.Black">#000000</Color>
+    <Color x:Key="Color.Light.Gray50">#FAFAFA</Color>
+    <Color x:Key="Color.Light.Gray100">#F5F5F5</Color>
+    <Color x:Key="Color.Light.Gray200">#EEEEEE</Color>
+    <Color x:Key="Color.Light.Gray300">#E0E0E0</Color>
+    <Color x:Key="Color.Light.Gray400">#BDBDBD</Color>
+    <Color x:Key="Color.Light.Gray500">#9E9E9E</Color>
+    <Color x:Key="Color.Light.Gray600">#757575</Color>
+    <Color x:Key="Color.Light.Gray700">#616161</Color>
+    <Color x:Key="Color.Light.Gray800">#424242</Color>
+    <Color x:Key="Color.Light.Gray900">#212121</Color>
+    <Color x:Key="Color.OnBackground">#1C1B1F</Color>
+    <Color x:Key="Color.SurfaceVariant">#EADDFF</Color>
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="Brush.Light.Primary" Color="{StaticResource Color.Light.Primary}"/>
+    <SolidColorBrush x:Key="Brush.Light.Secondary" Color="{StaticResource Color.Light.Secondary}"/>
+    <SolidColorBrush x:Key="Brush.Light.Success" Color="{StaticResource Color.Light.Success}"/>
+    <SolidColorBrush x:Key="Brush.Light.Warning" Color="{StaticResource Color.Light.Warning}"/>
+    <SolidColorBrush x:Key="Brush.Light.Error" Color="{StaticResource Color.Light.Error}"/>
+    <SolidColorBrush x:Key="Brush.Light.Info" Color="{StaticResource Color.Light.Info}"/>
+    <SolidColorBrush x:Key="Brush.Light.Background" Color="{StaticResource Color.Light.Background}"/>
+    <SolidColorBrush x:Key="Brush.Light.Surface" Color="{StaticResource Color.Light.Surface}"/>
+
+</ResourceDictionary>

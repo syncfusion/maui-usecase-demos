@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="HospitalManagement.View.RootPage"
+             Title="Hospital Management"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Background}, Dark={StaticResource Color.Dark.Background}}">
+    <Grid x:Name="RootGrid" ColumnDefinitions="250, *" RowDefinitions="*">
+        <!-- Left navigation panel -->
+        <StackLayout x:Name="NavPanel"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.NavBackground}, Dark={StaticResource Color.Dark.NavBackground}}"
+                     Padding="16" Spacing="16">
+            <Label Text="Hospital Management" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}" FontSize="18" />
+            <VerticalStackLayout Spacing="8">
+                <Button x:Name="BtnDashboard"
+                        Text="Dashboard"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.NavItemSelected}, Dark={StaticResource Color.Dark.NavItemSelected}}"
+                        TextColor="{AppThemeBinding Light={StaticResource Color.Light.NavItemSelectedText}, Dark={StaticResource Color.Dark.NavItemSelectedText}}"
+                        CornerRadius="12"
+                        Clicked="OnDashboardClicked" />
+                <Button x:Name="BtnPatients"
+                        Text="Patients"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Color.Light.NavText}, Dark={StaticResource Color.Dark.NavText}}"
+                        CornerRadius="12"
+                        Clicked="OnPatientsClicked" />
+
+            </VerticalStackLayout>
+            <BoxView VerticalOptions="EndAndExpand" HeightRequest="1" BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.Divider}, Dark={StaticResource Color.Dark.Divider}}" />
+        </StackLayout>
+        <!-- Right content area -->
+        <Frame Grid.Column="1"
+               BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.CardBackground}, Dark={StaticResource Color.Dark.CardBackground}}"
+               CornerRadius="12" Padding="12" HasShadow="False">
+            <AbsoluteLayout>
+                <ContentView x:Name="ContentHost"
+                             AbsoluteLayout.LayoutBounds="0,0,1,1"
+                             AbsoluteLayout.LayoutFlags="All" />
+
+                <!-- Theme popup overlay (covers only content area) -->
+                <Grid x:Name="ThemeOverlay"
+                      IsVisible="False"
+                      BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.OverlayBackground}, Dark={StaticResource Color.Dark.OverlayBackground}}"
+                      InputTransparent="False"
+                      ZIndex="100"
+                      AbsoluteLayout.LayoutBounds="0,0,1,1"
+                      AbsoluteLayout.LayoutFlags="All">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnThemeOverlayTapped" />
+                    </Grid.GestureRecognizers>
+
+                    <Frame x:Name="ThemePopup"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Color.Light.ModalBackground}, Dark={StaticResource Color.Dark.ModalBackground}}"
+                           BorderColor="{AppThemeBinding Light={StaticResource Color.Light.ModalBorder}, Dark={StaticResource Color.Dark.ModalBorder}}"
+                           CornerRadius="16"
+                           Padding="20"
+                           WidthRequest="280"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Theme" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}" />
+                                <Button Grid.Column="1"
+                                        Text="✕"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{AppThemeBinding Light={StaticResource Color.Light.TitleText}, Dark={StaticResource Color.Dark.TitleText}}"
+                                        BorderWidth="0"
+                                        Padding="4"
+                                        Clicked="OnCloseThemeClicked" />
+                            </Grid>
+
+                            <Button x:Name="BtnLightTheme"
+                                    Text="Light Theme"
+                                    CornerRadius="12"
+                                    Clicked="OnLightThemeClicked" />
+
+                            <Button x:Name="BtnDarkTheme"
+                                    Text="Dark Theme"
+                                    CornerRadius="12"
+                                    Clicked="OnDarkThemeClicked" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+            </AbsoluteLayout>
+        </Frame>
+    </Grid>
+</ContentPage>
