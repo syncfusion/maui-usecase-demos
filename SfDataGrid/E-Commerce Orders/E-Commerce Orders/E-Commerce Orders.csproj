@@ -71,6 +71,7 @@
 		<PackageReference Include="Syncfusion.Maui.DataGrid" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Core" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Data" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.DataPager" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.DataSource" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.GridCommon" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Inputs" Version="*" />
