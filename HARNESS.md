@@ -1,6 +1,6 @@
 # Smart Movie Ticket Booking — Harness Document
 
-**Purpose:** Define the contract an AI coding agent must satisfy to produce a working, design-faithful implementation of the Smart Movie Ticket Booking sample.
+**Purpose:** Define the contract an AI coding agent must satisfy to produce a working, design-faithful implementation of the **Smart Movie Ticket Booking** sample on Windows desktop.
 
 **Companion documents:**
 - Functional & behavior specification → [SPECIFICATION.md](./SPECIFICATION.md)
@@ -14,20 +14,20 @@
 2. [Non-Functional Requirements (NFR)](#2-non-functional-requirements-nfr)
 3. [Assumptions](#3-assumptions)
 4. [Dependencies](#4-dependencies)
-5. [Screen-Level Implementation Guidelines](#5-screen-level-implementation-guidelines)
-6. [User Flow Diagrams](#6-user-flow-diagrams)
+5. [Page-Level Implementation Guidelines](#5-page-level-implementation-guidelines)
+6. [User Flow](#6-user-flow)
 7. [State Management Requirements](#7-state-management-requirements)
 8. [Service Layer Requirements](#8-service-layer-requirements)
-9. [Mock API / Data Contract Definitions](#9-mock-api--data-contract-definitions)
-10. [AI Integration Requirements](#10-ai-integration-requirements)
+9. [Mock Data Contracts](#9-mock-data-contracts)
+10. [AI Copilot Requirements](#10-ai-copilot-requirements)
 11. [Error Handling Scenarios](#11-error-handling-scenarios)
 12. [Validation Requirements](#12-validation-requirements)
 13. [Acceptance Criteria](#13-acceptance-criteria)
 14. [User Stories](#14-user-stories)
 15. [Milestones](#15-milestones)
-16. [Appendix A — Screen-to-Control Quick Reference](#appendix-a--screen-to-control-quick-reference)
+16. [Appendix A — Page-to-Control Map](#appendix-a--page-to-control-map)
 17. [Appendix B — Theming Tokens](#appendix-b--theming-tokens)
-18. [Appendix C — Mock Catalog (Sample Seed)](#appendix-c--mock-catalog-sample-seed)
+18. [Appendix C — AppSeed Sample Movies](#appendix-c--appseed-sample-movies)
 
 ---
 
@@ -35,36 +35,36 @@
 
 | ID | Requirement |
 |---|---|
-| FR-01 | App launches to Home Screen within 2 seconds on a mid-tier device. |
-| FR-02 | Home displays a horizontal carousel of Now-Showing movies, each card with poster, title, genre, duration, rating, language. |
-| FR-03 | Home provides working search, genre filter, and language filter that update the visible list reactively. |
-| FR-04 | Tapping a movie card navigates to Movie Details with the correct movie loaded. |
-| FR-05 | Movie Details displays all required fields and the "Book Tickets" CTA is enabled only after data is loaded. |
-| FR-06 | Tapping "Book Tickets" navigates to Theater Selection for the selected movie. |
-| FR-07 | Theater Selection shows ≥ 3 theaters for the selected movie, each with showtimes for the selected date. |
-| FR-08 | Date selector switches showtimes for all theaters. |
-| FR-09 | Tapping a showtime navigates to Seat Selection for that showtime. |
-| FR-10 | Seat Selection shows a visual grid with at least 80 seats; available, occupied, selected, premium states are visually distinct. |
-| FR-11 | At least 1 seat must be selected to enable "Proceed". |
-| FR-12 | Pricing summary updates live as seats are toggled. |
-| FR-13 | Tapping "Proceed" navigates to Booking Summary with all selections preserved. |
-| FR-14 | Booking Summary shows movie, theater, showtime, seats, fees, total, and an "Apply Coupon" input. |
-| FR-15 | "WELCOME10" coupon applies a 10% discount; any other input shows an invalid-coupon message. |
-| FR-16 | Tapping "Proceed to Pay" navigates to Payment with the total amount. |
-| FR-17 | Payment allows selection of UPI, Card, or Wallet and shows the appropriate form. |
-| FR-18 | Tapping "Pay" shows a processing animation for ~2.5s. |
-| FR-19 | On success, navigates to Booking Confirmation with booking ID, QR code, and ticket details. |
-| FR-20 | On failure (5%), shows a retry popup; user can retry or change method. |
-| FR-21 | Booking Confirmation allows "Download Ticket" (popup) and "Share Ticket" (share sheet). |
-| FR-22 | "Back to Home" pops to root and resets `BookingSession`. |
-| FR-23 | My Bookings is reachable from Home; it shows Upcoming and Past tabs. |
-| FR-24 | A completed booking appears in My Bookings → Upcoming. |
-| FR-25 | The AI Assistant is reachable from every primary screen via a persistent FAB or toolbar entry. |
-| FR-26 | The AI Assistant answers all 6 example prompts in the spec without throwing. |
-| FR-27 | AI Assistant preserves conversation history for the session. |
-| FR-28 | App supports light and dark themes. |
-| FR-29 | All async operations show shimmer/loading states. |
-| FR-30 | App handles back-button navigation correctly (no orphaned pages). |
+| FR-01 | App launches to Movie Home within 2 seconds on Windows. |
+| FR-02 | Movie Home displays a grid of now-playing movies, each card with poster, title, genre, runtime, rating, language, IMAX 3D chip. |
+| FR-03 | Movie Home provides working search and genre chip filter that update the visible list reactively. |
+| FR-04 | Tapping a movie card navigates to the Theaters page with the selected movie loaded in the context banner. |
+| FR-05 | The Theaters page displays the selected movie's poster, title, synopsis, runtime, audio, accessibility in the context banner. |
+| FR-06 | The Theaters page shows a 7-day date strip with Today, Tomorrow, Weekend, Weekday labels. The active date is highlighted with `primary-container` bg and an animated dot. |
+| FR-07 | The Theaters page shows a Cinema Experience Filters panel with Format chips, Audio & Sub chips, Price dropdown, Recliner Seats toggle, Open Now toggle. |
+| FR-08 | Selecting a date chip updates all theater cards' showtime grids to that date. |
+| FR-09 | Toggling a format filter narrows the visible showtime pills. |
+| FR-10 | Tapping a showtime pill marks it as `SelectedShowtime` and enables the theater's "Select Showtime & Continue" button. |
+| FR-11 | Each theater card shows: icon tile, name, category chip, location + distance, "From $X" + "Y seats available", favorite heart button, amenities row, showtime grid, footer "Select Showtime & Continue" button. |
+| FR-12 | Tapping a showtime pill's footer button opens the **Seat Selection popup** with the chosen showtime. |
+| FR-13 | The Seat Selection popup shows a 10×14 seat grid with Available / Occupied / Selected / Premium states, a legend, and a sticky pricing footer. |
+| FR-14 | The pricing footer updates live as seats are toggled; subtotal, convenience fee, total. |
+| FR-15 | The "Confirm Seats" button is disabled when 0 seats are selected. |
+| FR-16 | Tapping "Confirm Seats" creates a `Booking`, persists it to `BookingRepository`, and opens the **Payment Confirmation popup**. |
+| FR-17 | The Payment Confirmation popup shows: success header, booking ID, QR code, ticket card (movie, theater, screen, date, time, seats, total), Download / Share / Back to Home buttons. |
+| FR-18 | Tapping "Back to Home" closes the popup and navigates to Movie Home. |
+| FR-19 | The Bookings page lists all confirmed bookings as cards with title, status badge, theater/date/seat count, total, and "View Ticket" button. |
+| FR-20 | Tapping "View Ticket" opens the Payment Confirmation popup in read-only mode for that booking. |
+| FR-21 | The Bookings page shows a designed empty state when there are no bookings. |
+| FR-22 | The AI Copilot FAB is visible in the bottom-right corner of every page. |
+| FR-23 | Tapping the AI Copilot FAB opens an `SfBottomSheet` with an `SfAIAssistView` that answers the sample prompts. |
+| FR-24 | Light and dark themes are both supported and the design tokens are honored in both modes. |
+| FR-25 | The sidebar nav (Movie Home / Theaters / Bookings) highlights the active page with `primary-container` bg. |
+| FR-26 | The app bar shows: city selector ("New York, NY"), search field, notifications bell, user avatar ("Alex Vance • Platinum Member"). |
+| FR-27 | The custom title bar shows: app icon + "Smart Movie Ticket Booking v2.5 (x64)" on the left, minimize / maximize / close buttons on the right. |
+| FR-28 | The sidebar shows the brand "Smart Cinema" + "MAUI Pro Engine" caption, the "Explore Hub" section header, the three nav items, and a "Region Service — Live Synced • Active v2.5" status footer. |
+| FR-29 | The "Change Movie" button on Theaters page navigates back to Movie Home. |
+| FR-30 | The "Reset All" link in the filters panel resets every filter to its default. |
 
 ---
 
@@ -72,403 +72,273 @@
 
 | ID | Requirement |
 |---|---|
-| NFR-01 | App must compile and run on Android (API 21+), iOS (15+), Mac Catalyst (15+), and Windows (10.0.17763+). |
-| NFR-02 | No third-party paid UI library other than Syncfusion. |
-| NFR-03 | All animations must run at 60 fps on a mid-tier device. |
-| NFR-04 | No PII collection, no network calls beyond image fetches. |
-| NFR-05 | All text in resources (no hard-coded user-facing strings in code-behind). |
-| NFR-06 | `Nullable` enabled, no warnings in build. |
-| NFR-07 | MVVM strictly enforced — no business logic in code-behind. |
-| NFR-08 | Mock data loaded once; no re-loads on navigation. |
-| NFR-09 | Theming via Syncfusion theme dictionary + custom keys. |
-| NFR-10 | Respect platform safe areas (notch, status bar, gesture bar). |
+| NFR-01 | All Syncfusion design tokens (colors, radii, typography, spacing) from SPEC §5 are defined as `StaticResource` keys in `Resources/Styles/Colors.xaml` and used throughout. |
+| NFR-02 | All ViewModels inherit `BaseViewModel : ObservableObject`. Bindings use `[ObservableProperty]` / `[RelayCommand]`. No business logic in code-behind. |
+| NFR-03 | `Nullable` is enabled in the .csproj; no build warnings. |
+| NFR-04 | `dotnet build` succeeds on `net10.0-windows10.0.19041.0`. |
+| NFR-05 | All services and ViewModels are registered in `MauiProgram.cs` via `IServiceCollection`. Pages receive their ViewModel via constructor injection. |
+| NFR-06 | All in-app data comes from `AppSeed.cs` — no JSON files, no network calls, no real APIs. |
+| NFR-07 | Page transitions do not block the UI thread. All data access is `async`. |
+| NFR-08 | The sample is fully offline. It must run with no network access (poster image URLs may render empty placeholders when offline). |
+| NFR-09 | The seat layout is deterministic per (showtime, theater) — the same seats must show as occupied across launches for the same showtime. |
+| NFR-10 | All fonts (Plus Jakarta Sans, Inter, Material Symbols Outlined) are bundled in `Resources/Fonts/` and registered in `MauiProgram.ConfigureFonts`. |
 
 ---
 
 ## 3. Assumptions
 
-- Users accept that this is a sample, not a production app.
-- No real payment processing occurs.
-- Movie posters are bundled assets.
-- The device has a working network connection only if remote images are used.
-- A single mock user profile is sufficient.
-- The AI Assistant operates entirely over the in-memory catalog; no external LLM call is required.
+- The sample is for **Windows desktop only** in this build. Cross-platform can be re-enabled by adding the other `<TargetFramework>`s back in the .csproj, but the layout is not tested for mobile form factors.
+- The user has the Syncfusion .NET MAUI license and NuGet feed configured. If not, packages will still restore but will run in trial mode with a license banner.
+- Posters are loaded from the public URLs in `AppSeed` (matching the Stitch HTML). If the network is unavailable, an `Image` with a fallback brush (`surface-container-high`) is acceptable.
+- "Booking ID" is a generated string like `BK-123456` created at confirmation time. No persistence to disk.
+- The QR code is purely visual — a `SfBarcodeGenerator` with QR symbology is the preferred implementation; a styled placeholder is acceptable.
+- The AI Copilot answers are deterministic, drawn from `AppSeed` data — no LLM call.
+- All currency is in USD to match the Stitch design ($18.50, $24.00 etc.).
+- The user has Visual Studio 2022 17.x+ with the .NET MAUI workload installed.
 
 ---
 
 ## 4. Dependencies
 
-| Dependency | Version | Reason |
-|---|---|---|
-| `Microsoft.Maui.Controls` | 10.0.80 | MAUI runtime. |
-| `CommunityToolkit.Mvvm` | 8.4.0 | MVVM source generators. |
-| `Syncfusion.Maui.Core` | 33.2.15 | Common Syncfusion controls. |
-| `Syncfusion.Maui.ListView` | 33.2.15 | SfListView, SfCollectionView. |
-| `Syncfusion.Maui.Buttons` | 33.2.15 | SfButton, SfSegmentedControl, SfRadioButton. |
-| `Syncfusion.Maui.Popup` | 33.2.15 | SfPopup. |
-| `Syncfusion.Maui.BottomSheet` | 33.2.15 | SfBottomSheet. |
-| `Syncfusion.Maui.AIAssistView` | 33.2.15 | SfAIAssistView. |
-| `Syncfusion.Maui.Cards` | 33.2.15 | SfCardView. |
-| `Syncfusion.Maui.Chips` | 33.2.15 | SfChip. |
-| `Syncfusion.Maui.ComboBox` | 33.2.15 | SfComboBox. |
-| `Syncfusion.Maui.TabView` | 33.2.15 | SfTabView. |
-| `Syncfusion.Maui.Barcode` | 33.2.15 | QR generator. |
-| `Syncfusion.Maui.Charts` | 33.2.15 (optional) | Sparkline for popularity. |
-| `Microsoft.Extensions.Logging.Debug` | 10.0.9 | Debug logging. |
+### 4.1 NuGet Packages (target `33.2.x` to match the rest of the repo)
 
-All package versions are pinned; the AI agent must not bump MAUI major versions without explicit instruction.
+```xml
+<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.80" />
+<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.9" />
+<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+<PackageReference Include="Syncfusion.Maui.Core"           Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.Buttons"         Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.Cards"           Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.Chips"           Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.ListView"        Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.Popup"           Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.BottomSheet"     Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.AIAssistView"    Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.Barcode"         Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.SegmentedControl" Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.ToggleButton"    Version="33.2.15" />
+<PackageReference Include="Syncfusion.Maui.ComboBox"        Version="33.2.15" />
+```
 
----
+(Omit any package that is not needed for the three pages + two popups; for example, AI AssistView and BottomSheet can be deferred if T4 is not in scope.)
 
-## 5. Screen-Level Implementation Guidelines
+### 4.2 Fonts
 
-Each page must:
+Bundle under `Resources/Fonts/`:
+- `PlusJakartaSans-SemiBold.ttf` (600)
+- `PlusJakartaSans-Bold.ttf` (700)
+- `PlusJakartaSans-ExtraBold.ttf` (800)
+- `Inter-Regular.ttf` (400)
+- `Inter-Medium.ttf` (500)
+- `Inter-SemiBold.ttf` (600)
+- `MaterialSymbolsOutlined.ttf` (variable)
 
-- Use `ContentPage` as base.
-- Inject its ViewModel via DI.
-- Set `BindingContext` in the constructor.
-- Override `OnAppearing` only to call `InitializeAsync` on the ViewModel.
-- Use Shell query parameters for IDs (e.g., `?movieId=...`).
-- Have a corresponding route registered in `AppShell.xaml`.
-
-### Page Implementation Skeleton (Reference)
-
+Register in `MauiProgram.ConfigureFonts`:
 ```csharp
-public partial class MovieDetailsPage : ContentPage
-{
-    private readonly MovieDetailsViewModel _vm;
-
-    public MovieDetailsPage(MovieDetailsViewModel vm)
-    {
-        InitializeComponent();
-        _vm = vm;
-        BindingContext = _vm;
-    }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        var movieId = GetQueryParameter("id");
-        await _vm.InitializeAsync(movieId);
-    }
-
-    private string GetQueryParameter(string key) =>
-        Shell.Current?.CurrentItem?.CurrentItem?.QueryParameters.GetValueOrDefault(key);
-}
+fonts.AddFont("PlusJakartaSans-SemiBold.ttf", "PlusJakarta");
+fonts.AddFont("PlusJakartaSans-Bold.ttf",     "PlusJakartaBold");
+fonts.AddFont("PlusJakartaSans-ExtraBold.ttf","PlusJakartaExtra");
+fonts.AddFont("Inter-Regular.ttf",   "Inter");
+fonts.AddFont("Inter-Medium.ttf",    "InterMedium");
+fonts.AddFont("Inter-SemiBold.ttf",  "InterSemi");
+fonts.AddFont("MaterialSymbolsOutlined.ttf", "MaterialIcons");
 ```
-
-### Loading / Empty / Error States
-
-Every list page must define three states:
-
-- **Loading** — `SfShimmer.View` with placeholder shapes.
-- **Empty** — illustration + headline + (optional) CTA.
-- **Error** — `SfPopup` with Retry / Dismiss.
 
 ---
 
-## 6. User Flow Diagrams
+## 5. Page-Level Implementation Guidelines
 
-### 6.1 Primary Booking Flow
+### 5.1 MainWindow (root composition)
 
-```
-┌──────────────┐
-│ App Launch   │
-└──────┬───────┘
-       ▼
-┌──────────────┐  search / filter
-│  Home Page   │ ─────────────────► (Filtered Home)
-└──────┬───────┘
-       │ tap card
-       ▼
-┌──────────────────┐   AI FAB
-│ Movie Details    │ ─────────► AI Assistant Sheet
-└──────┬───────────┘
-       │ Book Tickets
-       ▼
-┌────────────────────────┐
-│ Theater Selection      │  date + showtime chips
-└──────┬─────────────────┘
-       │ tap showtime
-       ▼
-┌────────────────────────┐
-│ Seat Selection (≥1)    │  SeatControl grid + pricing
-└──────┬─────────────────┘
-       │ Proceed
-       ▼
-┌────────────────────────┐
-│ Booking Summary        │  Apply coupon (WELCOME10)
-└──────┬─────────────────┘
-       │ Proceed to Pay
-       ▼
-┌────────────────────────┐
-│ Payment (UPI/Card/Wallet)│
-└──────┬─────────────────┘
-       │ Pay
-       ▼
-┌────────────────────────┐
-│ Processing Sheet (~2.5s)│
-└──────┬─────────────────┘
-       │ success
-       ▼
-┌────────────────────────┐  Download / Share / Back
-│ Booking Confirmation   │
-└──────┬─────────────────┘
-       │ Back to Home
-       ▼
-┌──────────────┐
-│  Home Page   │
-└──────────────┘
-```
+- Single `Window` set in `App.xaml.cs` `CreateWindow`.
+- 2-row `Grid`: `Auto, *` for title bar (32 px) and the rest.
+- The second row is a 2-column `Grid`: `256, *` for sidebar and main.
+- `MainWindowViewModel.CurrentPage` (enum `MovieHome | Theaters | Bookings`) drives a `ContentPresenter` that renders the right `ContentView`.
+- AI FAB is positioned with `Grid` cell, `HorizontalOptions="End"`, `VerticalOptions="End"`, `Margin="0,0,24,24"`, `ZIndex="99"`.
+- A single `SfBottomSheet` host at the bottom of main with `IsOpen` bound to `MainWindowViewModel.IsAiSheetOpen`.
 
-### 6.2 Failure Branch — Payment
+### 5.2 Movie Home
 
-```
-Payment → Pay
-   │
-   ▼
-Processing Sheet (2.5s)
-   │
-   ├──── success ────► Booking Confirmation
-   │
-   └──── failure (5%) ────► SfPopup: "Payment failed"
-                                  ├─ Retry ─► re-enter Processing
-                                  └─ Change Method ─► back to Payment
-```
+- Use `SfCollectionView` with `ItemsLayout="VerticalGrid, 3"` (Span 2 on small widths).
+- `SfShimmer` placeholder while `IsLoading == true`. Wrap the grid in a `Grid` and toggle visibility.
+- Search field is `SfTextInputLayout` wrapping an `Entry`. `TextChanged` updates `SearchText` on the VM.
+- Genre chips row is a `ScrollView` containing a horizontal `FlexLayout` (or `BindableLayout` over a `SfListView` with `LayoutManager="Horizontal"`).
+- Movie card control is `Controls/MovieCardView.xaml` with `BindableProperty` for `Movie`.
+- Empty state: a centered `VerticalStackLayout` with an icon (`movie` from `MaterialIcons`), text, and a button.
 
-### 6.3 AI Assistant Flow
+### 5.3 Theaters
+
+- The page is a `ScrollView` wrapping a `VerticalStackLayout`.
+- **Context banner:** `Grid` with absolute-positioned `SfGradientView` blobs (top-right, bottom-right). Main content row: poster (128×192) + meta `VerticalStackLayout` + Change Movie button. Use `Margin="-24,-24,-24,0"` so the banner can extend visually if needed.
+- **Date strip:** a 7-column `Grid`. Each cell is `Controls/DateChipView.xaml` (BindableProperty for `DateTime`, `IsSelected`). `IsSelected` triggers the active style (primary-container bg, animated dot via `SfEffectsView` or a plain `BoxView` with `SfShimmer`).
+- **Filters panel:** `Grid` with rows for Format chips, Audio & Sub chips, then a row with Price dropdown + toggles. Use `SfChipGroup` with `SelectionMode="Single"` for Format, "SingleOrNone" or "Multiple" per design intent.
+- **Theater cards:** `SfCardView` wrapping a `VerticalStackLayout` per the design. Use `Controls/TheaterCardView.xaml` with `BindableProperty` for `TheaterWithShowtimes` and a `ShowtimeSelectedCommand`.
+- **Top-Rated Partner Venues row:** `SfCollectionView` with `ItemsLayout="VerticalGrid, 4"`. Each card is a simple image + title + distance mini-card.
+- "Select Showtime & Continue" button per card is `SfButton` with `Style="{StaticResource PrimaryButton}"`. `IsEnabled` is bound to `TheaterViewModel.HasSelectedShowtime` for that card.
+- **"Sort by" dropdown:** `SfComboBox` with "Proximity (Distance)", "Rating", "Price (Low to High)", "Price (High to Low)".
+
+### 5.4 Bookings
+
+- Vertical `SfListView` or `VerticalStackLayout` over an `ObservableCollection<Booking>`.
+- `Controls/BookingCardView.xaml` per booking, with a `ViewTicketCommand` returning the booking.
+- Empty state with icon + CTA.
+
+### 5.5 Seat Selection popup
+
+- `SfPopup` with `SfPopupHost` containing the `SeatSelectionView` (`ContentView`).
+- Header: `Grid` with back button, title, theater name, showtime.
+- Screen indicator: a horizontal `BoxView` with a slight curve (or an SVG).
+- Seat grid: a `BindableLayout` over a `Grid` of `Grid`s, OR a `Canvas` with positioned `Rectangle`s. For simplicity, build a `Grid` programmatically (10 rows × 14 cols) and set the cell's `BackgroundColor` via a `SeatStateToBrushConverter`.
+- Each seat is a small clickable `Border` (`RoundRectangle` `CornerRadius="6"`, `WidthRequest="22"`, `HeightRequest="22"`).
+- Legend is a horizontal `BindableLayout` over a static list of (Color, Label) tuples.
+- Footer: `Border` with `Radius="16,16,0,0"`, `BackgroundColor="{StaticResource SurfaceContainerLowest}"`, containing totals and the `SfButton`.
+
+### 5.6 Payment Confirmation popup
+
+- `SfPopup` with `ContentView` `PaymentConfirmationView`.
+- Success header is centered `VerticalStackLayout`: emoji or check, "Booking Confirmed!" `display-hero`, subtitle.
+- QR code: `Syncfusion.Maui.Barcode.SfBarcodeGenerator` configured with `Symbology="QR"`, `Value="{Binding QrPayload}"`, sized 200×200, centered.
+- Ticket card: bordered `VerticalStackLayout` per the design.
+- Action row: 3 buttons in a `Grid` with 3 columns. "Download Ticket" and "Share Ticket" use `Style="{StaticResource OutlinedButton}"`. "Back to Home" uses `Style="{StaticResource PrimaryButton}"`.
+
+### 5.7 AI Copilot FAB + Sheet
+
+- `Controls/AiCopilotFab.xaml` is a 48×48 circular `Border` with a `LinearGradientBrush` (primary → secondary), the `auto_awesome` icon, and a 12×12 dot top-right.
+- Tooltip is a sibling `Border` with `Opacity="0"` and an `SfEffectsView` ripple on hover.
+- The `SfBottomSheet` is hosted in `MainWindow.xaml`, full-width, `HeightRequest="420"`, with `SfAIAssistView` inside.
+
+---
+
+## 6. User Flow
 
 ```
-Any Primary Screen
-   │ tap AI FAB
-   ▼
-SfBottomSheet opens
-   │
-   ▼
-SfAIAssistView shows
-   ├─ Suggested chips (6)
-   │     └─ tap chip ─► AiAssistantService.ProcessAsync(text)
-   └─ Free-text input ─► same path
-                          │
-                          ▼
-                  Intent Engine (keyword scoring)
-                          │
-                          ▼
-                  Pull data from Movie/Booking services
-                          │
-                          ▼
-                  Emit AssistMessage list (text + cards)
-                          │
-                          ▼
-                  History persists in session
-```
+[App launch]
+    │
+    ▼
+[Movie Home]  ──search/filter──► [Filtered Movie Home]
+    │  tap card
+    ▼
+[Theaters ?movieId=...]  ──select date──► [Theaters w/ showtimes for date]
+    │  tap showtime + Continue
+    ▼
+[Seat Selection popup]
+    │  pick seats, Confirm
+    ▼
+[Payment Confirmation popup]
+    │  Back to Home
+    ▼
+[Movie Home]
 
-### 6.4 My Bookings Flow
-
-```
-Home → My Bookings icon
-   │
-   ▼
-My Bookings Page (SfTabView)
-   ├─ Upcoming tab ─► list of bookings with showtime ≥ now
-   └─ Past tab     ─► list of bookings with showtime < now
-                          │
-                          ▼
-                  tap card ─► Read-only ticket view
+[Sidebar] Theaters   → [Theaters w/ current selection or first movie]
+[Sidebar] Bookings   → [Bookings]
+[AI FAB on any page] → [AI Copilot sheet]
+[Bookings card]      → [Payment Confirmation read-only]
 ```
 
 ---
 
 ## 7. State Management Requirements
 
-- One source of truth: `BookingSession` for in-progress, `BookingRepository` for completed.
-- ViewModels must never directly mutate each other.
-- Use `MessagingCenter` or an `EventAggregator` (custom) for cross-screen notifications such as "BookingSessionUpdated."
-- Pages must never cache state in code-behind fields that survive navigation.
-- All observable collections must be `ObservableCollection<T>`; never use `List<T>` for bound data.
-
-### `BookingSession` Lifecycle
-
-| Event | Action |
-|---|---|
-| App launch | session is `null`. |
-| Tap movie card | session not yet created. |
-| Tap showtime chip | `BookingSession.SetShowtime(showtime)`. |
-| Seat toggled | `BookingSession.ToggleSeat(seat)`. |
-| Coupon applied | `BookingSession.ApplyCoupon(code)`. |
-| Payment success | `BookingRepository.Add(session.ToBooking())` then `BookingSession.Reset()`. |
-| Back from confirmation | session is already reset. |
+- **One source of truth for the in-progress booking:** `BookingSession` singleton.
+- **One source of truth for completed bookings:** `BookingRepository` singleton.
+- ViewModels never reference each other directly; they communicate via the singletons.
+- The AI Copilot state (`IsOpen`, `Messages`) lives on its own VM.
+- Page transitions do not destroy ViewModels unnecessarily; the navigation `enum` on `MainWindowViewModel` re-binds the `ContentPresenter`.
+- When the user taps "Back to Home" on the confirmation, `BookingSession` is reset.
 
 ---
 
 ## 8. Service Layer Requirements
 
-- Services are registered in `MauiProgram`.
-- Services are stateless and thread-safe.
-- Services expose `async` methods returning `Task<T>`.
-- JSON deserialization uses `JsonSerializerOptions { PropertyNameCaseInsensitive = true }`.
-- All service methods that simulate I/O must include an artificial delay (`Task.Delay`) to make shimmer visible.
-- Services must not throw on empty input; they return empty collections.
-- Services must log to `Debug.WriteLine` (or `ILogger`) on failure and return safe defaults.
+- Stateless services are safe to register as singletons.
+- `IMovieService.GetNowShowingAsync()` returns a list of `Movie` (10 entries from `AppSeed`).
+- `ITheaterService.GetTheatersForMovieAsync(string movieId)` returns the list of theaters for the given movie. Theaters are not movie-specific in the design; this method returns the full list.
+- `IShowtimeService.GetShowtimesAsync(string movieId, string theaterId, DateTime date)` returns the showtimes for the given triple.
+- `IBookingService.CreateAsync(BookingDraft)` returns a `Booking` with a generated `BookingId` and a `CreatedAt` timestamp.
+- All services are async, returning `Task<T>`. They may include a small artificial delay (200–600 ms) to simulate network latency for the shimmer effect.
 
-### Threading Rules
-
-- All service methods use `ConfigureAwait(false)` internally.
-- UI mutations after `await` are dispatched to the main thread automatically by MAUI bindings; no manual `MainThread.BeginInvokeOnMainThread` is required for property setters on `ObservableObject`.
-
----
-
-## 9. Mock API / Data Contract Definitions
-
-### 9.1 IMovieService
+### Service Interfaces
 
 ```csharp
 public interface IMovieService
 {
     Task<IReadOnlyList<Movie>> GetNowShowingAsync();
-    Task<IReadOnlyList<Movie>> GetComingSoonAsync();
     Task<Movie> GetByIdAsync(string id);
-    Task<IReadOnlyList<Movie>> SearchAsync(string query, string genre, string language);
-    Task<IReadOnlyList<Movie>> GetByGenreAsync(string genre);
-    Task<IReadOnlyList<Movie>> GetTopRatedAsync(int count = 5);
+    Task<IReadOnlyList<Movie>> SearchAsync(string query, string genre);
 }
-```
 
-### 9.2 ITheaterService
-
-```csharp
 public interface ITheaterService
 {
-    Task<IReadOnlyList<Theater>> GetTheatersForMovieAsync(string movieId);
+    Task<IReadOnlyList<Theater>> GetAllAsync();
     Task<Theater> GetByIdAsync(string id);
 }
-```
 
-### 9.3 IShowtimeService
-
-```csharp
 public interface IShowtimeService
 {
-    Task<IReadOnlyList<Showtime>> GetShowtimesAsync(string movieId, string theaterId, DateTime date);
+    Task<IReadOnlyList<Showtime>> GetAsync(string movieId, string theaterId, DateTime date);
     Task<Showtime> GetByIdAsync(string id);
 }
-```
 
-### 9.4 IBookingService
-
-```csharp
 public interface IBookingService
 {
-    Task<Booking> CreateBookingAsync(BookingDraft draft, string paymentMethod);
-    Task CancelAsync(string bookingId);
-}
-```
-
-### 9.5 IPaymentService
-
-```csharp
-public interface IPaymentService
-{
-    Task<PaymentResult> ProcessAsync(decimal amount, string method, object details);
+    Task<Booking> CreateAsync(BookingDraft draft);
 }
 
-public record PaymentResult(bool Success, string TransactionId, string? FailureReason);
-```
-
-### 9.6 IBookingRepository
-
-```csharp
-public interface IBookingRepository
-{
-    IReadOnlyList<Booking> All { get; }
-    Booking GetById(string id);
-    void Add(Booking booking);
-    event EventHandler BookingsChanged;
-}
-```
-
-### 9.7 IAiAssistantService
-
-```csharp
 public interface IAiAssistantService
 {
-    Task<IReadOnlyList<AssistMessage>> ProcessAsync(string userInput, AiContext context);
-}
-
-public class AiContext
-{
-    public string? CurrentMovieId { get; init; }
-    public string? CurrentTheaterId { get; init; }
-    public string? CurrentShowtimeId { get; init; }
-    public string CurrentScreenName { get; init; } = "Home";
+    Task<string> RespondAsync(string prompt, AiContext context);
 }
 ```
-
-### 9.8 JSON File → Model Mapping
-
-| JSON file | Root | Records |
-|---|---|---|
-| `movies.json` | array of `Movie` | ≥ 20 |
-| `theaters.json` | array of `Theater` | ≥ 8 |
-| `showtimes.json` | array of `Showtime` | ≥ 100 |
-| `cast.json` | dictionary `movieId → List<CastMember>` | per movie |
-| `userprofile.json` | single `UserProfile` | 1 |
-
-All files registered in `csproj` as `<MauiAsset>` with `LogicalName="<filename>"`.
 
 ---
 
-## 10. AI Integration Requirements
+## 9. Mock Data Contracts
 
-### 10.1 Intent Coverage
+### 9.1 `AppSeed.cs`
 
-The intent engine MUST handle, at minimum, these intents with ≥ 80% accuracy on the supported prompt list:
+A static class in `Services/` that returns the in-memory data. Movies are hard-coded to match the Stitch design (10 Now Showing). Theaters and showtimes are derived deterministically:
 
-| Intent | Trigger keywords | Data source |
-|---|---|---|
-| Recommendation | recommend, suggest, looking for, what's good | `IMovieService.GetByGenreAsync`, `GetTopRatedAsync` |
-| Comparison | compare, vs, versus, difference | `IMovieService.GetByIdAsync` (×2) |
-| Movie Info | tell me about, what is, info, about | `IMovieService.GetByIdAsync` |
-| Ratings / Top | top rated, highest, best rated | `IMovieService.GetTopRatedAsync` |
-| Family / Kids | kids, family, children | filter by Genre="Family" or rating ≥ 7.5 |
-| Booking Help | book, ticket, how do I, purchase | static steps |
-| Genre Filter | action, comedy, drama, thriller, romance, sci-fi, family | `IMovieService.GetByGenreAsync` |
-| Unknown | none matched | fallback message |
+- Theaters: 4 hard-coded entries (AMC Empire 25, Regal E-Walk 4DX, AMC Lincoln Square 13, Alamo Drafthouse Downtown).
+- Showtimes: for each (movie, theater, date in next 7 days) generate 4–6 showtimes at 10:00, 11:15, 12:00, 13:30, 14:45, 16:00, 17:15, 18:30, 19:45, 20:00, 21:00, 22:45, 23:30 with format + price + status derived from the design.
 
-### 10.2 Conversation State
+### 9.2 `SeatLayoutFactory.cs`
 
-- All messages are stored in `AiAssistantViewModel.Messages` (`ObservableCollection<AssistMessage>`).
-- The sheet never clears history during a session.
-- Tapping a chip or sending a message appends a request message and then a response message.
+```csharp
+public static class SeatLayoutFactory
+{
+    public static IReadOnlyList<Seat> Build(string showtimeId)
+    {
+        // 10 rows × 14 cols, premium rows = last 2 rows, deterministic
+        // occupancy by hashing the showtimeId.
+    }
+}
+```
 
-### 10.3 Context Awareness
+### 9.3 Seeded Data Per Theater (mirrors Stitch HTML)
 
-- When invoked from Movie Details, the assistant's greeting includes the current movie title.
-- When invoked from Seat Selection, the assistant offers to "recommend the best view."
-- When invoked from Payment, the assistant offers to "walk you through it."
-- This is implemented by setting `AiContext.CurrentMovieId` / `CurrentScreenName` in each page's `OnAppearing`.
+| Theater | Icon | Category | Sample Showtimes |
+|---|---|---|---|
+| AMC Empire 25 & IMAX | `theaters` | Flagship Venue | 10:00, 13:30, 16:45, 19:15 (Prime Time), 22:00, 23:30 |
+| Regal E-Walk 4DX & RPX | `cinematic_blur` | Motion Immersion | 11:15, 14:45, 18:00, 20:30, 22:45 |
+| AMC Lincoln Square 13 & IMAX | `fullscreen` | Original 70mm Grand Screen | 12:00, 15:45, 19:30, 23:00 |
+| Alamo Drafthouse Cinema Downtown | `dinner_dining` | Curated Dining | 13:00, 17:15, 20:45 |
 
-### 10.4 Response Templates
+The selected "Chronicles of Nebula: Horizon" movie in the Stitch HTML uses ID `m-nebula` with synopsis, cast, and meta as written. AppSeed should keep this as a primary record so the demo matches the design exactly.
 
-| Intent | Template |
-|---|---|
-| Recommendation | Text summary + 1–5 `MovieAssistMessage` cards. |
-| Comparison | Two-column layout, 2 movie cards + comparison text. |
-| Movie Info | Text synopsis + cast list + rating badge. |
-| Ratings | Bulleted list of top-N movies with rating. |
-| Family / Kids | Filtered recommendation list. |
-| Booking Help | Numbered steps + "Start Booking" button. |
-| Genre Filter | Filtered recommendation list with intro text. |
-| Unknown | "I'm not sure I understood. Try one of the suggestions." |
+---
 
-### 10.5 Supported Prompt List (Must Pass)
+## 10. AI Copilot Requirements
 
-- "Recommend a family movie."
-- "Suggest an action movie."
-- "Tell me about this movie."
-- "Which movie has the highest rating?"
-- "What movie is suitable for kids?"
-- "How do I book tickets?"
+- A single `AiAssistantService` with a `RespondAsync(prompt, context)` method.
+- The intent engine is a small set of regex / keyword matchers that map to canned responses. Example intents:
+  - "recommend", "suggest" → top 3 by rating
+  - "compare" + movie title → two-column comparison
+  - "imax" / "4dx" / "dolby" → format explanation
+  - "family" / "kids" → filter by genre Family
+  - "highest rating" / "best" → top-rated
+- Every response can include up to 3 `AssistMessage` items: a text message + 0–2 movie recommendation cards.
+- The sheet uses `SfAIAssistView` with `ShowHeader="True"`, header text "Cinema AI Copilot", suggested prompts shown as `AssistItem`s at the bottom.
+- The assistant maintains a session history in `AiCopilotViewModel.Messages`.
 
 ---
 
@@ -476,195 +346,205 @@ The intent engine MUST handle, at minimum, these intents with ≥ 80% accuracy o
 
 | Scenario | Behavior |
 |---|---|
-| JSON load failure | Log, show `SfPopup` "Data could not be loaded. Retry?" with retry action. |
-| Empty result set | Render empty state with illustration and CTA. |
-| Network image 404 | Show placeholder poster (`poster_placeholder.png`). |
-| AI Assistant unknown intent | Respond with "I'm not sure I understood. Try one of the suggestions." |
-| Payment failure | Show `SfPopup` with Retry / Change Method buttons. |
-| Booking session invalid (e.g., navigated back from confirmation) | Reset to Home and clear stack. |
-| Shell route missing parameter | Redirect to Home. |
-| Concurrent seat toggles | Last write wins (acceptable in sample). |
-| Theme toggle during navigation | Apply on next render; no crash. |
-| Device back button mid-payment | Confirm via popup before discarding draft. |
+| Movie card image fails to load | Fall back to a `Border` with `surface-container-high` bg and a `movie` icon. |
+| Showtime ID is invalid | Show inline "Showtime not available" on the Theaters page and disable the "Continue" button. |
+| Seat grid generation throws | Show a `SfPopup` "Could not load seats. Try again." with a retry. |
+| Booking creation throws | Show a `SfPopup` "Could not confirm booking. Please try again." |
+| AI intent is not recognized | Reply with "I'm not sure I understood. Try one of the suggestions." |
+| Bookings list is empty | Render the designed empty state. |
 
 ---
 
 ## 12. Validation Requirements
 
-| Field | Rule | Source of truth |
-|---|---|---|
-| Card number | 12–19 digits | `ValidationService.IsValidCardNumber` |
-| UPI VPA | must contain `@` | `ValidationService.IsValidVpa` |
-| CVV | 3–4 digits | `ValidationService.IsValidCvv` |
-| Expiry | MM/YY, future date | `ValidationService.IsValidExpiry` |
-| Coupon | only `WELCOME10` valid; case-insensitive | `PricingService.ApplyCoupon` |
-| Seat count | 1–10 per booking | `SeatSelectionViewModel.MaxSeats` |
-| Phone (if collected) | 10 digits | `ValidationService.IsValidPhone` |
-| Search text | length 0–64 | enforced by `DebounceSearchBehavior` |
-
-All validation messages must be shown inline next to the field (or below), never as blocking dialogs except for hard errors.
+- Search input: trimmed, lowercased, ignored if empty.
+- Genre chip selection: at most one active at a time.
+- Format chip selection: at most one active at a time (matches the design where the active one is "All Formats").
+- Date chip selection: exactly one active.
+- Showtime selection: zero or one per theater.
+- Seat selection: 0 to 10 seats per booking.
+- "Confirm Seats" button: enabled only when `SelectedSeats.Count > 0`.
 
 ---
 
 ## 13. Acceptance Criteria
 
-### 13.1 Build & Run
+### 13.1 Build
 
-- **AC-B1:** `dotnet build -f net10.0-android` succeeds.
-- **AC-B2:** `dotnet build -f net10.0-ios` succeeds (on macOS).
-- **AC-B3:** `dotnet build -f net10.0-maccatalyst` succeeds (on macOS).
-- **AC-B4:** `dotnet build -f net10.0-windows10.0.19041.0` succeeds (on Windows).
-- **AC-B5:** App launches to Home within 2 s on a clean build.
+- AC-B1: `dotnet build -f net10.0-windows10.0.19041.0` succeeds with no errors or warnings.
+- AC-B2: App launches to Movie Home in under 2 seconds on Windows.
+- AC-B3: Title bar, sidebar, header bar, and main content are all visible at launch.
 
 ### 13.2 Functional
 
-- **AC-F1:** A user can complete a full booking in under 60 seconds.
-- **AC-F2:** All 9 features from §5 of SPECIFICATION.md are accessible and functional.
-- **AC-F3:** AI Assistant answers all 6 example prompts.
-- **AC-F4:** A completed booking appears in My Bookings → Upcoming.
-- **AC-F5:** Search and filters update the home list reactively.
-- **AC-F6:** Coupon `WELCOME10` produces a 10% discount; others show invalid.
+- AC-F1: A reviewer can complete Home → Theaters → Seat → Confirmation in under 60 seconds.
+- AC-F2: All three pages match the Stitch design tokens (colors, typography, spacing, radius).
+- AC-F3: The Seat Selection popup and Payment Confirmation popup both render and function.
+- AC-F4: A confirmed booking appears in the Bookings page.
+- AC-F5: The AI FAB is visible on all three pages and opens the assistant sheet.
+- AC-F6: Date chip selection reloads showtimes for the chosen date.
+- AC-F7: Format chip selection narrows the visible showtime pills.
+- AC-F8: "Change Movie" navigates back to Movie Home.
+- AC-F9: "Back to Home" from the confirmation navigates to Movie Home and closes the popup.
+- AC-F10: Sidebar nav highlights the active page.
 
-### 13.3 Visual / UX
+### 13.3 Visual
 
-- **AC-V1:** All screens follow the Stitch design language (card-based, generous spacing, brand color).
-- **AC-V2:** Light and dark themes are supported and consistent.
-- **AC-V3:** All async operations show a shimmer or spinner.
-- **AC-V4:** Page transitions are smooth and themed.
+- AC-V1: All design tokens from SPEC §5 are applied throughout.
+- AC-V2: The movie card on Movie Home shows the IMAX 3D chip top-left, poster, title, genre, runtime, rating row.
+- AC-V3: The Theaters page context banner shows the poster, meta chips, title, synopsis, runtime/audio/accessibility row, and Change Movie button.
+- AC-V4: The date strip has 7 cells with the correct labels (Today, Tomorrow, Weekend/Weekday).
+- AC-V5: The active date cell is filled with `primary-container` and shows the animated dot.
+- AC-V6: The theater card's "Select Showtime & Continue" button uses the primary brand color.
+- AC-V7: The Payment Confirmation popup shows a QR code, ticket card, and 3 action buttons.
+- AC-V8: Light and dark themes both render correctly.
 
 ### 13.4 Technical
 
-- **AC-T1:** MVVM strictly enforced — no business logic in code-behind.
-- **AC-T2:** All services are DI-registered and stateless.
-- **AC-T3:** `Nullable` enabled, no build warnings.
-- **AC-T4:** All JSON models round-trip through deserialization.
-- **AC-T5:** All errors are caught and surfaced via `SfPopup` or inline message.
-
-### 13.5 Content
-
-- **AC-C1:** ≥ 20 movies (10 Now Showing, 10 Coming Soon).
-- **AC-C2:** ≥ 8 theaters across ≥ 2 cities.
-- **AC-C3:** ≥ 100 showtimes across 7 days.
-- **AC-C4:** All movies have ≥ 4 cast members and a synopsis.
+- AC-T1: MVVM strictly enforced; no business logic in code-behind.
+- AC-T2: All services are DI-registered; ViewModels are constructor-injected.
+- AC-T3: All mock data comes from `AppSeed.cs`.
+- AC-T4: `Nullable` enabled; no warnings.
+- AC-T5: All fonts and design tokens are bundled in the project.
 
 ---
 
 ## 14. User Stories
 
-> All stories follow the format: *As a [persona], I want to [action], so that [benefit].*
-
-### Discovery
-- **US-01** — As a casual moviegoer, I want to browse now-playing movies as cards, so that I can quickly pick one that interests me.
-- **US-02** — As a casual moviegoer, I want to search by title, so that I can find a specific movie fast.
-- **US-03** — As a casual moviegoer, I want to filter by genre and language, so that I can narrow down to movies that fit my taste.
-- **US-04** — As a casual moviegoer, I want to see ratings and duration on each card, so that I can decide before opening details.
-
-### Details
-- **US-05** — As a cinephile, I want a detailed movie page with synopsis, cast, and languages, so that I can make an informed choice.
-- **US-06** — As a cinephile, I want a trailer button, so that I can preview the movie (mocked in this sample).
-- **US-07** — As a cinephile, I want to see a "Book Tickets" CTA, so that I can act on my interest.
-
-### Theater & Showtime
-- **US-08** — As an on-the-go booker, I want to see nearby theaters and showtimes, so that I can pick a convenient option.
-- **US-09** — As a family planner, I want to see theater amenities and screen formats, so that I can pick a comfortable experience for my family.
-- **US-10** — As a family planner, I want to switch dates, so that I can find a weekend show that works.
-
-### Seat
-- **US-11** — As a family planner, I want a visual seat map, so that I can pick seats together.
-- **US-12** — As a casual moviegoer, I want to see seat pricing, so that I can stay within budget.
-- **US-13** — As a casual moviegoer, I want the total to update live, so that I can see the impact of my choices.
-
-### Booking & Payment
-- **US-14** — As any user, I want to review my booking before paying, so that I can avoid mistakes.
-- **US-15** — As a casual moviegoer, I want a coupon option, so that I can save money.
-- **US-16** — As any user, I want a simple payment flow, so that I can complete the booking quickly.
-
-### Confirmation
-- **US-17** — As any user, I want a confirmation screen with QR code and ticket details, so that I can present it at the theater.
-- **US-18** — As any user, I want to share or download my ticket, so that I can have a backup.
-
-### History
-- **US-19** — As an on-the-go booker, I want to see all my past and upcoming bookings, so that I can revisit them.
-- **US-20** — As any user, I want Upcoming and Past tabs, so that I can quickly find what I need.
-
-### AI Assistant
-- **US-21** — As a family planner, I want to ask "recommend a family movie," so that I can save browsing time.
-- **US-22** — As a cinephile, I want to compare two movies, so that I can decide between them.
-- **US-23** — As a casual moviegoer, I want to see top-rated movies this week, so that I can pick something good.
-- **US-24** — As any user, I want the assistant to be reachable from every screen, so that I can ask for help at any time.
+- **US-01** — As a moviegoer, I want to browse now-playing movies on the home page, so I can pick one.
+- **US-02** — As a moviegoer, I want to search by movie title, so I can find a specific film.
+- **US-03** — As a moviegoer, I want to filter by genre, so I can narrow the list.
+- **US-04** — As a moviegoer, I want to see ratings on each card, so I can decide before opening details.
+- **US-05** — As a moviegoer, I want to see which theaters are showing my movie, so I can pick one nearby.
+- **US-06** — As a moviegoer, I want to switch dates, so I can find a show that fits my schedule.
+- **US-07** — As a moviegoer, I want to see showtime prices and seat availability, so I can choose the best option.
+- **US-08** — As a moviegoer, I want to filter by format (IMAX, 4DX, Standard), so I get the experience I want.
+- **US-09** — As a moviegoer, I want to pick my seats visually, so I can sit with my group.
+- **US-10** — As a moviegoer, I want to see the total cost update live, so I stay within budget.
+- **US-11** — As a moviegoer, I want a confirmation with a QR code, so I can present it at the theater.
+- **US-12** — As a moviegoer, I want to see my past bookings, so I can revisit a ticket.
+- **US-13** — As a moviegoer, I want to ask the AI Copilot for recommendations, so I can discover new movies.
+- **US-14** — As a moviegoer, I want the AI Copilot to be available on every page, so I can ask without losing my place.
 
 ---
 
 ## 15. Milestones
 
-| Milestone | Tasks (see TASKS.md) | Definition of Done |
+| Milestone | Deliverable | Definition of Done |
 |---|---|---|
-| **M1 — Foundation** | T1.1–T1.5 | Project builds, theme works, mock data loads. |
-| **M2 — Discovery** | T2.1–T2.4 | Home and Movie Details fully functional. |
-| **M3 — Booking Flow** | T3.1–T3.6 | Full end-to-end booking works on all platforms. |
-| **M4 — AI Assistant** | T4.1–T4.3 | AI assistant answers all example prompts; available globally. |
-| **M5 — Polish** | T5.1–T5.3, T6.1–T6.3, T7.1–T7.3, T8.1–T8.4 | All acceptance criteria met. |
+| **M1 — Window + Chrome** | Title bar, sidebar, header bar, AI FAB, navigation enum. Movie Home placeholder. | App launches, navigates between placeholder pages, FAB is present. |
+| **M2 — Movie Home + Theaters** | Both pages render the Stitch design with mock data; date strip, filters, theater cards, showtime selection. | Reviewer can browse, search, filter, switch date, and select a showtime. |
+| **M3 — Booking Popups** | Seat Selection popup, Payment Confirmation popup, booking persisted in repository. | Reviewer can pick seats, see total, confirm, and land on the confirmation. |
+| **M4 — Bookings + AI Copilot** | Bookings list, AI Copilot sheet, light/dark theme polish. | Reviewer can view past bookings, open ticket, and chat with the AI. |
 
 ---
 
-## Appendix A — Screen-to-Control Quick Reference
+## 16. Appendix A — Page-to-Control Map
 
-| Screen | Syncfusion Controls |
+| Element | Control |
 |---|---|
-| Home | `SfCollectionView` (carousel, grid), `SfListView` (coming soon), `SfChip` (genre), `SfComboBox` (language), `SfEffectsView`, `SfShimmer`. |
-| Movie Details | `SfCardView`, `SfBadgeView`, `SfChip`, `SfCollectionView` (cast), `SfGradientView`, `SfEffectsView`, `SfPopup` (trailer). |
-| Theater Selection | `SfListView` / `SfCollectionView`, `SfChip` (date), `SfChip` (showtime), `SfBadgeView`, `SfEffectsView`. |
-| Seat Selection | `SfCardView`, `SfEffectsView`, `SfButton` (proceed), custom `SeatControl`. |
-| Booking Summary | `SfCardView`, `SfTextInputLayout` (coupon), `SfButton` (apply, proceed). |
-| Payment | `SfSegmentedControl`, `SfRadioButton`, `SfTextInputLayout`, `SfBottomSheet` (processing), `SfPopup` (failure). |
-| Booking Confirmation | `SfCardView`, `SfEffectsView`, `SfButton` (download, share, back), QR generator. |
-| My Bookings | `SfTabView`, `SfListView` / `SfCollectionView`, `SfBadgeView`, `SfEffectsView`. |
-| AI Assistant | `SfBottomSheet`, `SfAIAssistView`, `SfChip` (suggestions), `SfCardView` (movie cards in responses). |
+| Title bar | Custom `Border` + `Image` (movie icon) + `Label` + 3 `SfButton` (min/max/close) |
+| Sidebar nav item | `Border` + `Label` (Material icon) + `Label` (label) bound to a `Command` |
+| App bar search | `SfTextInputLayout` wrapping `Entry` with leading icon `Border` |
+| Movie card | `SfCardView` with `Image` + `Label`s + small `Border` chip |
+| Genre chip | `SfChip` (selectable) with `IsSelected` styling |
+| Date chip | `Border` with 3 `Label`s and an animated `BoxView` (dot) |
+| Theater card | `SfCardView` with header row, amenities row, `SfCollectionView` of showtime pills, footer `SfButton` |
+| Showtime pill | `Border` with time, format label, price, status badge |
+| Filters panel | `Border` + rows of `SfChip`s, `SfComboBox`, `SfToggleButton` |
+| Seat | Small clickable `Border` with `CornerRadius="6"` |
+| Seat legend | Horizontal `BindableLayout` of (swatch, label) pairs |
+| Ticket card | `Border` with `VerticalStackLayout` |
+| QR code | `SfBarcodeGenerator` with `Symbology="QR"` |
+| AI FAB | 48 px circular `Border` with `LinearGradientBrush` + icon + 12 px dot |
+| AI sheet | `SfBottomSheet` with `SfAIAssistView` inside |
 
 ---
 
-## Appendix B — Theming Tokens
+## 17. Appendix B — Theming Tokens
 
+```xml
+<!-- Colors.xaml -->
+<Color x:Key="Primary">#3525cd</Color>
+<Color x:Key="PrimaryContainer">#4f46e5</Color>
+<Color x:Key="OnPrimary">#ffffff</Color>
+<Color x:Key="OnPrimaryContainer">#dad7ff</Color>
+
+<Color x:Key="Secondary">#712ae2</Color>
+<Color x:Key="SecondaryContainer">#8a4cfc</Color>
+<Color x:Key="SecondaryFixed">#eaddff</Color>
+<Color x:Key="OnSecondary">#ffffff</Color>
+
+<Color x:Key="Tertiary">#00505f</Color>
+<Color x:Key="TertiaryContainer">#006a7c</Color>
+<Color x:Key="OnTertiary">#ffffff</Color>
+<Color x:Key="OnTertiaryContainer">#93e8ff</Color>
+
+<Color x:Key="Error">#ba1a1a</Color>
+<Color x:Key="ErrorContainer">#ffdad6</Color>
+<Color x:Key="OnError">#ffffff</Color>
+
+<Color x:Key="Surface">#f8f9ff</Color>
+<Color x:Key="SurfaceContainerLowest">#ffffff</Color>
+<Color x:Key="SurfaceContainerLow">#eff4ff</Color>
+<Color x:Key="SurfaceContainer">#e5eeff</Color>
+<Color x:Key="SurfaceContainerHigh">#dce9ff</Color>
+<Color x:Key="SurfaceContainerHighest">#d3e4fe</Color>
+<Color x:Key="SurfaceVariant">#d3e4fe</Color>
+
+<Color x:Key="Outline">#777587</Color>
+<Color x:Key="OutlineVariant">#c7c4d8</Color>
+
+<Color x:Key="OnSurface">#0b1c30</Color>
+<Color x:Key="OnSurfaceVariant">#464555</Color>
+<Color x:Key="InverseSurface">#213145</Color>
+<Color x:Key="InverseOnSurface">#eaf1ff</Color>
+<Color x:Key="InversePrimary">#c3c0ff</Color>
+
+<Color x:Key="Background">#f8f9ff</Color>
+<Color x:Key="OnBackground">#0b1c30</Color>
+
+<Color x:Key="Amber400">#fbbf24</Color>
+<Color x:Key="Amber500">#f59e0b</Color>
+<Color x:Key="Amber600">#d97706</Color>
 ```
-Primary:          #FF3D5A   (CineBook red — buy tickets, primary CTAs)
-PrimaryDark:      #C92E47
-Secondary:        #1F1F2E   (background, dark surface)
-Accent:           #FFB300   (premium tier, highlights)
-Success:          #2EC27E
-Error:            #E53935
-Info:             #1E88E5
 
-BackgroundLight:  #FFFFFF
-BackgroundDark:   #121212
-SurfaceLight:     #F7F7FA
-SurfaceDark:      #1E1E1E
-OnSurfaceLight:   #1F1F1F
-OnSurfaceDark:    #E6E1E6
+Dark variant mirrors the same keys with dark equivalents. All styles (`PrimaryButton`, `OutlinedButton`, `SurfaceCard`, `PrimaryChip`, `InactiveChip`, `DateChipActive`, `DateChipInactive`, etc.) reference these tokens — never hex literals in pages.
+
+---
+
+## 18. Appendix C — AppSeed Sample Movies
+
+```csharp
+public static class AppSeed
+{
+    public static IReadOnlyList<Movie> Movies => new[]
+    {
+        new Movie {
+            Id = "m-nebula", Title = "Chronicles of Nebula: Horizon",
+            Synopsis = "Captain Alyssa Vance leads an intrepid exploration vessel beyond the known Orion Reach to investigate an ancient hyperspace beacon sending harmonious resonance signals.",
+            Genre = "Sci-Fi • Epic Adventure",
+            Genres = new() { "Sci-Fi", "Action", "Adventure" },
+            Language = "English",
+            Languages = new() { "English", "Spanish", "Hindi" },
+            DurationMinutes = 168, Rating = 4.9, VoteCount = 28400,
+            RatingLabel = "PG-13", Format = "IMAX 3D",
+            PosterUrl = "https://images.unsplash.com/...",
+            Cast = new() { /* 4 cast members */ }
+        },
+        // + 9 more movies
+    };
+
+    public static IReadOnlyList<Theater> Theaters => new[]
+    {
+        new Theater { Id = "t-amc-empire", Name = "AMC Empire 25 & IMAX",
+            Location = "234 W 42nd St, Manhattan", Category = "Flagship Venue",
+            Icon = "theaters", DistanceKm = 0.8, /* ... */ },
+        // + 3 more
+    };
+
+    public static IReadOnlyList<Showtime> Showtimes(string movieId, string theaterId, DateTime date) { /* generated */ }
+}
 ```
 
-These tokens are added to `Resources/Styles/Colors.xaml` and consumed via `DynamicResource` in XAML, so the `ThemeService` can swap them at runtime.
-
----
-
-## Appendix C — Mock Catalog (Sample Seed)
-
-For developer convenience, the JSON should include movies like:
-
-- *Stellar Horizon* — Sci-Fi, English, 2h 28m, rating 8.6.
-- *Laughing in Mumbai* — Comedy, Hindi, 2h 12m, rating 8.1.
-- *Kandukondain 2* — Drama, Tamil, 2h 35m, rating 8.3.
-- *Last Heist* — Thriller, English, 1h 58m, rating 7.4.
-- *Sitaara* — Family, Telugu, 1h 50m, rating 8.8.
-- *Heartbeats* — Romance, Malayalam, 2h 04m, rating 7.9.
-- *Galactic Wars: Dawn* — Sci-Fi, English (3D), 2h 45m, rating 9.1.
-- *Veera Saga* — Action, Tamil, 2h 20m, rating 8.0.
-- *Yellow Umbrella* — Drama, Kannada, 1h 47m, rating 8.5.
-- *Cozy Christmas* — Family, English, 1h 42m, rating 7.2.
-
-(plus 10 more to satisfy the catalog target.)
-
-Theaters in `theaters.json` should be spread across at least 2 cities with realistic Indian names (PVR, INOX, Cinepolis, Carnival) — for **fictional sample data** only.
-
----
-
-*See [TASKS.md](./TASKS.md) for the full 8-phase development task breakdown that satisfies this harness.*
+The full seed of 10 movies can reuse public-domain movie titles or fictional ones — the design doesn't dictate specific titles, but `m-nebula` should be the first one so the Theaters page matches the Stitch HTML exactly when launched.
