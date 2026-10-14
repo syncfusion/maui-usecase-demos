@@ -1,4 +1,4 @@
-# Smart Movie Ticket Booking — Specification, Harness & Development Plan
+# Smart Movie Ticket Booking — Functional Specification
 
 **Project Type:** .NET MAUI Showcase Sample
 **UI Toolkit:** Syncfusion .NET MAUI Controls (v33.2.x)
@@ -6,6 +6,13 @@
 **Data Source:** Mock JSON (no backend / no real payment)
 **Design Reference:** Stitch — `https://stitch.withgoogle.com/projects/14368844853394156269`
 **Specification Reference (Loop):** `https://loop.cloud.microsoft/p/eyJ1IjoiaHR0cHM6Ly9zeW5jZnVzaW9uLnNoYXJlcG9pbnQuY29tL2NvbnRlbnRzdG9yYWdlL0NTUF8xMDc3OTg2Zi1mODE2LTRiMmItYTI3OC04ODM5NzhkNGU5Y2U`
+
+---
+
+## Companion Documents
+
+- **`HARNESS.md`** — Functional & Non-Functional Requirements, Assumptions, Dependencies, Screen-level Implementation Guidelines, State Management Requirements, Service Layer Requirements, Mock API/Data Contracts, AI Integration Requirements, Error Handling Scenarios, Validation Requirements, Acceptance Criteria, User Stories, Milestones, Reference Appendices.
+- **`TASKS.md`** — 8-phase development task breakdown (Phase 1 Foundation → Phase 8 Final Sample Polish), with Task Title, Description, Dependencies, Expected Deliverables, and Acceptance Criteria for every task.
 
 ---
 
@@ -24,11 +31,6 @@
 11. [Syncfusion Control Usage](#11-syncfusion-control-usage)
 12. [AI Assistant Integration](#12-ai-assistant-integration)
 13. [Mock Data Requirements](#13-mock-data-requirements)
-14. [Harness Requirements](#14-harness-requirements)
-15. [Development Tasks](#15-development-tasks)
-16. [Acceptance Criteria](#16-acceptance-criteria)
-17. [User Stories](#17-user-stories)
-18. [Milestones](#18-milestones)
 
 ---
 
@@ -364,10 +366,10 @@ Every screen below is described as an AI agent would implement it: layout, contr
 - Bottom sheet (`SfBottomSheet`) opens on tap of Pay.
 - Lottie or built-in spinner: "Processing payment…"
 - After ~2.5 seconds, success path:
-  - Generate Booking ID.
-  - Generate QR code.
-  - Persist booking to in-memory store.
-  - Navigate to `BookingConfirmationPage`.
+   - Generate Booking ID.
+   - Generate QR code.
+   - Persist booking to in-memory store.
+   - Navigate to `BookingConfirmationPage`.
 
 **Failure Simulation (5%):** Show a `SfPopup` "Payment failed. Please try again." with Retry / Change Method.
 
@@ -436,29 +438,29 @@ Below is the canonical happy-path journey, with branch points for the AI assista
 
 ```
 [App Launch]
-     │
-     ▼
+   │
+   ▼
 [Home Screen] ──search/filter──► [Filtered Home]
-     │ tap card
-     ▼
+   │ tap card
+   ▼
 [Movie Details] ──AI FAB──► [AI Assistant Overlay]
-     │ Book Tickets
-     ▼
+   │ Book Tickets
+   ▼
 [Theater Selection] ──pick date + showtime──►
-     │ tap showtime
-     ▼
+   │ tap showtime
+   ▼
 [Seat Selection] ──pick seats (≥1)──►
-     │ Proceed
-     ▼
+   │ Proceed
+   ▼
 [Booking Summary] ──optional: edit seats / apply coupon──►
-     │ Proceed to Pay
-     ▼
+   │ Proceed to Pay
+   ▼
 [Payment] ──method + form + tap Pay──►
-     │ 2.5s processing
-     ��
+   │ 2.5s processing
+   ▼
 [Booking Confirmation] ──Download / Share / Back to Home──►
-     │
-     ▼
+   │
+   ▼
 [Home Screen]
 ```
 
@@ -499,12 +501,12 @@ Shell
 ├── Tab: Home       → HomePage
 ├── Tab: My Bookings → MyBookingsPage
 └── Push stack
-    ├── MovieDetailsPage
-    ├── TheaterSelectionPage
-    ├── SeatSelectionPage
-    ├── BookingSummaryPage
-    ├── PaymentPage
-    └── BookingConfirmationPage
+ ├── MovieDetailsPage
+ ├── TheaterSelectionPage
+ ├── SeatSelectionPage
+ ├── BookingSummaryPage
+ ├── PaymentPage
+ └── BookingConfirmationPage
 
 [Modal overlay]
 └── AIAssistantSheet (SfBottomSheet with SfAIAssistView)
@@ -1110,506 +1112,5 @@ public interface IAiAssistantService
 
 ---
 
-## 14. Harness Requirements
-
-The "harness" is the contract an AI agent must satisfy to produce a working, design-faithful implementation.
-
-### 14.1 Functional Requirements (FR)
-
-| ID | Requirement |
-|---|---|
-| FR-01 | App launches to Home Screen within 2 seconds on a mid-tier device. |
-| FR-02 | Home displays a horizontal carousel of Now-Showing movies, each card with poster, title, genre, duration, rating, language. |
-| FR-03 | Home provides working search, genre filter, and language filter that update the visible list reactively. |
-| FR-04 | Tapping a movie card navigates to Movie Details with the correct movie loaded. |
-| FR-05 | Movie Details displays all required fields and the "Book Tickets" CTA is enabled only after data is loaded. |
-| FR-06 | Tapping "Book Tickets" navigates to Theater Selection for the selected movie. |
-| FR-07 | Theater Selection shows ≥ 3 theaters for the selected movie, each with showtimes for the selected date. |
-| FR-08 | Date selector switches showtimes for all theaters. |
-| FR-09 | Tapping a showtime navigates to Seat Selection for that showtime. |
-| FR-10 | Seat Selection shows a visual grid with at least 80 seats; available, occupied, selected, premium states are visually distinct. |
-| FR-11 | At least 1 seat must be selected to enable "Proceed". |
-| FR-12 | Pricing summary updates live as seats are toggled. |
-| FR-13 | Tapping "Proceed" navigates to Booking Summary with all selections preserved. |
-| FR-14 | Booking Summary shows movie, theater, showtime, seats, fees, total, and an "Apply Coupon" input. |
-| FR-15 | "WELCOME10" coupon applies a 10% discount; any other input shows an invalid-coupon message. |
-| FR-16 | Tapping "Proceed to Pay" navigates to Payment with the total amount. |
-| FR-17 | Payment allows selection of UPI, Card, or Wallet and shows the appropriate form. |
-| FR-18 | Tapping "Pay" shows a processing animation for ~2.5s. |
-| FR-19 | On success, navigates to Booking Confirmation with booking ID, QR code, and ticket details. |
-| FR-20 | On failure (5%), shows a retry popup; user can retry or change method. |
-| FR-21 | Booking Confirmation allows "Download Ticket" (popup) and "Share Ticket" (share sheet). |
-| FR-22 | "Back to Home" pops to root and resets `BookingSession`. |
-| FR-23 | My Bookings is reachable from Home; it shows Upcoming and Past tabs. |
-| FR-24 | A completed booking appears in My Bookings → Upcoming. |
-| FR-25 | The AI Assistant is reachable from every primary screen via a persistent FAB or toolbar entry. |
-| FR-26 | The AI Assistant answers all 6 example prompts in the spec without throwing. |
-| FR-27 | AI Assistant preserves conversation history for the session. |
-| FR-28 | App supports light and dark themes. |
-| FR-29 | All async operations show shimmer/loading states. |
-| FR-30 | App handles back-button navigation correctly (no orphaned pages). |
-
-### 14.2 Non-Functional Requirements (NFR)
-
-| ID | Requirement |
-|---|---|
-| NFR-01 | App must compile and run on Android (API 21+), iOS (15+), Mac Catalyst (15+), and Windows (10.0.17763+). |
-| NFR-02 | No third-party paid UI library other than Syncfusion. |
-| NFR-03 | All animations must run at 60 fps on a mid-tier device. |
-| NFR-04 | No PII collection, no network calls beyond image fetches. |
-| NFR-05 | All text in resources (no hard-coded user-facing strings in code-behind). |
-| NFR-06 | `Nullable` enabled, no warnings in build. |
-| NFR-07 | MVVM strictly enforced — no business logic in code-behind. |
-| NFR-08 | Mock data loaded once; no re-loads on navigation. |
-| NFR-09 | Theming via Syncfusion theme dictionary + custom keys. |
-| NFR-10 | Respect platform safe areas (notch, status bar, gesture bar). |
-
-### 14.3 Assumptions
-
-- Users accept that this is a sample, not a production app.
-- No real payment processing occurs.
-- Movie posters are bundled assets.
-- The device has a working network connection only if remote images are used.
-- A single mock user profile is sufficient.
-
-### 14.4 Dependencies
-
-| Dependency | Version | Reason |
-|---|---|---|
-| `Microsoft.Maui.Controls` | 10.0.80 | MAUI runtime. |
-| `CommunityToolkit.Mvvm` | 8.4.0 | MVVM source generators. |
-| `Syncfusion.Maui.Core` | 33.2.15 | Common Syncfusion controls. |
-| `Syncfusion.Maui.ListView` | 33.2.15 | SfListView, SfCollectionView. |
-| `Syncfusion.Maui.Buttons` | 33.2.15 | SfButton, SfSegmentedControl, SfRadioButton. |
-| `Syncfusion.Maui.Popup` | 33.2.15 | SfPopup. |
-| `Syncfusion.Maui.BottomSheet` | 33.2.15 | SfBottomSheet. |
-| `Syncfusion.Maui.AIAssistView` | 33.2.15 | SfAIAssistView. |
-| `Syncfusion.Maui.Cards` | 33.2.15 | SfCardView. |
-| `Syncfusion.Maui.Chips` | 33.2.15 | SfChip. |
-| `Syncfusion.Maui.ComboBox` | 33.2.15 | SfComboBox. |
-| `Syncfusion.Maui.TabView` | 33.2.15 | SfTabView. |
-| `Syncfusion.Maui.Barcode` | 33.2.15 | QR generator. |
-| `Syncfusion.Maui.Charts` | 33.2.15 (optional) | Sparkline for popularity. |
-| `Microsoft.Extensions.Logging.Debug` | 10.0.9 | Debug logging. |
-
-### 14.5 Screen-Level Implementation Guidelines
-
-Each page must:
-
-- Use `ContentPage` as base.
-- Inject its ViewModel via DI.
-- Set `BindingContext` in the constructor.
-- Override `OnAppearing` only to call `InitializeAsync` on the ViewModel.
-- Use Shell query parameters for IDs (e.g., `?movieId=...`).
-- Have a corresponding route registered in `AppShell.xaml`.
-
-### 14.6 State Management Requirements
-
-- One source of truth: `BookingSession` for in-progress, `BookingRepository` for completed.
-- ViewModels must never directly mutate each other.
-- Use `MessagingCenter` or an `EventAggregator` (custom) for cross-screen notifications such as "BookingSessionUpdated."
-
-### 14.7 Service Layer Requirements
-
-- Services are registered in `MauiProgram`.
-- Services are stateless and thread-safe.
-- Services expose `async` methods returning `Task<T>`.
-- JSON deserialization uses `JsonSerializerOptions { PropertyNameCaseInsensitive = true }`.
-
-### 14.8 Error Handling Scenarios
-
-| Scenario | Behavior |
-|---|---|
-| JSON load failure | Log, show `SfPopup` "Data could not be loaded. Retry?" with retry action. |
-| Empty result set | Render empty state with illustration and CTA. |
-| Network image 404 | Show placeholder poster (`poster_placeholder.png`). |
-| AI Assistant unknown intent | Respond with "I'm not sure I understood. Try one of the suggestions." |
-| Payment failure | Show `SfPopup` with Retry / Change Method buttons. |
-| Booking session invalid (e.g., navigated back from confirmation) | Reset to Home and clear stack. |
-
-### 14.9 Validation Requirements
-
-- Card number: 12–19 digits (mock — accept anything in that range).
-- UPI VPA: must contain `@`.
-- CVV: 3–4 digits.
-- Expiry: MM/YY, future date.
-- Coupon: only `WELCOME10` is valid; case-insensitive.
-- Seat count: 1–10 per booking.
-- Phone (if collected): 10 digits.
-
-### 14.10 Acceptance Criteria Summary
-
-See §16.
-
----
-
-## 15. Development Tasks
-
-Each task is granular enough to be completed in 0.5–2 days and produces verifiable deliverables.
-
-### Phase 1 — Foundation
-
-#### T1.1 Project Bootstrap
-- **Description:** Create new .NET MAUI project `SmartMovieBooking`, add Syncfusion NuGet packages, configure `MauiProgram`, register Syncfusion theme, verify build on all target frameworks.
-- **Dependencies:** none.
-- **Deliverables:** Compilable project with all Syncfusion packages and a "Hello" home page.
-- **Acceptance:** `dotnet build` succeeds; app launches to "Hello" page.
-
-#### T1.2 Theme Service & Resource Dictionaries
-- **Description:** Implement `ThemeService` (light/dark toggle) following the `EmployeeDirectory` pattern. Add `Colors.xaml`, `Styles.xaml`, and `Theme*` keys.
-- **Dependencies:** T1.1.
-- **Deliverables:** `Services/ThemeService.cs`, `Resources/Styles/Colors.xaml`, `Resources/Styles/Styles.xaml`.
-- **Acceptance:** Toggling theme updates MAUI `UserAppTheme` and Syncfusion `VisualTheme`; all colors update at runtime.
-
-#### T1.3 Project Structure & DI Wiring
-- **Description:** Create folder skeleton (Models, Services, ViewModels, Views, Controls, Converters, Behaviors). Register all services and ViewModels in `MauiProgram.cs`.
-- **Dependencies:** T1.1.
-- **Deliverables:** Empty folders, registration block, `BaseViewModel`.
-- **Acceptance:** `MauiProgram.CreateMauiApp()` resolves without errors.
-
-#### T1.4 Mock Data Authoring
-- **Description:** Create `movies.json`, `theaters.json`, `showtimes.json`, `cast.json`, `userprofile.json` per §13.
-- **Dependencies:** T1.3.
-- **Deliverables:** JSON files committed under `Resources/Raw/`.
-- **Acceptance:** Each file deserializes into the model with no errors.
-
-#### T1.5 Models & JSON Loading
-- **Description:** Implement all models from §9 and the JSON loader in services.
-- **Dependencies:** T1.4.
-- **Deliverables:** All model files, `MovieService.GetNowShowingAsync()` returns ≥ 10 movies.
-- **Acceptance:** Unit-testable (or sample load) returns expected counts.
-
-### Phase 2 — Core UI Development
-
-#### T2.1 App Shell & Navigation
-- **Description:** Configure `AppShell.xaml` with tabs (Home, My Bookings) and routes for push pages. Implement `NavigationService` to support query params.
-- **Dependencies:** T1.3.
-- **Deliverables:** `AppShell.xaml(.cs)`, `Services/NavigationService.cs`.
-- **Acceptance:** App launches to Home tab; routes resolve.
-
-#### T2.2 Reusable UI Library
-- **Description:** Build `MovieCardView`, `TheaterCardView`, `ShowtimeChip`, `RatingBadge`, `QrCodeView`, and all converters/behaviors.
-- **Dependencies:** T1.2.
-- **Deliverables:** Files under `Controls/`, `Converters/`, `Behaviors/`.
-- **Acceptance:** All controls render with sample data in a test page.
-
-#### T2.3 Home Screen
-- **Description:** Implement `HomePage.xaml` and `HomeViewModel` per §6.1.
-- **Dependencies:** T2.1, T2.2, T1.5.
-- **Deliverables:** Working home with carousels, search, filters, shimmer loading.
-- **Acceptance:** All cards render; search and filter update list; tap navigates to details.
-
-#### T2.4 Movie Details Screen
-- **Description:** Implement per §6.2.
-- **Dependencies:** T2.3, T2.2.
-- **Deliverables:** `MovieDetailsPage.xaml(.cs)`, `MovieDetailsViewModel.cs`.
-- **Acceptance:** Hero, cast row, languages, and CTAs all work; trailer shows popup; "Book Tickets" navigates to theater.
-
-### Phase 3 — Booking Workflow
-
-#### T3.1 Theater Selection Screen
-- **Description:** Implement per §6.3.
-- **Dependencies:** T1.5, T2.2.
-- **Deliverables:** `TheaterSelectionPage`, `TheaterSelectionViewModel`.
-- **Acceptance:** Date changes update showtimes; tap showtime navigates to seat.
-
-#### T3.2 Seat Selection Screen
-- **Description:** Implement per §6.4, including `SeatControl` and `SeatStateToColorConverter`.
-- **Dependencies:** T3.1, T2.2.
-- **Deliverables:** `SeatSelectionPage`, `SeatSelectionViewModel`, `SeatControl`.
-- **Acceptance:** Seats render in correct state; selection updates pricing; proceed disabled at 0 seats.
-
-#### T3.3 Booking Summary Screen
-- **Description:** Implement per §6.5 with coupon logic.
-- **Dependencies:** T3.2, T2.2.
-- **Deliverables:** `BookingSummaryPage`, `BookingSummaryViewModel`.
-- **Acceptance:** WELCOME10 works; total recomputes; proceed navigates to payment.
-
-#### T3.4 Payment Screen
-- **Description:** Implement per §6.6 with method selection, forms, processing sheet.
-- **Dependencies:** T3.3.
-- **Deliverables:** `PaymentPage`, `PaymentViewModel`, `PaymentService`.
-- **Acceptance:** Processing animates; success routes to confirmation; failure shows popup with retry.
-
-#### T3.5 Booking Confirmation Screen
-- **Description:** Implement per §6.7 with QR code, download/share/back actions.
-- **Dependencies:** T3.4.
-- **Deliverables:** `BookingConfirmationPage`, `BookingConfirmationViewModel`, `QrCodeView`, `BookingRepository.Add(...)`.
-- **Acceptance:** Confirmation displays booking; download popup works; share uses system share sheet; back resets session.
-
-#### T3.6 My Bookings Screen
-- **Description:** Implement per §6.8 with Upcoming/Past tabs and empty state.
-- **Dependencies:** T3.5, T2.2.
-- **Deliverables:** `MyBookingsPage`, `MyBookingsViewModel`.
-- **Acceptance:** A completed booking appears in Upcoming; after showtime, in Past.
-
-### Phase 4 — AI Movie Assistant
-
-#### T4.1 Intent Engine
-- **Description:** Implement `AiAssistantService.ProcessAsync` with intent classification, keyword scoring, and data lookups.
-- **Dependencies:** T1.5.
-- **Deliverables:** `AiAssistantService.cs`, `AiContext.cs`, message templates.
-- **Acceptance:** All 6 example prompts return non-empty, on-topic results.
-
-#### T4.2 AI AssistView UI
-- **Description:** Implement `AiAssistantSheet` and `AiAssistantViewModel`. Wire suggested prompts, input bar, history.
-- **Dependencies:** T4.1, T2.2.
-- **Deliverables:** `Views/AiAssistantSheet.xaml(.cs)`, `ViewModels/AiAssistantViewModel.cs`.
-- **Acceptance:** Sheet opens from Home; suggestions work; messages render with correct templates.
-
-#### T4.3 Global AI Entry Points
-- **Description:** Add AI FAB on Home and toolbar entries on every primary page. Wire to `BookingSession`-aware context.
-- **Dependencies:** T4.2, all primary pages.
-- **Deliverables:** Updated `*Page.xaml` files.
-- **Acceptance:** AI sheet opens from every primary screen with appropriate context greeting.
-
-### Phase 5 — Business Logic
-
-#### T5.1 Booking Session & Repository
-- **Description:** Implement `BookingSession` (singleton) and `IBookingRepository` with add/list events.
-- **Dependencies:** T1.3.
-- **Deliverables:** `BookingSession.cs`, `BookingRepository.cs`.
-- **Acceptance:** Session clears on confirm; repository raises event on add.
-
-#### T5.2 Pricing & Coupon Logic
-- **Description:** Centralize seat-tier pricing, fee, tax, and coupon math in `PricingService`.
-- **Dependencies:** T3.2, T3.3.
-- **Deliverables:** `Services/PricingService.cs`.
-- **Acceptance:** All screens agree on totals; coupon is applied only once.
-
-#### T5.3 Validation Service
-- **Description:** Centralize input validation (card, UPI, CVV, expiry).
-- **Dependencies:** T3.4.
-- **Deliverables:** `Services/ValidationService.cs`.
-- **Acceptance:** Invalid inputs surface inline error messages and disable Pay.
-
-### Phase 6 — Data Integration
-
-#### T6.1 Image Asset Bundling
-- **Description:** Bundle 20+ placeholder posters, cast avatars, and theater logos as MAUI assets.
-- **Dependencies:** T1.4.
-- **Deliverables:** `Resources/Images/Posters/*`, `Resources/Images/Cast/*`, `Resources/Images/Theaters/*`.
-- **Acceptance:** All images load in app.
-
-#### T6.2 Localized Strings
-- **Description:** Move all user-facing text to `Resources/Strings/Strings.resx` (or simple constants file) for i18n-readiness.
-- **Dependencies:** T3.5.
-- **Deliverables:** Strings resource.
-- **Acceptance:** No literal user-facing strings in XAML code-behind.
-
-#### T6.3 Mock Realism Layer
-- **Description:** Add artificial delays, randomized seat occupancy, and 5% payment failure to make the app feel real.
-- **Dependencies:** T1.5, T3.4.
-- **Deliverables:** `Services/MockLatency.cs` (or inline delays), seeded RNG.
-- **Acceptance:** Loading states visible; seats differ between launches; payment failure reproducible.
-
-### Phase 7 — Testing & Validation
-
-#### T7.1 Manual Test Pass
-- **Description:** Walk through every screen on every target framework; file bugs.
-- **Dependencies:** T1–T6.
-- **Deliverables:** Test report.
-- **Acceptance:** All FRs pass.
-
-#### T7.2 Theming Audit
-- **Description:** Verify all screens in light and dark themes.
-- **Dependencies:** T7.1.
-- **Deliverables:** Theme audit checklist.
-- **Acceptance:** No contrast or color regressions.
-
-#### T7.3 Performance Pass
-- **Description:** Verify 60 fps on carousels, seat grid, AI sheet.
-- **Dependencies:** T7.1.
-- **Deliverables:** Performance notes.
-- **Acceptance:** No visible jank.
-
-### Phase 8 — Final Sample Polish
-
-#### T8.1 Empty States & Illustrations
-- **Description:** Add illustrations to all empty states.
-- **Dependencies:** T7.1.
-- **Deliverables:** SVG / PNG illustrations.
-- **Acceptance:** Every list has a designed empty state.
-
-#### T8.2 Animations & Transitions
-- **Description:** Add page-transition animations, success animation, processing animation.
-- **Dependencies:** T3.5, T3.6.
-- **Deliverables:** XAML animations / Lottie files.
-- **Acceptance:** Smooth, no jank, theme-aware.
-
-#### T8.3 README & Sample Documentation
-- **Description:** Write a sample README that explains the app, architecture, AI assistant, and how to run.
-- **Dependencies:** T7.1.
-- **Deliverables:** `README.md` at project root.
-- **Acceptance:** A new developer can run the app following only the README.
-
-#### T8.4 Final Build & Smoke Test
-- **Description:** Clean, rebuild, and smoke-test all four target frameworks.
-- **Dependencies:** T8.1–T8.3.
-- **Deliverables:** Build report.
-- **Acceptance:** All targets build and launch.
-
----
-
-## 16. Acceptance Criteria
-
-### 16.1 Build & Run
-
-- AC-B1: `dotnet build -f net10.0-android` succeeds.
-- AC-B2: `dotnet build -f net10.0-ios` succeeds (on macOS).
-- AC-B3: `dotnet build -f net10.0-maccatalyst` succeeds (on macOS).
-- AC-B4: `dotnet build -f net10.0-windows10.0.19041.0` succeeds (on Windows).
-- AC-B5: App launches to Home within 2 s on a clean build.
-
-### 16.2 Functional
-
-- AC-F1: A user can complete a full booking in under 60 seconds.
-- AC-F2: All 9 features from §5 are accessible and functional.
-- AC-F3: AI Assistant answers all 6 example prompts.
-- AC-F4: A completed booking appears in My Bookings → Upcoming.
-- AC-F5: Search and filters update the home list reactively.
-- AC-F6: Coupon `WELCOME10` produces a 10% discount; others show invalid.
-
-### 16.3 Visual / UX
-
-- AC-V1: All screens follow the Stitch design language (card-based, generous spacing, brand color).
-- AC-V2: Light and dark themes are supported and consistent.
-- AC-V3: All async operations show a shimmer or spinner.
-- AC-V4: Page transitions are smooth and themed.
-
-### 16.4 Technical
-
-- AC-T1: MVVM strictly enforced — no business logic in code-behind.
-- AC-T2: All services are DI-registered and stateless.
-- AC-T3: `Nullable` enabled, no build warnings.
-- AC-T4: All JSON models round-trip through deserialization.
-- AC-T5: All errors are caught and surfaced via `SfPopup` or inline message.
-
-### 16.5 Content
-
-- AC-C1: ≥ 20 movies (10 Now Showing, 10 Coming Soon).
-- AC-C2: ≥ 8 theaters across ≥ 2 cities.
-- AC-C3: ≥ 100 showtimes across 7 days.
-- AC-C4: All movies have ≥ 4 cast members and a synopsis.
-
----
-
-## 17. User Stories
-
-> All stories follow the format: *As a [persona], I want to [action], so that [benefit].*
-
-### Discovery
-- **US-01** — As a casual moviegoer, I want to browse now-playing movies as cards, so that I can quickly pick one that interests me.
-- **US-02** — As a casual moviegoer, I want to search by title, so that I can find a specific movie fast.
-- **US-03** — As a casual moviegoer, I want to filter by genre and language, so that I can narrow down to movies that fit my taste.
-- **US-04** — As a casual moviegoer, I want to see ratings and duration on each card, so that I can decide before opening details.
-
-### Details
-- **US-05** — As a cinephile, I want a detailed movie page with synopsis, cast, and languages, so that I can make an informed choice.
-- **US-06** — As a cinephile, I want a trailer button, so that I can preview the movie (mocked in this sample).
-- **US-07** — As a cinephile, I want to see a "Book Tickets" CTA, so that I can act on my interest.
-
-### Theater & Showtime
-- **US-08** — As an on-the-go booker, I want to see nearby theaters and showtimes, so that I can pick a convenient option.
-- **US-09** — As a family planner, I want to see theater amenities and screen formats, so that I can pick a comfortable experience for my family.
-- **US-10** — As a family planner, I want to switch dates, so that I can find a weekend show that works.
-
-### Seat
-- **US-11** — As a family planner, I want a visual seat map, so that I can pick seats together.
-- **US-12** — As a casual moviegoer, I want to see seat pricing, so that I can stay within budget.
-- **US-13** — As a casual moviegoer, I want the total to update live, so that I can see the impact of my choices.
-
-### Booking & Payment
-- **US-14** — As any user, I want to review my booking before paying, so that I can avoid mistakes.
-- **US-15** — As a casual moviegoer, I want a coupon option, so that I can save money.
-- **US-16** — As any user, I want a simple payment flow, so that I can complete the booking quickly.
-
-### Confirmation
-- **US-17** — As any user, I want a confirmation screen with QR code and ticket details, so that I can present it at the theater.
-- **US-18** — As any user, I want to share or download my ticket, so that I can have a backup.
-
-### History
-- **US-19** — As an on-the-go booker, I want to see all my past and upcoming bookings, so that I can revisit them.
-- **US-20** — As any user, I want Upcoming and Past tabs, so that I can quickly find what I need.
-
-### AI Assistant
-- **US-21** — As a family planner, I want to ask "recommend a family movie," so that I can save browsing time.
-- **US-22** — As a cinephile, I want to compare two movies, so that I can decide between them.
-- **US-23** — As a casual moviegoer, I want to see top-rated movies this week, so that I can pick something good.
-- **US-24** — As any user, I want the assistant to be reachable from every screen, so that I can ask for help at any time.
-
----
-
-## 18. Milestones
-
-| Milestone | Tasks | Definition of Done |
-|---|---|---|
-| **M1 — Foundation** | T1.1–T1.5 | Project builds, theme works, mock data loads. |
-| **M2 — Discovery** | T2.1–T2.4 | Home and Movie Details fully functional. |
-| **M3 — Booking Flow** | T3.1–T3.6 | Full end-to-end booking works on all platforms. |
-| **M4 — AI Assistant** | T4.1–T4.3 | AI assistant answers all example prompts; available globally. |
-| **M5 — Polish** | T5.1–T5.3, T6.1–T6.3, T7.1–T7.3, T8.1–T8.4 | All acceptance criteria met. |
-
----
-
-## Appendix A — Screen-to-Control Quick Reference
-
-| Screen | Syncfusion Controls |
-|---|---|
-| Home | `SfCollectionView` (carousel, grid), `SfListView` (coming soon), `SfChip` (genre), `SfComboBox` (language), `SfEffectsView`, `SfShimmer`. |
-| Movie Details | `SfCardView`, `SfBadgeView`, `SfChip`, `SfCollectionView` (cast), `SfGradientView`, `SfEffectsView`, `SfPopup` (trailer). |
-| Theater Selection | `SfListView` / `SfCollectionView`, `SfChip` (date), `SfChip` (showtime), `SfBadgeView`, `SfEffectsView`. |
-| Seat Selection | `SfCardView`, `SfEffectsView`, `SfButton` (proceed), custom `SeatControl`. |
-| Booking Summary | `SfCardView`, `SfTextInputLayout` (coupon), `SfButton` (apply, proceed). |
-| Payment | `SfSegmentedControl`, `SfRadioButton`, `SfTextInputLayout`, `SfBottomSheet` (processing), `SfPopup` (failure). |
-| Booking Confirmation | `SfCardView`, `SfEffectsView`, `SfButton` (download, share, back), QR generator. |
-| My Bookings | `SfTabView`, `SfListView` / `SfCollectionView`, `SfBadgeView`, `SfEffectsView`. |
-| AI Assistant | `SfBottomSheet`, `SfAIAssistView`, `SfChip` (suggestions), `SfCardView` (movie cards in responses). |
-
----
-
-## Appendix B — Theming Tokens
-
-```
-Primary:          #FF3D5A   (CineBook red — buy tickets, primary CTAs)
-PrimaryDark:      #C92E47
-Secondary:        #1F1F2E   (background, dark surface)
-Accent:           #FFB300   (premium tier, highlights)
-Success:          #2EC27E
-Error:            #E53935
-Info:             #1E88E5
-
-BackgroundLight:  #FFFFFF
-BackgroundDark:   #121212
-SurfaceLight:     #F7F7FA
-SurfaceDark:      #1E1E1E
-OnSurfaceLight:   #1F1F1F
-OnSurfaceDark:    #E6E1E6
-```
-
-These tokens are added to `Resources/Styles/Colors.xaml` and consumed via `DynamicResource` in XAML, so the `ThemeService` can swap them at runtime.
-
----
-
-## Appendix C — Mock Catalog (Sample Seed)
-
-For developer convenience, the JSON should include movies like:
-
-- *Stellar Horizon* — Sci-Fi, English, 2h 28m, rating 8.6.
-- *Laughing in Mumbai* — Comedy, Hindi, 2h 12m, rating 8.1.
-- *Kandukondain 2* — Drama, Tamil, 2h 35m, rating 8.3.
-- *Last Heist* — Thriller, English, 1h 58m, rating 7.4.
-- *Sitaara* — Family, Telugu, 1h 50m, rating 8.8.
-- *Heartbeats* — Romance, Malayalam, 2h 04m, rating 7.9.
-- *Galactic Wars: Dawn* — Sci-Fi, English (3D), 2h 45m, rating 9.1.
-- *Veera Saga* — Action, Tamil, 2h 20m, rating 8.0.
-- *Yellow Umbrella* — Drama, Kannada, 1h 47m, rating 8.5.
-- *Cozy Christmas* — Family, English, 1h 42m, rating 7.2.
-
-(plus 10 more to satisfy the catalog target.)
-
-Theaters in `theaters.json` should be spread across at least 2 cities with realistic Indian names (PVR, INOX, Cinepolis, Carnival) — for **fictional sample data** only.
-
----
-
-*End of Specification. Ready for AI-assisted implementation.*
+*See [HARNESS.md](./HARNESS.md) for Functional & Non-Functional Requirements, Acceptance Criteria, User Stories, Milestones, and Reference Appendices.*
+*See [TASKS.md](./TASKS.md) for the full 8-phase development task breakdown.*
