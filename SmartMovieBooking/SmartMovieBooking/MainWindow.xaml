@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Window xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+        xmlns:views="clr-namespace:SmartMovieBooking.Views"
+        xmlns:controls="clr-namespace:SmartMovieBooking.Controls"
+        x:Class="SmartMovieBooking.MainWindow"
+        Title="Smart Movie Ticket Booking v2.5 (x64)">
+
+    <Grid x:Name="RootGrid"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="Auto,*"
+          BackgroundColor="{DynamicResource ThemeBackground}">
+
+        <!-- Title bar spans full width -->
+        <controls:TitleBarView Grid.Row="0" Grid.ColumnSpan="2" />
+
+        <!-- Sidebar -->
+        <controls:SidebarView Grid.Row="1" Grid.Column="0"
+                              CurrentPage="{Binding CurrentPage, Mode=TwoWay}" />
+
+        <!-- Main area: header + page -->
+        <Grid Grid.Row="1" Grid.Column="1"
+              RowDefinitions="Auto,*,Auto"
+              BackgroundColor="{DynamicResource ThemeBackground}">
+
+            <!-- Header bar -->
+            <controls:HeaderBarView Grid.Row="0"
+                                    CityLabel="{Binding CityLabel}"
+                                    UserAvatarInitials="{Binding UserAvatarInitials}" />
+
+            <!-- Page content (swaps with CurrentPage) -->
+            <Grid Grid.Row="1" Padding="0">
+                <views:MovieHomeView IsVisible="{Binding CurrentPage, Converter={StaticResource PageVisibleConverter}, ConverterParameter=MovieHome}" />
+                <views:TheatersView  IsVisible="{Binding CurrentPage, Converter={StaticResource PageVisibleConverter}, ConverterParameter=Theaters}" />
+                <views:BookingsView  IsVisible="{Binding CurrentPage, Converter={StaticResource PageVisibleConverter}, ConverterParameter=Bookings}" />
+            </Grid>
+
+            <!-- AI Copilot FAB bottom-right -->
+            <Grid Grid.Row="1" Margin="0,0,24,24"
+                  HorizontalOptions="End" VerticalOptions="End">
+                <controls:AiCopilotFab Clicked="OnAiFabClicked" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

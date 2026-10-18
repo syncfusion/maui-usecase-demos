@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartMovieBooking.Views.MovieHomeView">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Label Text="🎬 Movie Home"
+                   FontFamily="PlusJakartaBold" FontSize="24"
+                   TextColor="{DynamicResource ThemeOnBackground}" />
+            <Label Text="Phase 2 will replace this placeholder with the full grid of movie cards, search bar, and genre chip strip."
+                   FontFamily="InterRegular" FontSize="14"
+                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

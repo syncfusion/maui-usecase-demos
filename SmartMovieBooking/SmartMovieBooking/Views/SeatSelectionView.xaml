@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartMovieBooking.Views.SeatSelectionView">
+    <VerticalStackLayout Padding="24" Spacing="16">
+        <Label Text="🪑 Seat Selection popup"
+               FontFamily="PlusJakartaBold" FontSize="20"
+               TextColor="{DynamicResource ThemeOnBackground}" />
+        <Label Text="Phase 3 (T3.1) will fill this out."
+               FontFamily="InterRegular" FontSize="13"
+               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+    </VerticalStackLayout>
+</ContentView>

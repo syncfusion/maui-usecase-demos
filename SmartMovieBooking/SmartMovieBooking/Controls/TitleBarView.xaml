@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartMovieBooking.Controls.TitleBarView">
+    <Grid HeightRequest="32"
+          BackgroundColor="{DynamicResource ThemeSurface}"
+          ColumnDefinitions="Auto,*,Auto"
+          ColumnSpacing="0">
+
+        <!-- Brand icon + title -->
+        <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" Margin="12,0">
+            <Border WidthRequest="20" HeightRequest="20"
+                    BackgroundColor="{DynamicResource ThemePrimary}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 4">
+                <Label Text="🎬" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            </Border>
+            <Label Text="Smart Movie Ticket Booking v2.5 (x64)"
+                   FontFamily="InterSemiBold"
+                   FontSize="12"
+                   VerticalTextAlignment="Center"
+                   TextColor="{DynamicResource ThemeOnSurface}" />
+        </HorizontalStackLayout>
+
+        <!-- Spacer / drag region (would be set on Windows via platform-specific code) -->
+        <BoxView Grid.Column="1" Color="Transparent" />
+
+        <!-- Window controls -->
+        <HorizontalStackLayout Grid.Column="2" Spacing="0">
+            <Button x:Name="MinimizeButton" Text="−"
+                    Style="{StaticResource WindowControlButton}" />
+            <Button x:Name="MaximizeButton" Text="◻"
+                    Style="{StaticResource WindowControlButton}" />
+            <Button x:Name="CloseButton" Text="✕"
+                    Style="{StaticResource CloseWindowButton}" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentView>

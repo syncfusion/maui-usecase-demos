@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--
+        Type scale derived directly from the Stitch HTML
+        (font-display-hero, font-headline-*, font-body-*, font-label-*).
+        Display/Headline/Label = Plus Jakarta Sans (semi-bold / bold / extra-bold).
+        Body = Inter (regular / semi-bold).
+    -->
+
+    <!-- Display -->
+    <Style TargetType="Label" x:Key="DisplayHeroLabel">
+        <Setter Property="FontFamily" Value="PlusJakartaExtraBold" />
+        <Setter Property="FontSize" Value="44" />
+        <Setter Property="LineHeight" Value="52" />
+    </Style>
+
+    <!-- Headlines -->
+    <Style TargetType="Label" x:Key="HeadlineLgLabel">
+        <Setter Property="FontFamily" Value="PlusJakartaBold" />
+        <Setter Property="FontSize" Value="32" />
+        <Setter Property="LineHeight" Value="40" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="HeadlineMdLabel">
+        <Setter Property="FontFamily" Value="PlusJakartaBold" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="LineHeight" Value="32" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="HeadlineSmLabel">
+        <Setter Property="FontFamily" Value="PlusJakartaBold" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="LineHeight" Value="26" />
+    </Style>
+
+    <!-- Body (Inter) -->
+    <Style TargetType="Label" x:Key="BodyLgLabel">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="LineHeight" Value="24" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="BodyMdLabel">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="LineHeight" Value="20" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="BodySmLabel">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="LineHeight" Value="18" />
+    </Style>
+
+    <!-- Labels (Plus Jakarta) -->
+    <Style TargetType="Label" x:Key="LabelLgLabel">
+        <Setter Property="FontFamily" Value="PlusJakartaSemiBold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="LineHeight" Value="20" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="LabelMdLabel">
+        <Setter Property="FontFamily" Value="PlusJakartaSemiBold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="LineHeight" Value="16" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="LabelSmLabel">
+        <Setter Property="FontFamily" Value="PlusJakartaSemiBold" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="LineHeight" Value="14" />
+        <Setter Property="TextTransform" Value="Uppercase" />
+    </Style>
+
+    <!-- Default for plain Labels -->
+    <Style TargetType="Label">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="LineHeight" Value="20" />
+    </Style>
+
+    <!-- Default for plain Buttons -->
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="PlusJakartaSemiBold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="LineHeight" Value="20" />
+    </Style>
+
+    <!-- Default for Entry -->
+    <Style TargetType="Entry">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="LineHeight" Value="20" />
+    </Style>
+
+    <!-- Default for SearchBar -->
+    <Style TargetType="SearchBar">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartMovieBooking.Controls.AiCopilotFab">
+
+    <Border WidthRequest="48" HeightRequest="48"
+            StrokeThickness="0"
+            BackgroundColor="{DynamicResource ThemePrimary}"
+            StrokeShape="RoundRectangle 24">
+        <Border.Shadow>
+            <Shadow Brush="#604F46E5" Offset="0,4" Radius="16" Opacity="0.35" />
+        </Border.Shadow>
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnTapped" />
+        </Border.GestureRecognizers>
+        <Grid>
+            <Label Text="✨" FontSize="22"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="{DynamicResource ThemeOnPrimary}" />
+            <BoxView WidthRequest="10" HeightRequest="10"
+                     CornerRadius="5"
+                     Color="{DynamicResource ThemeSecondaryFixed}"
+                     HorizontalOptions="End"
+                     VerticalOptions="Start"
+                     Margin="0,4,4,0" />
+        </Grid>
+    </Border>
+</ContentView>
