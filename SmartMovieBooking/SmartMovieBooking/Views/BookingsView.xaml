@@ -1,15 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SmartMovieBooking.Views.BookingsView">
-    <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
-            <Label Text="🎫 Bookings"
-                   FontFamily="PlusJakartaBold" FontSize="24"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Controls"
+             x:Class="SmartMovieBooking.Views.BookingsView"
+             x:DataType="vm:BookingsViewModel">
+
+    <Grid Padding="24" RowSpacing="16" RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="Your Bookings" Style="{StaticResource HeadlineLgLabel}"
                    TextColor="{DynamicResource ThemeOnBackground}" />
-            <Label Text="Phase 2 will replace this placeholder with the list of bookings."
-                   FontFamily="InterRegular" FontSize="14"
+            <Label Text="Past shows and upcoming reservations"
+                   Style="{StaticResource BodyMdLabel}"
                    TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
         </VerticalStackLayout>
-    </ScrollView>
+
+        <!-- Tabs (Up Next / Past) -->
+        <HorizontalStackLayout Grid.Row="1" Spacing="24">
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Up Next" Style="{StaticResource HeadlineSmLabel}"
+                       TextColor="{DynamicResource ThemeOnSurface}" />
+                <BoxView HeightRequest="2" Color="{DynamicResource ThemePrimary}" />
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Past" Style="{StaticResource HeadlineSmLabel}"
+                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <!-- List or empty state -->
+        <Grid Grid.Row="2">
+            <CollectionView ItemsSource="{Binding Bookings}"
+                            SelectionMode="None"
+                            IsVisible="{Binding HasBookings}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Booking">
+                        <controls:BookingCardView Booking="{Binding .}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Empty state -->
+            <VerticalStackLayout Spacing="12"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 Padding="40"
+                                 IsVisible="{Binding HasBookings, Converter={StaticResource InverseBoolConverter}}">
+                <Label Text="🎟️" FontSize="64" HorizontalTextAlignment="Center" />
+                <Label Text="No bookings yet" Style="{StaticResource HeadlineMdLabel}"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnSurface}" />
+                <Label Text="Book a movie and it will appear here."
+                       Style="{StaticResource BodyMdLabel}"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
 </ContentView>

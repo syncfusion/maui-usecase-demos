@@ -36,7 +36,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAiCopilotService, AiCopilotService>();
 
         // ViewModels (transient)
-        builder.Services.AddTransient<MainWindowViewModel>();
+        builder.Services.AddSingleton<MainWindowViewModel>();
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<TheatersViewModel>();
         builder.Services.AddTransient<BookingsViewModel>();

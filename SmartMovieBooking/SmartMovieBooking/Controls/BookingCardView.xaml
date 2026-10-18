@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             x:Class="SmartMovieBooking.Controls.BookingCardView">
+
+    <Border Style="{StaticResource SurfaceCard}" Padding="20">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+
+            <!-- Poster thumb -->
+            <Border Grid.Column="0"
+                    WidthRequest="80" HeightRequest="100"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12"
+                    BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
+                <Label Text="🎬" FontSize="32"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOutline}" />
+            </Border>
+
+            <!-- Details -->
+            <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="{Binding Movie.Title, FallbackValue='—'}"
+                           Style="{StaticResource HeadlineSmLabel}"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Border BackgroundColor="{DynamicResource ThemePrimaryContainer}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 999"
+                            Padding="8,2">
+                        <Label Text="{Binding Status}" FontFamily="InterSemiBold" FontSize="10"
+                               TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                    </Border>
+                </HorizontalStackLayout>
+
+                <Label Text="{Binding Theater.Name, FallbackValue='—'}"
+                       Style="{StaticResource BodyMdLabel}"
+                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="📅" FontSize="11" TextColor="{DynamicResource ThemeOutline}" />
+                    <Label Text="{Binding Showtime.StartTime, FallbackValue='—'}"
+                           Style="{StaticResource LabelMdLabel}"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    <Label Text="·" Style="{StaticResource LabelMdLabel}" TextColor="{DynamicResource ThemeOutline}" />
+                    <Label Text="{Binding SeatsDisplay}"
+                           Style="{StaticResource LabelMdLabel}"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="4">
+                    <Label Text="ID:" Style="{StaticResource LabelSmLabel}"
+                           TextColor="{DynamicResource ThemeOutline}" />
+                    <Label Text="{Binding BookingId, FallbackValue='—'}"
+                           Style="{StaticResource LabelMdLabel}"
+                           TextColor="{DynamicResource ThemePrimary}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Actions -->
+            <VerticalStackLayout Grid.Column="2" Spacing="8" VerticalOptions="Center">
+                <Label Text="{Binding Total, StringFormat='${0:F2}'}"
+                       Style="{StaticResource HeadlineMdLabel}"
+                       HorizontalTextAlignment="End"
+                       TextColor="{DynamicResource ThemeOnSurface}" />
+                <Button Text="View Ticket"
+                        Style="{StaticResource OutlinedButton}"
+                        HeightRequest="32"
+                        FontSize="12" />
+                <Button Text="Rebook"
+                        Style="{StaticResource GhostButton}"
+                        HeightRequest="32"
+                        FontSize="12" />
+            </VerticalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

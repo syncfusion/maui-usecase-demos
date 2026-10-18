@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using SmartMovieBooking.Services;
 
 namespace SmartMovieBooking;
@@ -14,7 +15,8 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window = new MainWindow();
+        var services = Handler!.MauiContext!.Services;
+        var window = services.GetRequiredService<MainWindow>();
         window.Title = "Smart Movie Ticket Booking v2.5 (x64)";
 
         // Desktop-friendly default window size

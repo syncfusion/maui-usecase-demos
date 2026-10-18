@@ -19,4 +19,8 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private string _userAvatarInitials = "AC";
     [ObservableProperty] private bool _isAiCopilotOpen;
     [ObservableProperty] private Movie? _selectedMovie;
+
+    public void NavigateToTheaters() => CurrentPage = MainPage.Theaters;
+    public void NavigateToMovieHome() => CurrentPage = MainPage.MovieHome;
+    public void NavigateToBookings() => CurrentPage = MainPage.Bookings;
 }

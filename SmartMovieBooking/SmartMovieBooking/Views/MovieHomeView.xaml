@@ -1,15 +1,107 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SmartMovieBooking.Views.MovieHomeView">
-    <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
-            <Label Text="🎬 Movie Home"
-                   FontFamily="PlusJakartaBold" FontSize="24"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Controls"
+             x:Class="SmartMovieBooking.Views.MovieHomeView"
+             x:DataType="vm:HomeViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="24" RowSpacing="16">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="Discover Movies" Style="{StaticResource HeadlineLgLabel}"
                    TextColor="{DynamicResource ThemeOnBackground}" />
-            <Label Text="Phase 2 will replace this placeholder with the full grid of movie cards, search bar, and genre chip strip."
-                   FontFamily="InterRegular" FontSize="14"
+            <Label Text="Find the perfect show near you · 10 movies in catalog"
+                   Style="{StaticResource BodyMdLabel}"
                    TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
         </VerticalStackLayout>
-    </ScrollView>
+
+        <!-- Search + genre filter row -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <Border Grid.Column="0"
+                    BackgroundColor="{DynamicResource ThemeSurfaceContainerLowest}"
+                    StrokeThickness="1"
+                    Stroke="{DynamicResource ThemeOutlineVariant}"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,0"
+                    HeightRequest="44">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="🔍" FontSize="14"
+                           VerticalTextAlignment="Center" />
+                    <Entry Grid.Column="1"
+                           Placeholder="Search by title, genre, or keyword…"
+                           PlaceholderColor="{DynamicResource ThemeOnSurfaceVariant}"
+                           BackgroundColor="Transparent"
+                           Text="{Binding SearchText, Mode=TwoWay}"
+                           TextColor="{DynamicResource ThemeOnSurface}"
+                           FontFamily="InterRegular"
+                           FontSize="14" />
+                </Grid>
+            </Border>
+
+            <Button Grid.Column="1" Text="Filters"
+                    Style="{StaticResource OutlinedButton}"
+                    HeightRequest="44" />
+        </Grid>
+
+        <!-- Genre chip strip (horizontal scroll) -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Genres}"
+                        HeightRequest="36"
+                        ItemsLayout="HorizontalList"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Border Margin="0,0,8,0"
+                            Padding="14,6"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 999">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border"
+                                         Binding="{Binding}"
+                                         Value="All Genres">
+                                <Setter Property="BackgroundColor" Value="{DynamicResource ThemePrimaryContainer}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Label Text="{Binding}"
+                               FontFamily="InterSemiBold"
+                               FontSize="12"
+                               TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Movie grid -->
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding FilteredMovies}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnMovieSelected">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="4"
+                                 HorizontalItemSpacing="16" VerticalItemSpacing="16" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Movie">
+                    <controls:MovieCardView Movie="{Binding .}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="8" Padding="40" HorizontalOptions="Center">
+                    <Label Text="🎞️" FontSize="48" HorizontalTextAlignment="Center" />
+                    <Label Text="No movies match your filters"
+                           Style="{StaticResource HeadlineSmLabel}"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Label Text="Try clearing the search or selecting a different genre."
+                           Style="{StaticResource BodySmLabel}"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
 </ContentView>

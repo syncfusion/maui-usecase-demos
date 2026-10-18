@@ -1,15 +1,249 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SmartMovieBooking.Views.TheatersView">
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Controls"
+             x:Class="SmartMovieBooking.Views.TheatersView"
+             x:DataType="vm:TheatersViewModel">
+
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
-            <Label Text="🏛 Theaters"
-                   FontFamily="PlusJakartaBold" FontSize="24"
-                   TextColor="{DynamicResource ThemeOnBackground}" />
-            <Label Text="Phase 2 will replace this placeholder with the date strip, filters panel, and theater cards."
-                   FontFamily="InterRegular" FontSize="14"
-                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+        <VerticalStackLayout Padding="24" Spacing="20">
+
+            <!-- Selected movie context banner -->
+            <Border Style="{StaticResource SurfaceCardTight}" Padding="16"
+                    BackgroundColor="{DynamicResource ThemePrimaryContainer}">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                    <Border Grid.Column="0"
+                            WidthRequest="64" HeightRequest="80"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
+                        <Label Text="🎬" FontSize="28"
+                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="{Binding Movie.Title, FallbackValue='Select a movie'}"
+                               Style="{StaticResource HeadlineMdLabel}"
+                               TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                        <Label Text="{Binding Movie.Tagline, FallbackValue='Choose a theater and showtime below'}"
+                               Style="{StaticResource BodySmLabel}"
+                               TextColor="{DynamicResource ThemeOnPrimaryContainer}"
+                               Opacity="0.8" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="2" Text="Change"
+                            Style="{StaticResource OutlinedButton}"
+                            TextColor="{DynamicResource ThemeOnPrimaryContainer}"
+                            BorderColor="{DynamicResource ThemeOnPrimaryContainer}"
+                            HeightRequest="36" />
+                </Grid>
+            </Border>
+
+            <!-- Section 1: Date strip header -->
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Label Grid.Column="0" Text="📅" FontSize="20"
+                       VerticalTextAlignment="Center" />
+                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                    <Label Text="Choose your show date" Style="{StaticResource HeadlineSmLabel}"
+                           TextColor="{DynamicResource ThemeOnBackground}" />
+                    <Label Text="Showing 4 partner venues nearby"
+                           Style="{StaticResource BodySmLabel}"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                </VerticalStackLayout>
+                <Button Grid.Column="2" Text="‹" Style="{StaticResource IconButton}"
+                        WidthRequest="32" HeightRequest="32" />
+            </Grid>
+
+            <!-- Date strip -->
+            <CollectionView ItemsSource="{Binding DateChips}"
+                            ItemsLayout="HorizontalList"
+                            HeightRequest="80"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedDateChip, Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DateChipItem">
+                        <controls:DateChipView Date="{Binding Date}"
+                                               IsSelected="{Binding IsSelected}"
+                                               Margin="0,0,8,0" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Section 2: Filters -->
+            <Border Style="{StaticResource SurfaceCard}">
+                <VerticalStackLayout Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                            <Label Text="🎚️" FontSize="16" TextColor="{DynamicResource ThemePrimary}" />
+                            <Label Text="Cinema Experience Filters" Style="{StaticResource HeadlineSmLabel}"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="2" Text="Reset All"
+                               FontFamily="InterSemiBold"
+                               FontSize="12"
+                               TextColor="{DynamicResource ThemePrimary}"
+                               VerticalTextAlignment="Center" />
+                    </Grid>
+
+                    <!-- Formats row -->
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="FORMATS" Style="{StaticResource LabelSmLabel}"
+                               TextColor="{DynamicResource ThemeOutline}"
+                               WidthRequest="100"
+                               VerticalTextAlignment="Center" />
+                        <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                            <HorizontalStackLayout Spacing="8">
+                                <Border Style="{StaticResource PrimaryChip}" Padding="14,4">
+                                    <Label Text="All Formats" Style="{StaticResource LabelMdLabel}"
+                                           TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="IMAX Laser" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="Dolby Cinema" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="3D Experience" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="4DX Motion" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="Standard 2D" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                            </HorizontalStackLayout>
+                        </ScrollView>
+                    </HorizontalStackLayout>
+
+                    <!-- Languages row -->
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="LANGUAGES" Style="{StaticResource LabelSmLabel}"
+                               TextColor="{DynamicResource ThemeOutline}"
+                               WidthRequest="100"
+                               VerticalTextAlignment="Center" />
+                        <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                            <HorizontalStackLayout Spacing="8">
+                                <Border Style="{StaticResource PrimaryChip}" Padding="14,4">
+                                    <Label Text="English" Style="{StaticResource LabelMdLabel}"
+                                           TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="Hindi" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="Spanish" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                                <Border Style="{StaticResource InactiveChip}" Padding="14,4">
+                                    <Label Text="French" Style="{StaticResource LabelMdLabel}" />
+                                </Border>
+                            </HorizontalStackLayout>
+                        </ScrollView>
+                    </HorizontalStackLayout>
+
+                    <!-- Quick toggles row -->
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="QUICK" Style="{StaticResource LabelSmLabel}"
+                               TextColor="{DynamicResource ThemeOutline}"
+                               WidthRequest="100"
+                               VerticalTextAlignment="Center" />
+                        <HorizontalStackLayout Spacing="12">
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Switch IsToggled="True" OnColor="{DynamicResource ThemePrimary}" />
+                                <Label Text="Available Today" Style="{StaticResource BodyMdLabel}"
+                                       TextColor="{DynamicResource ThemeOnSurface}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Switch IsToggled="False" OnColor="{DynamicResource ThemePrimary}" />
+                                <Label Text="Premium Only" Style="{StaticResource BodyMdLabel}"
+                                       TextColor="{DynamicResource ThemeOnSurface}" />
+                            </HorizontalStackLayout>
+                        </HorizontalStackLayout>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Theater cards section header -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Label Grid.Column="0" Text="Nearby Theaters &amp; Showtimes"
+                       Style="{StaticResource HeadlineMdLabel}"
+                       TextColor="{DynamicResource ThemeOnBackground}" />
+                <Button Grid.Column="1" Text="Sort by price ▾"
+                        Style="{StaticResource OutlinedButton}"
+                        HeightRequest="36" />
+            </Grid>
+
+            <!-- Theater cards -->
+            <CollectionView ItemsSource="{Binding Theaters}"
+                            SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Theater">
+                        <controls:TheaterCardView Theater="{Binding .}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Top-rated venues row -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="0,8,0,0">
+                <Label Grid.Column="0" Text="Top-Rated Partner Venues"
+                       Style="{StaticResource HeadlineMdLabel}"
+                       TextColor="{DynamicResource ThemeOnBackground}" />
+                <Button Grid.Column="1" Text="See all"
+                        Style="{StaticResource OutlinedButton}"
+                        HeightRequest="36" />
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Theaters}"
+                            ItemsLayout="HorizontalList"
+                            HeightRequest="280"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Theater">
+                        <Border Margin="0,0,16,0"
+                                Style="{StaticResource TileCard}"
+                                WidthRequest="260">
+                            <VerticalStackLayout Spacing="0">
+                                <Grid HeightRequest="160"
+                                      BackgroundColor="{DynamicResource ThemeSurfaceContainerHigh}">
+                                    <Label Text="{Binding Icon}" FontSize="48"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                           TextColor="{DynamicResource ThemePrimary}" />
+                                    <Border BackgroundColor="{DynamicResource ThemeInverseSurface}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 999"
+                                            Padding="8,3"
+                                            HorizontalOptions="End" VerticalOptions="Start"
+                                            Margin="0,10,10,0">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="★" FontSize="10"
+                                                   TextColor="{DynamicResource ThemeTertiaryContainer}" />
+                                            <Label Text="{Binding DistanceLabel}" FontFamily="PlusJakartaBold" FontSize="10"
+                                                   TextColor="{DynamicResource ThemeInverseOnSurface}" />
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                </Grid>
+                                <VerticalStackLayout Padding="14" Spacing="6">
+                                    <Label Text="{Binding Name}" Style="{StaticResource HeadlineSmLabel}"
+                                           LineBreakMode="TailTruncation" MaxLines="1"
+                                           TextColor="{DynamicResource ThemeOnSurface}" />
+                                    <Label Text="{Binding Description}" Style="{StaticResource BodySmLabel}"
+                                           LineBreakMode="TailTruncation" MaxLines="2"
+                                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0">
+                                        <Label Grid.Column="0" Text="{Binding City}" Style="{StaticResource LabelSmLabel}"
+                                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                        <Label Grid.Column="1" Text="{Binding DistanceLabel}" Style="{StaticResource LabelMdLabel}"
+                                               TextColor="{DynamicResource ThemePrimary}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
 </ContentView>
