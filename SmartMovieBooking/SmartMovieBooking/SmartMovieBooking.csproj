@@ -12,6 +12,12 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
+		<!-- Explicitly set ProjectName and AssemblyName so NuGet 6.x+ restore
+		     doesn't fail with "Missing required property 'ProjectName'". -->
+		<ProjectName>SmartMovieBooking</ProjectName>
+		<AssemblyName>SmartMovieBooking</AssemblyName>
+		<LangVersion>latest</LangVersion>
+
 		<!-- Display name -->
 		<ApplicationTitle>Smart Movie Ticket Booking</ApplicationTitle>
 
