@@ -196,7 +196,11 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
         }
 
         var selectedDay = SelectedDate.Date;
-        var weekStart = selectedDay.AddDays(-(int)selectedDay.DayOfWeek);
+        var weekStart = selectedDay.Date.AddDays(-(int)selectedDay.DayOfWeek + (int)DayOfWeek.Monday);
+        if (selectedDay.DayOfWeek == DayOfWeek.Sunday)
+        {
+            weekStart = weekStart.AddDays(-7);
+        }
 
         var appointments = scheduleDataService.GetAppointments(SelectedClinician.ClinicianId)
             .Where(appointment => ViewMode == SchedulerView.Week

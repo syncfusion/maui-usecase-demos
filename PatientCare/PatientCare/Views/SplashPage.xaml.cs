@@ -7,6 +7,7 @@ public partial class SplashPage : ContentPage
 {
 	private SplashPageViewModel? _viewModel;
 	private SfLinearProgressBar? _loadingProgress;
+	private bool _isNavigating = false;
 
 	public SplashPage()
 	{
@@ -22,16 +23,25 @@ public partial class SplashPage : ContentPage
 	{
 		base.OnAppearing();
 		
-		// Animate the progress bar with stepped updates
-		await RunSplashSequenceAsync();
+		try
+		{
+			// Animate the progress bar with stepped updates
+			await RunSplashSequenceAsync();
+		}
+		catch (Exception ex)
+		{
+			System.Diagnostics.Debug.WriteLine($"Splash animation error: {ex.Message}");
+		}
 	}
 
 	private async Task RunSplashSequenceAsync()
 	{
 		try
 		{
-			if (_loadingProgress != null)
+			if (_loadingProgress != null && !_isNavigating)
 			{
+				_isNavigating = true;
+				
 				// Step 1: 30% progress
 				_loadingProgress.Progress = 30;
 				await Task.Delay(900);
@@ -55,6 +65,7 @@ public partial class SplashPage : ContentPage
 		catch (Exception ex)
 		{
 			System.Diagnostics.Debug.WriteLine($"Animation error: {ex.Message}");
+			_isNavigating = false;
 		}
 	}
 }

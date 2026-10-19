@@ -11,7 +11,7 @@ public partial class AppointmentsPage : ContentPage
 {
     private readonly AppointmentsViewModel viewModel;
 
-    public AppointmentsPage()
+    public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
@@ -131,7 +131,7 @@ public partial class AppointmentsPage : ContentPage
         viewModel.CloseAppointmentDetailsCommand.Execute(null);
     }
 
-    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {

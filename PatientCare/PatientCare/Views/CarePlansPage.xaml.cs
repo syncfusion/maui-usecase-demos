@@ -8,7 +8,7 @@ public partial class CarePlansPage : ContentPage
 {
     private readonly CarePlansViewModel viewModel;
 
-    public CarePlansPage()
+    public CarePlansPage(CarePlanDataService carePlanDataService, PatientDataService patientDataService, NotificationService notificationService)
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
@@ -53,7 +53,7 @@ public partial class CarePlansPage : ContentPage
         }
     }
 
-    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {

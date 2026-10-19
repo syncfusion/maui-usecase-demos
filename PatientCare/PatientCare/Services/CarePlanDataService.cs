@@ -90,7 +90,9 @@ public sealed class CarePlanDataService
     /// <summary>Builds a templated, non-AI summary sentence from the patient's own record and current tasks.</summary>
     public (string Intro, string Action) GetAssistantSummary(Patient patient, IReadOnlyList<CareTask> tasks)
     {
-        var pronoun = patient.Gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ? "her" : "his";
+        // Use gender-neutral pronouns
+        var pronoun = patient.Gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ? "her" : 
+                     patient.Gender.Equals("Male", StringComparison.OrdinalIgnoreCase) ? "his" : "their";
         var intro = $"{patient.FirstName} is progressing well with {pronoun} {patient.PrimaryCondition.ToLowerInvariant()} management plan. Medication adherence is confirmed.";
 
         var inProgress = tasks.FirstOrDefault(task => task.Status == "In Progress");

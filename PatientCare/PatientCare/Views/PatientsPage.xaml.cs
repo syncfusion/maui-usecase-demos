@@ -11,7 +11,7 @@ public partial class PatientsPage : ContentPage
 {
     private readonly PatientsViewModel viewModel;
 
-    public PatientsPage()
+    public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
@@ -69,7 +69,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async void OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
+    private async Task OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -84,7 +84,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async void OnCloseProfileTapped(object? sender, TappedEventArgs e)
+    private async Task OnCloseProfileTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -103,7 +103,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async void OnCloseProfileClicked(object? sender, EventArgs e)
+    private async Task OnCloseProfileClicked(object? sender, EventArgs e)
     {
         await CloseProfileAsync();
     }
@@ -153,7 +153,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {
