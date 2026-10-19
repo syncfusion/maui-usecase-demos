@@ -70,6 +70,9 @@ public sealed class Patient
         _ => "#F59E0B"
     };
 
+    // Binding an Ellipse.Fill property requires a Brush, not a string color.
+    public Brush StatusBrush => new SolidColorBrush(Color.FromArgb(StatusColor));
+
     public string NextAppointmentTextColor => IsHighPriority ? "#DC2626" : "#0F172A";
 
     public bool IsFollowUpDue => NeedsReview ||
