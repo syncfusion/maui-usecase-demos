@@ -11,46 +11,20 @@ public partial class AppointmentsPage : ContentPage
 {
     private readonly AppointmentsViewModel viewModel;
 
-    public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
+    public AppointmentsPage()
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
-        //var dataService = services?.GetService<ScheduleDataService>();
-        //var notificationService = services?.GetService<NotificationService>();
-        
-        if (dataService != null && notificationService != null)
-        {
-            viewModel = new AppointmentsViewModel(dataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-        else
-        {
-            // Fallback for direct instantiation
-            var patientDataService = new PatientDataService();
-            dataService = new ScheduleDataService(patientDataService);
-            notificationService = new NotificationService();
-            viewModel = new AppointmentsViewModel(dataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-
+        var dataService = services?.GetService<ScheduleDataService>() ?? new ScheduleDataService(new PatientDataService());
+        var notificationService = services?.GetService<NotificationService>() ?? new NotificationService();
+        viewModel = new AppointmentsViewModel(dataService);
         BindingContext = viewModel;
+        DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+
         DesktopScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
         MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
     }
-
-    //public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
-    //{
-    //    InitializeComponent();
-    //    viewModel = new AppointmentsViewModel(dataService);
-    //    BindingContext = viewModel;
-    //    DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-    //    MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-
-    //    DesktopScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
-    //    MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
-    //}
 
     private static ObservableCollection<SchedulerTimeRegion> CreateLunchBreakRegions() =>
     [
@@ -131,7 +105,7 @@ public partial class AppointmentsPage : ContentPage
         viewModel.CloseAppointmentDetailsCommand.Execute(null);
     }
 
-    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {

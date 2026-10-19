@@ -11,30 +11,18 @@ public partial class PatientsPage : ContentPage
 {
     private readonly PatientsViewModel viewModel;
 
-    public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
+    public PatientsPage()
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
-      
-        
-        if (patientDataService != null && scheduleDataService != null && notificationService != null)
-        {
-            viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-        else
-        {
-            // Fallback for direct instantiation
-            patientDataService = new PatientDataService();
-            scheduleDataService = new ScheduleDataService(patientDataService);
-            notificationService = new NotificationService();
-            viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-
+        var patientDataService = services?.GetService<PatientDataService>() ?? new PatientDataService();
+        var scheduleDataService = services?.GetService<ScheduleDataService>() ?? new ScheduleDataService(patientDataService);
+        var notificationService = services?.GetService<NotificationService>() ?? new NotificationService();
+        viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
         BindingContext = viewModel;
+        DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+
         foreach (var chip in MobileFilterChips.Items)
         {
             MobileFilterChips.SelectedItem = chip;
@@ -42,22 +30,6 @@ public partial class PatientsPage : ContentPage
         }
         SetDesktopFilterTab("All Patients");
     }
-
-    //public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
-    //{
-    //    InitializeComponent();
-    //    viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
-    //    BindingContext = viewModel;
-    //    DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-    //    MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-
-    //    foreach (var chip in MobileFilterChips.Items)
-    //    {
-    //        MobileFilterChips.SelectedItem = chip;
-    //        break;
-    //    }
-    //    SetDesktopFilterTab("All Patients");
-    //}
 
     private void OnPatientCardTapped(object? sender, TappedEventArgs e)
     {
@@ -67,7 +39,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async Task OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
+    private async void OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -82,7 +54,17 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async Task OnCloseProfileTapped(object? sender, TappedEventArgs e)
+    private async void OnCloseProfileTapped(object? sender, TappedEventArgs e)
+    {
+        await CloseProfileAsync();
+    }
+
+    private async void OnCloseProfileClicked(object? sender, EventArgs e)
+    {
+        await CloseProfileAsync();
+    }
+
+    private async Task CloseProfileAsync()
     {
         try
         {
@@ -98,23 +80,6 @@ public partial class PatientsPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Close profile error: {ex.Message}");
-        }
-    }
-
-    private async Task OnCloseProfileClicked(object? sender, EventArgs e)
-    {
-        await CloseProfileAsync();
-    }
-
-    private async Task CloseProfileAsync()
-    {
-        var returnRoute = viewModel.ReturnRoute;
-        viewModel.CloseProfileCommand.Execute(null);
-
-        if (!string.IsNullOrEmpty(returnRoute))
-        {
-            viewModel.ReturnRoute = string.Empty;
-            await Shell.Current.GoToAsync($"//{returnRoute}");
         }
     }
 
@@ -151,7 +116,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {
