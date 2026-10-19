@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using PatientCare.Services;
 using Syncfusion.Maui.Core.Hosting;
 using Syncfusion.Licensing;
@@ -21,6 +21,13 @@ namespace PatientCare
             builder.Services.AddSingleton<PatientDataService>();
             builder.Services.AddSingleton<ScheduleDataService>();
             builder.Services.AddSingleton<CarePlanDataService>();
+            
+            // Register pages for DI
+            builder.Services.AddTransient<Views.SplashPage>();
+            builder.Services.AddTransient<Views.DashboardPage>();
+            builder.Services.AddTransient<Views.PatientsPage>();
+            builder.Services.AddTransient<Views.AppointmentsPage>();
+            builder.Services.AddTransient<Views.CarePlansPage>();
 
             builder
                 .ConfigureFonts(fonts =>

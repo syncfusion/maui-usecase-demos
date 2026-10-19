@@ -11,15 +11,11 @@ public partial class PatientsPage : ContentPage
 {
     private readonly PatientsViewModel viewModel;
 
-    public PatientsPage()
+    public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
     {
         InitializeComponent();
-        var services = Application.Current?.Handler?.MauiContext?.Services;
-        var patientDataService = services?.GetService<PatientDataService>() ?? new PatientDataService();
-        var scheduleDataService = services?.GetService<ScheduleDataService>() ?? new ScheduleDataService(patientDataService);
         viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
         BindingContext = viewModel;
-        var notificationService = services?.GetService<NotificationService>() ?? new NotificationService();
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
         MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
 
@@ -39,27 +35,41 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async void OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
+    private async Task OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
     {
-        if (e.Parameter is Patient patient)
+        try
         {
-            await Shell.Current.GoToAsync($"//careplans?patientId={patient.PatientId}");
+            if (e.Parameter is Patient patient)
+            {
+                await Shell.Current.GoToAsync($"//careplans?patientId={patient.PatientId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
         }
     }
 
-    private async void OnCloseProfileTapped(object? sender, TappedEventArgs e)
+    private async Task OnCloseProfileTapped(object? sender, TappedEventArgs e)
     {
-        var returnRoute = viewModel.ReturnRoute;
-        viewModel.CloseProfileCommand.Execute(null);
-
-        if (!string.IsNullOrEmpty(returnRoute))
+        try
         {
-            viewModel.ReturnRoute = string.Empty;
-            await Shell.Current.GoToAsync($"//{returnRoute}");
+            var returnRoute = viewModel.ReturnRoute;
+            viewModel.CloseProfileCommand.Execute(null);
+
+            if (!string.IsNullOrEmpty(returnRoute))
+            {
+                viewModel.ReturnRoute = string.Empty;
+                await Shell.Current.GoToAsync($"//{returnRoute}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Close profile error: {ex.Message}");
         }
     }
 
-    private async void OnCloseProfileClicked(object? sender, EventArgs e)
+    private async Task OnCloseProfileClicked(object? sender, EventArgs e)
     {
         await CloseProfileAsync();
     }
@@ -109,8 +119,15 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
-        await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        try
+        {
+            await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
     }
 }
