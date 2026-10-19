@@ -903,8 +903,8 @@ namespace StockChart
             try
             {
                 var selectedRange = viewModel.RestoreCommittedRange();
-                ChartRangeSelector.RangeStart = selectedRange.Start;
-                ChartRangeSelector.RangeEnd = selectedRange.End;
+                ChartRangeSelector.RangeStart = (int)selectedRange.Start;
+                ChartRangeSelector.RangeEnd = (int)selectedRange.End;
                 ApplyChartRange(viewModel, selectedRange.Start, selectedRange.End);
                 UpdatePriceAxisRange(viewModel, selectedRange.Start, selectedRange.End);
                 ResetChartZoomControl.IsVisible = false;

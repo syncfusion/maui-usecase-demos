@@ -271,7 +271,7 @@ public partial class WatchlistViewModel : ObservableObject
         AddStockWatchlists.Clear();
         foreach (var watchlist in watchlists)
         {
-            AddStockWatchlists.Add(new WatchlistSelectionModel(watchlist.Name)
+            AddStockWatchlists.Add(new WatchlistSelectionModel(watchlist)
             {
                 IsSelected = watchlist.Symbols.Contains(symbol)
             });
