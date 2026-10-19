@@ -38,7 +38,7 @@ public partial class TheatersView : ContentPage
     {
         if (e.AddedItems.FirstOrDefault() is not Showtime s) return;
         _vm.SelectedShowtime = s;
-        ShowtimeList.SelectedItem = null;
+        if (sender is SfListView list) list.SelectedItem = null;
     }
 
     private async void OnSelectShowtimeClicked(object? sender, EventArgs e)
