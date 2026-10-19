@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:data="clr-namespace:Syncfusion.Maui.DataSource;assembly=Syncfusion.Maui.DataSource"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:local="clr-namespace:ContactsApp"
+             x:Class="ContactsApp.ContactsPage"
+             Title="Contacts">
+    
+    <ContentPage.BindingContext>
+        <local:ContactsViewModel/>
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- LEFT SIDE -->
+        <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,30">
+
+            <SearchBar Grid.Row="0" Grid.ColumnSpan="2"
+                x:Name="searchBar"
+                Placeholder="Search contacts"
+                Margin="10,5"
+                >
+
+                <SearchBar.Behaviors>
+                    <local:SearchBarBehavior ListView="{x:Reference listView}" />
+                </SearchBar.Behaviors>
+
+            </SearchBar>
+
+            <listView:SfListView Grid.Row="1"
+                          x:Name="listView"
+                          ItemsSource="{Binding Contacts}"
+                          IsStickyGroupHeader="True"
+                          ItemSize="70">
+
+                <listView:SfListView.Behaviors>
+                    <local:ItemTapBehavior Popup="{x:Reference contactPopup}" />
+                </listView:SfListView.Behaviors>
+
+                <listView:SfListView.DataSource>
+                    <data:DataSource>
+                        <!-- Sorting -->
+                        <data:DataSource.SortDescriptors>
+                            <data:SortDescriptor 
+                                PropertyName="Name"
+                                Direction="Ascending" />
+                        </data:DataSource.SortDescriptors>
+
+                        <!-- Grouping -->
+                        <data:DataSource.GroupDescriptors>
+                            <data:GroupDescriptor PropertyName="GroupKey"/>
+                        </data:DataSource.GroupDescriptors>
+                    </data:DataSource>
+                </listView:SfListView.DataSource>
+
+                <!-- Group Header -->
+                <listView:SfListView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid BackgroundColor="#F3F3F3" Padding="10,4">
+                                <Label Text="{Binding Key}"
+                                FontAttributes="Bold"
+                                FontSize="16"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </listView:SfListView.GroupHeaderTemplate>
+
+                <!-- Items -->
+                <listView:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Padding="10"
+                           ColumnDefinitions="50,*">
+
+                                <!-- Initial Circle -->
+                                <Frame WidthRequest="40"
+                                HeightRequest="40"
+                                CornerRadius="20"
+                                BackgroundColor="#4CAF50"
+                                Padding="0"
+                                HasShadow="False"
+                                VerticalOptions="Center">
+
+                                    <Label Text="{Binding Initial}"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    TextColor="White"
+                                    FontAttributes="Bold"/>
+                                </Frame>
+
+                                <!-- Name -->
+                                <Label Grid.Column="1"
+                                Text="{Binding Name}"
+                                VerticalOptions="Center"
+                                FontSize="16"
+                                Margin="10,0"/>
+
+                                <!-- Divider -->
+                                <BoxView Grid.ColumnSpan="2"
+                                  HeightRequest="1"
+                                  BackgroundColor="#E5E5E5"
+                                  VerticalOptions="End"
+                                  Margin="60,0,0,0"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </listView:SfListView.ItemTemplate>
+
+            </listView:SfListView>
+
+            <!-- ✅ RIGHT SIDE: SfListView INDEX BAR -->
+            <listView:SfListView Grid.Column="1"
+                     Grid.Row="1"
+                     x:Name="indexListView"
+                     ItemsSource="{Binding Alphabet}"
+                     SelectionMode="Single"
+                     ItemSize="20"
+                     ScrollBarVisibility="Never"
+                     BackgroundColor="Transparent">
+
+                <listView:SfListView.Behaviors>
+                    <local:IndexTapBehavior 
+TargetListView="{x:Reference listView}" />
+                </listView:SfListView.Behaviors>
+                
+                <listView:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Label Text="{Binding}"
+                    FontSize="12"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </listView:SfListView.ItemTemplate>
+            </listView:SfListView>
+        </Grid>
+
+        <popup:SfPopup x:Name="contactPopup" Grid.Row="1"
+                    IsOpen="False"
+                    ShowHeader="False"
+                    ShowFooter="False"
+                    IsFullScreen="True">
+
+            <popup:SfPopup.ContentTemplate>
+                <DataTemplate>
+
+                    <Grid BackgroundColor="#F6F6F6"
+                  RowDefinitions="Auto,*">
+
+                        <!-- ✅ TOP BAR -->
+                        <Grid Padding="{OnPlatform Default=10, MacCatalyst='20,30,0,0'}">
+                            <Label Text="←"
+                           FontSize="22">
+
+                                <Label.Behaviors>
+                                    <local:ClosePopupBehavior 
+            Popup="{x:Reference contactPopup}" />
+                                </Label.Behaviors>
+                            </Label>
+                        </Grid>
+
+                        <!-- ✅ MAIN CONTENT -->
+                        <ScrollView Grid.Row="1">
+
+                            <StackLayout Padding="20" Spacing="20">
+
+                                <!-- ✅ AVATAR -->
+                                <Frame WidthRequest="120"
+                               HeightRequest="120"
+                               CornerRadius="60"
+                               BackgroundColor="#4CAF50"
+                               HorizontalOptions="Center"
+                               HasShadow="False">
+
+                                    <Label Text="{Binding Initial}"
+                                   FontSize="50"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                                </Frame>
+
+                                <!-- ✅ NAME (IMPORTANT FIX ✅) -->
+                                <Label Text="{Binding Name}"
+                               FontSize="24"
+                               HorizontalOptions="Center"
+                               FontAttributes="Bold"/>
+
+                                <!-- ✅ PHONE NUMBER -->
+                                <Label Text="{Binding PhoneNumber}"
+                               FontSize="18"
+                               HorizontalOptions="Center"
+                               TextColor="Gray"/>
+
+                                <!-- ✅ ACTION BUTTONS -->
+                                <Grid ColumnDefinitions="*,*,*"
+                              Margin="0,10"
+                              ColumnSpacing="10">
+
+                                    <StackLayout HorizontalOptions="Center">
+                                        <Frame WidthRequest="50"
+                                       HeightRequest="50"
+                                       CornerRadius="25"
+                                       BackgroundColor="#E0E0E0"
+                                       Padding="0"
+                                       HasShadow="False">
+
+                                            <Label Text="📞"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                        </Frame>
+                                        <Label Text="Call"
+                                       FontSize="12"
+                                       HorizontalOptions="Center"/>
+                                    </StackLayout>
+
+                                    <StackLayout HorizontalOptions="Center" Grid.Column="1">
+                                        <Frame WidthRequest="50"
+                                       HeightRequest="50"
+                                       CornerRadius="25"
+                                       BackgroundColor="#E0E0E0"
+                                       Padding="0"
+                                       HasShadow="False">
+
+                                            <Label Text="💬"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                        </Frame>
+                                        <Label Text="Text"
+                                       FontSize="12"
+                                       HorizontalOptions="Center"/>
+                                    </StackLayout>
+
+                                    <StackLayout HorizontalOptions="Center" Grid.Column="2">
+                                        <Frame WidthRequest="50"
+                                       HeightRequest="50"
+                                       CornerRadius="25"
+                                       BackgroundColor="#E0E0E0"
+                                       Padding="0"
+                                       HasShadow="False">
+
+                                            <Label Text="📹"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                        </Frame>
+                                        <Label Text="Video"
+                                       FontSize="12"
+                                       HorizontalOptions="Center"/>
+                                    </StackLayout>
+
+                                </Grid>
+
+                                <!-- ✅ CONTACT INFO CARD -->
+                                <Frame CornerRadius="12"
+                               BackgroundColor="White"
+                               Padding="15"
+                               HasShadow="False">
+
+                                    <StackLayout Spacing="10">
+
+                                        <Label Text="Contact info"
+                                       FontAttributes="Bold"/>
+
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+
+                                            <Label Text="📞"/>
+
+                                            <Label Grid.Column="1"
+                                           Text="{Binding PhoneNumber}"
+                                           Margin="10,0"/>
+
+                                            <Label Grid.Column="2"
+                                           Text="💬"/>
+                                        </Grid>
+
+                                    </StackLayout>
+
+                                </Frame>
+
+                                <!-- ✅ SETTINGS SECTION -->
+                                <StackLayout Spacing="10">
+
+                                    <Label Text="Contact settings"
+                                   FontAttributes="Bold"
+                                   FontSize="14"
+                                   TextColor="Gray"/>
+
+                                    <Grid ColumnDefinitions="Auto,*"
+                                  Padding="10">
+
+                                        <Label Text="🚫"/>
+                                        <Label Grid.Column="1"
+                                       Text="Block Contact"
+                                       Margin="10,0"/>
+                                    </Grid>
+
+                                </StackLayout>
+
+                            </StackLayout>
+
+                        </ScrollView>
+
+                    </Grid>
+
+                </DataTemplate>
+            </popup:SfPopup.ContentTemplate>
+
+        </popup:SfPopup>
+
+    </Grid>
+</ContentPage>
