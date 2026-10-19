@@ -7,6 +7,28 @@ public partial class DashboardPage : ContentPage, IQueryAttributable
 {
 	private readonly DashboardViewModel _viewModel;
 
+	public DashboardPage()
+	{
+		InitializeComponent();
+		var services = Application.Current?.Handler?.MauiContext?.Services;
+		var dataService = services?.GetService<DashboardDataService>();
+		if (dataService != null)
+		{
+			_viewModel = new DashboardViewModel(dataService);
+		}
+		else
+		{
+			// Fallback for direct instantiation
+			var patientDataService = new PatientDataService();
+			dataService = new DashboardDataService(
+				new ScheduleDataService(patientDataService),
+				new NotificationService(),
+				patientDataService);
+			_viewModel = new DashboardViewModel(dataService);
+		}
+		BindingContext = _viewModel;
+	}
+
 	public DashboardPage(DashboardDataService dataService)
 	{
 		InitializeComponent();
