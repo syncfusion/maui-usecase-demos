@@ -1,4 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
+using StockChart.Services;
+using StockChart.ViewModels;
+using StockChart.ViewModels.Chart;
+using StockChart.ViewModels.Settings;
+using StockChart.ViewModels.Stock;
+using StockChart.ViewModels.Watchlist;
 using Syncfusion.Maui.Core.Hosting;
 using Syncfusion.Licensing;
 #if MAUI_DEVFLOW
@@ -22,6 +28,20 @@ namespace StockChart
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 });
+
+            // Register services
+            builder.Services.AddSingleton<StockDataService>();
+            
+            // Register ViewModels
+            builder.Services.AddSingleton<ChartViewModel>();
+            builder.Services.AddSingleton<WatchlistViewModel>();
+            builder.Services.AddSingleton<StockViewModel>();
+            builder.Services.AddSingleton<SettingsViewModel>();
+            builder.Services.AddSingleton<StockChartViewModel>();
+
+            // Register Pages
+            builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton<AppShell>();
 
 #if MAUI_DEVFLOW
             builder.AddMauiDevFlowAgent();
