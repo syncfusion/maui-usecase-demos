@@ -1,5 +1,6 @@
 using System.Globalization;
 using SmartMovieBooking.Models;
+using SmartMovieBooking.ViewModels;
 
 namespace SmartMovieBooking.Converters;
 
@@ -51,16 +52,36 @@ public sealed class SelectedToForegroundConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
+/// <summary>
+/// Returns a friendly label for the date strip (Today / Tomorrow / Weekend / Weekday).
+/// parameter = "labelOnly" returns just "Today"/"Tomorrow"/etc.
+/// parameter = "dateOnly" returns the day number.
+/// parameter = "weekdayOnly" returns the abbreviated weekday.
+/// parameter = "monthOnly" returns the abbreviated month.
+/// </summary>
 public sealed class DateToLabelConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is not DateTime date) return string.Empty;
+        if (value is not DateTime dt) return string.Empty;
         var today = DateTime.Today;
-        if (date.Date == today) return "Today";
-        if (date.Date == today.AddDays(1)) return "Tomorrow";
-        if (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) return "Weekend";
-        return "Weekday";
+        var days = (dt.Date - today.Date).Days;
+        var rel = days switch
+        {
+            0 => "Today",
+            1 => "Tomorrow",
+            >= 2 and <= 6 => dt.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "Weekend" : "Weekday",
+            _ => string.Empty
+        };
+        var mode = (parameter as string)?.ToLowerInvariant();
+        return mode switch
+        {
+            "labelonly" => rel,
+            "dateonly" => dt.Day.ToString(),
+            "weekdayonly" => dt.ToString("ddd", culture),
+            "monthonly" => dt.ToString("MMM", culture),
+            _ => rel
+        };
     }
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
@@ -116,6 +137,22 @@ public sealed class SeatStateToColorConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
+public sealed class SeatTierToBorderColorConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is not SeatTier t) return Colors.Transparent;
+        return t switch
+        {
+            SeatTier.Premium   => (Color)Application.Current!.Resources["ThemeTertiary"],
+            SeatTier.Executive => (Color)Application.Current!.Resources["ThemeSecondary"],
+            _ => Colors.Transparent
+        };
+    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
 public sealed class CurrencyConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -152,118 +189,10 @@ public sealed class EnumToVisibilityConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
-/// <summary>
-/// Returns a friendly label for the date strip (Today / Tomorrow / Weekend / Weekday + day + weekday + month).
-/// parameter = "labelOnly" returns just "Today"/"Tomorrow"/etc.
-/// parameter = "dateOnly" returns "24".
-/// parameter = "weekdayOnly" returns "Thu".
-/// otherwise returns the full line.
-/// </summary>
-public sealed class DateToLabelConverter : IValueConverter
-{
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        if (value is not DateTime dt) return string.Empty;
-        var today = DateTime.Today;
-        var days = (dt.Date - today.Date).Days;
-        var rel = days switch
-        {
-            0 => "Today",
-            1 => "Tomorrow",
-            >= 2 and <= 6 => DateTime.Today.AddDays(days).DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "Weekend" : "Weekday",
-            _ => string.Empty
-        };
-        var day = dt.Day.ToString();
-        var weekday = dt.ToString("ddd", culture);
-        var month = dt.ToString("MMM", culture);
-
-        var mode = (parameter as string)?.ToLowerInvariant();
-        return mode switch
-        {
-            "labelonly" => rel,
-            "dateonly"  => day,
-            "weekdayonly" => weekday,
-            "monthonly" => month,
-            "full" => $"{rel} {day} {weekday} • {month}",
-            _ => rel
-        };
-    }
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new NotSupportedException();
-}
-
-public sealed class ShowtimeStatusToColorConverter : IValueConverter
-{
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        var key = value?.ToString() switch
-        {
-            "AlmostFull"  => "ThemeTertiaryContainer",
-            "SellingFast" => "ThemeError",
-            "SoldOut"     => "ThemeOutline",
-            _             => "ThemeOutline"
-        };
-        return (Color)Application.Current!.Resources[key];
-    }
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new NotSupportedException();
-}
-
-public sealed class ShowtimeStatusToTextConverter : IValueConverter
-{
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        return value?.ToString() switch
-        {
-            "AlmostFull"  => "Almost Full",
-            "SellingFast" => "Selling Fast",
-            "SoldOut"     => "Sold Out",
-            _             => "Available"
-        };
-    }
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new NotSupportedException();
-}
-
-public sealed class SeatStateToColorConverter : IValueConverter
-{
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        var key = value?.ToString() switch
-        {
-            "Selected" => "ThemePrimary",
-            "Occupied" => "ThemeSurfaceContainerHigh",
-            "Aisle"    => "ThemeBackground",
-            _          => "ThemeSurface"
-        };
-        return (Color)Application.Current!.Resources[key];
-    }
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new NotSupportedException();
-}
-
-public sealed class SeatTierToBorderColorConverter : IValueConverter
-{
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        return value?.ToString() switch
-        {
-            "Premium"   => (Color)Application.Current!.Resources["ThemeTertiary"],
-            "Executive" => (Color)Application.Current!.Resources["ThemeSecondary"],
-            _           => Colors.Transparent
-        };
-    }
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new NotSupportedException();
-}
-
 public sealed class StringEqualsConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        var p = parameter as string;
-        return string.Equals(value?.ToString(), p, StringComparison.OrdinalIgnoreCase);
-    }
+        => value is not null && parameter is not null && value.ToString() == parameter.ToString();
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
@@ -272,10 +201,9 @@ public sealed class TitleCaseConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is null) return string.Empty;
-        var s = value.ToString() ?? string.Empty;
-        if (string.IsNullOrEmpty(s)) return s;
-        return char.ToUpper(s[0], culture) + s[1..];
+        var s = value?.ToString();
+        if (string.IsNullOrEmpty(s)) return string.Empty;
+        return char.ToUpper(s[0]) + s.Substring(1);
     }
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
@@ -285,9 +213,9 @@ public sealed class FormatToTimeConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is string s && !string.IsNullOrWhiteSpace(s))
-            return s;
-        return string.Empty;
+        if (value is string s && TimeSpan.TryParse(s, out var ts))
+            return DateTime.Today.Add(ts).ToString("h:mm tt", culture);
+        return value ?? string.Empty;
     }
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
@@ -312,18 +240,7 @@ public sealed class NotNullConverter : IValueConverter
 public sealed class CountToVisibilityConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        var n = value switch
-        {
-            int i  => i,
-            long l => (int)l,
-            _      => 0
-        };
-        // parameter "invert" => show when count == 0
-        if ((parameter as string)?.Equals("invert", StringComparison.OrdinalIgnoreCase) == true)
-            return n == 0;
-        return n > 0;
-    }
+        => value is int n && n > 0;
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
@@ -339,11 +256,7 @@ public sealed class BoolToOpacityConverter : IValueConverter
 public sealed class RoleToAlignConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        if (value is AiRole role && role == AiRole.User)
-            return LayoutOptions.End;
-        return LayoutOptions.Start;
-    }
+        => value is AiRole role && role == AiRole.User ? LayoutOptions.End : LayoutOptions.Start;
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
@@ -361,9 +274,9 @@ public sealed class RoleToBubbleColorConverter : IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (Application.Current is null) return Colors.White;
-        if (value is AiRole.User)
-            return (Color)Application.Current.Resources["ThemePrimary"];
-        return (Color)Application.Current.Resources["ThemeSurfaceContainerLowest"];
+        return value is AiRole.User
+            ? (Color)Application.Current.Resources["ThemePrimary"]
+            : (Color)Application.Current.Resources["ThemeSurfaceContainerLowest"];
     }
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
