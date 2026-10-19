@@ -4,7 +4,7 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
-             xmlns:syncfusionChips="clr-namespace:Syncfusion.Maui.Chips;assembly=Syncfusion.Maui.Chips"
+             xmlns:syncfusionChips="clr-namespace:Syncfusion.Maui.Chips;assembly=Syncfusion.Maui.Core"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              x:Class="SmartMovieBooking.Views.MovieHomeView"
@@ -60,10 +60,7 @@
                                    SelectionMode="Single"
                                    SelectionChanged="OnMovieTapped">
                 <syncfusion:SfListView.ItemsLayout>
-                    <syncfusion:GridLayout SpanCount="3"
-                                            HorizontalItemSpacing="16"
-                                            VerticalItemSpacing="16"
-                                            Orientation="Vertical" />
+                    <syncfusion:GridLayout SpanCount="3" />
                 </syncfusion:SfListView.ItemsLayout>
                 <syncfusion:SfListView.ItemTemplate>
                     <DataTemplate x:DataType="models:Movie">

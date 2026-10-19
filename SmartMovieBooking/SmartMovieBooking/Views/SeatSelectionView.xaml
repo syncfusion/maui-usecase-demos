@@ -41,10 +41,7 @@
                                        BackgroundColor="Transparent"
                                        SelectionMode="None">
                     <syncfusion:SfListView.ItemsLayout>
-                        <syncfusion:GridLayout SpanCount="14"
-                                                Orientation="Vertical"
-                                                HorizontalItemSpacing="4"
-                                                VerticalItemSpacing="6" />
+                        <syncfusion:GridLayout SpanCount="14" />
                     </syncfusion:SfListView.ItemsLayout>
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Seat">
