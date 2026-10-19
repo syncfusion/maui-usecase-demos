@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace StockChart.ViewModels.Settings;
+namespace StockChart.ViewModel.Settings;
 
 /// <summary>
 /// ViewModel responsible for managing chart settings.

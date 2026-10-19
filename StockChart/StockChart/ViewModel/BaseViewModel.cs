@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace StockChart.ViewModels;
+namespace StockChart.ViewModel;
 
 /// <summary>
 /// Base ViewModel class that provides common functionality for all ViewModels.

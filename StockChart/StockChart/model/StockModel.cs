@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace StockChart.Models;
+namespace StockChart.model;
 
 public partial class StockModel : ObservableObject
 {

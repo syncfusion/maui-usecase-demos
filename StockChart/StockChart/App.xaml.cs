@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using StockChart.ViewModels;
-using StockChart.Services;
+using StockChart.ViewModel;
+using StockChart.Service;
 
 namespace StockChart
 {
@@ -16,7 +16,7 @@ namespace StockChart
             ServiceProvider = serviceProvider;
 
             // Resolve AppShell with its dependencies
-            var appShell = serviceProvider.GetRequiredService&lt;AppShell&gt;();
+            var appShell = serviceProvider.GetRequiredService<AppShell>();
             MainPage = appShell;
         }
     }

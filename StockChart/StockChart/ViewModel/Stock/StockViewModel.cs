@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using StockChart.Models;
+using StockChart.model;
 
-namespace StockChart.ViewModels.Stock;
+namespace StockChart.ViewModel.Stock;
 
 /// <summary>
 /// ViewModel responsible for managing stock-related functionality.

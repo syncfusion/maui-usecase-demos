@@ -1,7 +1,7 @@
 using System.Text.Json;
-using StockChart.Models;
+using StockChart.model;
 
-namespace StockChart.Services;
+namespace StockChart.Service;
 
 public sealed class StockDataService
 {

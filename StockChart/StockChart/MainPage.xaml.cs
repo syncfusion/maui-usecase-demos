@@ -1,9 +1,9 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using StockChart.Models;
-using StockChart.Services;
-using StockChart.ViewModels;
+using StockChart.model;
+using StockChart.Service;
+using StockChart.ViewModel;
 using Syncfusion.Maui.Buttons;
 using Syncfusion.Maui.Charts;
 using Syncfusion.Maui.Inputs;

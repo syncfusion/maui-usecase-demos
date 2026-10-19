@@ -2,7 +2,7 @@ using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace StockChart.Models;
+namespace StockChart.model;
 
 public partial class WatchlistModel : ObservableObject
 {

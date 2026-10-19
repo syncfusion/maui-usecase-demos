@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace StockChart.Models;
+namespace StockChart.model;
 
 public sealed class CandleDataModel
 {
