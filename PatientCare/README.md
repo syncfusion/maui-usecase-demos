@@ -20,16 +20,6 @@ The Patient Care sample is a healthcare management application built with .NET M
    ```
 5. Build and run the application
 
-## Required Syncfusion Packages
-- Syncfusion.Maui.Core
-- Syncfusion.Maui.Popup
-- Syncfusion.Maui.ProgressBar
-- Syncfusion.Maui.Charts
-- Syncfusion.Maui.ListView
-- Syncfusion.Maui.Inputs
-- Syncfusion.Maui.Scheduler
-- Syncfusion.Maui.Buttons
-
 ## Application Structure
 - **Views**: XAML pages for each feature area
 - **ViewModels**: MVVM pattern implementation
@@ -47,8 +37,3 @@ Before running the application, you must register your Syncfusion license:
 - iOS
 - Windows
 - macOS
-
-## Known Issues
-- This is a sample application using mock data
-- No actual database connectivity or network calls
-- Notification service uses static mock data
