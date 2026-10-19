@@ -6,8 +6,8 @@ namespace PatientCare.Services;
 public sealed class DashboardDataService
 {
     private const string DashboardClinicianId = "CL-01";
-    private static readonly string[] MalePatientPhotos = ["patinet_1.jpg", "patinet_2.jpg", "patient_3.jpg", "patient_4.jpg"];
-    private static readonly string[] FemalePatientPhotos = ["patinet_5.jpg", "patinet_6.jpg"];
+    private static readonly string[] MalePatientPhotos = ["patient_1.jpg", "patient_2.jpg", "patient_3.jpg", "patient_4.jpg"];
+    private static readonly string[] FemalePatientPhotos = ["patient_5.jpg", "patient_6.jpg"];
     private readonly ScheduleDataService scheduleDataService;
     private readonly NotificationService notificationService;
     private readonly PatientDataService patientDataService;
@@ -83,7 +83,10 @@ public sealed class DashboardDataService
             var date = weekStart.AddDays(offset);
             var count = appointments.Count(appointment =>
                 !appointment.IsCancelled && appointment.StartTime.Date == date.Date);
-            return new DashboardChartPoint { Label = date.ToString("ddd")[..1], Value = count };
+            // Use invariant culture to ensure consistent day abbreviation
+            var dayAbbreviation = date.ToString("ddd", System.Globalization.CultureInfo.InvariantCulture);
+            var label = !string.IsNullOrEmpty(dayAbbreviation) ? dayAbbreviation[..1] : "U";
+            return new DashboardChartPoint { Label = label, Value = count };
         }));
     }
 

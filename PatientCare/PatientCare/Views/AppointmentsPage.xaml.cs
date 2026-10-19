@@ -11,15 +11,11 @@ public partial class AppointmentsPage : ContentPage
 {
     private readonly AppointmentsViewModel viewModel;
 
-    public AppointmentsPage()
+    public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
     {
         InitializeComponent();
-        var dataService = Application.Current?.Handler?.MauiContext?.Services.GetService<ScheduleDataService>()
-            ?? new ScheduleDataService(new PatientDataService());
         viewModel = new AppointmentsViewModel(dataService);
         BindingContext = viewModel;
-        var notificationService = Application.Current?.Handler?.MauiContext?.Services.GetService<NotificationService>()
-            ?? new NotificationService();
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
         MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
 
@@ -106,9 +102,16 @@ public partial class AppointmentsPage : ContentPage
         viewModel.CloseAppointmentDetailsCommand.Execute(null);
     }
 
-    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
-        await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        try
+        {
+            await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
     }
 
 }

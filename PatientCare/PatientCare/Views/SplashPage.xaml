@@ -37,7 +37,6 @@
             <Label Text="PatientCare" 
                    FontSize="28"
                    FontAttributes="Bold"
-                   FontFamily="Inter"
                    TextColor="#087F73"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"

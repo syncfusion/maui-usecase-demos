@@ -8,15 +8,11 @@ public partial class CarePlansPage : ContentPage
 {
     private readonly CarePlansViewModel viewModel;
 
-    public CarePlansPage()
+    public CarePlansPage(CarePlanDataService carePlanDataService, PatientDataService patientDataService, NotificationService notificationService)
     {
         InitializeComponent();
-        var services = Application.Current?.Handler?.MauiContext?.Services;
-        var carePlanDataService = services?.GetService<CarePlanDataService>() ?? new CarePlanDataService();
-        var patientDataService = services?.GetService<PatientDataService>() ?? new PatientDataService();
         viewModel = new CarePlansViewModel(carePlanDataService, patientDataService);
         BindingContext = viewModel;
-        var notificationService = services?.GetService<NotificationService>() ?? new NotificationService();
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
         MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
     }
@@ -29,8 +25,15 @@ public partial class CarePlansPage : ContentPage
         }
     }
 
-    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
-        await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        try
+        {
+            await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
     }
 }

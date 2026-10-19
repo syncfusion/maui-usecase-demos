@@ -40,13 +40,53 @@ public partial class AppBottomNavView : ContentView
         label.TextColor = color;
     }
 
-    private async void OnDashboardTapped(object? sender, TappedEventArgs e) => await NavigateIfNeeded("dashboard");
+    private async Task OnDashboardTapped(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+            await NavigateIfNeeded("dashboard");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
+    }
 
-    private async void OnPatientsTapped(object? sender, TappedEventArgs e) => await NavigateIfNeeded("patients");
+    private async Task OnPatientsTapped(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+            await NavigateIfNeeded("patients");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
+    }
 
-    private async void OnScheduleTapped(object? sender, TappedEventArgs e) => await NavigateIfNeeded("schedule");
+    private async Task OnScheduleTapped(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+            await NavigateIfNeeded("schedule");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
+    }
 
-    private async void OnCarePlansTapped(object? sender, TappedEventArgs e) => await NavigateIfNeeded("careplans");
+    private async Task OnCarePlansTapped(object? sender, TappedEventArgs e)
+    {
+        try
+        {
+            await NavigateIfNeeded("careplans");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
+    }
 
     private async Task NavigateIfNeeded(string route)
     {

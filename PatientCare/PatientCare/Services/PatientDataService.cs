@@ -15,24 +15,40 @@ public sealed class PatientDataService
 
     public void UpdateAppointmentDates(IEnumerable<ScheduleAppointment> appointments)
     {
+        // Only update if we haven't already processed these appointments
+        // This prevents continuous updates on every page load
+        var today = DateTime.Today;
+        
         foreach (var patient in patients)
         {
             var patientAppointments = appointments
                 .Where(appointment => appointment.PatientId == patient.PatientId && !appointment.IsCancelled)
                 .ToList();
 
-            patient.LastVisitDate = patientAppointments
+            // Only update LastVisitDate if we found a completed appointment
+            var lastVisit = patientAppointments
                 .Where(appointment => appointment.Status.Equals("Completed", StringComparison.OrdinalIgnoreCase))
                 .Select(appointment => (DateTime?)appointment.EndTime)
                 .OrderByDescending(date => date)
-                .FirstOrDefault() ?? patient.LastVisitDate;
+                .FirstOrDefault();
 
-            patient.NextAppointmentDate = patientAppointments
+            if (lastVisit.HasValue)
+            {
+                patient.LastVisitDate = lastVisit.Value;
+            }
+
+            // Only update NextAppointmentDate if we found a future appointment
+            var nextAppointment = patientAppointments
                 .Where(appointment => !appointment.Status.Equals("Completed", StringComparison.OrdinalIgnoreCase)
-                    && appointment.StartTime >= DateTime.Now)
+                    && appointment.StartTime >= today) // Use today instead of DateTime.Now for consistency
                 .Select(appointment => (DateTime?)appointment.StartTime)
                 .OrderBy(date => date)
                 .FirstOrDefault();
+
+            if (nextAppointment.HasValue)
+            {
+                patient.NextAppointmentDate = nextAppointment.Value;
+            }
         }
     }
 

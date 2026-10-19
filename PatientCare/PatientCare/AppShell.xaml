@@ -19,22 +19,18 @@
     <TabBar>
         <ShellContent
             Title="Dashboard"
-            Icon="home.png"
             ContentTemplate="{DataTemplate views:DashboardPage}"
             Route="dashboard" />
         <ShellContent
             Title="Patients"
-            Icon="home.png"
             ContentTemplate="{DataTemplate views:PatientsPage}"
             Route="patients" />
         <ShellContent
             Title="Schedule"
-            Icon="home.png"
             ContentTemplate="{DataTemplate views:AppointmentsPage}"
             Route="schedule" />
         <ShellContent
             Title="Care Plans"
-            Icon="home.png"
             ContentTemplate="{DataTemplate views:CarePlansPage}"
             Route="careplans" />
     </TabBar>
