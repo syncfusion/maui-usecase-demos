@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartMovieBooking.Views.PaymentConfirmationView"
+             Title="Booking Confirmed">
+    <Grid Padding="24" RowSpacing="16" RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="20" VerticalOptions="Center">
+                <Grid HeightRequest="120" HorizontalOptions="Center">
+                    <Ellipse Fill="#9DEAF6" WidthRequest="120" HeightRequest="120" />
+                    <Label Text="✓" FontSize="60" FontFamily="OpenSansSemibold"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="#002A33" />
+                </Grid>
+
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="Booking Confirmed!"
+                           FontFamily="OpenSansSemibold" FontSize="24"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           TextColor="#1A1A2E" />
+                    <Label Text="Your tickets have been booked successfully."
+                           FontSize="14"
+                           HorizontalTextAlignment="Center"
+                           TextColor="#49454F" />
+                </VerticalStackLayout>
+
+                <Border BackgroundColor="#F1F2F8" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12" Padding="16">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="BOOKING ID" FontFamily="OpenSansSemibold" FontSize="10"
+                                   TextColor="#7A7B8C" />
+                            <Label x:Name="BookingIdLabel" Text="BK-000000"
+                                   FontFamily="OpenSansSemibold" FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="#1A1A2E" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+                            <Label Text="TOTAL PAID" FontFamily="OpenSansSemibold" FontSize="10"
+                                   HorizontalTextAlignment="End"
+                                   TextColor="#7A7B8C" />
+                            <Label x:Name="TotalLabel" Text="$0.00"
+                                   FontFamily="OpenSansSemibold" FontSize="20"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="End"
+                                   TextColor="#3525CD" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border BackgroundColor="#FFFFFF" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12" Padding="16">
+                    <Border.Shadow>
+                        <Shadow Brush="#1A000000" Offset="0,2" Radius="6" Opacity="0.08" />
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="TICKET DETAILS" FontFamily="OpenSansSemibold" FontSize="10"
+                               CharacterSpacing="1.5"
+                               TextColor="#7A7B8C" />
+                        <Label x:Name="MovieLabel" Text="Movie"
+                               FontFamily="OpenSansSemibold" FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="#1A1A2E" />
+                        <Label x:Name="TheaterLabel" Text="Theater"
+                               FontSize="12" TextColor="#49454F" />
+                        <Label x:Name="ShowtimeLabel" Text="Showtime"
+                               FontSize="12" TextColor="#49454F" />
+                        <Label x:Name="SeatsLabel" Text="Seats"
+                               FontSize="12" TextColor="#49454F" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Button Grid.Row="1" Text="Back to Home"
+                Clicked="OnDoneClicked"
+                BackgroundColor="#3525CD" TextColor="#FFFFFF"
+                FontFamily="OpenSansSemibold" FontSize="14"
+                CornerRadius="12" HeightRequest="48" />
+    </Grid>
+</ContentPage>

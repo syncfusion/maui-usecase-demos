@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartMovieBooking.Views.TheatersView"
+             Title="Theaters">
+    <Grid Padding="24" RowSpacing="16" RowDefinitions="Auto,*">
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="Select Theater" FontFamily="OpenSansSemibold" FontSize="28"
+                   FontAttributes="Bold" TextColor="#1A1A2E" />
+            <Label x:Name="MovieSubtitle" Text="Choose a theater and showtime below"
+                   FontSize="13" TextColor="#49454F" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="16">
+                <Border BackgroundColor="#F1F2F8" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12" Padding="12">
+                    <ScrollView Orientation="Horizontal">
+                        <HorizontalStackLayout x:Name="DateStrip" Spacing="6" />
+                    </ScrollView>
+                </Border>
+
+                <ActivityIndicator x:Name="LoadingSpinner" IsRunning="True"
+                                   IsVisible="True" HorizontalOptions="Center" Color="#3525CD" />
+
+                <VerticalStackLayout x:Name="TheaterList" Spacing="16" IsVisible="False" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

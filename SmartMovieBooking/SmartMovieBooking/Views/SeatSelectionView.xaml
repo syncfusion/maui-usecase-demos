@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartMovieBooking.Views.SeatSelectionView"
+             Title="Select Seats">
+    <Grid Padding="20" RowSpacing="16" RowDefinitions="Auto,*,Auto" BackgroundColor="#FFFFFF">
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label x:Name="ScreenTitleLabel" Text="Select Your Seats"
+                   FontFamily="OpenSansSemibold" FontSize="22"
+                   FontAttributes="Bold" TextColor="#1A1A2E" />
+            <Label x:Name="TheaterLabel" Text=""
+                   FontSize="13" TextColor="#49454F" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="12">
+                <Border BackgroundColor="#1A1A2E" StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12" Padding="20,8">
+                    <Label Text="🎬 ALL EYES THIS WAY 🎬"
+                           FontFamily="OpenSansSemibold" FontSize="11"
+                           HorizontalTextAlignment="Center"
+                           TextColor="#FFFFFF" />
+                </Border>
+
+                <VerticalStackLayout x:Name="SeatRows" Spacing="8" />
+
+                <HorizontalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,12,0,0">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3" Color="#E5E6F1" />
+                        <Label Text="Available" FontSize="11" TextColor="#49454F" VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3" Color="#3525CD" />
+                        <Label Text="Selected" FontSize="11" TextColor="#49454F" VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3" Color="#9CA3AF" />
+                        <Label Text="Occupied" FontSize="11" TextColor="#49454F" VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border Grid.Row="2" BackgroundColor="#FFFFFF" StrokeThickness="0"
+                Padding="0,12,0,0">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="TOTAL" FontFamily="OpenSansSemibold" FontSize="10"
+                           TextColor="#7A7B8C" />
+                    <Label x:Name="TotalLabel" Text="$0.00" FontFamily="OpenSansSemibold"
+                           FontSize="20" FontAttributes="Bold" TextColor="#1A1A2E" />
+                </VerticalStackLayout>
+                <Button Grid.Column="1" x:Name="ConfirmButton"
+                        Text="Confirm"
+                        Clicked="OnConfirmClicked"
+                        BackgroundColor="#3525CD" TextColor="#FFFFFF"
+                        FontFamily="OpenSansSemibold" FontSize="14"
+                        CornerRadius="12" HeightRequest="44" WidthRequest="120" />
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

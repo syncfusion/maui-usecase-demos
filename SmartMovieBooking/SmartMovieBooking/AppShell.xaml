@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="SmartMovieBooking.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SmartMovieBooking"
-    Title="SmartMovieBooking">
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:SmartMovieBooking.Views"
+       x:Class="SmartMovieBooking.AppShell"
+       Title="Smart Movie Ticket Booking"
+       Shell.NavBarIsVisible="False"
+       Shell.TabBarIsVisible="True">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent Title="🏠 Movies"
+                      Route="home"
+                      ContentTemplate="{DataTemplate views:MovieHomeView}" />
 
+        <ShellContent Title="🎟 Theaters"
+                      Route="theaters"
+                      ContentTemplate="{DataTemplate views:TheatersView}" />
+
+        <ShellContent Title="🎫 Bookings"
+                      Route="bookings"
+                      ContentTemplate="{DataTemplate views:BookingsView}" />
+    </TabBar>
 </Shell>

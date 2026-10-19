@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             x:Class="SmartMovieBooking.Views.MovieHomeView"
+             Title="Movie Home">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Discover Movies" FontFamily="OpenSansSemibold" FontSize="28"
+                       FontAttributes="Bold" TextColor="#1A1A2E" />
+                <Label Text="Find the perfect show · 10 movies in catalog"
+                       FontSize="13" TextColor="#49454F" />
+            </VerticalStackLayout>
+
+            <Border BackgroundColor="#F1F2F8" StrokeThickness="1" Stroke="#CAC7D0"
+                    StrokeShape="RoundRectangle 12" Padding="14,0" HeightRequest="44">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="🔍" FontSize="14" VerticalTextAlignment="Center" />
+                    <Entry Grid.Column="1" x:Name="SearchEntry"
+                           Placeholder="Search by title or genre…"
+                           PlaceholderColor="#49454F"
+                           BackgroundColor="Transparent"
+                           TextChanged="OnSearchChanged" />
+                </Grid>
+            </Border>
+
+            <!-- Genre chip strip -->
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <HorizontalStackLayout x:Name="GenreChips" Spacing="8" />
+            </ScrollView>
+
+            <ActivityIndicator x:Name="LoadingSpinner" IsRunning="True"
+                               IsVisible="True" HorizontalOptions="Center"
+                               Color="#3525CD" />
+
+            <CollectionView x:Name="MoviesList" IsVisible="False" SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="3"
+                                     HorizontalItemSpacing="14" VerticalItemSpacing="14" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Movie">
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 16"
+                                BackgroundColor="#FFFFFF" Padding="0">
+                            <Border.Shadow>
+                                <Shadow Brush="#1A000000" Offset="0,2" Radius="6" Opacity="0.08" />
+                            </Border.Shadow>
+                            <VerticalStackLayout Spacing="0">
+                                <Grid HeightRequest="180" BackgroundColor="#ECEDF6">
+                                    <Label Text="🎬" FontSize="56"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"
+                                           TextColor="#7A7B8C" />
+                                    <Border BackgroundColor="#2F2F44"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 999"
+                                            Padding="8,3"
+                                            HorizontalOptions="End" VerticalOptions="Start"
+                                            Margin="0,8,8,0">
+                                        <HorizontalStackLayout Spacing="3">
+                                            <Label Text="★" FontSize="10" TextColor="#FFB740"
+                                                   VerticalTextAlignment="Center" />
+                                            <Label Text="{Binding Rating}"
+                                                   FontFamily="OpenSansSemibold" FontSize="10"
+                                                   TextColor="#F1F2F8" />
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                    <Border BackgroundColor="#4F46E5" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 999" Padding="8,3"
+                                            HorizontalOptions="Start" VerticalOptions="Start"
+                                            Margin="8,8,0,0">
+                                        <Label Text="{Binding Format}" FontFamily="OpenSansSemibold"
+                                               FontSize="9" TextColor="#FFFFFF" />
+                                    </Border>
+                                </Grid>
+                                <VerticalStackLayout Padding="12" Spacing="4">
+                                    <Label Text="{Binding Title}" FontFamily="OpenSansSemibold"
+                                           FontSize="13" FontAttributes="Bold" TextColor="#1A1A2E"
+                                           MaxLines="2" LineBreakMode="TailTruncation" />
+                                    <Label Text="{Binding PrimaryGenre}" FontSize="11"
+                                           TextColor="#49454F" />
+                                    <HorizontalStackLayout Spacing="6" Margin="0,2,0,0">
+                                        <Label Text="⏱" FontSize="10" TextColor="#7A7B8C" />
+                                        <Label Text="{Binding Duration}" FontSize="11"
+                                               TextColor="#49454F" />
+                                        <Label Text="·" FontSize="11" TextColor="#7A7B8C" />
+                                        <Label Text="{Binding Certificate}" FontSize="11"
+                                               TextColor="#49454F" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

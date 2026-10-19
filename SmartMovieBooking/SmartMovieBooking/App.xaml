@@ -1,7 +1,8 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<?xml version = "1.0" encoding = "UTF-8" ?>
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:SmartMovieBooking"
+             xmlns:conv="clr-namespace:SmartMovieBooking.Converters"
              x:Class="SmartMovieBooking.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,6 +10,17 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Global value converters -->
+            <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <conv:CountToBoolConverter x:Key="CountToBoolConverter" />
+            <conv:CountToInverseBoolConverter x:Key="CountToInverseBoolConverter" />
+            <conv:StringEqualsConverter x:Key="StringEqualsConverter" />
+            <conv:NotNullConverter x:Key="NotNullConverter" />
+            <conv:CurrencyConverter x:Key="CurrencyConverter" />
+            <conv:SelectedToBackgroundConverter x:Key="SelectedBgConverter" />
+            <conv:SelectedToForegroundConverter x:Key="SelectedFgConverter" />
+            <conv:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
