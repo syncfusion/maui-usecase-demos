@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace StockChart.ViewModels;
+namespace StockChart.ViewModel;
 
 public partial class MobilePickerItem : ObservableObject
 {

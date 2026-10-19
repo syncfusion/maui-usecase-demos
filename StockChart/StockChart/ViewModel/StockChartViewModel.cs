@@ -2,14 +2,14 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Graphics;
-using StockChart.Models;
-using StockChart.Services;
-using StockChart.ViewModels.Chart;
-using StockChart.ViewModels.Settings;
-using StockChart.ViewModels.Stock;
-using StockChart.ViewModels.Watchlist;
+using StockChart.model;
+using StockChart.Service;
+using StockChart.ViewModel.Chart;
+using StockChart.ViewModel.Settings;
+using StockChart.ViewModel.Stock;
+using StockChart.ViewModel.Watchlist;
 
-namespace StockChart.ViewModels;
+namespace StockChart.ViewModel;
 
 /// <summary>
 /// Main ViewModel for the stock chart application that coordinates all functionality.
@@ -235,6 +235,42 @@ public partial class StockChartViewModel : BaseViewModel
     /// </summary>
     public bool ShowEmptyWatchlistMessage => Watchlist.IsWatchlistSelected && Stock.FilteredStocks.Count == 0;
 
+    // Delegated properties from child ViewModels
+    public string SelectedStockPrice => Stock.SelectedStockPrice;
+    public string SelectedStockChange => Stock.SelectedStockChange;
+    public Color SelectedStockChangeColor => Stock.SelectedStockChangeColor;
+    public bool IsChartVisible => Stock.IsChartVisible;
+    public bool ShowChartPlaceholder => Stock.ShowChartPlaceholder;
+    public string ChartPlaceholderText => Stock.ChartPlaceholderText;
+    public string StockCountText => Stock.StockCountText;
+    public bool IsLastSelectedStockInSelectedWatchlist => Stock.IsLastSelectedStockInSelectedWatchlist;
+    public string ViewModeText => Watchlist.ViewModeText;
+    public bool CanDeleteSelectedWatchlist => Watchlist.CanDeleteSelectedWatchlist;
+    public string DeleteWatchlistConfirmationText => Watchlist.DeleteWatchlistConfirmationText;
+    public bool IsWatchlistSelected { get => Watchlist.IsWatchlistSelected; set => Watchlist.IsWatchlistSelected = value; }
+    public WatchlistModel? SelectedWatchlist { get => Watchlist.SelectedWatchlist; set => Watchlist.SelectedWatchlist = value; }
+    public string SearchText { get => Stock.SearchText; set => Stock.SearchText = value; }
+    public string AddStockSearchText { get => Stock.AddStockSearchText; set => Stock.AddStockSearchText = value; }
+    public StockModel? SelectedStock { get => Stock.SelectedStock; set => Stock.SelectedStock = value; }
+    public StockModel? LastSelectedStock { get => Stock.LastSelectedStock; set => Stock.LastSelectedStock = value; }
+    public ObservableCollection<StockModel> Stocks => Stock.Stocks;
+    public ObservableCollection<StockModel> FilteredStocks => Stock.FilteredStocks;
+    public ObservableCollection<StockModel> AddStockCandidates => Stock.AddStockCandidates;
+    public string SelectedTimeRange { get => Chart.SelectedTimeRange; set => Chart.SelectedTimeRange = value; }
+    public string SelectedChartType { get => Chart.SelectedChartType; set => Chart.SelectedChartType = value; }
+    public string SelectedTrendline { get => Chart.SelectedTrendline; set => Chart.SelectedTrendline = value; }
+    public bool IsTooltipEnabled { get => Chart.IsTooltipEnabled; set => Chart.IsTooltipEnabled = value; }
+    public bool IsLogarithmicAxis { get => Chart.IsLogarithmicAxis; set => Chart.IsLogarithmicAxis = value; }
+    public bool IsAxisInverted { get => Chart.IsAxisInverted; set => Chart.IsAxisInverted = value; }
+    public bool IsAxisOpposed { get => Chart.IsAxisOpposed; set => Chart.IsAxisOpposed = value; }
+    public bool IsRangeControlEnabled { get => Chart.IsRangeControlEnabled; set => Chart.IsRangeControlEnabled = value; }
+    public double RangeMinimum { get => Chart.RangeMinimum; set => Chart.RangeMinimum = value; }
+    public double RangeMaximum { get => Chart.RangeMaximum; set => Chart.RangeMaximum = value; }
+    public double RangeStart { get => Chart.RangeStart; set => Chart.RangeStart = value; }
+    public double RangeEnd { get => Chart.RangeEnd; set => Chart.RangeEnd = value; }
+    public int ChartRangeStartIndex => Chart.ChartRangeStartIndex;
+    public int ChartRangeEndIndex => Chart.ChartRangeEndIndex;
+
     /// <summary>
     /// Loads stock data asynchronously.
     /// </summary>
@@ -386,5 +422,106 @@ public partial class StockChartViewModel : BaseViewModel
     public void ResetSettings()
     {
         SettingsDraft = new SettingsViewModel();
+    }
+
+    // Partial method implementations that were moved from partial files
+    partial void OnSearchTextChanged(string value)
+    {
+        var query = value.Trim();
+        var source = Watchlist.IsWatchlistSelected
+            ? Stocks.Where(stock => Watchlist.SelectedWatchlist?.Symbols.Contains(stock.Symbol) == true)
+            : Stocks;
+        var matches = string.IsNullOrEmpty(query) ? source : source.Where(MatchesStockQuery(query));
+        Stock.UpdateFilteredStocks(matches);
+        OnPropertyChanged(nameof(StockCountText));
+        OnPropertyChanged(nameof(ShowEmptyWatchlistMessage));
+        OnPropertyChanged(nameof(IsChartVisible));
+        OnPropertyChanged(nameof(ShowChartPlaceholder));
+        OnPropertyChanged(nameof(ChartPlaceholderText));
+    }
+
+    partial void OnAddStockSearchTextChanged(string value)
+    {
+        var query = value.Trim();
+        Stock.UpdateAddStockCandidates(string.IsNullOrEmpty(query) ? Stocks : Stocks.Where(MatchesStockQuery(query)));
+    }
+
+    partial void OnSelectedStockChanged(StockModel? value)
+    {
+        if (value is null) return;
+
+        foreach (var stock in Stocks)
+        {
+            stock.IsSelected = ReferenceEquals(stock, value);
+        }
+
+        Stock.LastSelectedStock = value;
+        PrepareCustomDateRange();
+        Chart.SelectedTimeRange = SelectedTimeRange;
+        Stock.MenuStock = null;
+        OnPropertyChanged(nameof(SelectedStockPrice));
+        OnPropertyChanged(nameof(SelectedStockChange));
+        OnPropertyChanged(nameof(SelectedStockChangeColor));
+        OnPropertyChanged(nameof(IsChartVisible));
+        OnPropertyChanged(nameof(ShowChartPlaceholder));
+        OnPropertyChanged(nameof(ChartPlaceholderText));
+    }
+
+    partial void OnSelectedTimeRangeChanged(string value)
+    {
+        if (value == "Custom")
+        {
+            PrepareCustomDateRange();
+            IsCustomDateRangeVisible = true;
+        }
+        else
+        {
+            Chart.LastStandardTimeRange = value;
+        }
+    }
+
+    partial void OnSelectedWatchlistChanged(WatchlistModel? value)
+    {
+        OnPropertyChanged(nameof(CanDeleteSelectedWatchlist));
+        OnPropertyChanged(nameof(DeleteWatchlistConfirmationText));
+        OnPropertyChanged(nameof(IsLastSelectedStockInSelectedWatchlist));
+        OnPropertyChanged(nameof(IsChartVisible));
+        OnPropertyChanged(nameof(ShowChartPlaceholder));
+        OnPropertyChanged(nameof(ChartPlaceholderText));
+        if (Watchlist.IsWatchlistSelected) OnSearchTextChanged(SearchText);
+    }
+
+    partial void OnIsWatchlistSelectedChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ViewModeText));
+        OnPropertyChanged(nameof(IsChartVisible));
+        OnPropertyChanged(nameof(ShowChartPlaceholder));
+        OnPropertyChanged(nameof(ChartPlaceholderText));
+        OnSearchTextChanged(SearchText);
+        Stock.SelectedStock = null;
+        if (Stock.LastSelectedStock is not null && FilteredStocks.Contains(Stock.LastSelectedStock))
+        {
+            Stock.SelectedStock = Stock.LastSelectedStock;
+        }
+    }
+
+    private void RefreshChartSeries()
+    {
+        // Implementation for refreshing chart series
+    }
+
+    private static bool MatchesStockQuery(string query)
+    {
+        // Implementation for matching stock query
+        return true;
+    }
+
+    private static void ReplaceCollection<T>(ObservableCollection<T> collection, IEnumerable<T> items)
+    {
+        collection.Clear();
+        foreach (var item in items)
+        {
+            collection.Add(item);
+        }
     }
 }

@@ -2,10 +2,10 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Graphics;
-using StockChart.Models;
+using StockChart.model;
 using Syncfusion.Maui.Charts;
 
-namespace StockChart.ViewModels.Chart;
+namespace StockChart.ViewModel.Chart;
 
 /// <summary>
 /// ViewModel responsible for managing chart-related functionality.

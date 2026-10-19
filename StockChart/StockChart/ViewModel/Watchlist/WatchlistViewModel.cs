@@ -1,9 +1,9 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using StockChart.Models;
+using StockChart.model;
 
-namespace StockChart.ViewModels.Watchlist;
+namespace StockChart.ViewModel.Watchlist;
 
 /// <summary>
 /// ViewModel responsible for managing watchlist functionality.

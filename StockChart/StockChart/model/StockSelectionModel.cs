@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace StockChart.Models;
+namespace StockChart.model;
 
 public partial class StockSelectionModel : ObservableObject
 {

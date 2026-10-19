@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
-using StockChart.Services;
-using StockChart.ViewModels;
-using StockChart.ViewModels.Chart;
-using StockChart.ViewModels.Settings;
-using StockChart.ViewModels.Stock;
-using StockChart.ViewModels.Watchlist;
+using StockChart.Service;
+using StockChart.ViewModel;
+using StockChart.ViewModel.Chart;
+using StockChart.ViewModel.Settings;
+using StockChart.ViewModel.Stock;
+using StockChart.ViewModel.Watchlist;
 using Syncfusion.Maui.Core.Hosting;
 using Syncfusion.Licensing;
 #if MAUI_DEVFLOW

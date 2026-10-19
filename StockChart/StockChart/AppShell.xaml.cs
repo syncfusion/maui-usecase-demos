@@ -1,4 +1,4 @@
-using StockChart.Views;
+using StockChart.ViewModel;
 
 namespace StockChart
 {
