@@ -409,7 +409,7 @@ public partial class StockChartViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Applies settings.
+    /// Applies the settings.
     /// </summary>
     public void ApplySettings()
     {
@@ -422,6 +422,23 @@ public partial class StockChartViewModel : BaseViewModel
     public void ResetSettings()
     {
         SettingsDraft = new SettingsViewModel();
+    }
+
+    /// <summary>
+    /// Adds the pending stock to watchlists.
+    /// </summary>
+    [RelayCommand]
+    private void AddPendingStockToWatchlists()
+    {
+        if (Stock.PendingStock is not null)
+        {
+            foreach (var selection in Watchlist.AddStockWatchlists.Where(selection => selection.IsSelected))
+            {
+                selection.Watchlist.AddSymbol(Stock.PendingStock.Symbol);
+            }
+            
+            Stock.PendingStock = null;
+        }
     }
 
     // Partial method implementations that were moved from partial files
@@ -524,4 +541,53 @@ public partial class StockChartViewModel : BaseViewModel
             collection.Add(item);
         }
     }
+
+    /// <summary>
+    /// Applies the settings draft to the actual settings.
+    /// </summary>
+    public void ApplySettingsDraft()
+    {
+        Chart.IsTooltipEnabled = SettingsDraft.IsTooltipEnabled;
+        Chart.IsLogarithmicAxis = SettingsDraft.IsLogarithmicAxis;
+        Chart.IsAxisInverted = SettingsDraft.IsAxisInverted;
+        Chart.IsAxisOpposed = SettingsDraft.IsAxisOpposed;
+        Chart.IsRangeControlEnabled = SettingsDraft.IsRangeControlEnabled;
+    }
+
+    /// <summary>
+    /// Applies the favorite stock setting.
+    /// </summary>
+    public void ApplyFavoriteStock()
+    {
+        if (Stock.LastSelectedStock is not null)
+        {
+            Stock.LastSelectedStock.IsFavorite = true;
+        }
+    }
+
+    /// <summary>
+    /// Applies the remove stock operation.
+    /// </summary>
+    public void ApplyRemoveStock()
+    {
+        if (Stock.PendingStock is not null)
+        {
+            // Remove the pending stock from watchlists
+            foreach (var watchlist in Watchlist.Watchlists)
+            {
+                watchlist.RemoveSymbol(Stock.PendingStock.Symbol);
+            }
+            
+            // Remove the stock from the main collection
+            Stocks.Remove(Stock.PendingStock);
+            
+            // Clear the pending stock
+            Stock.PendingStock = null;
+        }
+    }
+
+    /// <summary>
+    /// Gets the pending stock from the stock ViewModel.
+    /// </summary>
+    public StockModel? PendingStock => Stock.PendingStock;
 }
