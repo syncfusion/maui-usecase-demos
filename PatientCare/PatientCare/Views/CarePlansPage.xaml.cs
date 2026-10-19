@@ -25,7 +25,7 @@ public partial class CarePlansPage : ContentPage
         }
     }
 
-    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {

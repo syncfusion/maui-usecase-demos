@@ -42,7 +42,7 @@ public partial class AppSidebarView : ContentView
         label.FontFamily = isActive ? "OpenSansSemibold" : null;
     }
 
-    private async Task OnDashboardTapped(object? sender, TappedEventArgs e)
+    private async void OnDashboardTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -54,7 +54,7 @@ public partial class AppSidebarView : ContentView
         }
     }
 
-    private async Task OnPatientsTapped(object? sender, TappedEventArgs e)
+    private async void OnPatientsTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -66,7 +66,7 @@ public partial class AppSidebarView : ContentView
         }
     }
 
-    private async Task OnScheduleTapped(object? sender, TappedEventArgs e)
+    private async void OnScheduleTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -78,7 +78,7 @@ public partial class AppSidebarView : ContentView
         }
     }
 
-    private async Task OnCarePlansTapped(object? sender, TappedEventArgs e)
+    private async void OnCarePlansTapped(object? sender, TappedEventArgs e)
     {
         try
         {

@@ -35,7 +35,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async Task OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
+    private async void OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -50,7 +50,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async Task OnCloseProfileTapped(object? sender, TappedEventArgs e)
+    private async void OnCloseProfileTapped(object? sender, TappedEventArgs e)
     {
         try
         {
@@ -69,7 +69,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async Task OnCloseProfileClicked(object? sender, EventArgs e)
+    private async void OnCloseProfileClicked(object? sender, EventArgs e)
     {
         await CloseProfileAsync();
     }
@@ -119,7 +119,7 @@ public partial class PatientsPage : ContentPage
         }
     }
 
-    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {

@@ -102,7 +102,7 @@ public partial class AppointmentsPage : ContentPage
         viewModel.CloseAppointmentDetailsCommand.Execute(null);
     }
 
-    private async Task OnNotificationsTapped(object? sender, TappedEventArgs e)
+    private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
         try
         {
