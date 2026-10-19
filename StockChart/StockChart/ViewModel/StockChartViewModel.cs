@@ -527,10 +527,12 @@ public partial class StockChartViewModel : BaseViewModel
         // Implementation for refreshing chart series
     }
 
-    private static bool MatchesStockQuery(string query)
+    private static Func<StockModel, bool> MatchesStockQuery(string query)
     {
-        // Implementation for matching stock query
-        return true;
+        return stock => 
+            stock.Symbol.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+            stock.Company.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+            stock.OfficialName.Contains(query, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void ReplaceCollection<T>(ObservableCollection<T> collection, IEnumerable<T> items)
@@ -715,24 +717,29 @@ public partial class StockChartViewModel : BaseViewModel
     /// <summary>
     /// Prepares favorite stock operation.
     /// </summary>
-    [RelayCommand]
-    public void PrepareFavoriteStock()
+    /// <param name="stock">The stock to favorite.</param>
+    public void PrepareFavoriteStock(StockModel? stock = null)
     {
         // Implementation for preparing favorite stock
+        // If stock is null, use LastSelectedStock
+        var targetStock = stock ?? Stock.LastSelectedStock;
+        // Additional implementation as needed
     }
 
     /// <summary>
     /// Prepares remove stock operation.
     /// </summary>
-    [RelayCommand]
-    public void PrepareRemoveStock()
+    /// <param name="stock">The stock to remove.</param>
+    /// <param name="watchlist">The watchlist to remove from.</param>
+    public void PrepareRemoveStock(StockModel? stock = null, WatchlistModel? watchlist = null)
     {
         // Implementation for preparing remove stock
+        // If stock is null, use LastSelectedStock
+        var targetStock = stock ?? Stock.LastSelectedStock;
+        var targetWatchlist = watchlist ?? Watchlist.SelectedWatchlist;
+        // Additional implementation as needed
     }
 
-    /// <summary>
-    /// Edits watchlist name.
-    /// </summary>
     /// <summary>
     /// Refreshes the chart.
     /// </summary>
