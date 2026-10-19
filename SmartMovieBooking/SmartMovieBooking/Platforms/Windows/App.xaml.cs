@@ -1,21 +1,17 @@
-using Microsoft.UI.Xaml;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace SmartMovieBooking.WinUI;
 
 /// <summary>
-/// Provides application-specific behavior to supplement the default Application class.
+/// Windows-specific MAUI application bootstrap.
+/// On Windows, MAUI uses <see cref="MauiWinUIApplication"/> as the
+/// entry point. This class is instantiated by the WinUI runtime and
+/// returns the shared <see cref="MauiProgram.CreateMauiApp"/> builder.
 /// </summary>
 public partial class App : MauiWinUIApplication
 {
-    /// <summary>
-    /// Initializes the singleton application object.  This is the first line of authored code
-    /// executed, and as such is the logical equivalent of main() or WinMain().
-    /// </summary>
     public App()
     {
+        // InitializeComponent is generated from Platforms/Windows/App.xaml
+        // by the WinUI XAML source generator.
         this.InitializeComponent();
     }
 

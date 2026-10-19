@@ -102,8 +102,9 @@ public partial class TheatersViewModel : ObservableObject
         finally { IsLoading = false; }
     }
 
+    /// <summary>Public so the view can invoke the generated command from the bus.</summary>
     [RelayCommand]
-    private void OnTheaterContinue(Theater theater)
+    public void OnTheaterContinue(Theater theater)
     {
         // Use the most recently selected showtime for this theater; if none,
         // pick the first available one.
@@ -119,8 +120,9 @@ public partial class TheatersViewModel : ObservableObject
         EventBus.PublishTheaterContinueClicked(theater);
     }
 
+    /// <summary>Public so the view can invoke the generated command from the bus.</summary>
     [RelayCommand]
-    private void OnShowtimeSelected(Showtime showtime)
+    public void OnShowtimeSelected(Showtime showtime)
     {
         // Find the parent theater
         Theater? parent = null;

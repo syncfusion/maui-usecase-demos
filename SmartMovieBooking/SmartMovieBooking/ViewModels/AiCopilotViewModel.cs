@@ -72,8 +72,9 @@ public partial class AiCopilotViewModel : ObservableObject
         finally { IsBusy = false; }
     }
 
+    /// <summary>Public so the view code-behind can invoke it.</summary>
     [RelayCommand]
-    private async Task SendAsync()
+    public async Task SendAsync()
     {
         if (string.IsNullOrWhiteSpace(Prompt)) return;
         var text = Prompt;

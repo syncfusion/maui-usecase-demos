@@ -42,8 +42,11 @@ public partial class PaymentConfirmationViewModel : ObservableObject
         OnPropertyChanged(nameof(FormattedTotal));
     }
 
+    /// <summary>
+    /// Public so the popup orchestrator and the view's code-behind can invoke it.
+    /// </summary>
     [RelayCommand]
-    private async Task ProcessAsync()
+    public async Task ProcessAsync()
     {
         IsProcessing = true;
         try

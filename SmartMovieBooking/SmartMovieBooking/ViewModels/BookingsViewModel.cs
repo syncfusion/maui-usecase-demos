@@ -16,7 +16,9 @@ public partial class BookingsViewModel : ObservableObject
         Bookings = new ObservableCollection<Booking>(_repo.All);
         History = new ObservableCollection<Booking>(_repo.All);
 
-        _repo.All.CollectionChanged += (_, _) => MainThread.BeginInvokeOnMainThread(() =>
+        // Subscribe via INotifyCollectionChanged interface to avoid the
+        // protected CollectionChanged event accessor on some target frameworks.
+        ((INotifyCollectionChanged)_repo.All).CollectionChanged += (_, _) => MainThread.BeginInvokeOnMainThread(() =>
         {
             Bookings.Clear();
             History.Clear();
