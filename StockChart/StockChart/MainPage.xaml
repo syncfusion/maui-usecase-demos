@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
@@ -705,7 +705,7 @@
                                     <chart:NumericalAxis IsVisible="False" ShowMajorGridLines="False" />
                                 </chart:SfCartesianChart.YAxes>
                                 <chart:SfCartesianChart.Series>
-                                    <chart:SplineAreaSeries ItemsSource="{Binding VisibleCandles}" XBindingPath="Date" YBindingPath="Close" Fill="#3310A7D4" Stroke="#10A7D4" StrokeWidth="1" />
+                                    <chart:SplineAreaSeries ItemsSource="{Binding Chart.VisibleCandles}" XBindingPath="Date" YBindingPath="Close" Fill="#3310A7D4" Stroke="#10A7D4" StrokeWidth="1" />
                                 </chart:SfCartesianChart.Series>
                             </chart:SfCartesianChart>
                             <sliders:SfRangeSelector.Tooltip>

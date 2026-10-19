@@ -1,4 +1,4 @@
-﻿using System.Collections.Specialized;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using StockChart.Models;
@@ -47,10 +47,10 @@ namespace StockChart
         private SfPopup RemoveStockPopup => (SfPopup)Resources["RemoveStockPopup"];
         private VisualElement ResetChartZoomControl => RootPage.FindByName<VisualElement>("ResetChartZoomButton");
 
-        public MainPage()
+        public MainPage(StockChartViewModel viewModel)
         {
             InitializeComponent();
-            var viewModel = new StockChartViewModel(new StockDataService());
+            
             BindingContext = viewModel;
             SettingsPopup.BindingContext = viewModel;
             DisclaimerPopup.BindingContext = viewModel;
@@ -62,7 +62,7 @@ namespace StockChart
             DeleteWatchlistPopup.BindingContext = viewModel;
             FavoritePopup.BindingContext = viewModel;
             RemoveStockPopup.BindingContext = viewModel;
-            viewModel.ChartSeries.CollectionChanged += OnChartSeriesChanged;
+            viewModel.Chart.ChartSeries.CollectionChanged += OnChartSeriesChanged;
             viewModel.PropertyChanged += OnViewModelPropertyChanged;
             SizeChanged += OnPageSizeChanged;
             Loaded += OnPageLoaded;
@@ -84,7 +84,7 @@ namespace StockChart
                     return;
                 }
 
-                var series = viewModel.ChartSeries.ToArray();
+                var series = viewModel.Chart.ChartSeries.ToArray();
                 StockChartView.SuspendSeriesNotification();
                 try
                 {
