@@ -21,4 +21,25 @@ public partial class WatchlistModel : ObservableObject
 
     private void OnSymbolsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         => SymbolsChanged?.Invoke(this, EventArgs.Empty);
+        
+    /// <summary>
+    /// Adds a symbol to the watchlist.
+    /// </summary>
+    /// <param name="symbol">The symbol to add.</param>
+    public void AddSymbol(string symbol)
+    {
+        if (!Symbols.Contains(symbol))
+        {
+            Symbols.Add(symbol);
+        }
+    }
+    
+    /// <summary>
+    /// Removes a symbol from the watchlist.
+    /// </summary>
+    /// <param name="symbol">The symbol to remove.</param>
+    public void RemoveSymbol(string symbol)
+    {
+        Symbols.Remove(symbol);
+    }
 }

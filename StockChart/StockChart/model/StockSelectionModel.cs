@@ -9,6 +9,18 @@ public partial class StockSelectionModel : ObservableObject
         Stock = stock;
         IsSelected = isSelected;
     }
+    
+    public StockSelectionModel(string symbol, string company, string officialName, bool isSelected = false)
+    {
+        // Create a minimal StockModel for display purposes
+        Stock = new StockModel
+        {
+            Symbol = symbol,
+            Company = company,
+            OfficialName = officialName
+        };
+        IsSelected = isSelected;
+    }
 
     public StockModel Stock { get; }
     public string Company => Stock.Company;
