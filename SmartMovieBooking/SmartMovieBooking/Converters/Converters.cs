@@ -136,3 +136,31 @@ public sealed class ShowtimeStatusColorConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
+
+public sealed class SeatColorConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is not Seat seat) return Color.FromArgb("#E5E6F1");
+        return seat.State switch
+        {
+            SeatState.Selected  => Color.FromArgb("#3525CD"),
+            SeatState.Occupied  => Color.FromArgb("#9CA3AF"),
+            SeatState.Aisle     => Colors.Transparent,
+            _                   => Color.FromArgb("#E5E6F1")
+        };
+    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class SeatEnabledConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is not SeatState s) return true;
+        return s == SeatState.Available;
+    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}

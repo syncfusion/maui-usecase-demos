@@ -11,5 +11,6 @@ public partial class AppShell : Shell
         // Modal/push routes (not tabs)
         Routing.RegisterRoute("seat-selection", typeof(SeatSelectionView));
         Routing.RegisterRoute("payment-confirmation", typeof(PaymentConfirmationView));
+        Routing.RegisterRoute("ai", typeof(AiCopilotView));
     }
 }
