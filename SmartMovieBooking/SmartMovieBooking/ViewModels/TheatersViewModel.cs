@@ -42,7 +42,7 @@ public partial class TheatersViewModel : ObservableObject
     [ObservableProperty] private DateChipItem? _selectedDateChip;
     [ObservableProperty] private bool _isLoading;
 
-    public event EventHandler<Showtime>? ShowtimeSelected;
+    public event EventHandler<Showtime>? ShowtimePicked;
 
     public async Task InitializeAsync()
     {
@@ -102,9 +102,14 @@ public partial class TheatersViewModel : ObservableObject
         finally { IsLoading = false; }
     }
 
-    /// <summary>Public so the view can invoke the generated command from the bus.</summary>
+    /// <summary>
+    /// RelayCommand for the "Select Showtime &amp; Continue" CTA. The
+    /// CommunityToolkit.Mvvm source generator strips the "On" prefix
+    /// when deriving the command property name, so this method named
+    /// "TheaterContinue" produces "TheaterContinueCommand".
+    /// </summary>
     [RelayCommand]
-    public void OnTheaterContinue(Theater theater)
+    public void TheaterContinue(Theater theater)
     {
         // Use the most recently selected showtime for this theater; if none,
         // pick the first available one.
@@ -120,9 +125,13 @@ public partial class TheatersViewModel : ObservableObject
         EventBus.PublishTheaterContinueClicked(theater);
     }
 
-    /// <summary>Public so the view can invoke the generated command from the bus.</summary>
+    /// <summary>
+    /// RelayCommand for tapping a showtime pill. The source generator
+    /// strips the "On" prefix, so this method named "ShowtimeSelected"
+    /// produces "ShowtimeSelectedCommand".
+    /// </summary>
     [RelayCommand]
-    public void OnShowtimeSelected(Showtime showtime)
+    public void ShowtimeSelected(Showtime showtime)
     {
         // Find the parent theater
         Theater? parent = null;
@@ -141,7 +150,7 @@ public partial class TheatersViewModel : ObservableObject
         _session.SelectedTheater = parent;
         _session.SelectedShowtime = showtime;
 
-        ShowtimeSelected?.Invoke(this, showtime);
+        ShowtimePicked?.Invoke(this, showtime);
     }
 
     private static string ComputeLabel(DateTime dt)

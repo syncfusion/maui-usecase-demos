@@ -26,10 +26,10 @@ public partial class TheatersView : ContentView
     public async Task ReloadAsync() => await _vm.InitializeAsync();
 
     private void OnShowtimeClicked(object? sender, Showtime e)
-        => _vm.OnShowtimeSelectedCommand.Execute(e);
+        => _vm.ShowtimeSelectedCommand.Execute(e);
 
     private void OnTheaterContinueClicked(object? sender, Theater e)
-        => _vm.OnTheaterContinueCommand.Execute(e);
+        => _vm.TheaterContinueCommand.Execute(e);
 
     private void OnDateChipSelected(object? sender, SelectionChangedEventArgs e)
     {
