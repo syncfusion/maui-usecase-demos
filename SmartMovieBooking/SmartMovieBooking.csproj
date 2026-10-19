@@ -61,10 +61,4 @@
     <PackageReference Include="Syncfusion.Maui.TabView" Version="33.2.15" />
   </ItemGroup>
 
-  <!-- Use runtime XAML inflation for pages with third-party Syncfusion controls
-       since SourceGen cannot process all Syncfusion control patterns at compile time. -->
-  <ItemGroup>
-    <MauiXaml Update="**\*.xaml" Exclude="App.xaml" Inflator="Runtime" />
-  </ItemGroup>
-
 </Project>
