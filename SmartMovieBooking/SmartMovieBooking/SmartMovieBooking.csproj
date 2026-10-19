@@ -44,14 +44,6 @@
 		<!-- <MauiFont Include="Resources\Fonts\*" /> -->
 	</ItemGroup>
 
-	<!-- Ensure the Windows App.xaml is processed by the WinUI XAML compiler
-	     so it generates a Main entry point and the App.InitializeComponent partial. -->
-	<ItemGroup>
-		<MauiXaml Update="Platforms\Windows\App.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.80" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
