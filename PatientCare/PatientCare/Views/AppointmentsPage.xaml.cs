@@ -14,6 +14,35 @@ public partial class AppointmentsPage : ContentPage
     public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
     {
         InitializeComponent();
+        var services = Application.Current?.Handler?.MauiContext?.Services;
+        var dataService = services?.GetService<ScheduleDataService>();
+        var notificationService = services?.GetService<NotificationService>();
+        
+        if (dataService != null && notificationService != null)
+        {
+            viewModel = new AppointmentsViewModel(dataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+        else
+        {
+            // Fallback for direct instantiation
+            var patientDataService = new PatientDataService();
+            dataService = new ScheduleDataService(patientDataService);
+            notificationService = new NotificationService();
+            viewModel = new AppointmentsViewModel(dataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+
+        BindingContext = viewModel;
+        DesktopScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
+        MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
+    }
+
+    public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
+    {
+        InitializeComponent();
         viewModel = new AppointmentsViewModel(dataService);
         BindingContext = viewModel;
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
