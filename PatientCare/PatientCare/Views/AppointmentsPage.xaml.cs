@@ -14,12 +14,37 @@ public partial class AppointmentsPage : ContentPage
     public AppointmentsPage()
     {
         InitializeComponent();
-        var dataService = Application.Current?.Handler?.MauiContext?.Services.GetService<ScheduleDataService>()
-            ?? new ScheduleDataService(new PatientDataService());
+        var services = Application.Current?.Handler?.MauiContext?.Services;
+        var dataService = services?.GetService<ScheduleDataService>();
+        var notificationService = services?.GetService<NotificationService>();
+        
+        if (dataService != null && notificationService != null)
+        {
+            viewModel = new AppointmentsViewModel(dataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+        else
+        {
+            // Fallback for direct instantiation
+            var patientDataService = new PatientDataService();
+            dataService = new ScheduleDataService(patientDataService);
+            notificationService = new NotificationService();
+            viewModel = new AppointmentsViewModel(dataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+
+        BindingContext = viewModel;
+        DesktopScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
+        MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
+    }
+
+    public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
+    {
+        InitializeComponent();
         viewModel = new AppointmentsViewModel(dataService);
         BindingContext = viewModel;
-        var notificationService = Application.Current?.Handler?.MauiContext?.Services.GetService<NotificationService>()
-            ?? new NotificationService();
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
         MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
 
@@ -108,7 +133,14 @@ public partial class AppointmentsPage : ContentPage
 
     private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
-        await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        try
+        {
+            await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
     }
 
 }

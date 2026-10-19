@@ -15,11 +15,41 @@ public partial class PatientsPage : ContentPage
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
-        var patientDataService = services?.GetService<PatientDataService>() ?? new PatientDataService();
-        var scheduleDataService = services?.GetService<ScheduleDataService>() ?? new ScheduleDataService(patientDataService);
+        var patientDataService = services?.GetService<PatientDataService>();
+        var scheduleDataService = services?.GetService<ScheduleDataService>();
+        var notificationService = services?.GetService<NotificationService>();
+        
+        if (patientDataService != null && scheduleDataService != null && notificationService != null)
+        {
+            viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+        else
+        {
+            // Fallback for direct instantiation
+            patientDataService = new PatientDataService();
+            scheduleDataService = new ScheduleDataService(patientDataService);
+            notificationService = new NotificationService();
+            viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+
+        BindingContext = viewModel;
+        foreach (var chip in MobileFilterChips.Items)
+        {
+            MobileFilterChips.SelectedItem = chip;
+            break;
+        }
+        SetDesktopFilterTab("All Patients");
+    }
+
+    public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
+    {
+        InitializeComponent();
         viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
         BindingContext = viewModel;
-        var notificationService = services?.GetService<NotificationService>() ?? new NotificationService();
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
         MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
 
@@ -41,21 +71,35 @@ public partial class PatientsPage : ContentPage
 
     private async void OnPatientCarePlanTapped(object? sender, TappedEventArgs e)
     {
-        if (e.Parameter is Patient patient)
+        try
         {
-            await Shell.Current.GoToAsync($"//careplans?patientId={patient.PatientId}");
+            if (e.Parameter is Patient patient)
+            {
+                await Shell.Current.GoToAsync($"//careplans?patientId={patient.PatientId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
         }
     }
 
     private async void OnCloseProfileTapped(object? sender, TappedEventArgs e)
     {
-        var returnRoute = viewModel.ReturnRoute;
-        viewModel.CloseProfileCommand.Execute(null);
-
-        if (!string.IsNullOrEmpty(returnRoute))
+        try
         {
-            viewModel.ReturnRoute = string.Empty;
-            await Shell.Current.GoToAsync($"//{returnRoute}");
+            var returnRoute = viewModel.ReturnRoute;
+            viewModel.CloseProfileCommand.Execute(null);
+
+            if (!string.IsNullOrEmpty(returnRoute))
+            {
+                viewModel.ReturnRoute = string.Empty;
+                await Shell.Current.GoToAsync($"//{returnRoute}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Close profile error: {ex.Message}");
         }
     }
 
@@ -111,6 +155,13 @@ public partial class PatientsPage : ContentPage
 
     private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
-        await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        try
+        {
+            await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
     }
 }

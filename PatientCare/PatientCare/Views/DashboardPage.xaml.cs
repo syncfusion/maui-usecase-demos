@@ -5,22 +5,35 @@ namespace PatientCare.Views;
 
 public partial class DashboardPage : ContentPage, IQueryAttributable
 {
+	private readonly DashboardViewModel _viewModel;
+
 	public DashboardPage()
 	{
 		InitializeComponent();
 		var services = Application.Current?.Handler?.MauiContext?.Services;
-		var dataService = services?.GetService<DashboardDataService>()
-			?? CreateFallbackDataService();
-		BindingContext = new DashboardViewModel(dataService);
+		var dataService = services?.GetService<DashboardDataService>();
+		if (dataService != null)
+		{
+			_viewModel = new DashboardViewModel(dataService);
+		}
+		else
+		{
+			// Fallback for direct instantiation
+			var patientDataService = new PatientDataService();
+			dataService = new DashboardDataService(
+				new ScheduleDataService(patientDataService),
+				new NotificationService(),
+				patientDataService);
+			_viewModel = new DashboardViewModel(dataService);
+		}
+		BindingContext = _viewModel;
 	}
 
-	private static DashboardDataService CreateFallbackDataService()
+	public DashboardPage(DashboardDataService dataService)
 	{
-		var patientDataService = new PatientDataService();
-		return new DashboardDataService(
-			new ScheduleDataService(patientDataService),
-			new NotificationService(),
-			patientDataService);
+		InitializeComponent();
+		_viewModel = new DashboardViewModel(dataService);
+		BindingContext = _viewModel;
 	}
 
 	private void OnViewAllClicked(object? sender, EventArgs e)

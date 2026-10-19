@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using PatientCare.Services;
 using Syncfusion.Maui.Core.Hosting;
 using Syncfusion.Licensing;

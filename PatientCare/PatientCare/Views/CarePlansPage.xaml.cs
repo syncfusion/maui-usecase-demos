@@ -12,11 +12,35 @@ public partial class CarePlansPage : ContentPage
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
-        var carePlanDataService = services?.GetService<CarePlanDataService>() ?? new CarePlanDataService();
-        var patientDataService = services?.GetService<PatientDataService>() ?? new PatientDataService();
+        var carePlanDataService = services?.GetService<CarePlanDataService>();
+        var patientDataService = services?.GetService<PatientDataService>();
+        var notificationService = services?.GetService<NotificationService>();
+        
+        if (carePlanDataService != null && patientDataService != null && notificationService != null)
+        {
+            viewModel = new CarePlansViewModel(carePlanDataService, patientDataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+        else
+        {
+            // Fallback for direct instantiation
+            patientDataService = new PatientDataService();
+            carePlanDataService = new CarePlanDataService();
+            notificationService = new NotificationService();
+            viewModel = new CarePlansViewModel(carePlanDataService, patientDataService);
+            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+        }
+
+        BindingContext = viewModel;
+    }
+
+    public CarePlansPage(CarePlanDataService carePlanDataService, PatientDataService patientDataService, NotificationService notificationService)
+    {
+        InitializeComponent();
         viewModel = new CarePlansViewModel(carePlanDataService, patientDataService);
         BindingContext = viewModel;
-        var notificationService = services?.GetService<NotificationService>() ?? new NotificationService();
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
         MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
     }
@@ -31,6 +55,13 @@ public partial class CarePlansPage : ContentPage
 
     private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
     {
-        await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        try
+        {
+            await Shell.Current.GoToAsync("//dashboard?showNotifications=true");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
     }
 }
