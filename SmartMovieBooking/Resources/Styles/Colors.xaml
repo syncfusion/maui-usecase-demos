@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--
+        Stitch design system: brand primary #3525CD (deep indigo) on
+        surface #F8F9FF (off-white). Secondary #712AE2 (purple), tertiary
+        #00505F (teal), error #BA1A1A.
+        See Resources/Styles/Theme.xaml for the runtime-rewritten aliases.
+    -->
+
+    <!-- Primary -->
+    <Color x:Key="Primary">#3525CD</Color>
+    <Color x:Key="PrimaryContainer">#4F46E5</Color>
+    <Color x:Key="OnPrimary">#FFFFFF</Color>
+    <Color x:Key="OnPrimaryContainer">#FFFFFF</Color>
+
+    <!-- Secondary -->
+    <Color x:Key="Secondary">#712AE2</Color>
+    <Color x:Key="SecondaryContainer">#E9DDFC</Color>
+    <Color x:Key="OnSecondary">#FFFFFF</Color>
+    <Color x:Key="OnSecondaryContainer">#1F1147</Color>
+
+    <!-- Tertiary -->
+    <Color x:Key="Tertiary">#00505F</Color>
+    <Color x:Key="TertiaryContainer">#9DEAF6</Color>
+    <Color x:Key="OnTertiary">#FFFFFF</Color>
+    <Color x:Key="OnTertiaryContainer">#002A33</Color>
+
+    <!-- Error -->
+    <Color x:Key="Error">#BA1A1A</Color>
+    <Color x:Key="OnError">#FFFFFF</Color>
+
+    <!-- Surface -->
+    <Color x:Key="Background">#F8F9FF</Color>
+    <Color x:Key="OnBackground">#1A1A2E</Color>
+
+    <Color x:Key="Surface">#FFFFFF</Color>
+    <Color x:Key="OnSurface">#1A1A2E</Color>
+    <Color x:Key="OnSurfaceVariant">#49454F</Color>
+
+    <Color x:Key="SurfaceContainerLowest">#FFFFFF</Color>
+    <Color x:Key="SurfaceContainerLow">#F1F2F8</Color>
+    <Color x:Key="SurfaceContainer">#ECEDF6</Color>
+    <Color x:Key="SurfaceContainerHigh">#E5E6F1</Color>
+    <Color x:Key="SurfaceContainerHighest">#DFE0EC</Color>
+
+    <Color x:Key="Outline">#7A7B8C</Color>
+    <Color x:Key="OutlineVariant">#CAC7D0</Color>
+
+    <Color x:Key="InverseSurface">#2F2F44</Color>
+    <Color x:Key="InverseOnSurface">#F1F2F8</Color>
+
+    <Color x:Key="SecondaryFixed">#FFB740</Color>
+    <Color x:Key="Success">#1E7F4F</Color>
+    <Color x:Key="Amber">#B45309</Color>
+
+    <!-- Seat-specific colors -->
+    <Color x:Key="SeatAvailable">#E5E6F1</Color>
+    <Color x:Key="SeatOccupied">#9CA3AF</Color>
+    <Color x:Key="SeatSelected">#3525CD</Color>
+
+</ResourceDictionary>

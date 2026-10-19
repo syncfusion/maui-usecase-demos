@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             x:Class="SmartMovieBooking.Views.MovieHomeView"
+             x:DataType="vm:HomeViewModel"
+             Title="Movie Home"
+             BackgroundColor="{DynamicResource ThemeBackground}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="24" RowSpacing="16">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="Discover Movies"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="28"
+                   TextColor="{DynamicResource ThemeOnBackground}" />
+            <Label Text="Find the perfect show · 10 movies in catalog"
+                   FontSize="13"
+                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+        </VerticalStackLayout>
+
+        <!-- Search bar + genre chips -->
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+            <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                    StrokeThickness="1"
+                    Stroke="{DynamicResource ThemeOutlineVariant}"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,0"
+                    HeightRequest="44">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Grid.Column="0" Text="🔍" FontSize="14"
+                           VerticalTextAlignment="Center" />
+                    <Entry Grid.Column="1"
+                           Placeholder="Search by title or genre…"
+                           PlaceholderColor="{DynamicResource ThemeOnSurfaceVariant}"
+                           BackgroundColor="Transparent"
+                           Text="{Binding SearchText, Mode=TwoWay}"
+                           VerticalTextAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <HorizontalStackLayout Spacing="8"
+                                       BindableLayout.ItemsSource="{Binding Genres}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 999"
+                                    Padding="14,6">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ., Converter={StaticResource StringEqualsConverter}, ConverterParameter={Binding ., Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelectedGenre}}"
+                                                 Value="True">
+                                        <Setter Property="BackgroundColor" Value="{DynamicResource ThemePrimary}" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ., Converter={StaticResource StringEqualsConverter}, ConverterParameter={Binding ., Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelectedGenre}}"
+                                                 Value="False">
+                                        <Setter Property="BackgroundColor" Value="{DynamicResource ThemeSurfaceContainerLow}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="{Binding .}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="12">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label"
+                                                     Binding="{Binding ., Converter={StaticResource StringEqualsConverter}, ConverterParameter={Binding ., Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelectedGenre}}"
+                                                     Value="True">
+                                            <Setter Property="TextColor" Value="{DynamicResource ThemeOnPrimary}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label"
+                                                     Binding="{Binding ., Converter={StaticResource StringEqualsConverter}, ConverterParameter={Binding ., Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelectedGenre}}"
+                                                     Value="False">
+                                            <Setter Property="TextColor" Value="{DynamicResource ThemeOnSurface}" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelectGenreCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </HorizontalStackLayout>
+            </ScrollView>
+        </VerticalStackLayout>
+
+        <!-- Movie grid -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding FilteredMovies}"
+                        SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="3"
+                                 HorizontalItemSpacing="16" VerticalItemSpacing="16" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Movie">
+                    <Border BackgroundColor="{DynamicResource ThemeSurface}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16">
+                        <Border.Shadow>
+                            <Shadow Brush="#10000000" Offset="0,1" Radius="2" Opacity="0.08" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="0">
+                            <!-- Poster placeholder -->
+                            <Grid HeightRequest="220"
+                                  BackgroundColor="{DynamicResource ThemePrimaryContainer}">
+                                <Label Text="🎬" FontSize="64"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+
+                                <!-- Rating badge -->
+                                <Border BackgroundColor="{DynamicResource ThemeInverseSurface}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 999"
+                                        Padding="10,4"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Start"
+                                        Margin="0,12,12,0">
+                                    <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                        <Label Text="★" FontSize="11"
+                                               TextColor="{DynamicResource ThemeSecondaryFixed}" />
+                                        <Label Text="{Binding Rating}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="11"
+                                               TextColor="{DynamicResource ThemeInverseOnSurface}" />
+                                    </HorizontalStackLayout>
+                                </Border>
+
+                                <!-- Format chip -->
+                                <Border BackgroundColor="{DynamicResource ThemePrimary}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 999"
+                                        Padding="10,4"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Start"
+                                        Margin="12,12,0,0">
+                                    <Label Text="{Binding Format}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="10"
+                                           TextColor="{DynamicResource ThemeOnPrimary}" />
+                                </Border>
+                            </Grid>
+
+                            <!-- Body -->
+                            <VerticalStackLayout Padding="14,12" Spacing="6">
+                                <Label Text="{Binding Title}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="14"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"
+                                       TextColor="{DynamicResource ThemeOnSurface}" />
+                                <Label Text="{Binding Tagline}"
+                                       FontSize="11"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="2"
+                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+
+                                <HorizontalStackLayout Spacing="6" Margin="0,4,0,0">
+                                    <Border BackgroundColor="{DynamicResource ThemeSecondaryContainer}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="6,2">
+                                        <Label Text="{Binding PrimaryGenre}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="10"
+                                               TextColor="{DynamicResource ThemeOnSecondaryContainer}" />
+                                    </Border>
+                                    <Label Text="⏱"
+                                           FontSize="11"
+                                           VerticalTextAlignment="Center"
+                                           TextColor="{DynamicResource ThemeOutline}" />
+                                    <Label Text="{Binding Duration}"
+                                           FontSize="11"
+                                           VerticalTextAlignment="Center"
+                                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="8" Padding="40" HorizontalOptions="Center">
+                    <Label Text="🎞️" FontSize="48" HorizontalTextAlignment="Center" />
+                    <Label Text="No movies match your filters"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="14"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Loading overlay -->
+        <Grid Grid.RowSpan="4"
+              BackgroundColor="#80FFFFFF"
+              IsVisible="{Binding IsLoading}">
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               Color="{DynamicResource ThemePrimary}"
+                               WidthRequest="48" HeightRequest="48"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+</ContentPage>
