@@ -24,6 +24,8 @@ public partial class PaymentConfirmationViewModel : ObservableObject
     [ObservableProperty] private decimal _total;
     [ObservableProperty] private bool _isProcessing;
 
+    public string FormattedTotal => $"${Total:F2}";
+
     public event EventHandler? Completed;
 
     public void PopulateFromSession()
@@ -37,6 +39,7 @@ public partial class PaymentConfirmationViewModel : ObservableObject
         SeatsDisplay = string.Join(", ", _session.SelectedSeats.OrderBy(s => s.Id).Select(s => s.Id));
         Total = _session.Total;
         BookingId = $"BK-{Random.Shared.Next(100000, 999999)}";
+        OnPropertyChanged(nameof(FormattedTotal));
     }
 
     [RelayCommand]
@@ -46,6 +49,7 @@ public partial class PaymentConfirmationViewModel : ObservableObject
         try
         {
             await Task.Delay(1500); // simulated processing
+
             var booking = new Booking
             {
                 BookingId = BookingId,
@@ -60,9 +64,16 @@ public partial class PaymentConfirmationViewModel : ObservableObject
                 Status = "Confirmed"
             };
             foreach (var s in _session.SelectedSeats) booking.Seats.Add(s);
+
             _repo.Add(booking);
+            _session.Reset();
+
+            Completed?.Invoke(this, EventArgs.Empty);
+            EventBus.PublishBookingConfirmed();
         }
-        finally { IsProcessing = false; }
-        Completed?.Invoke(this, EventArgs.Empty);
+        finally
+        {
+            IsProcessing = false;
+        }
     }
 }

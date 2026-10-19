@@ -30,7 +30,7 @@
                                     UserAvatarInitials="{Binding UserAvatarInitials}" />
 
             <!-- Page content (swaps with CurrentPage) -->
-            <Grid Grid.Row="1" Padding="0">
+            <Grid x:Name="PageHost" Grid.Row="1" Padding="0">
                 <views:MovieHomeView IsVisible="{Binding CurrentPage, Converter={StaticResource PageVisibleConverter}, ConverterParameter=MovieHome}" />
                 <views:TheatersView  IsVisible="{Binding CurrentPage, Converter={StaticResource PageVisibleConverter}, ConverterParameter=Theaters}" />
                 <views:BookingsView  IsVisible="{Binding CurrentPage, Converter={StaticResource PageVisibleConverter}, ConverterParameter=Bookings}" />
@@ -42,5 +42,8 @@
                 <controls:AiCopilotFab Clicked="OnAiFabClicked" />
             </Grid>
         </Grid>
+
+        <!-- Popup overlay host (SfPopup children added in code-behind) -->
+        <Grid x:Name="PopupHost" Grid.RowSpan="2" Grid.ColumnSpan="2" />
     </Grid>
 </Window>

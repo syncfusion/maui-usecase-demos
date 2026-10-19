@@ -1,13 +1,132 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SmartMovieBooking.Views.SeatSelectionView">
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label Text="🪑 Seat Selection popup"
-               FontFamily="PlusJakartaBold" FontSize="20"
-               TextColor="{DynamicResource ThemeOnBackground}" />
-        <Label Text="Phase 3 (T3.1) will fill this out."
-               FontFamily="InterRegular" FontSize="13"
-               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-    </VerticalStackLayout>
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Controls"
+             x:Class="SmartMovieBooking.Views.SeatSelectionView"
+             x:DataType="vm:SeatSelectionViewModel">
+
+    <Border BackgroundColor="{DynamicResource ThemeSurface}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 20"
+            WidthRequest="720"
+            Padding="0">
+        <Border.Shadow>
+            <Shadow Brush="#30000000" Offset="0,8" Radius="24" Opacity="0.18" />
+        </Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Padding="24,20" ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="{Binding ScreenTitle}" Style="{StaticResource HeadlineMdLabel}"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Label Text="{Binding TheaterLine}" Style="{StaticResource BodyMdLabel}"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    <Label Text="{Binding ShowtimeLine}" Style="{StaticResource BodySmLabel}"
+                           TextColor="{DynamicResource ThemeOutline}" />
+                </VerticalStackLayout>
+                <Button Grid.Column="1" Text="✕" Clicked="OnCloseClicked"
+                        Style="{StaticResource IconButton}" WidthRequest="36" HeightRequest="36" />
+            </Grid>
+
+            <!-- Screen indicator -->
+            <VerticalStackLayout Grid.Row="1" Padding="24,8,24,16" Spacing="8">
+                <Border BackgroundColor="{DynamicResource ThemeSurfaceContainer}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 4"
+                        HeightRequest="4"
+                        HorizontalOptions="Fill" />
+                <Label Text="ALL EYES THIS WAY 🎬" FontFamily="InterSemiBold" FontSize="10"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+            </VerticalStackLayout>
+
+            <!-- Seat grid -->
+            <ScrollView Grid.Row="2" Padding="24,0" Orientation="Both">
+                <VerticalStackLayout Spacing="6" BindableLayout.ItemsSource="{Binding SeatRows}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SeatRow">
+                            <Grid ColumnDefinitions="20,Auto" ColumnSpacing="6"
+                                  HorizontalOptions="Center">
+                                <Label Grid.Column="0" Text="{Binding RowLabel}"
+                                       FontFamily="PlusJakartaBold" FontSize="11"
+                                       VerticalTextAlignment="Center"
+                                       TextColor="{DynamicResource ThemeOutline}" />
+                                <FlexLayout Grid.Column="1" BindableLayout.ItemsSource="{Binding Seats}"
+                                            Direction="Row" Wrap="NoWrap" JustifyContent="Start">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Seat">
+                                            <controls:SeatTileView Margin="2"
+                                                                   Seat="{Binding .}" />
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </FlexLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Legend + pricing summary -->
+            <Grid Grid.Row="3" Padding="24,16,24,20"
+                  RowDefinitions="Auto,Auto,Auto" RowSpacing="12"
+                  BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}">
+
+                <!-- Legend -->
+                <HorizontalStackLayout Grid.Row="0" Spacing="16" HorizontalOptions="Center">
+                    <HorizontalStackLayout Spacing="6">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3"
+                                 Color="{DynamicResource ThemeSurfaceContainerHigh}" />
+                        <Label Text="Available" Style="{StaticResource LabelSmLabel}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="6">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3"
+                                 Color="{DynamicResource ThemePrimary}" />
+                        <Label Text="Selected" Style="{StaticResource LabelSmLabel}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="6">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3"
+                                 Color="{DynamicResource ThemeOutlineVariant}" />
+                        <Label Text="Occupied" Style="{StaticResource LabelSmLabel}" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+
+                <!-- Pricing -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,*,*,Auto" ColumnSpacing="12"
+                      Padding="0,8,0,0">
+                    <VerticalStackLayout Grid.Column="0" Spacing="0">
+                        <Label Text="Tickets" Style="{StaticResource LabelSmLabel}" />
+                        <Label Text="{Binding SelectedCount}" FontFamily="PlusJakartaBold" FontSize="20" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="0">
+                        <Label Text="Subtotal" Style="{StaticResource LabelSmLabel}" />
+                        <Label Text="{Binding FormattedSubtotal}" FontFamily="PlusJakartaBold" FontSize="16" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="2" Spacing="0">
+                        <Label Text="Fee" Style="{StaticResource LabelSmLabel}" />
+                        <Label Text="{Binding FormattedConvenienceFee}" FontFamily="PlusJakartaBold" FontSize="16" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="3" Spacing="0" HorizontalOptions="End">
+                        <Label Text="Total" Style="{StaticResource LabelSmLabel}" HorizontalTextAlignment="End" />
+                        <Label Text="{Binding FormattedTotal}" FontFamily="PlusJakartaExtraBold" FontSize="22"
+                               TextColor="{DynamicResource ThemePrimary}" HorizontalTextAlignment="End" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- CTA -->
+                <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <Button Grid.Column="0" Text="Cancel"
+                            Clicked="OnCancelClicked"
+                            Style="{StaticResource OutlinedButton}" />
+                    <Button Grid.Column="1" Text="Confirm Selection"
+                            IsEnabled="{Binding CanConfirm}"
+                            Clicked="OnConfirmClicked"
+                            Style="{StaticResource PrimaryButton}" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
 </ContentView>

@@ -1,13 +1,93 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SmartMovieBooking.Views.PaymentConfirmationView">
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label Text="✅ Payment Confirmation popup"
-               FontFamily="PlusJakartaBold" FontSize="20"
-               TextColor="{DynamicResource ThemeOnBackground}" />
-        <Label Text="Phase 3 (T3.2) will fill this out."
-               FontFamily="InterRegular" FontSize="13"
-               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-    </VerticalStackLayout>
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             x:Class="SmartMovieBooking.Views.PaymentConfirmationView"
+             x:DataType="vm:PaymentConfirmationViewModel">
+
+    <Border BackgroundColor="{DynamicResource ThemeSurface}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 20"
+            WidthRequest="520"
+            Padding="0">
+        <Border.Shadow>
+            <Shadow Brush="#30000000" Offset="0,8" Radius="24" Opacity="0.18" />
+        </Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="20" Padding="32">
+
+            <!-- Success animation -->
+            <Grid Grid.Row="0" HeightRequest="100" HorizontalOptions="Center">
+                <Ellipse Fill="{DynamicResource ThemePrimaryContainer}"
+                         WidthRequest="100" HeightRequest="100" />
+                <Label Text="✓" FontSize="56" FontFamily="PlusJakartaExtraBold"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+            </Grid>
+
+            <!-- Title -->
+            <VerticalStackLayout Grid.Row="1" Spacing="6" HorizontalOptions="Center">
+                <Label Text="Booking Confirmed!" Style="{StaticResource HeadlineMdLabel}"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnSurface}" />
+                <Label Text="Your tickets have been booked successfully."
+                       Style="{StaticResource BodyMdLabel}"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+            </VerticalStackLayout>
+
+            <!-- Booking ID + Total -->
+            <Border Grid.Row="2" Style="{StaticResource PanelCard}" Padding="16">
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="BOOKING ID" Style="{StaticResource LabelSmLabel}"
+                               TextColor="{DynamicResource ThemeOutline}" />
+                        <Label Text="{Binding BookingId}" FontFamily="PlusJakartaBold" FontSize="14"
+                               TextColor="{DynamicResource ThemeOnSurface}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
+                        <Label Text="TOTAL PAID" Style="{StaticResource LabelSmLabel}"
+                               HorizontalTextAlignment="End"
+                               TextColor="{DynamicResource ThemeOutline}" />
+                        <Label Text="{Binding FormattedTotal}" FontFamily="PlusJakartaExtraBold" FontSize="20"
+                               HorizontalTextAlignment="End"
+                               TextColor="{DynamicResource ThemePrimary}" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Ticket card -->
+            <Border Grid.Row="3" Style="{StaticResource SurfaceCardTight}" Padding="16">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{Binding MovieTitle}" Style="{StaticResource HeadlineSmLabel}"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="6">
+                        <Label Grid.Row="0" Grid.Column="0" Text="🎭" FontSize="14" />
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding TheaterName}"
+                               Style="{StaticResource BodyMdLabel}"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                        <Label Grid.Row="1" Grid.Column="0" Text="🕒" FontSize="14" />
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding ShowtimeLabel}"
+                               Style="{StaticResource BodyMdLabel}"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="{DynamicResource ThemeOutlineVariant}" Margin="0,4" />
+                    <Label Text="SEATS" Style="{StaticResource LabelSmLabel}"
+                           TextColor="{DynamicResource ThemeOutline}" />
+                    <Label Text="{Binding SeatsDisplay}" FontFamily="PlusJakartaBold" FontSize="14"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Action row -->
+            <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0" Text="Done"
+                        Clicked="OnDoneClicked"
+                        Style="{StaticResource OutlinedButton}" />
+                <Button Grid.Column="1" Text="View My Bookings"
+                        Clicked="OnViewBookingsClicked"
+                        Style="{StaticResource PrimaryButton}" />
+            </Grid>
+        </Grid>
+    </Border>
 </ContentView>

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
+using SmartMovieBooking.Controls;
 using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
 using SmartMovieBooking.Views;
@@ -43,6 +44,9 @@ public static class MauiProgram
         builder.Services.AddTransient<SeatSelectionViewModel>();
         builder.Services.AddTransient<PaymentConfirmationViewModel>();
         builder.Services.AddTransient<AiCopilotViewModel>();
+
+        // Popup orchestrator (singleton)
+        builder.Services.AddSingleton<PopupOrchestrator>();
 
         // Views (transient)
         builder.Services.AddTransient<MainWindow>();

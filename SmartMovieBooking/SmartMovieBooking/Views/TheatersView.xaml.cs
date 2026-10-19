@@ -8,17 +8,14 @@ public partial class TheatersView : ContentView
 {
     private readonly TheatersViewModel _vm;
     private bool _subscribed;
+    private MainPage _lastPage = MainPage.MovieHome;
 
     public TheatersView(TheatersViewModel vm)
     {
         InitializeComponent();
         _vm = vm;
         BindingContext = _vm;
-    }
 
-    protected override void OnHandlerChanged()
-    {
-        base.OnHandlerChanged();
         if (!_subscribed)
         {
             EventBus.ShowtimeClicked += OnShowtimeClicked;
@@ -29,18 +26,9 @@ public partial class TheatersView : ContentView
     protected override void OnParentSet()
     {
         base.OnParentSet();
-        if (Parent is null && _subscribed)
-        {
-            EventBus.ShowtimeClicked -= OnShowtimeClicked;
-            _subscribed = false;
-        }
     }
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _vm.InitializeAsync();
-    }
+    public async Task ReloadAsync() => await _vm.InitializeAsync();
 
     private void OnShowtimeClicked(object? sender, Showtime e)
         => _vm.OnShowtimeSelectedCommand.Execute(e);

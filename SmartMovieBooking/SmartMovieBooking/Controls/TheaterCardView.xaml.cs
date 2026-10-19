@@ -19,23 +19,20 @@ public partial class TheaterCardView : ContentView
         set => SetValue(TheaterProperty, value);
     }
 
-    public event EventHandler<Showtime>? ShowtimeSelected;
+    public event EventHandler<Theater>? ContinueClicked;
 
     private static void OnTheaterChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is TheaterCardView view && newValue is Theater)
-            view.BindingContext = newValue;
-
-        if (bindable is TheaterCardView v && newValue is Theater t)
-        {
-            // Wire each pill's click to bubble up.
-            v.BindingContext = t;
-        }
+        if (bindable is TheaterCardView view && newValue is Theater t)
+            view.BindingContext = t;
     }
 
-    protected override void OnBindingContextChanged()
+    private void OnContinueClicked(object? sender, EventArgs e)
     {
-        base.OnBindingContextChanged();
-        // Forward showtime click events when CollectionView instantiates children.
+        if (Theater is not null)
+        {
+            ContinueClicked?.Invoke(this, Theater);
+            Services.EventBus.PublishTheaterContinueClicked(Theater);
+        }
     }
 }
