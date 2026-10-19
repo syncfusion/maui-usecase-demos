@@ -36,14 +36,14 @@ public partial class CarePlansPage : ContentPage
         BindingContext = viewModel;
     }
 
-    public CarePlansPage(CarePlanDataService carePlanDataService, PatientDataService patientDataService, NotificationService notificationService)
-    {
-        InitializeComponent();
-        viewModel = new CarePlansViewModel(carePlanDataService, patientDataService);
-        BindingContext = viewModel;
-        DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-    }
+    //public CarePlansPage(CarePlanDataService carePlanDataService, PatientDataService patientDataService, NotificationService notificationService)
+    //{
+    //    InitializeComponent();
+    //    viewModel = new CarePlansViewModel(carePlanDataService, patientDataService);
+    //    BindingContext = viewModel;
+    //    DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+    //    MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+    //}
 
     private void OnPatientChipTapped(object? sender, TappedEventArgs e)
     {

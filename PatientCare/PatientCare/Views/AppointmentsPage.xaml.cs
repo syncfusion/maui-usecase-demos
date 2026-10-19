@@ -15,8 +15,8 @@ public partial class AppointmentsPage : ContentPage
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
-        var dataService = services?.GetService<ScheduleDataService>();
-        var notificationService = services?.GetService<NotificationService>();
+        //var dataService = services?.GetService<ScheduleDataService>();
+        //var notificationService = services?.GetService<NotificationService>();
         
         if (dataService != null && notificationService != null)
         {
@@ -40,17 +40,17 @@ public partial class AppointmentsPage : ContentPage
         MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
     }
 
-    public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
-    {
-        InitializeComponent();
-        viewModel = new AppointmentsViewModel(dataService);
-        BindingContext = viewModel;
-        DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+    //public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
+    //{
+    //    InitializeComponent();
+    //    viewModel = new AppointmentsViewModel(dataService);
+    //    BindingContext = viewModel;
+    //    DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+    //    MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
 
-        DesktopScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
-        MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
-    }
+    //    DesktopScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
+    //    MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
+    //}
 
     private static ObservableCollection<SchedulerTimeRegion> CreateLunchBreakRegions() =>
     [

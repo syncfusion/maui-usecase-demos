@@ -15,9 +15,7 @@ public partial class PatientsPage : ContentPage
     {
         InitializeComponent();
         var services = Application.Current?.Handler?.MauiContext?.Services;
-        var patientDataService = services?.GetService<PatientDataService>();
-        var scheduleDataService = services?.GetService<ScheduleDataService>();
-        var notificationService = services?.GetService<NotificationService>();
+      
         
         if (patientDataService != null && scheduleDataService != null && notificationService != null)
         {
@@ -45,21 +43,21 @@ public partial class PatientsPage : ContentPage
         SetDesktopFilterTab("All Patients");
     }
 
-    public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
-    {
-        InitializeComponent();
-        viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
-        BindingContext = viewModel;
-        DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+    //public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
+    //{
+    //    InitializeComponent();
+    //    viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
+    //    BindingContext = viewModel;
+    //    DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
+    //    MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
 
-        foreach (var chip in MobileFilterChips.Items)
-        {
-            MobileFilterChips.SelectedItem = chip;
-            break;
-        }
-        SetDesktopFilterTab("All Patients");
-    }
+    //    foreach (var chip in MobileFilterChips.Items)
+    //    {
+    //        MobileFilterChips.SelectedItem = chip;
+    //        break;
+    //    }
+    //    SetDesktopFilterTab("All Patients");
+    //}
 
     private void OnPatientCardTapped(object? sender, TappedEventArgs e)
     {

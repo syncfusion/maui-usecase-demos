@@ -46,6 +46,7 @@
             <Border BackgroundColor="White"
                     Stroke="{AppThemeBinding Light={StaticResource BorderColor}, Dark={StaticResource BorderColorDark}}"
                     StrokeThickness="1"
+                    Margin="{x:OnPlatform WinUI=0,MacCatalyst=0, Android='0,5,0,5', iOS='0,5,0,5'}"
                     Padding="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="14" />
