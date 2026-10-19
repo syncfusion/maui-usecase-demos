@@ -23,18 +23,43 @@ public partial class MovieHomeView : ContentPage
     private async Task LoadAsync()
     {
         await _vm.LoadAsync();
+        BuildGenreChips();
         LoadingSpinner.IsRunning = false;
         LoadingSpinner.IsVisible = false;
     }
 
+    // Build the genre chip strip imperatively. SfChipGroup's ChipLayout
+    // child has a known runtime-inflation issue (InflationException on
+    // some platforms), so we build chips directly into a
+    // HorizontalStackLayout instead.
+    private void BuildGenreChips()
+    {
+        GenreChipStrip.Children.Clear();
+        foreach (var genre in _vm.Genres)
+        {
+            var chip = new SfChip
+            {
+                Text = genre,
+                ChipType = SfChipType.Choice,
+                IsCheckable = true,
+                ChipBackground = genre == _vm.SelectedGenre ? Color.FromArgb("#4F46E5") : Color.FromArgb("#F1F2F8"),
+                ChipTextColor = genre == _vm.SelectedGenre ? Colors.White : Color.FromArgb("#49454F"),
+                FontFamily = "OpenSansSemibold",
+                FontSize = 11,
+            };
+
+            chip.CheckedChanged += (s, e) =>
+            {
+                if (e.IsChecked)
+                    _vm.SelectedGenre = genre;
+            };
+
+            GenreChipStrip.Children.Add(chip);
+        }
+    }
+
     private void OnSearchChanged(object? sender, TextChangedEventArgs e)
         => _vm.SearchText = e.NewTextValue ?? string.Empty;
-
-    private void OnGenreSelected(object? sender, ChipSelectionChangedEventArgs e)
-    {
-        if (e.AddedItem is string g)
-            _vm.SelectedGenre = g;
-    }
 
     private async void OnMovieTapped(object? sender, ItemSelectionChangedEventArgs e)
     {

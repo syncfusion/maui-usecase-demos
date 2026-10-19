@@ -36,16 +36,9 @@
                 </Grid>
             </syncfusionCards:SfCardView>
 
-            <!-- Genre chip strip using SfChipGroup -->
-            <syncfusionChips:SfChipGroup x:Name="GenreChipGroup"
-                                          ChipDisplayBinding="{Binding .}"
-                                          ChipType="Choice"
-                                          ItemsSource="{Binding Genres}"
-                                          SelectionChanged="OnGenreSelected">
-                <syncfusionChips:SfChipGroup.ChipLayout>
-                    <FlexLayout Direction="Row" Wrap="NoWrap" />
-                </syncfusionChips:SfChipGroup.ChipLayout>
-            </syncfusionChips:SfChipGroup>
+            <!-- Genre chip strip: built dynamically in code-behind to avoid
+                 Syncfusion runtime-inflation issues with ChipLayout.FlexLayout -->
+            <HorizontalStackLayout x:Name="GenreChipStrip" Spacing="8" />
 
             <!-- Activity indicator while loading -->
             <ActivityIndicator x:Name="LoadingSpinner" IsRunning="True"
