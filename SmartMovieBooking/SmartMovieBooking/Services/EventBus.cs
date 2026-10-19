@@ -11,6 +11,7 @@ public static class EventBus
 {
     public static event EventHandler<Showtime>? ShowtimeClicked;
     public static event EventHandler<Theater>? TheaterContinueClicked;
+    public static event EventHandler<Seat>? SeatToggled;
     public static event EventHandler? SeatSelectionConfirmed;
     public static event EventHandler? SeatSelectionCancelled;
     public static event EventHandler? BookingConfirmed;
@@ -22,6 +23,9 @@ public static class EventBus
 
     public static void PublishTheaterContinueClicked(Theater t)
         => TheaterContinueClicked?.Invoke(null, t);
+
+    public static void PublishSeatToggled(Seat s)
+        => SeatToggled?.Invoke(null, s);
 
     public static void PublishSeatSelectionConfirmed()
         => SeatSelectionConfirmed?.Invoke(null, EventArgs.Empty);

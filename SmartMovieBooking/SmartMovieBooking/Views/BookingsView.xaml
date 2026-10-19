@@ -7,59 +7,373 @@
              x:Class="SmartMovieBooking.Views.BookingsView"
              x:DataType="vm:BookingsViewModel">
 
-    <Grid Padding="24" RowSpacing="16" RowDefinitions="Auto,Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*">
 
-        <!-- Header -->
-        <VerticalStackLayout Grid.Row="0" Spacing="4">
-            <Label Text="Your Bookings" Style="{StaticResource HeadlineLgLabel}"
+        <!-- Top app bar -->
+        <Grid Grid.Row="0" Padding="20,12,20,8" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+            <Label Grid.Column="0" Text="📅" FontSize="20" VerticalTextAlignment="Center" />
+            <Label Grid.Column="1" Text="Bookings"
+                   FontFamily="PlusJakartaBold" FontSize="20"
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
                    TextColor="{DynamicResource ThemeOnBackground}" />
-            <Label Text="Past shows and upcoming reservations"
-                   Style="{StaticResource BodyMdLabel}"
-                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-        </VerticalStackLayout>
-
-        <!-- Tabs (Up Next / Past) -->
-        <HorizontalStackLayout Grid.Row="1" Spacing="24">
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Up Next" Style="{StaticResource HeadlineSmLabel}"
-                       TextColor="{DynamicResource ThemeOnSurface}" />
-                <BoxView HeightRequest="2" Color="{DynamicResource ThemePrimary}" />
-            </VerticalStackLayout>
-            <VerticalStackLayout Spacing="6">
-                <Label Text="Past" Style="{StaticResource HeadlineSmLabel}"
-                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-            </VerticalStackLayout>
-        </HorizontalStackLayout>
-
-        <!-- List or empty state -->
-        <Grid Grid.Row="2">
-            <CollectionView ItemsSource="{Binding Bookings}"
-                            SelectionMode="None"
-                            IsVisible="{Binding HasBookings}">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Booking">
-                        <controls:BookingCardView Booking="{Binding .}" />
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!-- Empty state -->
-            <VerticalStackLayout Spacing="12"
-                                 HorizontalOptions="Center" VerticalOptions="Center"
-                                 Padding="40"
-                                 IsVisible="{Binding HasBookings, Converter={StaticResource InverseBoolConverter}}">
-                <Label Text="🎟️" FontSize="64" HorizontalTextAlignment="Center" />
-                <Label Text="No bookings yet" Style="{StaticResource HeadlineMdLabel}"
-                       HorizontalTextAlignment="Center"
-                       TextColor="{DynamicResource ThemeOnSurface}" />
-                <Label Text="Book a movie and it will appear here."
-                       Style="{StaticResource BodyMdLabel}"
-                       HorizontalTextAlignment="Center"
-                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-            </VerticalStackLayout>
+            <Button Grid.Column="2" Text="🔍"
+                    Style="{StaticResource IconButton}" WidthRequest="40" HeightRequest="40" />
+            <Border Grid.Column="3" WidthRequest="40" HeightRequest="40"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{DynamicResource ThemePrimary}">
+                <Label Text="AC" FontFamily="PlusJakartaBold" FontSize="12"
+                       TextColor="{DynamicResource ThemeOnPrimary}"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            </Border>
         </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="0,8,0,80" Spacing="20">
+
+                <!-- Tabs: Upcoming / History -->
+                <Grid Padding="20,0" ColumnDefinitions="*,*">
+                    <Border Grid.Column="0" BackgroundColor="{DynamicResource ThemeSurfaceContainerLowest}"
+                            StrokeThickness="1" Stroke="{DynamicResource ThemeOutlineVariant}"
+                            StrokeShape="RoundRectangle 12" Padding="14,8">
+                        <HorizontalStackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="Upcoming"
+                                   FontFamily="PlusJakartaBold" FontSize="13"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                            <Border BackgroundColor="{DynamicResource ThemePrimaryContainer}"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="6,2">
+                                <Label Text="{Binding UpcomingCount}"
+                                       FontFamily="InterSemiBold" FontSize="10"
+                                       TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                            </Border>
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" BackgroundColor="{DynamicResource ThemeSurfaceContainerLowest}"
+                            StrokeThickness="1" Stroke="{DynamicResource ThemeOutlineVariant}"
+                            StrokeShape="RoundRectangle 12" Padding="14,8">
+                        <HorizontalStackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="History"
+                                   FontFamily="PlusJakartaBold" FontSize="13"
+                                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                            <Border BackgroundColor="{DynamicResource ThemeSurfaceContainer}"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="6,2">
+                                <Label Text="{Binding HistoryCount}"
+                                       FontFamily="InterSemiBold" FontSize="10"
+                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                            </Border>
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Empty state -->
+                <VerticalStackLayout Padding="20,40" Spacing="12"
+                                     IsVisible="{Binding HasBookings, Converter={StaticResource InverseBoolConverter}}">
+                    <Label Text="🎫" FontSize="56" HorizontalTextAlignment="Center" />
+                    <Label Text="No bookings yet"
+                           Style="{StaticResource HeadlineMdLabel}"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Label Text="Book your first show from the Home tab."
+                           Style="{StaticResource BodyMdLabel}"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                </VerticalStackLayout>
+
+                <!-- Upcoming Tickets header -->
+                <Grid Padding="20,0" ColumnDefinitions="*,Auto"
+                      IsVisible="{Binding HasBookings}">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="🎟️ Upcoming Tickets"
+                               Style="{StaticResource HeadlineMdLabel}"
+                               TextColor="{DynamicResource ThemeOnBackground}" />
+                    </VerticalStackLayout>
+                    <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                        <Label Text="●" FontSize="8" TextColor="{DynamicResource ThemePrimary}" />
+                        <Label Text="Next in {Binding NextIn}"
+                               FontFamily="InterSemiBold" FontSize="11"
+                               TextColor="{DynamicResource ThemePrimary}" />
+                    </HorizontalStackLayout>
+                </Grid>
+
+                <!-- Upcoming bookings list -->
+                <CollectionView ItemsSource="{Binding Bookings}"
+                                IsVisible="{Binding HasBookings}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Booking">
+                            <Grid Padding="20,0,20,16">
+                                <Border Style="{StaticResource SurfaceCard}" Padding="16">
+                                    <VerticalStackLayout Spacing="12">
+
+                                        <!-- Top row: status + format + id -->
+                                        <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="6">
+                                            <Border Grid.Column="0"
+                                                    BackgroundColor="{DynamicResource ThemeTertiaryContainer}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                                    Padding="6,2">
+                                                <Label Text="{Binding Status}" FontFamily="InterSemiBold" FontSize="10"
+                                                       TextColor="{DynamicResource ThemeOnTertiaryContainer}" />
+                                            </Border>
+                                            <Border Grid.Column="1"
+                                                    BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                                    Padding="6,2">
+                                                <Label Text="{Binding Showtime.Format}" FontFamily="InterSemiBold" FontSize="10"
+                                                       TextColor="{DynamicResource ThemePrimary}" />
+                                            </Border>
+                                            <Label Grid.Column="2" Text="{Binding BookingId, StringFormat='#{}'}"
+                                                   FontFamily="InterSemiBold" FontSize="10"
+                                                   HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+                                                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                        </Grid>
+
+                                        <!-- Main row: poster + details -->
+                                        <Grid ColumnDefinitions="80,*" ColumnSpacing="12">
+                                            <Border Grid.Column="0"
+                                                    WidthRequest="80" HeightRequest="100"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 8"
+                                                    BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
+                                                <Label Text="🎬" FontSize="32"
+                                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                                       TextColor="{DynamicResource ThemeOutline}" />
+                                            </Border>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                    <Label Text="📅" FontSize="11" />
+                                                    <Label Text="{Binding Showtime.StartTime, StringFormat='{}{0:ddd, MMM d · h:mm tt}'}"
+                                                           FontFamily="InterSemiBold" FontSize="10"
+                                                           TextColor="{DynamicResource ThemePrimary}" />
+                                                </HorizontalStackLayout>
+                                                <Label Text="{Binding Movie.Title}"
+                                                       FontFamily="PlusJakartaBold" FontSize="14"
+                                                       LineBreakMode="TailTruncation" MaxLines="1"
+                                                       TextColor="{DynamicResource ThemeOnSurface}" />
+                                                <Label Text="{Binding Theater.Name}"
+                                                       Style="{StaticResource BodySmLabel}"
+                                                       LineBreakMode="TailTruncation" MaxLines="1"
+                                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                                <HorizontalStackLayout Spacing="6" Margin="0,4,0,0">
+                                                    <Label Text="🎫" FontSize="11" />
+                                                    <Label Text="{Binding SeatsDisplay}"
+                                                           FontFamily="InterSemiBold" FontSize="11"
+                                                           TextColor="{DynamicResource ThemeOnSurface}" />
+                                                    <Label Text="•"
+                                                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                                    <Label Text="{Binding SeatCount, StringFormat='{}{0} Seats'}"
+                                                           Style="{StaticResource BodySmLabel}"
+                                                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Grid>
+
+                                        <!-- Divider -->
+                                        <BoxView HeightRequest="1" Color="{DynamicResource ThemeOutlineVariant}" />
+
+                                        <!-- Digital Gate Pass + View Ticket + Save -->
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                                            <Border Grid.Column="0"
+                                                    WidthRequest="44" HeightRequest="44"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 8"
+                                                    BackgroundColor="{DynamicResource ThemePrimaryContainer}">
+                                                <Label Text="🔳" FontSize="18"
+                                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                            </Border>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                                <Label Text="Digital Gate Pass"
+                                                       FontFamily="PlusJakartaBold" FontSize="12"
+                                                       TextColor="{DynamicResource ThemeOnSurface}" />
+                                                <Label Text="Tap to expand full screen barcode"
+                                                       Style="{StaticResource BodySmLabel}"
+                                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                            </VerticalStackLayout>
+                                            <Button Grid.Column="2" Text="›" Clicked="OnViewTicketClicked"
+                                                    Style="{StaticResource IconButton}"
+                                                    WidthRequest="36" HeightRequest="36" />
+                                        </Grid>
+
+                                        <Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
+                                            <Button Grid.Column="0" Text="View Ticket"
+                                                    Style="{StaticResource OutlinedButton}" FontSize="11" />
+                                            <Button Grid.Column="1" Text="Save"
+                                                    Style="{StaticResource OutlinedButton}" FontSize="11" />
+                                            <Button Grid.Column="2" Text="⋮"
+                                                    Style="{StaticResource IconButton}"
+                                                    WidthRequest="40" HeightRequest="40" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Booking History header -->
+                <Grid Padding="20,0" ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="🕒 Booking History"
+                               Style="{StaticResource HeadlineMdLabel}"
+                               TextColor="{DynamicResource ThemeOnBackground}" />
+                    </VerticalStackLayout>
+                    <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                        <Label Text="Past 6 Months"
+                               FontFamily="PlusJakartaBold" FontSize="12"
+                               TextColor="{DynamicResource ThemePrimary}" />
+                        <Label Text="▾" FontSize="10"
+                               TextColor="{DynamicResource ThemePrimary}" />
+                    </HorizontalStackLayout>
+                </Grid>
+
+                <!-- History list -->
+                <CollectionView ItemsSource="{Binding History}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Booking">
+                            <Grid Padding="20,0,20,16">
+                                <Border Style="{StaticResource SurfaceCard}" Padding="14">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                            <HorizontalStackLayout Spacing="6">
+                                                <Border BackgroundColor="{DynamicResource ThemePrimaryContainer}"
+                                                        StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                                        Padding="6,2">
+                                                    <Label Text="{Binding Status}" FontFamily="InterSemiBold" FontSize="10"
+                                                           TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                                                </Border>
+                                                <Label Text="{Binding BookingId, StringFormat='#{}'}"
+                                                       FontFamily="InterSemiBold" FontSize="10"
+                                                       VerticalTextAlignment="Center"
+                                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                            </HorizontalStackLayout>
+                                            <Label Text="{Binding Movie.Title}"
+                                                   FontFamily="PlusJakartaBold" FontSize="14"
+                                                   LineBreakMode="TailTruncation" MaxLines="1"
+                                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                                            <Label Text="{Binding Theater.Name}"
+                                                   Style="{StaticResource BodySmLabel}"
+                                                   LineBreakMode="TailTruncation" MaxLines="1"
+                                                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                            <HorizontalStackLayout Spacing="6">
+                                                <Label Text="📅" FontSize="11" />
+                                                <Label Text="{Binding Showtime.StartTime, StringFormat='{}{0:MMM d, yyyy · h:mm tt}'}"
+                                                       Style="{StaticResource BodySmLabel}"
+                                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                                <Label Text="·" TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                                <Label Text="{Binding Total, StringFormat='${0:F2}'}"
+                                                       FontFamily="PlusJakartaBold" FontSize="11"
+                                                       TextColor="{DynamicResource ThemePrimary}" />
+                                                <Label Text="{Binding SeatCount, StringFormat=' · {0} Seats'}"
+                                                       Style="{StaticResource BodySmLabel}"
+                                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+                                        <Border Grid.Column="1"
+                                                WidthRequest="56" HeightRequest="76"
+                                                StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                                                BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
+                                            <Label Text="🎬" FontSize="20"
+                                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                                   TextColor="{DynamicResource ThemeOutline}" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- CinePass Milestones -->
+                <Grid Padding="20,0" ColumnDefinitions="*,Auto">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                        <Label Text="✨" FontSize="16" />
+                        <Label Text="CinePass Milestones"
+                               Style="{StaticResource HeadlineMdLabel}"
+                               TextColor="{DynamicResource ThemeOnBackground}" />
+                    </HorizontalStackLayout>
+                    <Label Grid.Column="1" Text="2024 Season"
+                           FontFamily="PlusJakartaBold" FontSize="12"
+                           VerticalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemePrimary}" />
+                </Grid>
+
+                <Grid Padding="20,0" ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                    <Border Grid.Column="0" Style="{StaticResource SurfaceCardTight}" Padding="12">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="18" FontSize="22" FontFamily="PlusJakartaExtraBold"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{DynamicResource ThemePrimary}" />
+                            <Label Text="Watched"
+                                   FontFamily="InterSemiBold" FontSize="10"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                            <Border BackgroundColor="{DynamicResource ThemeTertiaryContainer}"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="6,2">
+                                <Label Text="+4 this mo" FontFamily="InterSemiBold" FontSize="9"
+                                       HorizontalTextAlignment="Center"
+                                       TextColor="{DynamicResource ThemeOnTertiaryContainer}" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource SurfaceCardTight}" Padding="12">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="24" FontSize="22" FontFamily="PlusJakartaExtraBold"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{DynamicResource ThemePrimary}" />
+                            <Label Text="Bookings"
+                                   FontFamily="InterSemiBold" FontSize="10"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                            <Border BackgroundColor="{DynamicResource ThemeTertiaryContainer}"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="6,2">
+                                <Label Text="Top 5% Cine" FontFamily="InterSemiBold" FontSize="9"
+                                       HorizontalTextAlignment="Center"
+                                       TextColor="{DynamicResource ThemeOnTertiaryContainer}" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource SurfaceCardTight}" Padding="12">
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="Sci-Fi" FontSize="18" FontFamily="PlusJakartaExtraBold"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{DynamicResource ThemePrimary}" />
+                            <Label Text="Fav Format"
+                                   FontFamily="InterSemiBold" FontSize="10"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                            <Border BackgroundColor="{DynamicResource ThemeTertiaryContainer}"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="6,2">
+                                <Label Text="65% IMAX" FontFamily="InterSemiBold" FontSize="9"
+                                       HorizontalTextAlignment="Center"
+                                       TextColor="{DynamicResource ThemeOnTertiaryContainer}" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Smart Concierge banner -->
+                <Grid Padding="20,0">
+                    <Border Style="{StaticResource SurfaceCardTight}" Padding="14">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                            <Border Grid.Column="0"
+                                    WidthRequest="44" HeightRequest="44"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{DynamicResource ThemeTertiaryContainer}">
+                                <Label Text="🎩" FontSize="22"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Lumina Smart Concierge"
+                                       FontFamily="PlusJakartaBold" FontSize="12"
+                                       TextColor="{DynamicResource ThemeOnSurface}" />
+                                <Label Text="3 films matching your preferences opening this week"
+                                       Style="{StaticResource BodySmLabel}"
+                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                            </VerticalStackLayout>
+                            <Button Grid.Column="2" Text="→"
+                                    Style="{StaticResource IconButton}"
+                                    WidthRequest="36" HeightRequest="36" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 </ContentView>

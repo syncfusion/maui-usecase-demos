@@ -11,7 +11,7 @@
         </Border.GestureRecognizers>
         <VerticalStackLayout Spacing="0">
             <!-- Poster area (placeholder gradient until images are added) -->
-            <Grid HeightRequest="220" BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
+            <Grid HeightRequest="180" BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
                 <Label Text="🎬" FontSize="64"
                        HorizontalTextAlignment="Center"
                        VerticalTextAlignment="Center"

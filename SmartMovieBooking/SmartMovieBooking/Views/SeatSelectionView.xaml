@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
@@ -7,126 +7,281 @@
              x:Class="SmartMovieBooking.Views.SeatSelectionView"
              x:DataType="vm:SeatSelectionViewModel">
 
-    <Border BackgroundColor="{DynamicResource ThemeSurface}"
-            StrokeThickness="0"
-            StrokeShape="RoundRectangle 20"
-            WidthRequest="720"
-            Padding="0">
-        <Border.Shadow>
-            <Shadow Brush="#30000000" Offset="0,8" Radius="24" Opacity="0.18" />
-        </Border.Shadow>
+    <Grid RowDefinitions="Auto,*" BackgroundColor="White">
 
-        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
-
-            <!-- Header -->
-            <Grid Grid.Row="0" Padding="24,20" ColumnDefinitions="*,Auto">
-                <VerticalStackLayout Grid.Column="0" Spacing="2">
-                    <Label Text="{Binding ScreenTitle}" Style="{StaticResource HeadlineMdLabel}"
-                           TextColor="{DynamicResource ThemeOnSurface}" />
-                    <Label Text="{Binding TheaterLine}" Style="{StaticResource BodyMdLabel}"
-                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-                    <Label Text="{Binding ShowtimeLine}" Style="{StaticResource BodySmLabel}"
-                           TextColor="{DynamicResource ThemeOutline}" />
-                </VerticalStackLayout>
-                <Button Grid.Column="1" Text="✕" Clicked="OnCloseClicked"
-                        Style="{StaticResource IconButton}" WidthRequest="36" HeightRequest="36" />
-            </Grid>
-
-            <!-- Screen indicator -->
-            <VerticalStackLayout Grid.Row="1" Padding="24,8,24,16" Spacing="8">
-                <Border BackgroundColor="{DynamicResource ThemeSurfaceContainer}"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 4"
-                        HeightRequest="4"
-                        HorizontalOptions="Fill" />
-                <Label Text="ALL EYES THIS WAY 🎬" FontFamily="InterSemiBold" FontSize="10"
-                       HorizontalTextAlignment="Center"
-                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+        <!-- Top dark header bar with back, title, AI, avatar -->
+        <Grid Grid.Row="0" Padding="20,16" BackgroundColor="{DynamicResource ThemeInverseSurface}"
+              ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+            <Button Grid.Column="0" Text="←" Clicked="OnCancelClicked"
+                    BackgroundColor="Transparent" TextColor="White" FontSize="20" />
+            <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                <Label Text="Select Seats" FontFamily="PlusJakartaBold" FontSize="20"
+                       TextColor="White" />
+                <Label Text="{Binding TheaterLine}" Style="{StaticResource BodySmLabel}"
+                       TextColor="White" Opacity="0.7" />
             </VerticalStackLayout>
+            <Button Grid.Column="2" Text="✨" Clicked="OnAiClicked"
+                    BackgroundColor="Transparent" TextColor="White" FontSize="20" />
+            <Border Grid.Column="3" WidthRequest="40" HeightRequest="40"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{DynamicResource ThemePrimary}">
+                <Label Text="AC" FontFamily="PlusJakartaBold" FontSize="12"
+                       TextColor="White"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            </Border>
+        </Grid>
 
-            <!-- Seat grid -->
-            <ScrollView Grid.Row="2" Padding="24,0" Orientation="Both">
-                <VerticalStackLayout Spacing="6" BindableLayout.ItemsSource="{Binding SeatRows}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="vm:SeatRow">
-                            <Grid ColumnDefinitions="20,Auto" ColumnSpacing="6"
-                                  HorizontalOptions="Center">
-                                <Label Grid.Column="0" Text="{Binding RowLabel}"
-                                       FontFamily="PlusJakartaBold" FontSize="11"
-                                       VerticalTextAlignment="Center"
-                                       TextColor="{DynamicResource ThemeOutline}" />
-                                <FlexLayout Grid.Column="1" BindableLayout.ItemsSource="{Binding Seats}"
-                                            Direction="Row" Wrap="NoWrap" JustifyContent="Start">
-                                    <BindableLayout.ItemTemplate>
-                                        <DataTemplate x:DataType="models:Seat">
-                                            <controls:SeatTileView Margin="2"
-                                                                   Seat="{Binding .}" />
-                                        </DataTemplate>
-                                    </BindableLayout.ItemTemplate>
-                                </FlexLayout>
-                            </Grid>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
+        <!-- Scrollable seat grid area -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="16" Padding="0,0,0,16">
+
+                <!-- NOW SELECTING dark band -->
+                <Grid BackgroundColor="{DynamicResource ThemeInverseSurface}" Padding="20,8,20,16">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                        <Border Grid.Column="0"
+                                WidthRequest="44" HeightRequest="44"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{DynamicResource ThemePrimary}">
+                            <Label Text="🎬" FontSize="20"
+                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                   TextColor="White" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                            <Label Text="NOW SELECTING" FontFamily="PlusJakartaSemiBold" FontSize="10"
+                                   TextColor="White" Opacity="0.7" />
+                            <Label Text="{Binding ScreenTitle, FallbackValue='Auditorium 4 · IMAX'}"
+                                   FontFamily="PlusJakartaBold" FontSize="16"
+                                   TextColor="White" />
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2"
+                                BackgroundColor="{DynamicResource ThemeTertiary}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 999"
+                                Padding="10,6">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Ellipse WidthRequest="8" HeightRequest="8"
+                                         Fill="{DynamicResource ThemeTertiaryContainer}" />
+                                <Label Text="LIVE SEATING" FontFamily="PlusJakartaBold" FontSize="10"
+                                       TextColor="White" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <!-- Movie title + chips + showtime -->
+                <VerticalStackLayout Spacing="6" Padding="20,0">
+                    <HorizontalStackLayout Spacing="8">
+                        <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                Padding="8,2">
+                            <Label Text="IMAX LASER 4K" FontFamily="PlusJakartaBold" FontSize="10"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                        </Border>
+                        <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                Padding="8,2">
+                            <Label Text="DOLBY ATMOS" FontFamily="PlusJakartaBold" FontSize="10"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                        </Border>
+                    </HorizontalStackLayout>
+                    <Label Text="{Binding ScreenTitle, FallbackValue='Chronicles of Nebula: Horizon'}"
+                           FontFamily="PlusJakartaExtraBold" FontSize="22"
+                           LineBreakMode="TailTruncation" MaxLines="1"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Label Text="{Binding TheaterLine, FallbackValue='AMC Empire 25 · Auditorium 4 (Prime Floor)'}"
+                           Style="{StaticResource BodySmLabel}"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0">
+                        <HorizontalStackLayout Grid.Column="0" Spacing="8">
+                            <Label Text="📅" FontSize="12" />
+                            <Label Text="{Binding ShowtimeLine, FallbackValue='Today, Oct 24'}"
+                                   FontFamily="InterSemiBold" FontSize="12"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                            <Label Text="·" TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                            <Label Text="{Binding ShowtimeStartTime, FallbackValue='07:15 PM'}"
+                                   FontFamily="PlusJakartaBold" FontSize="12"
+                                   TextColor="{DynamicResource ThemePrimary}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="★" FontSize="12" TextColor="{DynamicResource ThemeTertiary}" />
+                            <Label Text="Best View: Row D" FontFamily="InterSemiBold" FontSize="11"
+                                   TextColor="{DynamicResource ThemePrimary}" />
+                        </HorizontalStackLayout>
+                    </Grid>
                 </VerticalStackLayout>
-            </ScrollView>
-
-            <!-- Legend + pricing summary -->
-            <Grid Grid.Row="3" Padding="24,16,24,20"
-                  RowDefinitions="Auto,Auto,Auto" RowSpacing="12"
-                  BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}">
 
                 <!-- Legend -->
-                <HorizontalStackLayout Grid.Row="0" Spacing="16" HorizontalOptions="Center">
-                    <HorizontalStackLayout Spacing="6">
-                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3"
-                                 Color="{DynamicResource ThemeSurfaceContainerHigh}" />
-                        <Label Text="Available" Style="{StaticResource LabelSmLabel}" />
+                <HorizontalStackLayout Padding="20,0" Spacing="12">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Border WidthRequest="20" HeightRequest="20"
+                                BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 6" />
+                        <Label Text="Available" FontFamily="InterSemiBold" FontSize="11"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
                     </HorizontalStackLayout>
-                    <HorizontalStackLayout Spacing="6">
-                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3"
-                                 Color="{DynamicResource ThemePrimary}" />
-                        <Label Text="Selected" Style="{StaticResource LabelSmLabel}" />
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Border WidthRequest="20" HeightRequest="20"
+                                BackgroundColor="{DynamicResource ThemePrimary}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                            <Label Text="✓" FontSize="11" TextColor="White"
+                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </Border>
+                        <Label Text="Selected" FontFamily="InterSemiBold" FontSize="11"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
                     </HorizontalStackLayout>
-                    <HorizontalStackLayout Spacing="6">
-                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3"
-                                 Color="{DynamicResource ThemeOutlineVariant}" />
-                        <Label Text="Occupied" Style="{StaticResource LabelSmLabel}" />
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Border WidthRequest="20" HeightRequest="20"
+                                BackgroundColor="{DynamicResource ThemeOutlineVariant}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                            <Label Text="✕" FontSize="10" TextColor="White"
+                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </Border>
+                        <Label Text="Occupied" FontFamily="InterSemiBold" FontSize="11"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
                     </HorizontalStackLayout>
+                    <Border BackgroundColor="{DynamicResource ThemeTertiaryContainer}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 4" Padding="6,2">
+                        <Label Text="VIP: $24.00" FontFamily="PlusJakartaBold" FontSize="10"
+                               TextColor="{DynamicResource ThemeOnTertiaryContainer}" />
+                    </Border>
                 </HorizontalStackLayout>
 
-                <!-- Pricing -->
-                <Grid Grid.Row="1" ColumnDefinitions="*,*,*,Auto" ColumnSpacing="12"
-                      Padding="0,8,0,0">
-                    <VerticalStackLayout Grid.Column="0" Spacing="0">
-                        <Label Text="Tickets" Style="{StaticResource LabelSmLabel}" />
-                        <Label Text="{Binding SelectedCount}" FontFamily="PlusJakartaBold" FontSize="20" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1" Spacing="0">
-                        <Label Text="Subtotal" Style="{StaticResource LabelSmLabel}" />
-                        <Label Text="{Binding FormattedSubtotal}" FontFamily="PlusJakartaBold" FontSize="16" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="2" Spacing="0">
-                        <Label Text="Fee" Style="{StaticResource LabelSmLabel}" />
-                        <Label Text="{Binding FormattedConvenienceFee}" FontFamily="PlusJakartaBold" FontSize="16" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="3" Spacing="0" HorizontalOptions="End">
-                        <Label Text="Total" Style="{StaticResource LabelSmLabel}" HorizontalTextAlignment="End" />
-                        <Label Text="{Binding FormattedTotal}" FontFamily="PlusJakartaExtraBold" FontSize="22"
-                               TextColor="{DynamicResource ThemePrimary}" HorizontalTextAlignment="End" />
-                    </VerticalStackLayout>
+                <!-- IMAX CURVED SCREEN arc -->
+                <Grid Padding="20,12">
+                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 80,80,0,0"
+                            HeightRequest="60"
+                            BackgroundColor="{DynamicResource ThemePrimaryContainer}">
+                        <Label Text="⌄ IMAX CURVED SCREEN ⌄"
+                               FontFamily="PlusJakartaBold" FontSize="11"
+                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                               TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                    </Border>
                 </Grid>
 
-                <!-- CTA -->
-                <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
-                    <Button Grid.Column="0" Text="Cancel"
-                            Clicked="OnCancelClicked"
-                            Style="{StaticResource OutlinedButton}" />
-                    <Button Grid.Column="1" Text="Confirm Selection"
-                            IsEnabled="{Binding CanConfirm}"
-                            Clicked="OnConfirmClicked"
-                            Style="{StaticResource PrimaryButton}" />
+                <!-- Seat rows -->
+                <VerticalStackLayout Spacing="14" Padding="20,8">
+
+                    <!-- Front Area -->
+                    <VerticalStackLayout Spacing="6"
+                                         BindableLayout.ItemsSource="{Binding FrontRows}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SeatRowGroup">
+                                <VerticalStackLayout Spacing="6">
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Label Text="FRONT AREA · STANDARD" FontFamily="PlusJakartaSemiBold" FontSize="10"
+                                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                        <Label Text="($18.50)" FontFamily="InterSemiBold" FontSize="10"
+                                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                    </HorizontalStackLayout>
+                                    <controls:SeatRowView Row="{Binding .}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <!-- Prime Center -->
+                    <VerticalStackLayout Spacing="6"
+                                         BindableLayout.ItemsSource="{Binding PrimeRows}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SeatRowGroup">
+                                <VerticalStackLayout Spacing="6">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <HorizontalStackLayout Grid.Column="0" Spacing="6">
+                                            <Label Text="★" FontSize="10" TextColor="{DynamicResource ThemePrimary}" />
+                                            <Label Text="PRIME CENTER · DOLBY SWEET SPOT"
+                                                   FontFamily="PlusJakartaSemiBold" FontSize="10"
+                                                   TextColor="{DynamicResource ThemePrimary}" />
+                                        </HorizontalStackLayout>
+                                        <Label Grid.Column="1" Text="$24.00"
+                                               FontFamily="PlusJakartaBold" FontSize="11"
+                                               TextColor="{DynamicResource ThemeOnSurface}" />
+                                    </Grid>
+                                    <controls:SeatRowView Row="{Binding .}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <!-- Upper Recliners -->
+                    <VerticalStackLayout Spacing="6"
+                                         BindableLayout.ItemsSource="{Binding UpperRows}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SeatRowGroup">
+                                <VerticalStackLayout Spacing="6">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0" Text="UPPER RECLINERS"
+                                               FontFamily="PlusJakartaSemiBold" FontSize="10"
+                                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                        <Label Grid.Column="1" Text="$24.00"
+                                               FontFamily="PlusJakartaBold" FontSize="11"
+                                               TextColor="{DynamicResource ThemeOnSurface}" />
+                                    </Grid>
+                                    <controls:SeatRowView Row="{Binding .}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Auto-locked note -->
+                <Grid Padding="20,0">
+                    <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 12" Padding="14">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                            <Label Grid.Column="0" Text="✨" FontSize="14" />
+                            <Label Grid.Column="1" Text="Auto-locked: Center stereo axis"
+                                   FontFamily="InterSemiBold" FontSize="12"
+                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                            <Button Grid.Column="2" Text="Change"
+                                    Style="{StaticResource GhostButton}" FontSize="12" />
+                        </Grid>
+                    </Border>
                 </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Sticky footer summary -->
+        <Grid Grid.Row="1" BackgroundColor="{DynamicResource ThemeSurface}"
+              Padding="20,12,20,16"
+              VerticalOptions="End"
+              RowDefinitions="Auto,Auto">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="0,0,0,8">
+                <HorizontalStackLayout Grid.Column="0" Spacing="6">
+                    <Ellipse WidthRequest="10" HeightRequest="10"
+                             Fill="{DynamicResource ThemePrimary}" />
+                    <Label Text="{Binding SelectedSeatsSummary, FallbackValue='Row D (D5, D6) · 2 Tickets'}"
+                           FontFamily="PlusJakartaBold" FontSize="13"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                </HorizontalStackLayout>
+                <Border Grid.Column="1" BackgroundColor="{DynamicResource ThemeTertiaryContainer}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 4" Padding="6,2">
+                    <Label Text="VIP Recliner" FontFamily="InterSemiBold" FontSize="10"
+                           TextColor="{DynamicResource ThemeOnTertiaryContainer}" />
+                </Border>
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                    <Label Text="{Binding PriceSummaryLine, FallbackValue='2 × $24.00 = $48.00 (+ $3.50 fees)'}"
+                           Style="{StaticResource BodySmLabel}"
+                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    <HorizontalStackLayout Spacing="4">
+                        <Label Text="TOTAL" FontFamily="PlusJakartaBold" FontSize="11"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                        <Label Text="{Binding FormattedTotal, FallbackValue='$51.50'}"
+                               FontFamily="PlusJakartaExtraBold" FontSize="18"
+                               TextColor="{DynamicResource ThemePrimary}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                    <Button Text="Cancel"
+                            Clicked="OnCancelClicked"
+                            Style="{StaticResource GhostButton}" />
+                    <Button Text="Proceed to Payment →"
+                            Clicked="OnConfirmClicked"
+                            IsEnabled="{Binding CanConfirm}"
+                            Style="{StaticResource PrimaryButton}" />
+                </HorizontalStackLayout>
             </Grid>
         </Grid>
-    </Border>
-</ContentView>
+    </Grid>
+</ContentPage>

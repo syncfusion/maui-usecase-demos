@@ -37,6 +37,9 @@
             <conv:IsNullConverter x:Key="IsNullConverter" />
             <conv:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
             <conv:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+            <conv:RoleToAlignConverter x:Key="RoleToAlignConverter" />
+            <conv:RoleToIconConverter x:Key="RoleToIconConverter" />
+            <conv:RoleToBubbleColorConverter x:Key="RoleToBubbleColorConverter" />
             <conv:CurrencyConverter x:Key="CurrencyConverter" />
             <conv:StringToColorConverter x:Key="StringToColorConverter" />
         </ResourceDictionary>

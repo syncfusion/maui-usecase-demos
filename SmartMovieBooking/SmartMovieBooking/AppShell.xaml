@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:SmartMovieBooking.Views"
+       x:Class="SmartMovieBooking.AppShell"
+       Title="Smart Movie Ticket Booking"
+       FlyoutBehavior="Disabled"
+       Shell.FlyoutBehavior="Disabled">
+
+    <TabBar x:Name="MainTabs"
+            Shell.TabBarIsVisible="True">
+        <Tab Title="Home"
+             Icon="🏠">
+            <ShellContent ContentTemplate="{DataTemplate views:MovieHomeView}" Route="home" />
+        </Tab>
+        <Tab Title="Theaters"
+             Icon="🎟️">
+            <ShellContent ContentTemplate="{DataTemplate views:TheatersView}" Route="theaters" />
+        </Tab>
+        <Tab Title="Bookings"
+             Icon="🎫">
+            <ShellContent ContentTemplate="{DataTemplate views:BookingsView}" Route="bookings" />
+        </Tab>
+        <Tab Title="Profile"
+             Icon="👤">
+            <ShellContent ContentTemplate="{DataTemplate views:ProfileView}" Route="profile" />
+        </Tab>
+    </TabBar>
+</Shell>

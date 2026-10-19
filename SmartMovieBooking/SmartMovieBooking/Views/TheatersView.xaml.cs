@@ -8,7 +8,6 @@ public partial class TheatersView : ContentView
 {
     private readonly TheatersViewModel _vm;
     private bool _subscribed;
-    private MainPage _lastPage = MainPage.MovieHome;
 
     public TheatersView(TheatersViewModel vm)
     {
@@ -19,17 +18,36 @@ public partial class TheatersView : ContentView
         if (!_subscribed)
         {
             EventBus.ShowtimeClicked += OnShowtimeClicked;
+            EventBus.TheaterContinueClicked += OnTheaterContinueClicked;
             _subscribed = true;
         }
-    }
-
-    protected override void OnParentSet()
-    {
-        base.OnParentSet();
     }
 
     public async Task ReloadAsync() => await _vm.InitializeAsync();
 
     private void OnShowtimeClicked(object? sender, Showtime e)
         => _vm.OnShowtimeSelectedCommand.Execute(e);
+
+    private void OnTheaterContinueClicked(object? sender, Theater e)
+        => _vm.OnTheaterContinueCommand.Execute(e);
+
+    private void OnDateChipSelected(object? sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is DateChipItem chip)
+        {
+            _vm.SelectedDateChip = chip;
+            if (sender is CollectionView cv) cv.SelectedItem = null;
+        }
+    }
+
+    private async void OnBackClicked(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//home");
+
+    private void OnShareClicked(object? sender, EventArgs e)
+    {
+        // Mock share - sample only.
+    }
+
+    private void OnAiFabClicked(object? sender, EventArgs e)
+        => Shell.Current.GoToAsync("ai");
 }

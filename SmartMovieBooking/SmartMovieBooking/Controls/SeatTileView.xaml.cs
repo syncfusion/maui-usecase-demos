@@ -32,5 +32,6 @@ public partial class SeatTileView : ContentView
         if (Seat is null) return;
         if (Seat.State == SeatState.Occupied || Seat.State == SeatState.Aisle) return;
         Clicked?.Invoke(this, Seat);
+        Services.EventBus.PublishSeatToggled(Seat);
     }
 }

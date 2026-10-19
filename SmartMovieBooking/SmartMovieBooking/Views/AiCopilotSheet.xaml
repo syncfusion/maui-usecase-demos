@@ -1,13 +1,141 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SmartMovieBooking.Views.AiCopilotSheet">
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label Text="✨ AI Copilot"
-               FontFamily="PlusJakartaBold" FontSize="20"
-               TextColor="{DynamicResource ThemeOnBackground}" />
-        <Label Text="Phase 4 (T4.2) will replace this with the Syncfusion AIAssistView."
-               FontFamily="InterRegular" FontSize="13"
-               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-    </VerticalStackLayout>
-</ContentView>
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Controls"
+             x:Class="SmartMovieBooking.Views.AiCopilotSheet"
+             x:DataType="vm:AiCopilotViewModel">
+
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{DynamicResource ThemeSurface}">
+
+        <!-- Top app bar -->
+        <Grid Grid.Row="0" Padding="20,12" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12"
+              BackgroundColor="{DynamicResource ThemeSurface}">
+            <Button Grid.Column="0" Text="←" Clicked="OnBackClicked"
+                    Style="{StaticResource IconButton}" WidthRequest="40" HeightRequest="40" />
+            <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                    <Label Text="Movie Assistant" FontFamily="PlusJakartaBold" FontSize="20"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Label Text="✨" FontSize="16" VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+                <Label Text="Ask me anything about movies"
+                       Style="{StaticResource BodySmLabel}"
+                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+            </VerticalStackLayout>
+            <Button Grid.Column="2" Text="⋮"
+                    Style="{StaticResource IconButton}" WidthRequest="40" HeightRequest="40" />
+            <Border Grid.Column="3" WidthRequest="40" HeightRequest="40"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{DynamicResource ThemePrimary}">
+                <Label Text="AC" FontFamily="PlusJakartaBold" FontSize="12"
+                       TextColor="{DynamicResource ThemeOnPrimary}"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            </Border>
+        </Grid>
+
+        <!-- Conversation area -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,*,Auto">
+
+            <!-- Status row + New Topic -->
+            <Grid Grid.Row="0" Padding="20,4" ColumnDefinitions="*,Auto">
+                <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                    <Ellipse WidthRequest="10" HeightRequest="10" Fill="{DynamicResource ThemePrimary}" />
+                    <Label Text="Lumina Copilot v2.4" FontFamily="PlusJakartaBold" FontSize="12"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                    <Border BackgroundColor="{DynamicResource ThemePrimaryContainer}"
+                            StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="6,2">
+                        <Label Text="Online" FontFamily="InterSemiBold" FontSize="10"
+                               TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                    </Border>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                    <Label Text="⟳" FontSize="14" />
+                    <Label Text="New Topic" FontFamily="PlusJakartaBold" FontSize="12"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- Suggested chips -->
+            <ScrollView Grid.Row="0" Margin="0,40,0,0" Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <HorizontalStackLayout Padding="20,0" Spacing="8">
+                    <BindableLayout.ItemsSource>
+                        <Binding Path="Suggestions" />
+                    </BindableLayout.ItemsSource>
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <!-- Messages -->
+            <ScrollView Grid.Row="1" Padding="0,80,0,0">
+                <VerticalStackLayout Padding="20" Spacing="16" BindableLayout.ItemsSource="{Binding Messages}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AiMessage">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8"
+                                  HorizontalOptions="{Binding Role, Converter={StaticResource RoleToAlignConverter}}">
+                                <Border Grid.Column="0"
+                                        WidthRequest="36" HeightRequest="36"
+                                        StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                        BackgroundColor="{DynamicResource ThemePrimaryContainer}">
+                                    <Label Text="{Binding Role, Converter={StaticResource RoleToIconConverter}}"
+                                           FontSize="14"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                </Border>
+                                <Border Grid.Column="1"
+                                        StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                                        Padding="14,10"
+                                        BackgroundColor="{Binding Role, Converter={StaticResource RoleToBubbleColorConverter}}">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{Binding SenderName}" FontFamily="PlusJakartaBold" FontSize="10"
+                                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                        <Label Text="{Binding Text}" FontFamily="InterRegular" FontSize="13"
+                                               TextColor="{DynamicResource ThemeOnSurface}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Input bar -->
+            <Grid Grid.Row="2" Padding="20,12" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8"
+                  BackgroundColor="{DynamicResource ThemeSurface}">
+                <Border Grid.Column="0"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                        BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                        Padding="14,10">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Label Text="☰" FontSize="14" />
+                    </HorizontalStackLayout>
+                </Border>
+                <Border Grid.Column="1"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                        BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                        Padding="14,10">
+                    <Entry Placeholder="Ask about movies, showtimes, seats…"
+                           PlaceholderColor="{DynamicResource ThemeOnSurfaceVariant}"
+                           Text="{Binding Prompt}"
+                           BackgroundColor="Transparent" />
+                </Border>
+                <Button Grid.Column="2" Text="🎙"
+                        Style="{StaticResource IconButton}" WidthRequest="44" HeightRequest="44" />
+                <Button Grid.Column="2" Text="↑"
+                        Clicked="OnSendClicked"
+                        Style="{StaticResource PrimaryButton}" WidthRequest="44" HeightRequest="44" />
+            </Grid>
+
+            <!-- AI footnote -->
+            <Label Grid.Row="2" Margin="0,60,0,0"
+                   HorizontalTextAlignment="Center"
+                   Style="{StaticResource BodySmLabel}"
+                   TextColor="{DynamicResource ThemeOnSurfaceVariant}">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="✨ Lumina AI uses real-time cinema feeds &amp; your CinePass preferences." />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </Grid>
+    </Grid>
+</ContentPage>

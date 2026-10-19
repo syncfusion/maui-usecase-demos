@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Controls"
+             x:Class="SmartMovieBooking.Controls.SeatRowView"
+             x:DataType="vm:SeatRowGroup">
+
+    <Grid ColumnDefinitions="20,*,20" ColumnSpacing="4" VerticalOptions="Center">
+        <!-- Row label (left) -->
+        <Label Grid.Column="0"
+               Text="{Binding Label}"
+               FontFamily="PlusJakartaSemiBold" FontSize="11"
+               VerticalTextAlignment="Center"
+               HorizontalTextAlignment="Start"
+               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+
+        <!-- Seats -->
+        <FlexLayout Grid.Column="1"
+                    BindableLayout.ItemsSource="{Binding Seats}"
+                    Direction="Row"
+                    Wrap="NoWrap"
+                    JustifyContent="Center"
+                    AlignItems="Center">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="models:Seat">
+                    <controls:SeatTileView Margin="3,0"
+                                           Seat="{Binding .}" />
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </FlexLayout>
+
+        <!-- Row label (right) -->
+        <Label Grid.Column="2"
+               Text="{Binding Label}"
+               FontFamily="PlusJakartaSemiBold" FontSize="11"
+               VerticalTextAlignment="Center"
+               HorizontalTextAlignment="End"
+               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+    </Grid>
+</ContentView>

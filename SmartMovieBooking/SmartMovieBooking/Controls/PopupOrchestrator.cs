@@ -1,42 +1,29 @@
+using SmartMovieBooking.Models;
 using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
 using SmartMovieBooking.Views;
-using Syncfusion.Maui.Popup;
 
 namespace SmartMovieBooking.Controls;
 
 /// <summary>
-/// Owns the two popups (Seat Selection, Payment Confirmation) and wires
-/// them to the in-app event bus so the Theaters page can trigger them.
+/// Orchestrates the popup-style navigation. On mobile, sheets are pushed as
+/// Shell modal routes (the routes use full-screen pages styled as bottom sheets
+/// with rounded top corners and a drag handle). On Windows desktop, the same
+/// routes render as centered modals.
 /// </summary>
 public class PopupOrchestrator
 {
-    private readonly SeatSelectionView _seatSelection;
     private readonly SeatSelectionViewModel _seatVm;
-    private readonly PaymentConfirmationView _paymentConfirmation;
     private readonly PaymentConfirmationViewModel _paymentVm;
     private readonly BookingSession _session;
-    private readonly MainWindowViewModel _main;
 
-    private readonly PopupShell _seatPopup = new("Select Your Seats");
-    private readonly PopupShell _paymentPopup = new("Booking Confirmed");
-
-    public PopupOrchestrator(SeatSelectionView seatSelection,
-                             SeatSelectionViewModel seatVm,
-                             PaymentConfirmationView paymentConfirmation,
+    public PopupOrchestrator(SeatSelectionViewModel seatVm,
                              PaymentConfirmationViewModel paymentVm,
-                             BookingSession session,
-                             MainWindowViewModel main)
+                             BookingSession session)
     {
-        _seatSelection = seatSelection;
         _seatVm = seatVm;
-        _paymentConfirmation = paymentConfirmation;
         _paymentVm = paymentVm;
         _session = session;
-        _main = main;
-
-        _seatPopup.SetContent(_seatSelection);
-        _paymentPopup.SetContent(_paymentConfirmation);
 
         // Wire the bus.
         EventBus.ShowtimeClicked += OnShowtimeClicked;
@@ -48,64 +35,45 @@ public class PopupOrchestrator
         EventBus.NavigateToBookings += OnNavigateToBookings;
     }
 
-    public void AttachTo(Grid host)
-    {
-        // Stack the popups on top of the host. They start collapsed.
-        host.Children.Add(_seatPopup.Popup);
-        host.Children.Add(_paymentPopup.Popup);
-    }
+    /// <summary>No-op for Shell-based popups. Kept for API symmetry.</summary>
+    public void AttachTo(Grid host) { }
 
-    private async void OnShowtimeClicked(object? sender, Models.Showtime e)
+    private async void OnShowtimeClicked(object? sender, Showtime e)
     {
-        // Selection state is already set in the BookingSession by Theaters VM.
         await _seatVm.InitializeAsync();
-        _seatPopup.Show();
+        await Shell.Current.GoToAsync("seat-selection");
     }
 
-    private async void OnTheaterContinueClicked(object? sender, Models.Theater e)
+    private async void OnTheaterContinueClicked(object? sender, Theater e)
     {
-        // Use the most recently selected showtime for this theater; if none,
-        // pick the first available one.
         var s = _session.SelectedShowtime;
         if (s is null || s.TheaterId != e.Id)
         {
-            s = e.Showtimes.FirstOrDefault(x => x.Status != Models.ShowtimeStatus.SoldOut);
+            s = e.Showtimes.FirstOrDefault(x => x.Status != ShowtimeStatus.SoldOut);
             if (s is null) return;
             _session.SelectedShowtime = s;
             _session.SelectedTheater = e;
         }
 
         await _seatVm.InitializeAsync();
-        _seatPopup.Show();
+        await Shell.Current.GoToAsync("seat-selection");
     }
 
     private async void OnSeatSelectionConfirmed(object? sender, EventArgs e)
     {
-        _seatPopup.Close();
-
-        // Hand off to the payment popup.
+        await Shell.Current.GoToAsync("payment-confirmation");
         _paymentVm.PopulateFromSession();
-        _paymentPopup.Show();
         await _paymentVm.ProcessAsync();
     }
 
-    private void OnSeatSelectionCancelled(object? sender, EventArgs e)
-    {
-        _seatPopup.Close();
-    }
+    private async void OnSeatSelectionCancelled(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("..");
 
-    private void OnBookingConfirmed(object? sender, EventArgs e)
-    {
-        // Booking persisted; popup remains open showing the confirmation card.
-    }
+    private void OnBookingConfirmed(object? sender, EventArgs e) { }
 
-    private void OnBookingPopupClosed(object? sender, EventArgs e)
-    {
-        _paymentPopup.Close();
-    }
+    private async void OnBookingPopupClosed(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//home");
 
-    private void OnNavigateToBookings(object? sender, EventArgs e)
-    {
-        _main.NavigateToBookings();
-    }
+    private async void OnNavigateToBookings(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//bookings");
 }

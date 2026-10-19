@@ -3,7 +3,7 @@ using SmartMovieBooking.ViewModels;
 
 namespace SmartMovieBooking.Views;
 
-public partial class SeatSelectionView : ContentView
+public partial class SeatSelectionView : ContentPage
 {
     private readonly SeatSelectionViewModel _vm;
 
@@ -12,20 +12,16 @@ public partial class SeatSelectionView : ContentView
         InitializeComponent();
         _vm = vm;
         BindingContext = _vm;
-
-        // Forward tile clicks to the VM.
-        _vm.Confirmed += (_, _) => EventBus.PublishSeatSelectionConfirmed();
-        _vm.Cancelled += (_, _) => EventBus.PublishSeatSelectionCancelled();
     }
 
     public Task InitializeAsync() => _vm.InitializeAsync();
-
-    private void OnCloseClicked(object? sender, EventArgs e)
-        => EventBus.PublishSeatSelectionCancelled();
 
     private void OnCancelClicked(object? sender, EventArgs e)
         => EventBus.PublishSeatSelectionCancelled();
 
     private void OnConfirmClicked(object? sender, EventArgs e)
         => EventBus.PublishSeatSelectionConfirmed();
+
+    private async void OnAiClicked(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("ai");
 }

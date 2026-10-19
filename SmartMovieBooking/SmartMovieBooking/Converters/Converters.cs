@@ -335,3 +335,36 @@ public sealed class BoolToOpacityConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
+
+public sealed class RoleToAlignConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is AiRole role && role == AiRole.User)
+            return LayoutOptions.End;
+        return LayoutOptions.Start;
+    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class RoleToIconConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is AiRole.User ? "👤" : "✨";
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+public sealed class RoleToBubbleColorConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (Application.Current is null) return Colors.White;
+        if (value is AiRole.User)
+            return (Color)Application.Current.Resources["ThemePrimary"];
+        return (Color)Application.Current.Resources["ThemeSurfaceContainerLowest"];
+    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}

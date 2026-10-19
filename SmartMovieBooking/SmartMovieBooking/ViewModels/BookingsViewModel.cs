@@ -14,21 +14,36 @@ public partial class BookingsViewModel : ObservableObject
     {
         _repo = repo;
         Bookings = new ObservableCollection<Booking>(_repo.All);
+        History = new ObservableCollection<Booking>(_repo.All);
 
-        // Keep Bookings in sync with the repository.
         _repo.All.CollectionChanged += (_, _) => MainThread.BeginInvokeOnMainThread(() =>
         {
             Bookings.Clear();
-            foreach (var b in _repo.All) Bookings.Add(b);
+            History.Clear();
+            foreach (var b in _repo.All)
+            {
+                Bookings.Add(b);
+                History.Add(b);
+            }
             OnPropertyChanged(nameof(HasBookings));
+            OnPropertyChanged(nameof(UpcomingCount));
+            OnPropertyChanged(nameof(HistoryCount));
+            OnPropertyChanged(nameof(NextIn));
         });
 
         OnPropertyChanged(nameof(HasBookings));
+        OnPropertyChanged(nameof(UpcomingCount));
+        OnPropertyChanged(nameof(HistoryCount));
+        OnPropertyChanged(nameof(NextIn));
     }
 
     public ObservableCollection<Booking> Bookings { get; }
+    public ObservableCollection<Booking> History { get; }
 
-    [ObservableProperty] private string _filter = "All";
+    [ObservableProperty] private string _filter = "Upcoming";
 
     public bool HasBookings => Bookings.Count > 0;
+    public int UpcomingCount => Bookings.Count;
+    public int HistoryCount => Bookings.Count;
+    public string NextIn => "2h 45m";
 }

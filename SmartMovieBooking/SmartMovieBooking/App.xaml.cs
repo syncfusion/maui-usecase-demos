@@ -16,14 +16,21 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState? activationState)
     {
         var services = Handler!.MauiContext!.Services;
-        var window = services.GetRequiredService<MainWindow>();
-        window.Title = "Smart Movie Ticket Booking v2.5 (x64)";
+        var shell = services.GetRequiredService<AppShell>();
 
-        // Desktop-friendly default window size
-        window.Width = 1440;
-        window.Height = 900;
-        window.MinimumWidth = 1024;
-        window.MinimumHeight = 720;
+        var window = new Window(shell)
+        {
+            Title = "Smart Movie Ticket Booking v2.5"
+        };
+
+        // Desktop-friendly default window size on Windows / Mac Catalyst.
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Desktop)
+        {
+            window.Width = 420;
+            window.Height = 900;
+            window.MinimumWidth = 360;
+            window.MinimumHeight = 720;
+        }
 
         return window;
     }

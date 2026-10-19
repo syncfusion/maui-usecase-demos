@@ -28,10 +28,15 @@ public partial class MovieHomeView : ContentView
             _session.SelectedShowtime = null;
             _session.SelectedDate = DateTime.Today;
             _session.SelectedSeats.Clear();
-            _main.NavigateToTheaters();
-
-            // clear selection so the same item can be re-selected later
+            // Switch to Theaters tab.
+            Shell.Current.GoToAsync("//theaters");
             if (sender is CollectionView cv) cv.SelectedItem = null;
         }
+    }
+
+    private void OnAiFabClicked(object? sender, EventArgs e)
+    {
+        // Phase 4 (T4.2) will wire the AI Copilot sheet here.
+        Shell.Current.GoToAsync("ai");
     }
 }

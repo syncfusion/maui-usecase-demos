@@ -103,6 +103,23 @@ public partial class TheatersViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OnTheaterContinue(Theater theater)
+    {
+        // Use the most recently selected showtime for this theater; if none,
+        // pick the first available one.
+        var s = _session.SelectedShowtime;
+        if (s is null || s.TheaterId != theater.Id)
+        {
+            s = theater.Showtimes.FirstOrDefault(x => x.Status != ShowtimeStatus.SoldOut);
+            if (s is null) return;
+            _session.SelectedShowtime = s;
+            _session.SelectedTheater = theater;
+        }
+
+        EventBus.PublishTheaterContinueClicked(theater);
+    }
+
+    [RelayCommand]
     private void OnShowtimeSelected(Showtime showtime)
     {
         // Find the parent theater

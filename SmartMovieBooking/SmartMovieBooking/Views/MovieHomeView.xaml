@@ -7,101 +7,283 @@
              x:Class="SmartMovieBooking.Views.MovieHomeView"
              x:DataType="vm:HomeViewModel">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="24" RowSpacing="16">
+    <Grid RowDefinitions="Auto,Auto,*">
 
-        <!-- Header -->
-        <VerticalStackLayout Grid.Row="0" Spacing="4">
-            <Label Text="Discover Movies" Style="{StaticResource HeadlineLgLabel}"
-                   TextColor="{DynamicResource ThemeOnBackground}" />
-            <Label Text="Find the perfect show near you · 10 movies in catalog"
-                   Style="{StaticResource BodyMdLabel}"
-                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-        </VerticalStackLayout>
-
-        <!-- Search + genre filter row -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
-            <Border Grid.Column="0"
-                    BackgroundColor="{DynamicResource ThemeSurfaceContainerLowest}"
-                    StrokeThickness="1"
-                    Stroke="{DynamicResource ThemeOutlineVariant}"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="14,0"
-                    HeightRequest="44">
-                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                    <Label Grid.Column="0" Text="🔍" FontSize="14"
-                           VerticalTextAlignment="Center" />
-                    <Entry Grid.Column="1"
-                           Placeholder="Search by title, genre, or keyword…"
-                           PlaceholderColor="{DynamicResource ThemeOnSurfaceVariant}"
-                           BackgroundColor="Transparent"
-                           Text="{Binding SearchText, Mode=TwoWay}"
-                           TextColor="{DynamicResource ThemeOnSurface}"
-                           FontFamily="InterRegular"
-                           FontSize="14" />
-                </Grid>
+        <!-- Top app bar: city, search, bell, avatar -->
+        <Grid Grid.Row="0" Padding="20,12,20,8" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+            <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                <Label Text="📍" FontSize="16" VerticalTextAlignment="Center" />
+                <Label Text="New York, NY" FontFamily="PlusJakartaSemiBold" FontSize="13"
+                       VerticalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnBackground}" />
+                <Label Text="▾" FontSize="10" VerticalTextAlignment="Center"
+                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+            </HorizontalStackLayout>
+            <Border Grid.Column="1" WidthRequest="40" HeightRequest="40"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                    HorizontalOptions="End">
+                <Label Text="🔍" FontSize="16"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
             </Border>
-
-            <Button Grid.Column="1" Text="Filters"
-                    Style="{StaticResource OutlinedButton}"
-                    HeightRequest="44" />
+            <Border Grid.Column="2" WidthRequest="40" HeightRequest="40"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                    HorizontalOptions="End">
+                <Label Text="🔔" FontSize="16"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+            </Border>
+            <Border Grid.Column="3" WidthRequest="40" HeightRequest="40"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                    BackgroundColor="{DynamicResource ThemePrimaryContainer}"
+                    HorizontalOptions="End">
+                <Label Text="AC" FontFamily="PlusJakartaBold" FontSize="12"
+                       TextColor="{DynamicResource ThemeOnPrimaryContainer}"
+                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            </Border>
         </Grid>
 
-        <!-- Genre chip strip (horizontal scroll) -->
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding Genres}"
-                        HeightRequest="36"
-                        ItemsLayout="HorizontalList"
-                        SelectionMode="Single"
-                        SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="x:String">
-                    <Border Margin="0,0,8,0"
-                            Padding="14,6"
-                            StrokeThickness="0"
-                            StrokeShape="RoundRectangle 999">
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border"
-                                         Binding="{Binding}"
-                                         Value="All Genres">
-                                <Setter Property="BackgroundColor" Value="{DynamicResource ThemePrimaryContainer}" />
-                            </DataTrigger>
-                        </Border.Triggers>
-                        <Label Text="{Binding}"
-                               FontFamily="InterSemiBold"
-                               FontSize="12"
+        <!-- Format chips strip (horizontal) -->
+        <ScrollView Grid.Row="1" Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+            <HorizontalStackLayout Padding="20,4" Spacing="8">
+                <Border BackgroundColor="{DynamicResource ThemePrimaryContainer}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 999"
+                        Padding="14,6">
+                    <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                        <Label Text="✨" FontSize="11" TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
+                        <Label Text="All" FontFamily="PlusJakartaBold" FontSize="12"
                                TextColor="{DynamicResource ThemeOnPrimaryContainer}" />
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-        <!-- Movie grid -->
-        <CollectionView Grid.Row="3"
-                        ItemsSource="{Binding FilteredMovies}"
-                        SelectionMode="Single"
-                        SelectionChanged="OnMovieSelected">
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="4"
-                                 HorizontalItemSpacing="16" VerticalItemSpacing="16" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Movie">
-                    <controls:MovieCardView Movie="{Binding .}" />
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <VerticalStackLayout Spacing="8" Padding="40" HorizontalOptions="Center">
-                    <Label Text="🎞️" FontSize="48" HorizontalTextAlignment="Center" />
-                    <Label Text="No movies match your filters"
-                           Style="{StaticResource HeadlineSmLabel}"
-                           HorizontalTextAlignment="Center"
+                    </HorizontalStackLayout>
+                </Border>
+                <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 999"
+                        Padding="14,6">
+                    <Label Text="IMAX" FontFamily="PlusJakartaSemiBold" FontSize="12"
                            TextColor="{DynamicResource ThemeOnSurface}" />
-                    <Label Text="Try clearing the search or selecting a different genre."
-                           Style="{StaticResource BodySmLabel}"
-                           HorizontalTextAlignment="Center"
-                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
-                </VerticalStackLayout>
-            </CollectionView.EmptyView>
-        </CollectionView>
+                </Border>
+                <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 999"
+                        Padding="14,6">
+                    <Label Text="Dolby Atmos" FontFamily="PlusJakartaSemiBold" FontSize="12"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                </Border>
+                <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 999"
+                        Padding="14,6">
+                    <Label Text="3D" FontFamily="PlusJakartaSemiBold" FontSize="12"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                </Border>
+                <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                        StrokeThickness="0" StrokeShape="RoundRectangle 999"
+                        Padding="14,6">
+                    <Label Text="English" FontFamily="PlusJakartaSemiBold" FontSize="12"
+                           TextColor="{DynamicResource ThemeOnSurface}" />
+                </Border>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- Scrollable content -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="0,8,0,80" Spacing="20">
+
+                <!-- Featured hero carousel -->
+                <CarouselView x:Name="HeroCarousel"
+                              HeightRequest="320"
+                              ItemsSource="{Binding HeroMovies}"
+                              IndicatorView="HeroIndicator"
+                              HorizontalScrollBarVisibility="Never">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Movie">
+                            <Grid Padding="20,0">
+                                <controls:HeroCardView Movie="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+                <IndicatorView x:Name="HeroIndicator"
+                               IndicatorColor="{DynamicResource ThemeOutline}"
+                               SelectedIndicatorColor="{DynamicResource ThemePrimary}"
+                               IndicatorSize="6"
+                               HorizontalOptions="Center" />
+
+                <!-- Now Showing header -->
+                <Grid Padding="20,0" ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="Now Showing" Style="{StaticResource HeadlineLgLabel}"
+                               TextColor="{DynamicResource ThemeOnBackground}" />
+                        <Label Text="{Binding NowShowingCount, StringFormat='{0} Films'}"
+                               Style="{StaticResource BodySmLabel}"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1" Text="See All →"
+                           FontFamily="PlusJakartaBold" FontSize="12"
+                           VerticalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemePrimary}" />
+                </Grid>
+
+                <!-- Now Showing 2-col grid -->
+                <CollectionView ItemsSource="{Binding NowShowingMovies}"
+                                HeightRequest="760"
+                                SelectionMode="Single"
+                                SelectionChanged="OnMovieSelected">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" Span="2"
+                                         HorizontalItemSpacing="12" VerticalItemSpacing="12" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Movie">
+                            <Grid Padding="20,0,20,0">
+                                <controls:MovieCardView Movie="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Concierge promo -->
+                <controls:ConciergePromoView />
+
+                <!-- Coming Soon header -->
+                <Grid Padding="20,0" ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="Coming Soon" Style="{StaticResource HeadlineLgLabel}"
+                               TextColor="{DynamicResource ThemeOnBackground}" />
+                        <Label Text="Releases this month &amp; next"
+                               Style="{StaticResource BodySmLabel}"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    </VerticalStackLayout>
+                    <Label Grid.Column="1" Text="View All →"
+                           FontFamily="PlusJakartaBold" FontSize="12"
+                           VerticalTextAlignment="Center"
+                           TextColor="{DynamicResource ThemePrimary}" />
+                </Grid>
+
+                <!-- Coming Soon horizontal list -->
+                <CollectionView ItemsSource="{Binding ComingSoonMovies}"
+                                HeightRequest="240"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Movie">
+                            <Grid Padding="20,0,0,0" WidthRequest="160">
+                                <VerticalStackLayout Spacing="8">
+                                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                                            HeightRequest="180"
+                                            BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
+                                        <Label Text="🎬" FontSize="44"
+                                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                               TextColor="{DynamicResource ThemeOutline}" />
+                                    </Border>
+                                    <Label Text="{Binding Title}"
+                                           FontFamily="PlusJakartaBold" FontSize="13"
+                                           LineBreakMode="TailTruncation" MaxLines="1"
+                                           TextColor="{DynamicResource ThemeOnSurface}" />
+                                    <Label Text="{Binding PrimaryGenre}"
+                                           Style="{StaticResource BodySmLabel}"
+                                           LineBreakMode="TailTruncation" MaxLines="1"
+                                           TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Popular Movies header -->
+                <Grid Padding="20,0" ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="Popular Movies" Style="{StaticResource HeadlineLgLabel}"
+                               TextColor="{DynamicResource ThemeOnBackground}" />
+                        <Label Text="Trending this week across 28 NYC screens"
+                               Style="{StaticResource BodySmLabel}"
+                               TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Popular Movies horizontal list -->
+                <CollectionView ItemsSource="{Binding PopularMovies}"
+                                HeightRequest="160"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Movie">
+                            <Border Padding="20,0,0,0" WidthRequest="340"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 16"
+                                    BackgroundColor="{DynamicResource ThemeSurfaceContainerLowest}">
+                                <Grid Padding="12" ColumnDefinitions="60,*,Auto" ColumnSpacing="12">
+                                    <Border Grid.Column="0"
+                                            WidthRequest="60" HeightRequest="80"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 8"
+                                            BackgroundColor="{DynamicResource ThemeSurfaceContainer}">
+                                        <Label Text="🎬" FontSize="28"
+                                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                               TextColor="{DynamicResource ThemeOutline}" />
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="6">
+                                            <Border BackgroundColor="{DynamicResource ThemeSurfaceContainerLow}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                                    Padding="6,2">
+                                                <Label Text="{Binding Format}" FontFamily="InterSemiBold" FontSize="10"
+                                                       TextColor="{DynamicResource ThemePrimary}" />
+                                            </Border>
+                                            <Label Text="{Binding PrimaryGenre}"
+                                                   FontFamily="InterSemiBold" FontSize="10"
+                                                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding Title}"
+                                               FontFamily="PlusJakartaBold" FontSize="14"
+                                               LineBreakMode="TailTruncation" MaxLines="1"
+                                               TextColor="{DynamicResource ThemeOnSurface}" />
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="★" FontSize="11" TextColor="#FFC107" />
+                                            <Label Text="{Binding Rating}"
+                                                   FontFamily="PlusJakartaBold" FontSize="12"
+                                                   TextColor="{DynamicResource ThemeOnSurface}" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="2" Text="Book →"
+                                            Style="{StaticResource PrimaryButton}"
+                                            FontSize="11" Padding="12,6"
+                                            VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- 100% Instant E-Tickets banner -->
+                <Grid Padding="20,0">
+                    <Border Style="{StaticResource SurfaceCardTight}" Padding="16">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0" Text="🎫" FontSize="20"
+                                   VerticalTextAlignment="Center" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="100% Instant E-Tickets"
+                                       FontFamily="PlusJakartaBold" FontSize="12"
+                                       TextColor="{DynamicResource ThemeOnSurface}" />
+                                <Label Text="QR entry at all participating NYC auditoriums"
+                                       Style="{StaticResource BodySmLabel}"
+                                       TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="20"
+                                   VerticalTextAlignment="Center"
+                                   TextColor="{DynamicResource ThemeOnSurfaceVariant}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- AI Copilot FAB bottom-right -->
+        <Grid Grid.Row="2" Margin="0,0,20,20"
+              HorizontalOptions="End" VerticalOptions="End">
+            <controls:AiCopilotFab Clicked="OnAiFabClicked" />
+        </Grid>
     </Grid>
 </ContentView>
