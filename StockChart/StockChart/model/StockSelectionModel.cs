@@ -15,7 +15,7 @@ public partial class StockSelectionModel : ObservableObject
         // Create a minimal StockModel for display purposes
         Stock = new StockModel
         {
-            Symbol = symbol,
+            Stock = company.ToLower(),
             Company = company,
             OfficialName = officialName
         };
