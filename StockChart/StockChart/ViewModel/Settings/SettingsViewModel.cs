@@ -11,6 +11,7 @@ public partial class SettingsViewModel : ObservableObject
     private bool _isLogarithmicAxis;
     private bool _isAxisInverted;
     private bool _isAxisOpposed = true;
+    private bool _isRangeControlEnabled;
 
     /// <summary>
     /// Gets or sets a value indicating whether tooltips are enabled.
@@ -77,6 +78,22 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether range control is enabled.
+    /// </summary>
+    public bool IsRangeControlEnabled
+    {
+        get => _isRangeControlEnabled;
+        set
+        {
+            if (_isRangeControlEnabled != value)
+            {
+                _isRangeControlEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    /// <summary>
     /// Creates a clone of the current settings.
     /// </summary>
     /// <returns>A new SettingsViewModel with the same values.</returns>
@@ -87,7 +104,8 @@ public partial class SettingsViewModel : ObservableObject
             IsTooltipEnabled = this.IsTooltipEnabled,
             IsLogarithmicAxis = this.IsLogarithmicAxis,
             IsAxisInverted = this.IsAxisInverted,
-            IsAxisOpposed = this.IsAxisOpposed
+            IsAxisOpposed = this.IsAxisOpposed,
+            IsRangeControlEnabled = this.IsRangeControlEnabled
         };
     }
 
@@ -101,5 +119,6 @@ public partial class SettingsViewModel : ObservableObject
         IsLogarithmicAxis = settings.IsLogarithmicAxis;
         IsAxisInverted = settings.IsAxisInverted;
         IsAxisOpposed = settings.IsAxisOpposed;
+        IsRangeControlEnabled = settings.IsRangeControlEnabled;
     }
 }

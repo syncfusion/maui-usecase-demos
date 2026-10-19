@@ -587,6 +587,182 @@ public partial class StockChartViewModel : BaseViewModel
     }
 
     /// <summary>
+    /// Gets or sets the new watchlist name.
+    /// </summary>
+    public string NewWatchlistName 
+    { 
+        get => Watchlist.NewWatchlistName; 
+        set => Watchlist.NewWatchlistName = value; 
+    }
+
+    /// <summary>
+    /// Gets or sets the edit watchlist name.
+    /// </summary>
+    public string EditWatchlistName
+    {
+        get => Watchlist.EditWatchlistName;
+        set => Watchlist.EditWatchlistName = value;
+    }
+
+    /// <summary>
+    /// Loads the settings draft from the actual settings.
+    /// </summary>
+    public void LoadSettingsDraft()
+    {
+        SettingsDraft.IsTooltipEnabled = Chart.IsTooltipEnabled;
+        SettingsDraft.IsLogarithmicAxis = Chart.IsLogarithmicAxis;
+        SettingsDraft.IsAxisInverted = Chart.IsAxisInverted;
+        SettingsDraft.IsAxisOpposed = Chart.IsAxisOpposed;
+        SettingsDraft.IsRangeControlEnabled = Chart.IsRangeControlEnabled;
+    }
+
+    /// <summary>
+    /// Applies visible range selection to the chart.
+    /// </summary>
+    /// <param name="start">The start index.</param>
+    /// <param name="end">The end index.</param>
+    public void ApplyVisibleRangeSelection(double start, double end)
+    {
+        Chart.RangeStart = start;
+        Chart.RangeEnd = end;
+    }
+
+    /// <summary>
+    /// Commits the range selection.
+    /// </summary>
+    public void CommitRangeSelection()
+    {
+        Chart.RangeMinimum = Chart.RangeStart;
+        Chart.RangeMaximum = Chart.RangeEnd;
+    }
+
+    /// <summary>
+    /// Restores the committed range.
+    /// </summary>
+    public object RestoreCommittedRange()
+    {
+        return new { Start = Chart.RangeMinimum, End = Chart.RangeMaximum };
+    }
+
+    /// <summary>
+    /// Deletes the selected watchlist.
+    /// </summary>
+    public void DeleteSelectedWatchlist()
+    {
+        if (Watchlist.SelectedWatchlist is not null && Watchlist.Watchlists.Count > 1)
+        {
+            Watchlist.Watchlists.Remove(Watchlist.SelectedWatchlist);
+            Watchlist.SelectedWatchlist = Watchlist.Watchlists.FirstOrDefault();
+        }
+    }
+
+    /// <summary>
+    /// Prepares add stock operation.
+    /// </summary>
+    [RelayCommand]
+    private void PrepareAddStock()
+    {
+        // Implementation for preparing add stock
+    }
+
+    /// <summary>
+    /// Prepares new watchlist operation.
+    /// </summary>
+    [RelayCommand]
+    private void PrepareNewWatchlist()
+    {
+        Watchlist.NewWatchlistName = string.Empty;
+    }
+
+    /// <summary>
+    /// Prepares edit watchlist operation.
+    /// </summary>
+    [RelayCommand]
+    private void PrepareEditWatchlist()
+    {
+        if (Watchlist.SelectedWatchlist is not null)
+        {
+            Watchlist.EditWatchlistName = Watchlist.SelectedWatchlist.Name;
+        }
+    }
+
+    /// <summary>
+    /// Saves watchlist edit.
+    /// </summary>
+    [RelayCommand]
+    private void SaveWatchlistEdit()
+    {
+        if (Watchlist.SelectedWatchlist is not null && !string.IsNullOrWhiteSpace(Watchlist.EditWatchlistName))
+        {
+            Watchlist.SelectedWatchlist.Name = Watchlist.EditWatchlistName;
+        }
+    }
+
+    /// <summary>
+    /// Creates a new watchlist.
+    /// </summary>
+    [RelayCommand]
+    private void CreateWatchlist()
+    {
+        if (!string.IsNullOrWhiteSpace(Watchlist.NewWatchlistName))
+        {
+            var newWatchlist = new WatchlistModel(Watchlist.NewWatchlistName);
+            Watchlist.Watchlists.Add(newWatchlist);
+            Watchlist.NewWatchlistName = string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// Prepares favorite stock operation.
+    /// </summary>
+    [RelayCommand]
+    private void PrepareFavoriteStock()
+    {
+        // Implementation for preparing favorite stock
+    }
+
+    /// <summary>
+    /// Prepares remove stock operation.
+    /// </summary>
+    [RelayCommand]
+    private void PrepareRemoveStock()
+    {
+        // Implementation for preparing remove stock
+    }
+
+    /// <summary>
+    /// Edits watchlist name.
+    /// </summary>
+    public void EditWatchlistName()
+    {
+        // Implementation for editing watchlist name
+    }
+
+    /// <summary>
+    /// Refreshes the chart.
+    /// </summary>
+    public void RefreshChart()
+    {
+        // Implementation for refreshing chart
+    }
+
+    /// <summary>
+    /// Toggles trendline visibility.
+    /// </summary>
+    public void ToggleTrendline(object indicator)
+    {
+        // Implementation for toggling trendline
+    }
+
+    /// <summary>
+    /// Removes a trendline.
+    /// </summary>
+    public void RemoveTrendline(object indicator)
+    {
+        // Implementation for removing trendline
+    }
+
+    /// <summary>
     /// Gets the pending stock from the stock ViewModel.
     /// </summary>
     public StockModel? PendingStock => Stock.PendingStock;
