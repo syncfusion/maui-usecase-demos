@@ -18,7 +18,7 @@ public partial class StockModel : ObservableObject
     public string Exchange { get; init; } = string.Empty;
 
     [JsonPropertyName("isFavorite")]
-    public bool IsFavorite { get; init; }
+    public bool IsFavorite { get; set; }
 
     [JsonPropertyName("Data")]
     public List<CandleDataModel> Data { get; init; } = [];

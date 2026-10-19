@@ -63,9 +63,9 @@ public partial class StockChartViewModel : BaseViewModel
     public SettingsViewModel Settings { get; }
     
     /// <summary>
-    /// Gets the settings draft ViewModel.
+    /// Gets or sets the settings draft ViewModel.
     /// </summary>
-    public SettingsViewModel SettingsDraft { get; }
+    public SettingsViewModel SettingsDraft { get; set; }
     
     /// <summary>
     /// Gets the collection of mobile picker items.
@@ -639,9 +639,9 @@ public partial class StockChartViewModel : BaseViewModel
     /// <summary>
     /// Restores the committed range.
     /// </summary>
-    public object RestoreCommittedRange()
+    public RangeModel RestoreCommittedRange()
     {
-        return new { Start = Chart.RangeMinimum, End = Chart.RangeMaximum };
+        return new RangeModel(Chart.RangeMinimum, Chart.RangeMaximum);
     }
 
     /// <summary>
@@ -716,7 +716,7 @@ public partial class StockChartViewModel : BaseViewModel
     /// Prepares favorite stock operation.
     /// </summary>
     [RelayCommand]
-    private void PrepareFavoriteStock()
+    public void PrepareFavoriteStock()
     {
         // Implementation for preparing favorite stock
     }
@@ -725,7 +725,7 @@ public partial class StockChartViewModel : BaseViewModel
     /// Prepares remove stock operation.
     /// </summary>
     [RelayCommand]
-    private void PrepareRemoveStock()
+    public void PrepareRemoveStock()
     {
         // Implementation for preparing remove stock
     }
@@ -733,11 +733,6 @@ public partial class StockChartViewModel : BaseViewModel
     /// <summary>
     /// Edits watchlist name.
     /// </summary>
-    public void EditWatchlistName()
-    {
-        // Implementation for editing watchlist name
-    }
-
     /// <summary>
     /// Refreshes the chart.
     /// </summary>
