@@ -4,7 +4,7 @@ namespace Todo.Features.CustomLists.Models;
 
 /// <summary>
 /// Represents a single user-defined list (sidebar entry below the
-/// four built-in categories). A <see cref="Note"/> belongs to a list
+/// four built-in categories). A <c>Note</c> belongs to a list
 /// when its <c>ListId</c> matches this list's <see cref="Id"/>.
 /// </summary>
 /// <remarks>

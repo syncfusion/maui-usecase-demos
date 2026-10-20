@@ -13,18 +13,18 @@ public partial class ProfileMenuPage : ContentPage
         _navigation = navigation;
     }
 
-    private async void OnManageAccountsClicked(object sender, EventArgs e)
-        => await DisplayAlert("Manage Accounts", "No additional accounts are connected.", "OK");
+    private async void OnManageAccountsClicked(object? sender, EventArgs e)
+        => await DisplayAlertAsync("Manage Accounts", "No additional accounts are connected.", "OK");
 
-    private async void OnSettingsClicked(object sender, EventArgs e)
+    private async void OnSettingsClicked(object? sender, EventArgs e)
     {
         await _navigation.PopModalAsync();
         await _navigation.PushModalAsync(new SettingsPage(new SettingsViewModel(_navigation)));
     }
 
-    private async void OnSignOutClicked(object sender, EventArgs e)
+    private async void OnSignOutClicked(object? sender, EventArgs e)
     {
-        var confirmed = await DisplayAlert("Sign out?", "Are you sure you want to sign out?", "Sign Out", "Cancel");
+        var confirmed = await DisplayAlertAsync("Sign out?", "Are you sure you want to sign out?", "Sign Out", "Cancel");
         if (confirmed)
             await _navigation.PopModalAsync();
     }

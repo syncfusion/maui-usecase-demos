@@ -11,8 +11,8 @@ using Todo.Features.EditNote.ViewModels;
 using Todo.Features.EditNote.Views;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.Services;
+using Todo.Features.Search.Services;
 using Todo.Features.Search.ViewModels;
-using Todo.Features.Search.Views;
 
 namespace Todo.Features.Notes.ViewModels;
 
@@ -35,6 +35,11 @@ public partial class NotesListViewModel : ViewModelBase
     private readonly IListService _listService;
     private readonly INavigationService _navigation;
 
+    public SearchResultsViewModel SearchViewModel { get; }
+
+    [ObservableProperty]
+    private bool isSearchActive;
+
     /// <summary>
     /// The currently-displayed list of notes after applying the active
     /// category filter. Bound to <c>SfListView.ItemsSource</c>.
@@ -55,6 +60,10 @@ public partial class NotesListViewModel : ViewModelBase
         _noteService = noteService;
         _listService = listService;
         _navigation = navigation;
+        SearchViewModel = new SearchResultsViewModel(
+            new InMemoryNoteSearchService(_noteService),
+            _noteService,
+            _navigation);
 
         // Listen to the underlying store and refresh the visible list.
         if (_noteService.Notes is INotifyCollectionChanged notifying)
@@ -244,6 +253,8 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     public bool IsEmpty => FilteredNotes.Count == 0;
+    public bool ShowEmptyNotesState =>
+        IsEmpty && (SelectedCategory != NotesListCategory.MyNotes || !string.IsNullOrEmpty(SelectedListId));
 
     // ---------------------------------------------------------------
     //  Sidebar expand / collapse state (Module-08 task 8-1)
@@ -268,6 +279,7 @@ public partial class NotesListViewModel : ViewModelBase
     private void NavigateToCategory(NotesListCategory? category)
     {
         if (category is null) return;
+        CloseSearch();
         // The active category is always kept in sync, even if the host
         // doesn't navigate (so the sidebar selection / header text
         // remain consistent with the destination page).
@@ -284,6 +296,7 @@ public partial class NotesListViewModel : ViewModelBase
     private void NavigateToList(string? listId)
     {
         if (string.IsNullOrEmpty(listId)) return;
+        CloseSearch();
         SelectedListId = listId;
     }
 
@@ -457,16 +470,20 @@ public partial class NotesListViewModel : ViewModelBase
     // ---------------------------------------------------------------
 
     /// <summary>
-    /// Opens the Search results page (matches <c>search.png</c>) as a
-    /// modal. The page has its own ViewModel so the global notes
-    /// state is not polluted by the search query.
+    /// Shows search results in the main content area without replacing
+    /// the shared header or sidebar.
     /// </summary>
     [RelayCommand]
-    private async Task OpenSearchAsync()
+    private void OpenSearch() => IsSearchActive = true;
+
+    [RelayCommand]
+    private void ClearSearchQuery() => SearchViewModel.Query = string.Empty;
+
+    [RelayCommand]
+    private void CloseSearch()
     {
-        var searchService = new Todo.Features.Search.Services.InMemoryNoteSearchService(_noteService);
-        var page = new SearchResultsPage(new SearchResultsViewModel(searchService, _noteService, _navigation));
-        await _navigation.PushModalAsync(page);
+        IsSearchActive = false;
+        SearchViewModel.Query = string.Empty;
     }
 
     [RelayCommand]
@@ -852,6 +869,8 @@ public partial class NotesListViewModel : ViewModelBase
             FilteredNotes.Add(note);
             (note.IsCompleted ? CompletedNotes : ActiveNotes).Add(note);
         }
+        OnPropertyChanged(nameof(IsEmpty));
+        OnPropertyChanged(nameof(ShowEmptyNotesState));
         OnPropertyChanged(nameof(CompletedCount));
         OnPropertyChanged(nameof(HasCompletedNotes));
         OnPropertyChanged(nameof(HasActiveNotes));
@@ -867,7 +886,6 @@ public partial class NotesListViewModel : ViewModelBase
                 n.PropertyChanged -= OnNotePropertyChanged;
 
         ApplyFilter();
-        OnPropertyChanged(nameof(IsEmpty));
     }
 
     private void OnNotePropertyChanged(object? sender, PropertyChangedEventArgs e)

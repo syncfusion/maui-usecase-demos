@@ -28,12 +28,13 @@ public abstract class NotesFilterPageBase : ContentPage
         // until the binding context is set so that RelativeSource lookups
         // inside the content view resolve correctly.
         _viewModel.SelectedCategory = category;
-        _viewModel.NavigationRequested += OnNavigationRequested;
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        _viewModel.NavigationRequested -= OnNavigationRequested;
+        _viewModel.NavigationRequested += OnNavigationRequested;
 
         // Lazily build the visual tree on first appearance so the
         // BindingContext has already propagated to the page.

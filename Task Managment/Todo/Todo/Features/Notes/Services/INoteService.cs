@@ -20,10 +20,9 @@ public interface INoteService
     ReadOnlyObservableCollection<Note> Notes { get; }
 
     /// <summary>
-    /// Adds a new note to the store. The supplied <paramref name="note"/>
-    /// receives a fresh <see cref="Note.Id"/> and timestamps. The
-    /// optional <paramref name="listId"/> attaches the note to a
-    /// user-defined list (Module-05).
+    /// Adds a new note with the supplied <paramref name="title"/> to the
+    /// store. Optional dates and <paramref name="listId"/> are recorded
+    /// with the note.
     /// </summary>
     Task<Note> CreateAsync(string title, DateTime? dueDate = null, DateTime? reminderDate = null, string? listId = null, NoteRepeatFrequency repeatFrequency = NoteRepeatFrequency.Never);
 

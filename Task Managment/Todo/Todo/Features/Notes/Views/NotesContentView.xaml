@@ -96,7 +96,7 @@
             <Grid Grid.Row="1">
 
                 <!-- Empty state -->
-                <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                <VerticalStackLayout IsVisible="{Binding ShowEmptyNotesState}"
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="12">
@@ -244,19 +244,26 @@
                                                Style="{StaticResource NoteTitleStyle}"
                                                TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}" />
                                         <HorizontalStackLayout Spacing="6">
-                                            <Label Text="&#128197;"
-                                                   FontSize="12"
-                                                   TextColor="{StaticResource TextSecondaryColor}"
+                                            <Image Source="calendaricon.png"
+                                                   WidthRequest="14"
+                                                   HeightRequest="14"
+                                                   Aspect="AspectFit"
                                                    IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" />
                                             <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}"
                                                    Style="{StaticResource NoteMetaStyle}"
                                                    IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" />
-                                              <Label Text="{Binding RepeatFrequency}"
-                                                  Style="{StaticResource NoteMetaStyle}"
-                                                  IsVisible="{Binding HasRepeat}" />
-                                            <Label Text="&#128276;"
-                                                   FontSize="12"
-                                                   TextColor="{StaticResource TextSecondaryColor}"
+                                            <Image Source="dateicon.png"
+                                                   WidthRequest="14"
+                                                   HeightRequest="14"
+                                                   Aspect="AspectFit"
+                                                   IsVisible="{Binding HasRepeat}" />
+                                            <Label Text="{Binding RepeatFrequency}"
+                                                   Style="{StaticResource NoteMetaStyle}"
+                                                   IsVisible="{Binding HasRepeat}" />
+                                            <Image Source="bellicon.png"
+                                                   WidthRequest="14"
+                                                   HeightRequest="14"
+                                                   Aspect="AspectFit"
                                                    IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" />
                                             <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}"
                                                    Style="{StaticResource NoteMetaStyle}"
@@ -361,14 +368,14 @@
             <Border Grid.Row="2"
                     Margin="16,12,16,16"
                     Padding="10,4"
-                    BackgroundColor="Transparent"
-                    StrokeThickness="0"
+                    BackgroundColor="White"
+                    StrokeThickness="0"  
                     StrokeShape="RoundRectangle 12">
                 <Grid ColumnDefinitions="*" VerticalOptions="Center">
                     <syncfusionCore:SfTextInputLayout Grid.Column="0"
                                                      Hint="Add a note"
                                                      ContainerType="Outlined" 
-                                                     OutlineCornerRadius="24"
+                                                     OutlineCornerRadius="28"
                                                      FocusedStrokeThickness="1" Background="White"
                                                      UnfocusedStrokeThickness="1" 
                                                      ShowHint="True" Stroke="Transparent"

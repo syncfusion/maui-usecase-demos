@@ -22,7 +22,7 @@
                  Module-08 task 8-2: 48x48 touch target per the spec. -->
             <buttons:SfButton  
                     WidthRequest="18" 
-                    HeightRequest="18" Margin="0" CornerRadius="0"
+                    HeightRequest="18" Margin="10,0" CornerRadius="0"
                     Padding="0" ImageSource="humburger.png" Background="Transparent"    
                     Command="{Binding ToggleSidebarCommand}"
                     SemanticProperties.Description="Toggle navigation menu">
@@ -41,7 +41,7 @@
 
         <!-- Search pill -->
         <Border Grid.Column="1"
-                WidthRequest="{OnIdiom Phone=180, Default=360}"
+                WidthRequest="{OnIdiom Phone=180, Default=460}"
                 Margin="0,0,0,10" Padding="2"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
@@ -50,33 +50,49 @@
                 StrokeShape="RoundRectangle 18">
             <Grid ColumnDefinitions="*,Auto">
                  
-                <syncfusionCore:SfTextInputLayout Hint="Search" ContainerType="Outlined"  
-                                OutlineCornerRadius="28" FocusedStrokeThickness="1" HeightRequest="38"
-                                UnfocusedStrokeThickness="1"  ReserveSpaceForAssistiveLabels="False"
+                <syncfusionCore:SfTextInputLayout ContainerType="Outlined"
+                                OutlineCornerRadius="28" FocusedStrokeThickness="1"   Hint="Search"
+                                UnfocusedStrokeThickness="1"  ReserveSpaceForAssistiveLabels="False" Stroke="Transparent" Background="#F7F2FB"
                                 InputViewPadding="16, 0, 16, 0" EnableFloating="False" Margin="0" ShowHelperText="False"
-                                ShowHint="True" >
+                                ShowHint="True"
+                                VerticalOptions="Center">
                     <syncfusionCore:SfTextInputLayout.TrailingView>
-                        <buttons:SfButton Grid.Column="1"
-      ImageSource="search.png"
-      FontSize="15" Background="Transparent"
-      TextColor="{StaticResource TextSecondaryColor}"
-      Command="{Binding OpenSearchCommand}"
-      SemanticProperties.Description="Search notes"
-      VerticalOptions="Center" >
-                            <buttons:SfButton.Content>
-                                <DataTemplate>
-                                    <Image Source="search.png" HeightRequest="15" WidthRequest="15" Margin="0,2,0,0"/>
-                                </DataTemplate>
-                            </buttons:SfButton.Content>
-                        </buttons:SfButton>
+                        <Grid>
+                            <buttons:SfButton ImageSource="search.png"
+                                              FontSize="15"
+                                              Background="Transparent"
+                                              TextColor="{StaticResource TextSecondaryColor}"
+                                              Command="{Binding OpenSearchCommand}"
+                                              IsVisible="{Binding SearchViewModel.IsQueryEmpty}"
+                                              SemanticProperties.Description="Search notes"
+                                              VerticalOptions="Center">
+                                <buttons:SfButton.Content>
+                                    <DataTemplate>
+                                        <Image Source="search.png" HeightRequest="15" WidthRequest="15" Margin="0,2,0,0"/>
+                                    </DataTemplate>
+                                </buttons:SfButton.Content>
+                            </buttons:SfButton>
+                            <buttons:SfButton Text="&#10005;"
+                                              FontSize="16"
+                                              WidthRequest="32"
+                                              HeightRequest="32"
+                                              Padding="0"
+                                              Background="Transparent"
+                                              TextColor="{StaticResource TextSecondaryColor}"
+                                              Command="{Binding ClearSearchQueryCommand}"
+                                              IsVisible="{Binding SearchViewModel.IsQueryEmpty, Converter={StaticResource InvertedBoolConverter}}"
+                                              SemanticProperties.Description="Clear search"
+                                              VerticalOptions="Center" />
+                        </Grid>
                     </syncfusionCore:SfTextInputLayout.TrailingView>
 
-                    <Entry Placeholder="Search"
+                    <Entry Text="{Binding SearchViewModel.Query, Mode=TwoWay}"
                             FontSize="14"
                             TextColor="{StaticResource TextPrimaryColor}"
                             PlaceholderColor="{StaticResource TextSecondaryColor}"
-                            IsReadOnly="True"
+                            IsReadOnly="False"
                             Focused="OnSearchEntryFocused"
+                            VerticalTextAlignment="Center"
                             VerticalOptions="Center" />
                 </syncfusionCore:SfTextInputLayout>
                 <Grid.GestureRecognizers>
@@ -95,9 +111,7 @@
             <Image Source="profile.png"
                    Aspect="AspectFill"
                    SemanticProperties.Description="Open profile menu" />
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OpenProfileMenuCommand}" />
-            </Border.GestureRecognizers>
+
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal" />

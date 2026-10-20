@@ -2,16 +2,15 @@ namespace Todo.Common;
 
 /// <summary>
 /// Default <see cref="INavigationService"/> implementation that
-/// delegates to <see cref="Application.Current"/> for modal navigation
-/// and action sheets. Modal pages use a <see cref="TaskCompletionSource{TResult}"/>
+/// delegates to the active MAUI window for modal navigation and action
+/// sheets. Modal pages use a <see cref="TaskCompletionSource{TResult}"/>
 /// so callers can <c>await</c> the dismissal result.
 /// </summary>
 public sealed class MauiNavigationService : INavigationService
 {
     public async Task<object?> PushModalAsync(Page page)
     {
-        var nav = Application.Current?.MainPage?.Navigation;
-        if (nav is null) return null;
+        var nav = GetNavigation();
 
         var tcs = new TaskCompletionSource<object?>();
         // Hook the page lifecycle so we can resolve the TCS when the
@@ -40,8 +39,7 @@ public sealed class MauiNavigationService : INavigationService
 
     public async Task PopModalAsync(object? result = null)
     {
-        var nav = Application.Current?.MainPage?.Navigation;
-        if (nav is null) return;
+        var nav = GetNavigation();
 
         if (nav.ModalStack.Count > 0)
         {
@@ -54,9 +52,12 @@ public sealed class MauiNavigationService : INavigationService
 
     public async Task<string?> ShowActionSheetAsync(string title, string? message, string? destruction, params string[] buttons)
     {
-        var page = Application.Current?.MainPage;
-        if (page is null) return null;
-        return await page.DisplayActionSheet(title, "Cancel", destruction, buttons);
+        var page = Shell.Current?.CurrentPage
+            ?? Application.Current?.Windows.FirstOrDefault(window => window.Page is not null)?.Page;
+        if (page is null)
+            throw new InvalidOperationException("An action sheet cannot be shown because no application page is active.");
+
+        return await page.DisplayActionSheetAsync(title, "Cancel", destruction, buttons);
     }
 
     private static void OnPageDisappearing(object? sender, EventArgs e)
@@ -66,6 +67,14 @@ public sealed class MauiNavigationService : INavigationService
         // it with null so the awaiter doesn't hang.
         if (sender is Page page)
             ModalRequestRegistry.ResolveIfPending(page, null);
+    }
+
+    private static INavigation GetNavigation()
+    {
+        var navigation = Shell.Current?.Navigation
+            ?? Application.Current?.Windows.FirstOrDefault(window => window.Page is not null)?.Page?.Navigation;
+
+        return navigation ?? throw new InvalidOperationException("Navigation is unavailable because no application window is active.");
     }
 }
 

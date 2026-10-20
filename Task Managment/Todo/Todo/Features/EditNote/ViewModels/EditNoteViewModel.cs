@@ -13,9 +13,8 @@ namespace Todo.Features.EditNote.ViewModels;
 /// input, <c>Cancel</c> / <c>Save</c> buttons.
 ///
 /// <para>
-/// <see cref="DueDate"/> / <see cref="ReminderDate"/> are exposed here so
-/// the date picker added in Module-04 (task 4-4) can bind to them
-/// without any further changes to this ViewModel.
+/// <see cref="DueDateSelection"/> and <see cref="ReminderDateSelection"/>
+/// are bound to Syncfusion date pickers on the edit page.
 /// </para>
 /// </summary>
 public partial class EditNoteViewModel : ViewModelBase

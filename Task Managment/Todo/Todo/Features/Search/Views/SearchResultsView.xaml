@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.Search.ViewModels"
+             xmlns:models="clr-namespace:Todo.Features.Notes.Models"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.Search.Views.SearchResultsView"
+             x:Name="SearchRoot"
+             x:DataType="vm:SearchResultsViewModel"
+             Padding="16"
+             BackgroundColor="#F7F2FB">
+
+    <Border BackgroundColor="{StaticResource SurfaceColor}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 14">
+        <Grid RowDefinitions="Auto,*,Auto"
+              BackgroundColor="{StaticResource SurfaceColor}">
+
+            <Grid Grid.Row="1">
+                <VerticalStackLayout IsVisible="{Binding IsQueryEmpty}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="12">
+                    <Image Source="notesicon.png"
+                           WidthRequest="32"
+                           HeightRequest="32"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center" />
+                    <Label Text="You can search the created notes here"
+                           FontSize="16"
+                           TextColor="{StaticResource TextSecondaryColor}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding HasNoResults}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="8">
+                    <Image Source="notesicon.png"
+                           WidthRequest="32"
+                           HeightRequest="32"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center" />
+                    <Label Text="No notes found. Try adjusting your search."
+                           FontSize="16"
+                           TextColor="{StaticResource TextSecondaryColor}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <syncfusion:SfListView ItemsSource="{Binding Results}"
+                                               IsVisible="{Binding HasNoResults, Converter={StaticResource InvertedBoolConverter}}"
+                                               ItemSpacing="0"
+                                               ItemSize="70"
+                                               BackgroundColor="Transparent"
+                                               SelectionMode="None">
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Note">
+                                    <Border Margin="16,6"
+                                            Padding="14,12"
+                                            BackgroundColor="{StaticResource SurfaceColor}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.OpenNoteCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                                              ColumnSpacing="10"
+                                              VerticalOptions="Center">
+
+                                            <CheckBox Grid.Column="0"
+                                                      IsChecked="{Binding IsCompleted, Mode=OneWay}"
+                                                      CheckedChanged="OnCheckChanged"
+                                                      Color="{StaticResource PrimaryColor}"
+                                                      VerticalOptions="Center" />
+
+                                            <VerticalStackLayout Grid.Column="1"
+                                                                 Spacing="2"
+                                                                 VerticalOptions="Center">
+                                                <Label Text="{Binding Title}"
+                                                       Style="{StaticResource NoteTitleStyle}"
+                                                       TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}" />
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Image Source="calendaricon.png"
+                                                           WidthRequest="14"
+                                                           HeightRequest="14"
+                                                           Aspect="AspectFit"
+                                                           IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" />
+                                                    <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}"
+                                                           Style="{StaticResource NoteMetaStyle}"
+                                                           IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" />
+                                                    <Image Source="dateicon.png"
+                                                           WidthRequest="14"
+                                                           HeightRequest="14"
+                                                           Aspect="AspectFit"
+                                                           IsVisible="{Binding HasRepeat}" />
+                                                    <Label Text="{Binding RepeatFrequency}"
+                                                           Style="{StaticResource NoteMetaStyle}"
+                                                           IsVisible="{Binding HasRepeat}" />
+                                                    <Image Source="bellicon.png"
+                                                           WidthRequest="14"
+                                                           HeightRequest="14"
+                                                           Aspect="AspectFit"
+                                                           IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" />
+                                                    <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}"
+                                                           Style="{StaticResource NoteMetaStyle}"
+                                                           IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" />
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+
+                                            <buttons:SfButton Grid.Column="2"
+                                                    Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                                    TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                                    FontSize="20"
+                                                    Background="Transparent"
+                                                    WidthRequest="40"
+                                                    HeightRequest="40"
+                                                    Padding="0"
+                                                    Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.ToggleImportantCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    SemanticProperties.Description="Toggle important" />
+
+                                            <buttons:SfButton Grid.Column="3"
+                                                    Text="&#8943;"
+                                                    FontSize="22"
+                                                    Rotation="90"
+                                                    Background="Transparent"
+                                                    TextColor="{StaticResource TextSecondaryColor}"
+                                                    WidthRequest="40"
+                                                    HeightRequest="40"
+                                                    Padding="0"
+                                                    IsEnabled="False"
+                                                    SemanticProperties.Description="More note options" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
+            </Grid>
+
+            <BoxView Grid.Row="2"
+                     HeightRequest="16"
+                     Color="Transparent" />
+        </Grid>
+    </Border>
+</ContentView>

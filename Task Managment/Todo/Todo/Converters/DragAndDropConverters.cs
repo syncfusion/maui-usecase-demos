@@ -38,7 +38,7 @@ public sealed class MultiplyByConverter : IValueConverter
 /// second supplies the ViewModel's <c>DraggingNoteId</c>, and the
 /// converter returns the dragged-state color when the two match
 /// or the resting color otherwise. Both colors are passed in
-/// <see cref="ConverterParameter"/> as
+/// <c>ConverterParameter</c> as
 /// <c>"resting|dragged"</c> hex pairs to keep the XAML compact.
 /// </summary>
 public sealed class DragStateColorConverter : IMultiValueConverter

@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:Todo.Features.EditNote.ViewModels"
              xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              x:Class="Todo.Features.EditNote.Views.EditNotePage"
              x:DataType="vm:EditNoteViewModel"
              Shell.NavBarIsVisible="False"
@@ -51,9 +52,8 @@
                             <Label Text="Due date" VerticalOptions="Center" />
                             <CheckBox Grid.Column="1" IsChecked="{Binding HasDueDate, Mode=TwoWay}" />
                         </Grid>
-                        <DatePicker Date="{Binding DueDateSelection, Mode=TwoWay}"
-                                    IsVisible="{Binding HasDueDate}"
-                                    Format="dddd, MMMM d, yyyy" />
+                        <picker:SfDatePicker SelectedDate="{Binding DueDateSelection, Mode=TwoWay}"
+                                             IsVisible="{Binding HasDueDate}" />
 
                         <Label Text="Repeat" FontAttributes="Bold" />
                         <Picker ItemsSource="{Binding RepeatOptions}"
@@ -64,9 +64,8 @@
                             <Label Text="Reminder" VerticalOptions="Center" />
                             <CheckBox Grid.Column="1" IsChecked="{Binding HasReminder, Mode=TwoWay}" />
                         </Grid>
-                        <DatePicker Date="{Binding ReminderDateSelection, Mode=TwoWay}"
-                                    IsVisible="{Binding HasReminder}"
-                                    Format="dddd, MMMM d, yyyy" />
+                        <picker:SfDatePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}"
+                                             IsVisible="{Binding HasReminder}" />
                         <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}"
                                     IsVisible="{Binding HasReminder}" />
                     </VerticalStackLayout>

@@ -11,8 +11,8 @@ using Todo.Features.Search.Services;
 namespace Todo.Features.Search.ViewModels;
 
 /// <summary>
-/// ViewModel for the Search results page (Module-06 task 6-2). The
-/// page is a thin shell around a single search input and an
+/// ViewModel for the inline Search results view. The view is a thin
+/// shell around the shared header search input and an
 /// <see cref="ObservableCollection{T}"/> of matching notes — the
 /// design is captured in <c>search.png</c>.
 ///
@@ -29,13 +29,6 @@ public partial class SearchResultsViewModel : ViewModelBase
     private readonly INoteService _noteService;
     private readonly INavigationService _navigation;
 
-    public SearchResultsViewModel()
-        : this(new InMemoryNoteSearchService(new InMemoryNoteService()),
-               new InMemoryNoteService(),
-               new MauiNavigationService())
-    {
-    }
-
     public SearchResultsViewModel(
         INoteSearchService searchService,
         INoteService noteService,
@@ -49,7 +42,7 @@ public partial class SearchResultsViewModel : ViewModelBase
 
     /// <summary>
     /// Currently-displayed search results. Bound to the list in
-    /// <c>SearchResultsPage.xaml</c>.
+    /// <c>SearchResultsView.xaml</c>.
     /// </summary>
     public ObservableCollection<Note> Results { get; }
 

@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using Todo.Features.Notes.ViewModels;
+using Todo.Features.Search.Views;
 
 namespace Todo.Features.Notes.Views;
 
@@ -16,6 +18,7 @@ public partial class MainLayoutView : ContentView
     private const double ExpandedSidebarWidth = 220;
 
     private readonly NotesListViewModel _viewModel;
+    private View? _defaultContent;
 
     public MainLayoutView(NotesListViewModel viewModel)
     {
@@ -30,18 +33,33 @@ public partial class MainLayoutView : ContentView
         var startCollapsed = DeviceIdiomMatches(DeviceIdiom.Phone) || viewModel.IsSidebarCollapsed;
         viewModel.IsSidebarCollapsed = startCollapsed;
         UpdateSidebarColumn(startCollapsed);
-        viewModel.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(NotesListViewModel.IsSidebarCollapsed))
-                UpdateSidebarColumn(viewModel.IsSidebarCollapsed);
-        };
+        viewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     /// <summary>
     /// Swaps the page-specific content view (e.g. a notes list rendered
     /// for a given filter) in the main content area.
     /// </summary>
-    public void SetContent(View content) => MainContent.Content = content;
+    public void SetContent(View content)
+    {
+        _defaultContent = content;
+        UpdateMainContent();
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(NotesListViewModel.IsSidebarCollapsed))
+            UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
+        else if (e.PropertyName == nameof(NotesListViewModel.IsSearchActive))
+            UpdateMainContent();
+    }
+
+    private void UpdateMainContent()
+    {
+        MainContent.Content = _viewModel.IsSearchActive
+            ? new SearchResultsView { BindingContext = _viewModel.SearchViewModel }
+            : _defaultContent;
+    }
 
     private void UpdateSidebarColumn(bool isCollapsed)
     {

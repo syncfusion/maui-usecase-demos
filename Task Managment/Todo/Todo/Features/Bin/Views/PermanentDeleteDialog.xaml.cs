@@ -1,3 +1,4 @@
+using Todo.Common;
 using Todo.Features.Dialogs.ViewModels;
 
 namespace Todo.Features.Bin.Views;
@@ -26,18 +27,12 @@ public partial class PermanentDeleteDialog : ContentPage
     /// Pushes a fully-wired <see cref="PermanentDeleteDialog"/> onto
     /// the active modal stack and awaits the user's decision. Returns
     /// <see langword="true"/> when the user confirms the deletion,
-    /// <see langword="false"/> otherwise. The <paramref name="navigation"/>
-    /// argument is accepted for API compatibility with the host
-    /// <c>ContentPage</c>; navigation is resolved from the active
-    /// application through the shared
-    /// <c>Todo.Common.MauiNavigationService</c>.
+    /// <see langword="false"/> otherwise. The caller supplies the shared
+    /// navigation service registered by the application.
     /// </summary>
-    public static async Task<bool> ShowAsync(Microsoft.Maui.Controls.INavigation? navigation)
+    public static async Task<bool> ShowAsync(INavigationService navigation)
     {
-        // Even when no navigation is supplied, we can still try via
-        // Application.Current.MainPage.Navigation.
-        var nav = new Common.MauiNavigationService();
-        var vm = new ConfirmDialogViewModel(nav)
+        var vm = new ConfirmDialogViewModel(navigation)
         {
             Title = "Delete permanently?",
             Message = "This note will be permanently deleted and cannot be recovered.",
@@ -46,7 +41,7 @@ public partial class PermanentDeleteDialog : ContentPage
             IsDestructive = true
         };
         var page = new PermanentDeleteDialog(vm);
-        var result = await nav.PushModalAsync(page);
+        var result = await navigation.PushModalAsync(page);
         return result is true;
     }
 }

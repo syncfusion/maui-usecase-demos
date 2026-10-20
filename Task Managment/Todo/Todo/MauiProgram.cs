@@ -34,7 +34,7 @@ public static class MauiProgram
         // ViewModels — shared singleton across all four filter pages.
         // PR #37 review issue #13: the modal/dialog pages and their VMs
         // (EditNotePage, ConfirmDialogPage, CreateListDialogPage,
-        // RenameListDialogPage, SearchResultsPage, PermanentDeleteDialog)
+        // RenameListDialogPage, SearchResultsView, PermanentDeleteDialog)
         // are always created with `new` by their callers, so they do
         // not need (and must not have) DI registrations. The sidebar
         // commands live on NotesListViewModel (issue #9 — the duplicate

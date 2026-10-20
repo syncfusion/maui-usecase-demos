@@ -11,10 +11,10 @@
              x:DataType="vm:NotesListViewModel"
              BackgroundColor="{StaticResource SidebarBackgroundColor}">
 
-    <Grid RowDefinitions="*,Auto" Padding="0,12,0,16">
-        <ScrollView Grid.Row="0" VerticalOptions="Fill" VerticalScrollBarVisibility="Never">
-            <VerticalStackLayout Spacing="4">
-                <CollectionView ItemsSource="{Binding AvailableCategories}"
+    <Grid RowDefinitions="192,Auto,*,Auto" Padding="0,12,0,16">
+        <CollectionView Grid.Row="0"
+                                HeightRequest="192"
+                                ItemsSource="{Binding AvailableCategories}"
                                 SelectionMode="Single"
                                 SelectedItem="{Binding SelectedCategory, Mode=TwoWay, Converter={StaticResource ObjectToCategoryConverter}}"
                                 BackgroundColor="Transparent"
@@ -70,11 +70,27 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <Label Text="Lists" Style="{StaticResource SidebarSectionHeaderStyle}"
+        <BoxView Grid.Row="1"
+                 HeightRequest="1"
+                 Margin="16,0"
+                 VerticalOptions="Center"
+                 Color="{StaticResource DividerColor}" />
+
+        <Grid Grid.Row="2" RowDefinitions="Auto,*">
+            <Label Grid.Row="0" Text="Lists" Style="{StaticResource SidebarSectionHeaderStyle}"
                        IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists}" />
-                <Label Text="No lists found" Style="{StaticResource EmptyStateMessageStyle}"
-                       Margin="16,4"
-                       IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists, Converter={StaticResource InvertedBoolConverter}}" />
+
+            <Grid Grid.Row="1">
+                <VerticalStackLayout Margin="16" Spacing="8"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists, Converter={StaticResource InvertedBoolConverter}}">
+                    <Image Source="notesicon.png" WidthRequest="40" HeightRequest="40"
+                           Aspect="AspectFit" HorizontalOptions="Center" />
+                    <Label Text="No list was found. Please create a to-do list."
+                           Style="{StaticResource EmptyStateMessageStyle}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
 
                 <CollectionView x:Name="CustomListsView" ItemsSource="{Binding CustomLists}"
                                 SelectionMode="Single" BackgroundColor="Transparent"
@@ -121,10 +137,10 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </VerticalStackLayout>
-        </ScrollView>
+            </Grid>
+        </Grid>
 
-        <buttons:SfButton Grid.Row="1" Text="&#65291;" FontSize="26" WidthRequest="52"
+        <buttons:SfButton Grid.Row="3" Text="&#65291;" FontSize="26" WidthRequest="52"
                           HeightRequest="52" CornerRadius="26" Padding="0" Margin="16,12,0,0"
                           HorizontalOptions="End" BackgroundColor="{StaticResource PrimaryColor}"
                           TextColor="{StaticResource OnPrimaryColor}"
