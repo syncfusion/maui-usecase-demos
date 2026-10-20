@@ -1,9 +1,10 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using SmartMovieBooking.Models;
 
 namespace SmartMovieBooking.Services;
 
-public interface IBookingRepository
+public interface IBookingRepository : INotifyCollectionChanged
 {
     ReadOnlyObservableCollection<Booking> All { get; }
     void Add(Booking booking);
