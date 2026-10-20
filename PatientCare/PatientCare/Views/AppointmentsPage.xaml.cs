@@ -11,39 +11,7 @@ public partial class AppointmentsPage : ContentPage
 {
     private readonly AppointmentsViewModel viewModel;
 
-<<<<<<< HEAD
-    public AppointmentsPage()
-    {
-        InitializeComponent();
-        var services = Application.Current?.Handler?.MauiContext?.Services;
-        var dataService = services?.GetService<ScheduleDataService>();
-        var notificationService = services?.GetService<NotificationService>();
-        
-        if (dataService != null && notificationService != null)
-        {
-            viewModel = new AppointmentsViewModel(dataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-        else
-        {
-            // Fallback for direct instantiation
-            var patientDataService = new PatientDataService();
-            dataService = new ScheduleDataService(patientDataService);
-            notificationService = new NotificationService();
-            viewModel = new AppointmentsViewModel(dataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-
-        BindingContext = viewModel;
-        DesktopScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
-        MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
-    }
-
-=======
     // Shell resolves DataTemplate pages through the app's DI container, so constructor injection is the only path.
->>>>>>> origin/Patient-care-sample
     public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
     {
         InitializeComponent();
