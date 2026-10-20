@@ -1,6 +1,7 @@
 using SmartMovieBooking.Models;
 using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
+using Syncfusion.Maui.Buttons;
 
 namespace SmartMovieBooking.Views;
 

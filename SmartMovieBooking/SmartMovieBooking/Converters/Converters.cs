@@ -1,3 +1,4 @@
+using SmartMovieBooking.Models;
 using System.Globalization;
 
 namespace SmartMovieBooking.Converters;
