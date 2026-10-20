@@ -11,13 +11,10 @@ public partial class PatientsPage : ContentPage
 {
     private readonly PatientsViewModel viewModel;
 
-    public PatientsPage()
+    // Shell resolves DataTemplate pages through the app's DI container, so constructor injection is the only path.
+    public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
     {
         InitializeComponent();
-        var services = Application.Current?.Handler?.MauiContext?.Services;
-        var patientDataService = services?.GetService<PatientDataService>() ?? new PatientDataService();
-        var scheduleDataService = services?.GetService<ScheduleDataService>() ?? new ScheduleDataService(patientDataService);
-        var notificationService = services?.GetService<NotificationService>() ?? new NotificationService();
         viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
         BindingContext = viewModel;
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
