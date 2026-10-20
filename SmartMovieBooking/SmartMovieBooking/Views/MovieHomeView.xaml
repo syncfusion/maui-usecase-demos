@@ -9,52 +9,46 @@
              x:Class="SmartMovieBooking.Views.MovieHomeView"
              x:DataType="vm:HomeViewModel"
              Title="Movie Home">
-    <!-- Use a Grid with explicit row heights instead of ScrollView+VerticalStackLayout.
-         ScrollView gives the SfListView inside it unbounded vertical space, which makes
-         the layout engine unable to compute AutoFitMode/DynamicHeight item heights.
-         The result is the items rendering at wrong heights and getting clipped. -->
-    <Grid Padding="24" RowSpacing="16"
-          RowDefinitions="Auto,Auto,Auto,*,Auto">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Discover Movies" FontFamily="OpenSansSemibold" FontSize="28"
+                       FontAttributes="Bold" TextColor="#1A1A2E" />
+                <Label Text="Find the perfect show · 10 movies in catalog"
+                       FontSize="13" TextColor="#49454F" />
+            </VerticalStackLayout>
 
-        <!-- Header -->
-        <VerticalStackLayout Grid.Row="0" Spacing="4">
-            <Label Text="Discover Movies" FontFamily="OpenSansSemibold" FontSize="28"
-                   FontAttributes="Bold" TextColor="#1A1A2E" />
-            <Label Text="Find the perfect show · 10 movies in catalog"
-                   FontSize="13" TextColor="#49454F" />
-        </VerticalStackLayout>
+            <!-- Search box wrapped in an SfCardView (replaces plain Border) -->
+            <syncfusionCards:SfCardView CornerRadius="12"
+                                         BackgroundColor="#F1F2F8"
+                                         Padding="14,0"
+                                         HeightRequest="44">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Grid.Column="0" Text="🔍" FontSize="14" VerticalTextAlignment="Center" />
+                    <Entry Grid.Column="1" x:Name="SearchEntry"
+                           Placeholder="Search by title or genre…"
+                           PlaceholderColor="#49454F"
+                           BackgroundColor="Transparent"
+                           TextChanged="OnSearchChanged" />
+                </Grid>
+            </syncfusionCards:SfCardView>
 
-        <!-- Search box wrapped in an SfCardView -->
-        <syncfusionCards:SfCardView Grid.Row="1"
-                                     CornerRadius="12"
-                                     BackgroundColor="#F1F2F8"
-                                     Padding="14,0"
-                                     HeightRequest="44">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
-                <Label Grid.Column="0" Text="🔍" FontSize="14" VerticalTextAlignment="Center" />
-                <Entry Grid.Column="1" x:Name="SearchEntry"
-                       Placeholder="Search by title or genre…"
-                       PlaceholderColor="#49454F"
-                       BackgroundColor="Transparent"
-                       TextChanged="OnSearchChanged" />
-            </Grid>
-        </syncfusionCards:SfCardView>
+            <!-- Genre chip strip: built dynamically in code-behind -->
+            <HorizontalStackLayout x:Name="GenreChipStrip" Spacing="8" />
 
-        <!-- Genre chip strip: built dynamically in code-behind -->
-        <HorizontalStackLayout Grid.Row="2" x:Name="GenreChipStrip" Spacing="8" />
+            <!-- Loading indicator -->
+            <ActivityIndicator x:Name="LoadingSpinner" IsRunning="True"
+                               IsVisible="True" HorizontalOptions="Center"
+                               Color="#3525CD" />
 
-        <!-- Movie cards grid using SfListView (2-column Syncfusion layout).
-             The list fills the remaining row height (*), so it has bounded vertical
-             space and the inner ScrollView of SfListView handles its own scrolling.
-             AutoFitMode is omitted so items get their natural height from content
-             (no half-broken DynamicHeight measurement). -->
-        <syncfusion:SfListView Grid.Row="3"
-                               x:Name="MoviesList"
-                               ItemsSource="{Binding FilteredMovies}"
-                               ItemSpacing="12"
-                               BackgroundColor="Transparent"
-                               SelectionMode="Single"
-                               SelectionChanged="OnMovieTapped">
+            <!-- Movie cards grid using SfListView (2-column Syncfusion layout) -->
+            <syncfusion:SfListView x:Name="MoviesList"
+                                   ItemsSource="{Binding FilteredMovies}"
+                                   ItemSpacing="12"
+                                   AutoFitMode="DynamicHeight"
+                                   BackgroundColor="Transparent"
+                                   SelectionMode="Single"
+                                   SelectionChanged="OnMovieTapped">
                 <syncfusion:SfListView.ItemsLayout>
                     <syncfusion:GridLayout SpanCount="2" />
                 </syncfusion:SfListView.ItemsLayout>
@@ -167,13 +161,6 @@
                     </VerticalStackLayout>
                 </syncfusion:SfListView.EmptyView>
             </syncfusion:SfListView>
-
-        <!-- Loading indicator overlays the list area while initial load is in flight -->
-        <ActivityIndicator Grid.Row="3"
-                           x:Name="LoadingSpinner" IsRunning="True"
-                           IsVisible="True"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           Color="#3525CD" />
-    </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
