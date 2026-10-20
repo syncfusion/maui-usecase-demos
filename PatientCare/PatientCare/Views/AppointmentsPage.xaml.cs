@@ -36,23 +36,6 @@ public partial class AppointmentsPage : ContentPage
         }
     ];
 
-    private void OnPreviousDateTapped(object? sender, TappedEventArgs e) => viewModel.PreviousDateCommand.Execute(null);
-
-    private void OnNextDateTapped(object? sender, TappedEventArgs e) => viewModel.NextDateCommand.Execute(null);
-
-    private void OnGoToTodayTapped(object? sender, TappedEventArgs e) => viewModel.GoToTodayCommand.Execute(null);
-
-    private void OnViewModeSelectionChanged(object? sender, Syncfusion.Maui.Buttons.SelectionChangedEventArgs e)
-    {
-        var view = e.NewIndex == 1 || string.Equals(e.NewValue?.ToString(), "Week", StringComparison.OrdinalIgnoreCase)
-            ? SchedulerView.Week
-            : SchedulerView.Day;
-
-        viewModel.SetSchedulerView(view);
-        DesktopScheduler.View = view;
-        MobileScheduler.View = view;
-    }
-
     private void OnSchedulerViewChanged(object? sender, SchedulerViewChangedEventArgs e)
     {
         if (e.NewVisibleDates is null || e.NewVisibleDates.Count == 0)

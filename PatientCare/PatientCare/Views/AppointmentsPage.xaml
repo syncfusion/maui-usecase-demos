@@ -50,22 +50,22 @@
                     <HorizontalStackLayout Spacing="2">
                         <Label Text="&#xE5CB;" FontFamily="MaterialIcons" FontSize="16" TextColor="{StaticResource Primary}" VerticalOptions="Center" Padding="5">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnPreviousDateTapped" />
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.PreviousDateCommand}" />
                             </Label.GestureRecognizers>
                         </Label>
                         <Label Text="{Binding Source={x:Reference RootPage}, Path=BindingContext.SelectedDateDisplay}" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource DarkText}, Dark={StaticResource DarkTextDark}}" VerticalOptions="Center" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnGoToTodayTapped" />
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.GoToTodayCommand}" />
                             </Label.GestureRecognizers>
                         </Label>
                         <Label Text="&#xE5CC;" FontFamily="MaterialIcons" FontSize="16" TextColor="{StaticResource Primary}" VerticalOptions="Center" Padding="5">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnNextDateTapped" />
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.NextDateCommand}" />
                             </Label.GestureRecognizers>
                         </Label>
                     </HorizontalStackLayout>
                 </Border>
-                <buttons:SfSegmentedControl Grid.Column="1" SelectedIndex="{Binding Source={x:Reference RootPage}, Path=BindingContext.ViewModeIndex}" SegmentWidth="62" HeightRequest="34" HorizontalOptions="End" VerticalOptions="Center" SelectionChanged="OnViewModeSelectionChanged" SegmentBackground="Transparent" Stroke="{AppThemeBinding Light={StaticResource BorderColor}, Dark={StaticResource BorderColorDark}}" StrokeThickness="1" CornerRadius="17">
+                <buttons:SfSegmentedControl Grid.Column="1" x:Name="ViewModeSegment" SelectedIndex="{Binding Source={x:Reference RootPage}, Path=BindingContext.ViewModeIndex, Mode=TwoWay}" SegmentWidth="62" HeightRequest="34" HorizontalOptions="End" VerticalOptions="Center" SegmentBackground="Transparent" Stroke="{AppThemeBinding Light={StaticResource BorderColor}, Dark={StaticResource BorderColorDark}}" StrokeThickness="1" CornerRadius="17">
                     <buttons:SfSegmentedControl.TextStyle>
                         <buttons:SegmentTextStyle TextColor="{StaticResource Neutral}" FontSize="12" />
                     </buttons:SfSegmentedControl.TextStyle>
