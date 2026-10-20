@@ -7,6 +7,7 @@
              xmlns:syncfusionChips="clr-namespace:Syncfusion.Maui.Chips;assembly=Syncfusion.Maui.Core"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SmartMovieBooking.Views.TheatersView"
              x:DataType="vm:TheatersViewModel"
              Title="Theaters">
@@ -37,7 +38,7 @@
                             <syncfusion:LinearLayout Orientation="Horizontal" />
                         </syncfusion:SfListView.ItemsLayout>
                         <syncfusion:SfListView.ItemTemplate>
-                            <DataTemplate x:DataType="x:DateTime">
+                            <DataTemplate x:DataType="sys:DateTime">
                                 <syncfusionCards:SfCardView CornerRadius="10"
                                                              BackgroundColor="#FFFFFF"
                                                              BorderWidth="0"
