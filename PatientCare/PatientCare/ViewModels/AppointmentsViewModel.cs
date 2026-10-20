@@ -26,7 +26,6 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
         PreviousDateCommand = new Command(() => SelectedDate = SelectedDate.AddDays(ViewMode == SchedulerView.Week ? -7 : -1));
         NextDateCommand = new Command(() => SelectedDate = SelectedDate.AddDays(ViewMode == SchedulerView.Week ? 7 : 1));
         GoToTodayCommand = new Command(() => SelectedDate = DateTime.Today);
-        SelectViewModeCommand = new Command<string>(mode => ViewMode = mode == "Week" ? SchedulerView.Week : SchedulerView.Day);
         SelectClinicianCommand = new Command<Clinician>(SelectClinician);
         CloseAppointmentDetailsCommand = new Command(() => SelectedAppointment = null);
         RetryCommand = new Command(Load);
@@ -72,7 +71,8 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
                     : SelectedDate.ToString("MMM dd, yyyy");
             }
 
-            var weekEnd = SelectedDate.Date.AddDays(6);
+            var weekStart = SelectedDate.Date.AddDays(-(int)SelectedDate.DayOfWeek);
+            var weekEnd = weekStart.AddDays(6);
             return SelectedDate.Year == weekEnd.Year
                 ? $"{SelectedDate:MMM dd} - {weekEnd:MMM dd, yyyy}"
                 : $"{SelectedDate:MMM dd, yyyy} - {weekEnd:MMM dd, yyyy}";
@@ -93,8 +93,13 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
         }
     }
 
-    /// <summary>0=Day, 1=Week — mirrors ViewMode so the header's Day/Week toggle stays in sync when the scheduler header template is recreated.</summary>
-    public int ViewModeIndex => ViewMode == SchedulerView.Week ? 1 : 0;
+    /// <summary>0=Day, 1=Week. Two-way bound to the header's segmented control: tapping writes here,
+    /// which changes ViewMode and updates the scheduler through its View binding — no code-behind event needed.</summary>
+    public int ViewModeIndex
+    {
+        get => ViewMode == SchedulerView.Week ? 1 : 0;
+        set => ViewMode = value == 1 ? SchedulerView.Week : SchedulerView.Day;
+    }
 
     public Clinician? SelectedClinician
     {
@@ -129,7 +134,6 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
     public Command PreviousDateCommand { get; }
     public Command NextDateCommand { get; }
     public Command GoToTodayCommand { get; }
-    public Command<string> SelectViewModeCommand { get; }
     public Command<Clinician> SelectClinicianCommand { get; }
     public Command CloseAppointmentDetailsCommand { get; }
     public Command RetryCommand { get; }
@@ -140,14 +144,6 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
     {
         ViewMode = view;
         SelectedDate = visibleDate.Date;
-    }
-
-    public void SetSchedulerView(SchedulerView view)
-    {
-        if (ViewMode != view)
-        {
-            ViewMode = view;
-        }
     }
 
     private void Load()
@@ -195,12 +191,9 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
             return;
         }
 
+        // Scheduler week view starts on Sunday (first day of week), so anchor the data filter to the same week.
         var selectedDay = SelectedDate.Date;
-        var weekStart = selectedDay.Date.AddDays(-(int)selectedDay.DayOfWeek + (int)DayOfWeek.Monday);
-        if (selectedDay.DayOfWeek == DayOfWeek.Sunday)
-        {
-            weekStart = weekStart.AddDays(-7);
-        }
+        var weekStart = selectedDay.Date.AddDays(-(int)selectedDay.DayOfWeek);
 
         var appointments = scheduleDataService.GetAppointments(SelectedClinician.ClinicianId)
             .Where(appointment => ViewMode == SchedulerView.Week
