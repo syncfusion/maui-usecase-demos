@@ -13,6 +13,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
+    <!-- NuGet 6.x+ requires explicit ProjectName during restore or it
+         silently skips non-active TFMs ("No packages found" in VS PMC). -->
+    <ProjectName>SmartMovieBooking</ProjectName>
+    <AssemblyName>SmartMovieBooking</AssemblyName>
+
     <!-- Enable XAML source generation for built-in MAUI controls. Files using
          Syncfusion controls are individually switched to runtime inflation
          below because SourceGen does not understand all Syncfusion patterns. -->
