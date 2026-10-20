@@ -84,11 +84,11 @@
                                     </Border>
                                     <!-- Format chip -->
                                     <syncfusionChips:SfChip Text="{Binding Format}"
-                                                             ChipBackground="#4F46E5"
-                                                             ChipTextColor="#FFFFFF"
+                                                             Background="#4F46E5"
+                                                             TextColor="#FFFFFF"
                                                              FontFamily="OpenSansSemibold"
                                                              FontSize="9"
-                                                             ChipType="Action"
+                                                             
                                                              HorizontalOptions="Start"
                                                              VerticalOptions="Start"
                                                              Margin="8,8,0,0" />

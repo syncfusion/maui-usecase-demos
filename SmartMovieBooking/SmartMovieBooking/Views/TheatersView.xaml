@@ -102,11 +102,11 @@
                                                        FontSize="15"
                                                        TextColor="#1A1A2E" />
                                                 <syncfusionChips:SfChip Text="{Binding Badge}"
-                                                                         ChipBackground="#E5E6F1"
-                                                                         ChipTextColor="#00505F"
+                                                                         Background="#E5E6F1"
+                                                                         TextColor="#00505F"
                                                                          FontSize="9"
                                                                          FontFamily="OpenSansSemibold"
-                                                                         ChipType="Action"
+                                                                         
                                                                          IsVisible="{Binding Badge, Converter={StaticResource NotNullConverter}}" />
                                             </HorizontalStackLayout>
                                             <Label Text="{Binding Location}"

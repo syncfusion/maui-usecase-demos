@@ -73,11 +73,11 @@
                                             <VerticalStackLayout Grid.Column="2" Spacing="6"
                                                                  HorizontalOptions="End">
                                                 <syncfusionChips:SfChip Text="{Binding Status, FallbackValue='CONFIRMED'}"
-                                                                         ChipBackground="#9DEAF6"
-                                                                         ChipTextColor="#002A33"
+                                                                         Background="#9DEAF6"
+                                                                         TextColor="#002A33"
                                                                          FontSize="9"
                                                                          FontFamily="OpenSansSemibold"
-                                                                         ChipType="Action" />
+                                                                          />
                                                 <Label Text="{Binding BookingId}"
                                                        FontFamily="OpenSansSemibold"
                                                        FontSize="10"
