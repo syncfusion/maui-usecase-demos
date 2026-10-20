@@ -46,7 +46,8 @@
             <syncfusion:SfListView x:Name="MoviesList"
                                    ItemsSource="{Binding FilteredMovies}"
                                    ItemSpacing="16"
-                                   BackgroundColor="Transparent"
+								   AutoFitMode="DynamicHeight"
+								   BackgroundColor="Transparent"
                                    SelectionMode="Single"
                                    SelectionChanged="OnMovieTapped">
                 <syncfusion:SfListView.ItemsLayout>
@@ -78,9 +79,9 @@
                                         </HorizontalStackLayout>
                                     </Border>
                                     <!-- Format chip -->
-                                    <Border BackgroundColor="#4F46E5" StrokeShape="RoundRectangle 999" Padding="8,3">
+                                    <!--<Border BackgroundColor="#4F46E5" StrokeShape="RoundRectangle 999" Padding="8,3">
                                                 <Label Text="·" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#FFFFFF" />
-                                              </Border>
+                                              </Border>-->
                                 </Grid>
                                 <VerticalStackLayout Padding="12" Spacing="4">
                                     <Label Text="{Binding Title}"

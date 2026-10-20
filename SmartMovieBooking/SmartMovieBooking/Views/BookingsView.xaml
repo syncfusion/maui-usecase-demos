@@ -29,14 +29,11 @@
                                        >
                 <syncfusionTab:SfTabItem Header="UPCOMING">
                     <syncfusionTab:SfTabItem.Content>
-                        <syncfusion:SfListView x:Name="UpcomingList"
-                                               ItemsSource="{Binding Bookings}"
-                                               ItemSpacing="12"
-                                               BackgroundColor="Transparent">
-                            <syncfusion:SfListView.ItemsLayout>
-                                <VerticalStackLayout />
-                            </syncfusion:SfListView.ItemsLayout>
-                            <syncfusion:SfListView.ItemTemplate>
+						<syncfusion:SfListView x:Name="UpcomingList"
+											   ItemsSource="{Binding Bookings}"
+											   ItemSpacing="12"
+											   BackgroundColor="Transparent">
+							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Booking">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                  BackgroundColor="#FFFFFF"

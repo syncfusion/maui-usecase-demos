@@ -26,16 +26,13 @@
         </VerticalStackLayout>
 
         <!-- Chat history using SfListView -->
-        <syncfusion:SfListView x:Name="ChatList"
-                               Grid.Row="1"
-                               ItemsSource="{Binding Messages}"
-                               BackgroundColor="#F8F9FF"
-                               ItemSpacing="8"
-                               SelectionMode="None">
-            <syncfusion:SfListView.ItemsLayout>
-                <VerticalStackLayout />
-            </syncfusion:SfListView.ItemsLayout>
-            <syncfusion:SfListView.ItemTemplate>
+		<syncfusion:SfListView x:Name="ChatList"
+							   Grid.Row="1"
+							   ItemsSource="{Binding Messages}"
+							   BackgroundColor="#F8F9FF"
+							   ItemSpacing="8"
+							   SelectionMode="None">
+			<syncfusion:SfListView.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
                     <syncfusionCards:SfCardView CornerRadius="12"
                                                  BackgroundColor="#FFFFFF"

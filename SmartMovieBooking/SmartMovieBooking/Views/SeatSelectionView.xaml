@@ -35,7 +35,6 @@
 
                 <syncfusion:SfListView x:Name="SeatGrid"
                                        ItemsSource="{Binding Seats}"
-                                       ItemSpacing="4"
                                        ItemSpacing="6"
                                        BackgroundColor="Transparent"
                                        SelectionMode="None">
