@@ -15,11 +15,12 @@ public partial class BookingsViewModel : ObservableObject, IDisposable
         _repo = repo;
         Bookings = new ObservableCollection<Booking>(_repo.All);
 
-        // CRITICAL: subscribe to the repository's collection so newly created
-        // bookings show up here without recreating the page. Without this the
-        // Bookings tab stays empty after a successful purchase because the
-        // constructor snapshot was taken before any booking existed.
-        _repo.All.CollectionChanged += OnRepoChanged;
+        // Subscribe via the IBookingRepository.CollectionChanged event (forwarded
+        // from the inner store by BookingRepository). We CAN'T subscribe to
+        // _repo.All.CollectionChanged directly - that accessor exposes the
+        // protected event on ReadOnlyObservableCollection<T> and the compiler
+        // refuses with CS0122. Going through the interface is the safe path.
+        _repo.CollectionChanged += OnRepoChanged;
     }
 
     public ObservableCollection<Booking> Bookings { get; }
@@ -32,13 +33,12 @@ public partial class BookingsViewModel : ObservableObject, IDisposable
 
     private void OnRepoChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        // Marshal to the UI thread since IBookingRepository.Add may be
-        // called from an async continuation.
+        // Marshal to the UI thread since Add may be called from an async continuation.
         MainThread.BeginInvokeOnMainThread(() =>
         {
             Bookings.Clear();
             foreach (var b in _repo.All)
-                Bookings.Insert(Math.Min(Bookings.Count, 0), b);
+                Bookings.Add(b);
 
             OnPropertyChanged(nameof(HasBookings));
             OnPropertyChanged(nameof(UpcomingCount));
@@ -48,8 +48,7 @@ public partial class BookingsViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        if (_repo.All is INotifyCollectionChanged n)
-            n.CollectionChanged -= OnRepoChanged;
+        _repo.CollectionChanged -= OnRepoChanged;
         GC.SuppressFinalize(this);
     }
 }
