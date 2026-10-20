@@ -203,4 +203,14 @@ public partial class SidebarView : ContentView
         border.BackgroundColor = Colors.Transparent;
         border.StrokeThickness = 0;
     }
+
+    private void OnSidebarSelectionChanged(object sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
+    {
+
+    }
+
+    private void OnCustomListSelectionChanged(object sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
+    {
+
+    }
 }
