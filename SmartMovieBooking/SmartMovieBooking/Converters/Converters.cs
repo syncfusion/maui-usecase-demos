@@ -62,7 +62,7 @@ public sealed class SelectedToBackgroundConverter : IValueConverter
     {
         if (value is bool b && b)
             return (Color)Application.Current!.Resources["Primary"];
-        return Color.Transparent;
+        return Colors.Transparent;
     }
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();

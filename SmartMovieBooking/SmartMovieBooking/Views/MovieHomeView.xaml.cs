@@ -1,7 +1,6 @@
 using SmartMovieBooking.Models;
 using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
-using Syncfusion.Maui.Chips;
 using Syncfusion.Maui.ListView;
 
 namespace SmartMovieBooking.Views;
