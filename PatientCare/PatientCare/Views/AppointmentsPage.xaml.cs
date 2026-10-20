@@ -11,6 +11,7 @@ public partial class AppointmentsPage : ContentPage
 {
     private readonly AppointmentsViewModel viewModel;
 
+<<<<<<< HEAD
     public AppointmentsPage()
     {
         InitializeComponent();
@@ -40,6 +41,9 @@ public partial class AppointmentsPage : ContentPage
         MobileScheduler.DaysView.TimeRegions = CreateLunchBreakRegions();
     }
 
+=======
+    // Shell resolves DataTemplate pages through the app's DI container, so constructor injection is the only path.
+>>>>>>> origin/Patient-care-sample
     public AppointmentsPage(ScheduleDataService dataService, NotificationService notificationService)
     {
         InitializeComponent();

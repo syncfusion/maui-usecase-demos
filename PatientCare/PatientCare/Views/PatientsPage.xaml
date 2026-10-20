@@ -46,6 +46,7 @@
             <Border BackgroundColor="White"
                     Stroke="{AppThemeBinding Light={StaticResource BorderColor}, Dark={StaticResource BorderColorDark}}"
                     StrokeThickness="1"
+                    Margin="{x:OnPlatform WinUI=0,MacCatalyst=0, Android='0,5,0,5', iOS='0,5,0,5'}"
                     Padding="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="14" />
@@ -75,7 +76,7 @@
                             <VerticalStackLayout Grid.Column="0" Spacing="2">
                                 <Label Text="{Binding LeftColumnLabel}" FontSize="10" TextColor="{AppThemeBinding Light={StaticResource MutedText}, Dark={StaticResource MutedTextDark}}" />
                                 <HorizontalStackLayout Spacing="5">
-                                    <Ellipse WidthRequest="8" HeightRequest="8" Fill="{Binding StatusColor}" VerticalOptions="Center" />
+                                    <Ellipse WidthRequest="8" HeightRequest="8" Fill="{Binding StatusBrush}" Margin="0,1,0,0" VerticalOptions="Center" />
                                     <Label Text="{Binding LeftColumnValue}" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource DarkText}, Dark={StaticResource DarkTextDark}}" LineBreakMode="TailTruncation" />
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>

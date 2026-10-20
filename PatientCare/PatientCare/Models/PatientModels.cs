@@ -70,6 +70,8 @@ public sealed class Patient
         _ => "#F59E0B"
     };
 
+    public Brush StatusBrush => new SolidColorBrush(Color.FromArgb(StatusColor));
+
     public string NextAppointmentTextColor => IsHighPriority ? "#DC2626" : "#0F172A";
 
     public bool IsFollowUpDue => NeedsReview ||

@@ -11,40 +11,7 @@ public partial class PatientsPage : ContentPage
 {
     private readonly PatientsViewModel viewModel;
 
-    public PatientsPage()
-    {
-        InitializeComponent();
-        var services = Application.Current?.Handler?.MauiContext?.Services;
-        var patientDataService = services?.GetService<PatientDataService>();
-        var scheduleDataService = services?.GetService<ScheduleDataService>();
-        var notificationService = services?.GetService<NotificationService>();
-        
-        if (patientDataService != null && scheduleDataService != null && notificationService != null)
-        {
-            viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-        else
-        {
-            // Fallback for direct instantiation
-            patientDataService = new PatientDataService();
-            scheduleDataService = new ScheduleDataService(patientDataService);
-            notificationService = new NotificationService();
-            viewModel = new PatientsViewModel(patientDataService, scheduleDataService);
-            DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-            MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-        }
-
-        BindingContext = viewModel;
-        foreach (var chip in MobileFilterChips.Items)
-        {
-            MobileFilterChips.SelectedItem = chip;
-            break;
-        }
-        SetDesktopFilterTab("All Patients");
-    }
-
+    // Shell resolves DataTemplate pages through the app's DI container, so constructor injection is the only path.
     public PatientsPage(PatientDataService patientDataService, ScheduleDataService scheduleDataService, NotificationService notificationService)
     {
         InitializeComponent();
@@ -86,6 +53,16 @@ public partial class PatientsPage : ContentPage
 
     private async void OnCloseProfileTapped(object? sender, TappedEventArgs e)
     {
+        await CloseProfileAsync();
+    }
+
+    private async void OnCloseProfileClicked(object? sender, EventArgs e)
+    {
+        await CloseProfileAsync();
+    }
+
+    private async Task CloseProfileAsync()
+    {
         try
         {
             var returnRoute = viewModel.ReturnRoute;
@@ -100,23 +77,6 @@ public partial class PatientsPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Close profile error: {ex.Message}");
-        }
-    }
-
-    private async void OnCloseProfileClicked(object? sender, EventArgs e)
-    {
-        await CloseProfileAsync();
-    }
-
-    private async Task CloseProfileAsync()
-    {
-        var returnRoute = viewModel.ReturnRoute;
-        viewModel.CloseProfileCommand.Execute(null);
-
-        if (!string.IsNullOrEmpty(returnRoute))
-        {
-            viewModel.ReturnRoute = string.Empty;
-            await Shell.Current.GoToAsync($"//{returnRoute}");
         }
     }
 

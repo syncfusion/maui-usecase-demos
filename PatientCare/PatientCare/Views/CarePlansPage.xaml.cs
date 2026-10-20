@@ -8,6 +8,7 @@ public partial class CarePlansPage : ContentPage
 {
     private readonly CarePlansViewModel viewModel;
 
+<<<<<<< HEAD
     public CarePlansPage()
     {
         InitializeComponent();
@@ -36,6 +37,9 @@ public partial class CarePlansPage : ContentPage
         BindingContext = viewModel;
     }
 
+=======
+    // Shell resolves DataTemplate pages through the app's DI container, so constructor injection is the only path.
+>>>>>>> origin/Patient-care-sample
     public CarePlansPage(CarePlanDataService carePlanDataService, PatientDataService patientDataService, NotificationService notificationService)
     {
         InitializeComponent();
