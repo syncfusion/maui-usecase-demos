@@ -25,7 +25,7 @@
                 <!-- Date strip using SfListView horizontal -->
                 <syncfusionCards:SfCardView CornerRadius="12"
                                              BackgroundColor="#F1F2F8"
-                                             BorderWidth="0"
+                                             StrokeThickness="0"
                                              Padding="12">
 					<syncfusion:SfListView x:Name="DateList"
 										   ItemsSource="{Binding Dates}"
@@ -38,7 +38,7 @@
                             <DataTemplate x:DataType="sys:DateTime">
                                 <syncfusionCards:SfCardView CornerRadius="10"
                                                              BackgroundColor="#FFFFFF"
-                                                             BorderWidth="0"
+                                                             StrokeThickness="0"
                                                              Padding="10,4"
                                                              WidthRequest="64">
                                     <VerticalStackLayout Spacing="0" HorizontalOptions="Center">
@@ -74,7 +74,7 @@
                         <DataTemplate x:DataType="models:Theater">
                             <syncfusionCards:SfCardView CornerRadius="16"
                                                          BackgroundColor="#FFFFFF"
-                                                         BorderWidth="0"
+                                                         StrokeThickness="0"
                                                          Padding="20">
                                 <VerticalStackLayout Spacing="14">
                                     <!-- Header -->
@@ -96,13 +96,9 @@
                                                        FontAttributes="Bold"
                                                        FontSize="15"
                                                        TextColor="#1A1A2E" />
-                                                <syncfusionChips:SfChip Text="{Binding Badge}"
-                                                                         Background="#E5E6F1"
-                                                                         TextColor="#00505F"
-                                                                         FontSize="9"
-                                                                         FontFamily="OpenSansSemibold"
-                                                                         
-                                                                         IsVisible="{Binding Badge, Converter={StaticResource NotNullConverter}}" />
+                                                <Border BackgroundColor="#E5E6F1" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="8,3">
+                                                <Label Text="·" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#00505F" />
+                                              </Border>
                                             </HorizontalStackLayout>
                                             <Label Text="{Binding Location}"
                                                    FontSize="11" TextColor="#49454F" />
@@ -136,7 +132,7 @@
                                             <DataTemplate x:DataType="models:Showtime">
                                                 <syncfusionCards:SfCardView CornerRadius="14"
                                                                              BackgroundColor="#F1F2F8"
-                                                                             BorderWidth="0"
+                                                                             StrokeThickness="0"
                                                                              Padding="12,8">
                                                     <VerticalStackLayout Spacing="2" WidthRequest="80">
                                                         <Label Text="{Binding StartTime}"

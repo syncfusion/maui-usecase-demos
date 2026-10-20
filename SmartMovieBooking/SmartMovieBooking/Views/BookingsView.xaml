@@ -4,9 +4,12 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionTab="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
-             xmlns:syncfusionChips="clr-namespace:Syncfusion.Maui.Chips;assembly=Syncfusion.Maui.Core"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SmartMovieBooking.Views.BookingsView"
+             x:DataType="vm:BookingsViewModel"
              Title="Bookings">
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="16">
@@ -19,11 +22,11 @@
 
             <!-- SfTabView: Upcoming / History -->
             <syncfusionTab:SfTabView x:Name="BookingsTabView"
-                                       TabBarBackgroundColor="Transparent"
+                                       BackgroundColor="Transparent"
                                        TabBarHeight="44"
                                        TabHeaderPadding="0,4"
                                        TabBarPlacement="Top"
-                                       IsScrollable="False">
+                                       >
                 <syncfusionTab:SfTabItem Header="UPCOMING">
                     <syncfusionTab:SfTabItem.Content>
                         <syncfusion:SfListView x:Name="UpcomingList"
@@ -37,7 +40,7 @@
                                 <DataTemplate x:DataType="models:Booking">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                  BackgroundColor="#FFFFFF"
-                                                                 BorderWidth="0"
+                                                                 StrokeThickness="0"
                                                                  Padding="16">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
                                             <Border Grid.Column="0"
@@ -72,12 +75,9 @@
                                             </VerticalStackLayout>
                                             <VerticalStackLayout Grid.Column="2" Spacing="6"
                                                                  HorizontalOptions="End">
-                                                <syncfusionChips:SfChip Text="{Binding Status, FallbackValue='CONFIRMED'}"
-                                                                         Background="#9DEAF6"
-                                                                         TextColor="#002A33"
-                                                                         FontSize="9"
-                                                                         FontFamily="OpenSansSemibold"
-                                                                          />
+                                                <Border BackgroundColor="#9DEAF6" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="8,3">
+                                                <Label Text="CONFIRMED" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#002A33" />
+                                              </Border>
                                                 <Label Text="{Binding BookingId}"
                                                        FontFamily="OpenSansSemibold"
                                                        FontSize="10"

@@ -4,7 +4,6 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
-             xmlns:syncfusionChips="clr-namespace:Syncfusion.Maui.Chips;assembly=Syncfusion.Maui.Core"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              x:Class="SmartMovieBooking.Views.MovieHomeView"
@@ -22,8 +21,8 @@
             <!-- Search -->
             <syncfusionCards:SfCardView CornerRadius="12"
                                          BackgroundColor="#F1F2F8"
-                                         BorderColor="#CAC7D0"
-                                         BorderWidth="1"
+                                         StrokeColor="#CAC7D0"
+                                         StrokeThickness="1"
                                          Padding="14,0"
                                          HeightRequest="44">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
@@ -59,7 +58,7 @@
                     <DataTemplate x:DataType="models:Movie">
                         <syncfusionCards:SfCardView CornerRadius="16"
                                                      BackgroundColor="#FFFFFF"
-                                                     BorderWidth="0">
+                                                     StrokeThickness="0">
                             <VerticalStackLayout Spacing="0">
                                 <!-- Poster area -->
                                 <Grid HeightRequest="200" BackgroundColor="#E5E6F1">
@@ -83,15 +82,9 @@
                                         </HorizontalStackLayout>
                                     </Border>
                                     <!-- Format chip -->
-                                    <syncfusionChips:SfChip Text="{Binding Format}"
-                                                             Background="#4F46E5"
-                                                             TextColor="#FFFFFF"
-                                                             FontFamily="OpenSansSemibold"
-                                                             FontSize="9"
-                                                             
-                                                             HorizontalOptions="Start"
-                                                             VerticalOptions="Start"
-                                                             Margin="8,8,0,0" />
+                                    <Border BackgroundColor="#4F46E5" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="8,3">
+                                                <Label Text="·" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#FFFFFF" />
+                                              </Border>
                                 </Grid>
                                 <VerticalStackLayout Padding="12" Spacing="4">
                                     <Label Text="{Binding Title}"

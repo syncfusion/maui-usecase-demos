@@ -25,7 +25,7 @@
             <VerticalStackLayout Spacing="12">
                 <syncfusionCards:SfCardView CornerRadius="12"
                                              BackgroundColor="#1A1A2E"
-                                             BorderWidth="0"
+                                             StrokeThickness="0"
                                              Padding="20,8">
                     <Label Text="🎬 ALL EYES THIS WAY 🎬"
                            FontFamily="OpenSansSemibold"
@@ -37,7 +37,7 @@
                 <syncfusion:SfListView x:Name="SeatGrid"
                                        ItemsSource="{Binding Seats}"
                                        ItemSpacing="4"
-                                       LineSpacing="6"
+                                       ItemSpacing="6"
                                        BackgroundColor="Transparent"
                                        SelectionMode="None">
                     <syncfusion:SfListView.ItemsLayout>
@@ -81,8 +81,8 @@
         <syncfusionCards:SfCardView Grid.Row="2"
                                      CornerRadius="0"
                                      BackgroundColor="#FFFFFF"
-                                     BorderColor="#CAC7D0"
-                                     BorderWidth="0,1,0,0"
+                                     StrokeColor="#CAC7D0"
+                                     StrokeThickness="0,1,0,0"
                                      Padding="20,12,20,16">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
@@ -100,8 +100,8 @@
                     <syncfusionButtons:SfButton Text="Cancel"
                                                  BackgroundColor="Transparent"
                                                  TextColor="#49454F"
-                                                 BorderColor="#CAC7D0"
-                                                 BorderWidth="1"
+                                                 StrokeColor="#CAC7D0"
+                                                 StrokeThickness="1"
                                                  CornerRadius="10"
                                                  FontFamily="OpenSansSemibold"
                                                  WidthRequest="88"

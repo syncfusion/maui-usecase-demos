@@ -39,8 +39,8 @@
                 <DataTemplate x:DataType="x:String">
                     <syncfusionCards:SfCardView CornerRadius="12"
                                                  BackgroundColor="#FFFFFF"
-                                                 BorderColor="#CAC7D0"
-                                                 BorderWidth="1"
+                                                 StrokeColor="#CAC7D0"
+                                                 StrokeThickness="1"
                                                  Padding="12,8">
                         <Label Text="{Binding .}"
                                FontSize="13"
@@ -55,7 +55,7 @@
         <syncfusionCards:SfCardView Grid.Row="2"
                                      CornerRadius="24"
                                      BackgroundColor="#F1F2F8"
-                                     BorderWidth="0"
+                                     StrokeThickness="0"
                                      Padding="16,8">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" VerticalOptions="Center">
                 <Entry Grid.Column="0"
