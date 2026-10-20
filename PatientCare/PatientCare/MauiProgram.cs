@@ -9,7 +9,9 @@ namespace PatientCare
     {
         public static MauiApp CreateMauiApp()
         {
-            
+
+            SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY");
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
