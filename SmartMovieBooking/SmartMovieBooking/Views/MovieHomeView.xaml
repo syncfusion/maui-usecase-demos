@@ -18,11 +18,11 @@
                        FontSize="13" TextColor="#49454F" />
             </VerticalStackLayout>
 
-            <!-- Search -->
-            <Border StrokeShape="RoundRectangle 12"
-                    BackgroundColor="#F1F2F8"
-                    Padding="14,0"
-                    HeightRequest="44">
+            <!-- Search box wrapped in an SfCardView (replaces plain Border) -->
+            <syncfusionCards:SfCardView CornerRadius="12"
+                                         BackgroundColor="#F1F2F8"
+                                         Padding="14,0"
+                                         HeightRequest="44">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
                     <Label Grid.Column="0" Text="🔍" FontSize="14" VerticalTextAlignment="Center" />
                     <Entry Grid.Column="1" x:Name="SearchEntry"
@@ -31,7 +31,7 @@
                            BackgroundColor="Transparent"
                            TextChanged="OnSearchChanged" />
                 </Grid>
-            </Border>
+            </syncfusionCards:SfCardView>
 
             <!-- Genre chip strip: built dynamically in code-behind -->
             <HorizontalStackLayout x:Name="GenreChipStrip" Spacing="8" />
@@ -41,25 +41,31 @@
                                IsVisible="True" HorizontalOptions="Center"
                                Color="#3525CD" />
 
-            <!-- Movie cards: use plain CollectionView for reliable bindings.
-                 Each card uses a TapGestureRecognizer that targets the whole
-                 card and navigates to the Theaters page. -->
-            <CollectionView x:Name="MoviesList"
-                            ItemsSource="{Binding FilteredMovies}"
-                            SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="2"
-                                     HorizontalItemSpacing="12" VerticalItemSpacing="12" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Movie">
-                        <Border StrokeShape="RoundRectangle 16"
-                                BackgroundColor="#FFFFFF"
-                                Padding="0">
-                            <Border.GestureRecognizers>
+            <!-- Movie cards grid using SfListView (2-column Syncfusion layout) -->
+            <syncfusion:SfListView x:Name="MoviesList"
+                                   ItemsSource="{Binding FilteredMovies}"
+                                   ItemSpacing="12"
+                                   AutoFitMode="DynamicHeight"
+                                   BackgroundColor="Transparent"
+                                   SelectionMode="Single"
+                                   SelectionChanged="OnMovieTapped">
+                <syncfusion:SfListView.ItemsLayout>
+                    <syncfusion:GridLayout SpanCount="2" />
+                </syncfusion:SfListView.ItemsLayout>
+                <syncfusion:SfListView.ItemTemplate>
+                    <!-- NOTE: x:DataType deliberately omitted here. SfListView with
+                         runtime inflator does not reliably resolve compiled bindings
+                         on inner DataTemplates (XLS errors / silent empty bindings).
+                         Without x:DataType the bindings resolve at runtime via
+                         reflection against the DataContext, which is the Movie item. -->
+                    <DataTemplate>
+                        <syncfusionCards:SfCardView CornerRadius="16"
+                                                     BackgroundColor="#FFFFFF"
+                                                     Padding="0">
+                            <syncfusionCards:SfCardView.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnMovieCardTapped"
                                                         CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
+                            </syncfusionCards:SfCardView.GestureRecognizers>
                             <VerticalStackLayout Spacing="0">
                                 <!-- Poster area -->
                                 <Grid HeightRequest="180" BackgroundColor="#E5E6F1">
@@ -109,7 +115,7 @@
                                            LineBreakMode="TailTruncation"
                                            MaxLines="2"
                                            TextColor="#49454F" />
-                                    <!-- Genre + duration + certificate -->
+                                    <!-- Genre · Duration · Certificate -->
                                     <HorizontalStackLayout Spacing="4" Margin="0,4,0,0">
                                         <Label Text="{Binding PrimaryGenre}"
                                                FontSize="9" TextColor="#7A7B8C"
@@ -123,12 +129,24 @@
                                                FontSize="9" TextColor="#7A7B8C"
                                                VerticalTextAlignment="Center" />
                                     </HorizontalStackLayout>
+                                    <!-- Book Now button -->
+                                    <syncfusionButtons:SfButton Text="Book Now"
+                                                                 Background="#3525CD"
+                                                                 TextColor="#FFFFFF"
+                                                                 CornerRadius="10"
+                                                                 HeightRequest="36"
+                                                                 Margin="0,8,0,0"
+                                                                 FontFamily="OpenSansSemibold"
+                                                                 FontSize="12"
+                                                                 HorizontalOptions="Fill"
+                                                                 CommandParameter="{Binding .}"
+                                                                 Clicked="OnBookNowClicked" />
                                 </VerticalStackLayout>
                             </VerticalStackLayout>
-                        </Border>
+                        </syncfusionCards:SfCardView>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-                <CollectionView.EmptyView>
+                </syncfusion:SfListView.ItemTemplate>
+                <syncfusion:SfListView.EmptyView>
                     <VerticalStackLayout Padding="40" Spacing="8" HorizontalOptions="Center">
                         <Label Text="🎞️" FontSize="48" HorizontalTextAlignment="Center" />
                         <Label Text="No movies match your filters"
@@ -141,8 +159,8 @@
                                HorizontalTextAlignment="Center"
                                TextColor="#49454F" />
                     </VerticalStackLayout>
-                </CollectionView.EmptyView>
-            </CollectionView>
+                </syncfusion:SfListView.EmptyView>
+            </syncfusion:SfListView>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

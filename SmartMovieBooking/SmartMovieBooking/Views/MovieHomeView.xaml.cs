@@ -27,6 +27,8 @@ public partial class MovieHomeView : ContentPage
     }
 
     // Build the genre chip strip with plain Borders (no Syncfusion SfChip).
+    // Syncfusion's SfChip API has incompatible property names between minor
+    // versions, so a plain Border + Label + TapGestureRecognizer is used.
     private void BuildGenreChips()
     {
         GenreChipStrip.Children.Clear();
@@ -70,20 +72,39 @@ public partial class MovieHomeView : ContentPage
     private void OnSearchChanged(object? sender, TextChangedEventArgs e)
         => _vm.SearchText = e.NewTextValue ?? string.Empty;
 
-    // Called from TapGestureRecognizer on each movie card. Stores the
-    // selected movie in BookingSession and navigates to the Theaters tab.
+    // Called from TapGestureRecognizer on each movie card (whole-card tap).
     private void OnMovieCardTapped(object? sender, TappedEventArgs e)
     {
         if (e.Parameter is not Movie movie) return;
+        NavigateToTheatersFor(movie);
+    }
 
+    // Called from the "Book Now" SfButton inside each card. The SfButton's
+    // BindingContext is the Movie (inherited from the SfCardView parent).
+    private void OnBookNowClicked(object? sender, EventArgs e)
+    {
+        if (sender is BindableObject bo && bo.BindingContext is Movie movie)
+            NavigateToTheatersFor(movie);
+    }
+
+    // Called from SfListView's SelectionChanged when the user clicks a row.
+    private void OnMovieTapped(object? sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.FirstOrDefault() is not Movie movie) return;
+        MoviesList.SelectedItem = null;
+        NavigateToTheatersFor(movie);
+    }
+
+    private void NavigateToTheatersFor(Movie movie)
+    {
         _session.SelectedMovie = movie;
         _session.SelectedTheater = null;
         _session.SelectedShowtime = null;
         _session.SelectedDate = DateTime.Today;
         _session.SelectedSeats.Clear();
 
-        // Shell.Current.GoToAsync with a "//" prefix navigates to an
+        // Shell.Current.GoToAsync with "//" prefix navigates to an
         // absolute tab - in this case the Theaters tab.
-        _ = Shell.Current.GoToAsync("//theaters");
+        MainThread.BeginInvokeOnMainThread(() => _ = Shell.Current.GoToAsync("//theaters"));
     }
 }
