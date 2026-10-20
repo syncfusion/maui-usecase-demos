@@ -34,18 +34,16 @@
                                                ItemSpacing="12"
                                                BackgroundColor="Transparent">
                             <syncfusion:SfListView.ItemsLayout>
-                                <syncfusion:LinearLayout Orientation="Vertical" />
+                                <VerticalStackLayout />
                             </syncfusion:SfListView.ItemsLayout>
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Booking">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                  BackgroundColor="#FFFFFF"
-                                                                 StrokeThickness="0"
                                                                  Padding="16">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
                                             <Border Grid.Column="0"
                                                     WidthRequest="64" HeightRequest="80"
-                                                    StrokeThickness="0"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="#F1F2F8">
                                                 <Label Text="🎬" FontSize="28"
@@ -75,7 +73,7 @@
                                             </VerticalStackLayout>
                                             <VerticalStackLayout Grid.Column="2" Spacing="6"
                                                                  HorizontalOptions="End">
-                                                <Border BackgroundColor="#9DEAF6" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="8,3">
+                                                <Border BackgroundColor="#9DEAF6" StrokeShape="RoundRectangle 999" Padding="8,3">
                                                 <Label Text="CONFIRMED" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#002A33" />
                                               </Border>
                                                 <Label Text="{Binding BookingId}"

@@ -25,7 +25,6 @@
             <VerticalStackLayout Spacing="12">
                 <syncfusionCards:SfCardView CornerRadius="12"
                                              BackgroundColor="#1A1A2E"
-                                             StrokeThickness="0"
                                              Padding="20,8">
                     <Label Text="🎬 ALL EYES THIS WAY 🎬"
                            FontFamily="OpenSansSemibold"
@@ -81,8 +80,6 @@
         <syncfusionCards:SfCardView Grid.Row="2"
                                      CornerRadius="0"
                                      BackgroundColor="#FFFFFF"
-                                     StrokeColor="#CAC7D0"
-                                     StrokeThickness="0,1,0,0"
                                      Padding="20,12,20,16">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
@@ -100,8 +97,6 @@
                     <syncfusionButtons:SfButton Text="Cancel"
                                                  BackgroundColor="Transparent"
                                                  TextColor="#49454F"
-                                                 StrokeColor="#CAC7D0"
-                                                 StrokeThickness="1"
                                                  CornerRadius="10"
                                                  FontFamily="OpenSansSemibold"
                                                  WidthRequest="88"

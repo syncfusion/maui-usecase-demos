@@ -34,7 +34,6 @@
 
                 <syncfusionCards:SfCardView CornerRadius="16"
                                              BackgroundColor="#F1F2F8"
-                                             StrokeThickness="0"
                                              Padding="20">
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <VerticalStackLayout Grid.Column="0">
@@ -60,8 +59,6 @@
 
                 <syncfusionCards:SfCardView CornerRadius="16"
                                              BackgroundColor="#FFFFFF"
-                                             StrokeColor="#CAC7D0"
-                                             StrokeThickness="1"
                                              Padding="16">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="TICKET DETAILS"
@@ -86,8 +83,6 @@
             <syncfusionButtons:SfButton Text="Back to Home"
                                          BackgroundColor="Transparent"
                                          TextColor="#49454F"
-                                         StrokeColor="#CAC7D0"
-                                         StrokeThickness="1"
                                          CornerRadius="10"
                                          FontFamily="OpenSansSemibold"
                                          HeightRequest="44"
