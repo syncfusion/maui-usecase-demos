@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Diagram Builder light theme palette — see agent/ui-spec.md §9.
+         All views reference these keys via DynamicResource (ResourceKeys). -->
+
+    <!-- Core theme -->
+    <Color x:Key="PrimaryColor">#0D6EFD</Color>
+    <Color x:Key="WindowBackground">#F5F6F8</Color>
+    <Color x:Key="CanvasBackground">#FFFFFF</Color>
+    <Color x:Key="PanelBackground">#FAFAFA</Color>
+    <Color x:Key="PanelBorderColor">#DADADA</Color>
+    <Color x:Key="SelectionBlue">#2196F3</Color>
+    <Color x:Key="TextPrimary">#1F1F1F</Color>
+    <Color x:Key="TextSecondary">#5F6368</Color>
+    <Color x:Key="HoverBackground">#EFEFEF</Color>
+    <Color x:Key="ErrorColor">#D93025</Color>
+
+    <!-- Category accents (Create Diagram cards) -->
+    <Color x:Key="AccentFlow">#0D6EFD</Color>
+    <Color x:Key="AccentMindMap">#7C3AED</Color>
+    <Color x:Key="AccentOrgChart">#0F9D58</Color>
+
+    <!-- Brushes for direct Brush-typed properties (colors above remain the single source of truth) -->
+    <SolidColorBrush x:Key="PrimaryColorBrush" Color="{StaticResource PrimaryColor}" />
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackground}" />
+    <SolidColorBrush x:Key="CanvasBackgroundBrush" Color="{StaticResource CanvasBackground}" />
+    <SolidColorBrush x:Key="PanelBackgroundBrush" Color="{StaticResource PanelBackground}" />
+    <SolidColorBrush x:Key="PanelBorderBrush" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="SelectionBlueBrush" Color="{StaticResource SelectionBlue}" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondary}" />
+    <SolidColorBrush x:Key="HoverBackgroundBrush" Color="{StaticResource HoverBackground}" />
+    <SolidColorBrush x:Key="AccentFlowBrush" Color="{StaticResource AccentFlow}" />
+    <SolidColorBrush x:Key="AccentMindMapBrush" Color="{StaticResource AccentMindMap}" />
+    <SolidColorBrush x:Key="AccentOrgChartBrush" Color="{StaticResource AccentOrgChart}" />
+    <SolidColorBrush x:Key="ErrorColorBrush" Color="{StaticResource ErrorColor}" />
+</ResourceDictionary>
