@@ -96,8 +96,7 @@ DiagramBuilder/
         ├── Resources/
         │   ├── Styles/
         │   │   ├── Colors.xaml                 (theme ResourceDictionary)
-        │   │   ├── Styles.xaml                 (control styles)
-        │   │   └── DiagramTheme.xaml           (diagram-specific brushes & menu/toolbar styles)
+        │   │   └── Styles.xaml                 (control styles)
         │   ├── Fonts/ (Segoe UI fallback: OpenSans shipped; FontFamily constant = "Segoe UI")
         │   └── Raw/Templates/
         │       ├── flow-credit-card-processing.json
