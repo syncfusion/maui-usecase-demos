@@ -65,14 +65,7 @@ public partial class PatientsPage : ContentPage
     {
         try
         {
-            var returnRoute = viewModel.ReturnRoute;
             viewModel.CloseProfileCommand.Execute(null);
-
-            if (!string.IsNullOrEmpty(returnRoute))
-            {
-                viewModel.ReturnRoute = string.Empty;
-                await Shell.Current.GoToAsync($"//{returnRoute}");
-            }
         }
         catch (Exception ex)
         {

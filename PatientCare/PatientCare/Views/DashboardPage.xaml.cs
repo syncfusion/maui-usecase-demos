@@ -54,12 +54,6 @@ public partial class DashboardPage : ContentPage, IQueryAttributable
 		MobileAppointmentsSheet.IsVisible = false;
 	}
 
-	private void OnCloseNotificationsPopupTapped(object? sender, TappedEventArgs e)
-	{
-		NotificationsPopup.IsOpen = false;
-		MobileCareAlertsSheet.IsVisible = false;
-	}
-
 	private void OnCloseNotificationsPopupClicked(object? sender, EventArgs e)
 	{
 		NotificationsPopup.IsOpen = false;

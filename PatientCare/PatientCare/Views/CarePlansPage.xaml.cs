@@ -1,4 +1,3 @@
-using PatientCare.Models;
 using PatientCare.Services;
 using PatientCare.ViewModels;
 
@@ -16,14 +15,6 @@ public partial class CarePlansPage : ContentPage
         BindingContext = viewModel;
         DesktopNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
         MobileNotificationBadge.BadgeText = notificationService.CareAlertCount.ToString();
-    }
-
-    private void OnPatientChipTapped(object? sender, TappedEventArgs e)
-    {
-        if (e.Parameter is Patient patient)
-        {
-            viewModel.SelectPatientCommand.Execute(patient);
-        }
     }
 
     private async void OnNotificationsTapped(object? sender, TappedEventArgs e)
