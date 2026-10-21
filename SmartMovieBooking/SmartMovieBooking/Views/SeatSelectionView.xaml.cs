@@ -1,4 +1,7 @@
+using SmartMovieBooking.Models;
+using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
+using Syncfusion.Maui.Buttons;
 
 namespace SmartMovieBooking.Views;
 
@@ -20,24 +23,29 @@ public partial class SeatSelectionView : ContentPage
         ScreenTitleLabel.Text = _vm.ScreenTitle;
         TheaterLabel.Text = $"{_vm.TheaterName} · {_vm.ShowtimeLabel}";
         UpdatePricing();
+        UpdateSeatsList();
+    }
+
+    private void UpdateSeatsList()
+    {
+        // Re-build flat seat list with one entry per real seat (skip aisle placeholders)
+        var flat = _vm.Seats.Where(s => s.State != SeatState.Aisle).ToList();
+        _vm.Seats.Clear();
+        foreach (var s in flat) _vm.Seats.Add(s);
+        UpdatePricing();
+    }
+
+    private void OnSeatTapped(object? sender, EventArgs e)
+    {
+        if (sender is not SfButton btn || btn.BindingContext is not Seat seat) return;
+        _vm.ToggleSeat(seat);
+        UpdatePricing();
     }
 
     private void UpdatePricing()
     {
         SeatsSummaryLabel.Text = $"{_vm.SelectedCount} tickets";
         TotalLabel.Text = _vm.FormattedTotal;
-    }
-
-    private void OnIncreaseClicked(object? sender, EventArgs e)
-    {
-        _vm.IncreaseCommand.Execute(null);
-        UpdatePricing();
-    }
-
-    private void OnDecreaseClicked(object? sender, EventArgs e)
-    {
-        _vm.DecreaseCommand.Execute(null);
-        UpdatePricing();
     }
 
     private async void OnCancelClicked(object? sender, EventArgs e)
