@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq;
 using PatientCare.Models;
 using PatientCare.Services;
 
@@ -42,6 +43,19 @@ public sealed class DashboardViewModel : INotifyPropertyChanged
     public ObservableCollection<DashboardStatusPoint> VisitStatuses { get; } = [];
     public ObservableCollection<CareAlert> CareAlerts { get; } = [];
     public ObservableCollection<DashboardAppointment> UpcomingAppointments { get; } = [];
+    
+    public double WeeklyAppointmentsMaxValue
+    {
+        get
+        {
+            if (WeeklyAppointments.Count == 0)
+                return 20; // Default value
+            
+            var maxValue = WeeklyAppointments.Max(point => point.Value);
+            // Add 10% padding to the max value, with a minimum of 20
+            return Math.Max(maxValue * 1.1, 20);
+        }
+    }
     public ObservableCollection<DashboardAppointment> UpcomingAppointmentsLimited
     {
         get => new(UpcomingAppointments.Take(3));
@@ -77,6 +91,9 @@ public sealed class DashboardViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(CompletedVisitsCount));
             OnPropertyChanged(nameof(TodayVisitCount));
             OnPropertyChanged(nameof(CompletedPercentage));
+            OnPropertyChanged(nameof(CareAlerts));
+            OnPropertyChanged(nameof(UpcomingAppointmentsLimited));
+            OnPropertyChanged(nameof(WeeklyAppointmentsMaxValue));
         }
         catch (Exception exception)
         {

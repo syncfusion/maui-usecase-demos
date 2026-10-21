@@ -72,11 +72,10 @@ public sealed class DashboardDataService
     private static ObservableCollection<DashboardChartPoint> CreateWeeklyAppointments(
         IReadOnlyList<ScheduleAppointment> appointments, DateTime today)
     {
-        var weekStart = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
-        if (today.DayOfWeek == DayOfWeek.Sunday)
-        {
-            weekStart = today.Date.AddDays(-6);
-        }
+        // Calculate Monday as the start of the week (consistent with CarePlanDataService)
+        var daysFromMonday = (int)today.DayOfWeek - (int)DayOfWeek.Monday;
+        if (daysFromMonday < 0) daysFromMonday += 7; // Handle Sunday correctly
+        var weekStart = today.Date.AddDays(-daysFromMonday);
 
         return new ObservableCollection<DashboardChartPoint>(Enumerable.Range(0, 5).Select(offset =>
         {
