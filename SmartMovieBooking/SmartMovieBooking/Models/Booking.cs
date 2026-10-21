@@ -11,9 +11,12 @@ public partial class Booking : ObservableObject
     [ObservableProperty] private Theater? _theater;
     [ObservableProperty] private Showtime? _showtime;
     [ObservableProperty] private ObservableCollection<Seat> _seats = new();
+    [ObservableProperty] private int _ticketCount;
     [ObservableProperty] private decimal _subtotal;
     [ObservableProperty] private decimal _convenienceFee = 2.50m;
     [ObservableProperty] private decimal _total;
     [ObservableProperty] private string _paymentMethod = "Card";
     [ObservableProperty] private string _status = "Confirmed";
+
+    public int SeatCount => TicketCount > 0 ? TicketCount : Seats.Count;
 }

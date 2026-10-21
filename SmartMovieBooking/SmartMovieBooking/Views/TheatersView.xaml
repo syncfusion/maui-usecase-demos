@@ -186,16 +186,7 @@
                     </syncfusion:SfListView.ItemTemplate>
                 </syncfusion:SfListView>
 
-                <syncfusionButtons:SfButton Text="Select Showtime &amp; Continue →"
-                                            x:Name="SelectShowtimeButton"
-                                            BackgroundColor="#3525CD"
-                                            TextColor="#FFFFFF"
-                                            CornerRadius="12"
-                                            FontFamily="OpenSansSemibold"
-                                            FontAttributes="Bold"
-                                            HeightRequest="48"
-                                            Clicked="OnSelectShowtimeClicked"
-                                            HorizontalOptions="Fill" />
+                <!-- No button needed: selecting a showtime navigates directly to ticket count selection. -->
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

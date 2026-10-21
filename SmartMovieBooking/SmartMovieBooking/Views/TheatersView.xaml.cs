@@ -34,16 +34,15 @@ public partial class TheatersView : ContentPage
         }
     }
 
-    private void OnShowtimeSelected(object? sender, ItemSelectionChangedEventArgs e)
+    private async void OnShowtimeSelected(object? sender, ItemSelectionChangedEventArgs e)
     {
         if (e.AddedItems.FirstOrDefault() is not Showtime s) return;
         _vm.SelectedShowtime = s;
         if (sender is SfListView list) list.SelectedItem = null;
-    }
 
-    private async void OnSelectShowtimeClicked(object? sender, EventArgs e)
-    {
-        // Navigate to the seat selection popup
+        _session.SelectedTheater = sender is BindableObject bo ? bo.BindingContext as Theater : _vm.SelectedTheater;
+        _session.SelectedShowtime = s;
+        _session.SelectedTicketCount = 1;
         await Shell.Current.GoToAsync("seat-selection");
     }
 }

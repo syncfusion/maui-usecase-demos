@@ -36,7 +36,7 @@ public partial class PaymentConfirmationViewModel : ObservableObject
             TheaterName = _session.SelectedTheater.Name;
         if (_session.SelectedShowtime is not null)
             ShowtimeLabel = $"{_session.SelectedDate:ddd, MMM d} · {_session.SelectedShowtime.StartTime}";
-        SeatsDisplay = string.Join(", ", _session.SelectedSeats.OrderBy(s => s.Id).Select(s => s.Id));
+        SeatsDisplay = $"Tickets: {_session.SelectedTicketCount}";
         Total = _session.Total;
         BookingId = $"BK-{Random.Shared.Next(100000, 999999)}";
         OnPropertyChanged(nameof(FormattedTotal));
@@ -48,7 +48,7 @@ public partial class PaymentConfirmationViewModel : ObservableObject
         IsProcessing = true;
         try
         {
-            await Task.Delay(1500); // simulated processing
+            await Task.Delay(1500);
 
             var booking = new Booking
             {
@@ -57,17 +57,16 @@ public partial class PaymentConfirmationViewModel : ObservableObject
                 Movie = _session.SelectedMovie,
                 Theater = _session.SelectedTheater,
                 Showtime = _session.SelectedShowtime,
+                TicketCount = _session.SelectedTicketCount,
                 Subtotal = _session.Subtotal,
                 ConvenienceFee = _session.ConvenienceFee,
                 Total = _session.Total,
                 PaymentMethod = "Card",
                 Status = "Confirmed"
             };
-            foreach (var s in _session.SelectedSeats) booking.Seats.Add(s);
 
             _repo.Add(booking);
             _session.Reset();
-
             Completed?.Invoke(this, EventArgs.Empty);
         }
         finally
