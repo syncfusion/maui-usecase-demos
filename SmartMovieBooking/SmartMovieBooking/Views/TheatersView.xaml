@@ -11,7 +11,8 @@
              x:Class="SmartMovieBooking.Views.TheatersView"
              x:DataType="vm:TheatersViewModel"
              Title="Theaters">
-    <Grid RowDefinitions="Auto,*" Padding="24" RowSpacing="16">
+	<Grid MaximumWidthRequest="1200"
+		  RowDefinitions="Auto,*" Padding="24" RowSpacing="16">
         <VerticalStackLayout Grid.Row="0" Spacing="4">
             <Label Text="Select Theater" FontFamily="OpenSansSemibold" FontSize="28"
                    FontAttributes="Bold" TextColor="#1A1A2E" />
@@ -29,35 +30,44 @@
 					<syncfusion:SfListView x:Name="DateList"
 										   ItemsSource="{Binding Dates}"
 										   ItemSpacing="8"
+										   IsScrollingEnabled="False"
+										   AutoFitMode="DynamicHeight"
 										   BackgroundColor="Transparent"
-										   HeightRequest="64"
+										   HeightRequest="84"
 										   SelectionMode="Single"
 										   SelectionChanged="OnDateSelected">
+						<syncfusion:SfListView.ItemsLayout>
+							<syncfusion:GridLayout SpanCount="10" />
+						</syncfusion:SfListView.ItemsLayout>
 						<syncfusion:SfListView.ItemTemplate>
                             <DataTemplate x:DataType="sys:DateTime">
+								<Grid RowDefinitions="80">
                                 <syncfusionCards:SfCardView CornerRadius="10"
                                                              BackgroundColor="#FFFFFF"
                                                              Padding="10,4"
-                                                             WidthRequest="64">
-                                    <VerticalStackLayout Spacing="0" HorizontalOptions="Center">
+                                                             HeightRequest="70"
+                                                             WidthRequest="82">
+                                    <Grid RowDefinitions="Auto,Auto,Auto">
                                         <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
                                                FontFamily="OpenSansSemibold"
                                                FontSize="9"
                                                TextColor="#49454F"
                                                HorizontalTextAlignment="Center" />
-                                        <Label Text="{Binding ., StringFormat='{0:dd}'}"
+                                        <Label Grid.Row="1" Text="{Binding ., StringFormat='{0:dd}'}"
                                                FontFamily="OpenSansSemibold"
                                                FontAttributes="Bold"
                                                FontSize="14"
                                                TextColor="#1A1A2E"
                                                HorizontalTextAlignment="Center" />
-                                        <Label Text="{Binding ., StringFormat='{0:ddd MMM}'}"
+											<Label Grid.Row="2"
+												   Text="{Binding ., StringFormat='{0:ddd MMM}'}"
                                                FontFamily="OpenSansSemibold"
                                                FontSize="9"
                                                TextColor="#49454F"
                                                HorizontalTextAlignment="Center" />
-                                    </VerticalStackLayout>
+                                    </Grid>
                                 </syncfusionCards:SfCardView>
+                                </Grid>
                             </DataTemplate>
                         </syncfusion:SfListView.ItemTemplate>
                     </syncfusion:SfListView>
@@ -66,10 +76,13 @@
                 <!-- Theater cards using SfListView vertical -->
 				<syncfusion:SfListView ItemsSource="{Binding Theaters}"
 									   ItemSpacing="12"
+									   IsScrollingEnabled="False"
+									   AutoFitMode="DynamicHeight"
 									   BackgroundColor="Transparent"
 									   SelectionMode="None">
 					<syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Theater">
+							<Grid RowDefinitions="230">
                             <syncfusionCards:SfCardView CornerRadius="16"
                                                          BackgroundColor="#FFFFFF"
                                                          Padding="20">
@@ -87,15 +100,12 @@
                                         </Border>
                                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                                             <HorizontalStackLayout Spacing="6">
-                                                <Label Text="{Binding Name}"
-                                                       FontFamily="OpenSansSemibold"
-                                                       FontAttributes="Bold"
-                                                       FontSize="15"
-                                                       TextColor="#1A1A2E" />
-                                                <Border BackgroundColor="#E5E6F1" StrokeShape="RoundRectangle 999" Padding="8,3">
-                                                <Label Text="·" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#00505F" />
-                                              </Border>
-                                            </HorizontalStackLayout>
+													<Label Text="{Binding Name}"
+														   FontFamily="OpenSansSemibold"
+														   FontAttributes="Bold"
+														   FontSize="15"
+														   TextColor="#1A1A2E" />
+												</HorizontalStackLayout>
                                             <Label Text="{Binding Location}"
                                                    FontSize="11" TextColor="#49454F" />
                                         </VerticalStackLayout>
@@ -121,39 +131,57 @@
 									<syncfusion:SfListView ItemsSource="{Binding Showtimes}"
 														   ItemSpacing="8"
 														   BackgroundColor="Transparent"
-														   HeightRequest="64"
-														   SelectionMode="Single"
+														   HeightRequest="104"
+															   IsScrollingEnabled="False"
+															   AutoFitMode="DynamicHeight"
+															   SelectionMode="Single"
 														   SelectionChanged="OnShowtimeSelected">
-										<syncfusion:SfListView.ItemTemplate>
+											<syncfusion:SfListView.ItemsLayout>
+												<syncfusion:GridLayout SpanCount="5" />
+											</syncfusion:SfListView.ItemsLayout>
+											<syncfusion:SfListView.ItemTemplate>
                                             <DataTemplate x:DataType="models:Showtime">
                                                 <syncfusionCards:SfCardView CornerRadius="14"
                                                                              BackgroundColor="#F1F2F8"
                                                                              Padding="12,8">
-                                                    <VerticalStackLayout Spacing="2" WidthRequest="80">
-                                                        <Label Text="{Binding StartTime}"
-                                                               FontFamily="OpenSansSemibold"
-                                                               FontAttributes="Bold"
-                                                               FontSize="13"
-                                                               TextColor="#1A1A2E" />
-                                                        <Label Text="{Binding Format}"
-                                                               FontFamily="OpenSansSemibold"
-                                                               FontSize="9"
-                                                               TextColor="#3525CD" />
-                                                        <Label Text="{Binding Price, StringFormat='${0:F2}'}"
-                                                               FontFamily="OpenSansSemibold"
-                                                               FontAttributes="Bold"
-                                                               FontSize="10"
-                                                               TextColor="#3525CD" />
-                                                        <Label Text="{Binding Status, Converter={StaticResource ShowtimeStatusLabelConverter}}"
-                                                               FontSize="8"
-                                                               TextColor="{Binding Status, Converter={StaticResource ShowtimeStatusColorConverter}}" />
-                                                    </VerticalStackLayout>
+														<HorizontalStackLayout>
+															<VerticalStackLayout Spacing="2"
+																				 WidthRequest="80">
+																<Label Text="{Binding StartTime}"
+																	   FontFamily="OpenSansSemibold"
+																	   FontAttributes="Bold"
+																	   FontSize="13"
+																	   TextColor="#1A1A2E" />
+																<Label Text="{Binding Format}"
+																	   FontFamily="OpenSansSemibold"
+																	   FontSize="9"
+																	   TextColor="#3525CD" />
+															</VerticalStackLayout>
+															<VerticalStackLayout Spacing="2"
+																				 WidthRequest="80">
+																<Label Text="{Binding Price, StringFormat='${0:F2}'}"
+                                                                       HorizontalOptions="End"
+                                                                       VerticalOptions="Center"
+																	   FontFamily="OpenSansSemibold"
+																	   FontAttributes="Bold"
+																	   FontSize="13"
+																	   TextColor="#3525CD" />
+																<Label Text="{Binding Status, Converter={StaticResource ShowtimeStatusLabelConverter}}"
+																	   HorizontalOptions="End"
+																	   VerticalOptions="Center"
+																	   FontFamily="OpenSansSemibold"
+																	   FontSize="9"
+																	   TextColor="{Binding Status, Converter={StaticResource ShowtimeStatusColorConverter}}" />
+															</VerticalStackLayout>
+														</HorizontalStackLayout>
+                                                  
                                                 </syncfusionCards:SfCardView>
                                             </DataTemplate>
                                         </syncfusion:SfListView.ItemTemplate>
                                     </syncfusion:SfListView>
                                 </VerticalStackLayout>
                             </syncfusionCards:SfCardView>
+                            </Grid>
                         </DataTemplate>
                     </syncfusion:SfListView.ItemTemplate>
                 </syncfusion:SfListView>

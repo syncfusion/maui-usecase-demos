@@ -12,7 +12,7 @@
              x:DataType="vm:BookingsViewModel"
              Title="Bookings">
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
+        <VerticalStackLayout MaximumWidthRequest="1200" Padding="24" Spacing="16">
             <VerticalStackLayout Spacing="4">
                 <Label Text="Your Bookings" FontFamily="OpenSansSemibold" FontSize="28"
                        FontAttributes="Bold" TextColor="#1A1A2E" />
@@ -31,6 +31,8 @@
                     <syncfusionTab:SfTabItem.Content>
 						<syncfusion:SfListView x:Name="UpcomingList"
 											   ItemsSource="{Binding Bookings}"
+											   IsScrollingEnabled="False"
+											   AutoFitMode="DynamicHeight"
 											   ItemSpacing="12"
 											   BackgroundColor="Transparent">
 							<syncfusion:SfListView.ItemTemplate>

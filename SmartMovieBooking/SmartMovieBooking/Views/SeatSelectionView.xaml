@@ -9,7 +9,8 @@
              x:Class="SmartMovieBooking.Views.SeatSelectionView"
              x:DataType="vm:SeatSelectionViewModel"
              Title="Select Seats">
-    <Grid Padding="20" RowSpacing="16" RowDefinitions="Auto,*,Auto" BackgroundColor="#FFFFFF">
+	<Grid MaximumWidthRequest="1200"
+		  Padding="20" RowSpacing="16" RowDefinitions="Auto,*,Auto" BackgroundColor="#FFFFFF">
 
         <!-- Header -->
         <VerticalStackLayout Grid.Row="0" Spacing="4">

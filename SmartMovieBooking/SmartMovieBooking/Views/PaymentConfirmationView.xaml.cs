@@ -30,7 +30,7 @@ public partial class PaymentConfirmationView : ContentPage
     }
 
     private async void OnDoneClicked(object? sender, EventArgs e)
-        => await Shell.Current.GoToAsync("//home");
+        => await Shell.Current.GoToAsync("//theaters");
 
     private async void OnViewBookingsClicked(object? sender, EventArgs e)
         => await Shell.Current.GoToAsync("//bookings");

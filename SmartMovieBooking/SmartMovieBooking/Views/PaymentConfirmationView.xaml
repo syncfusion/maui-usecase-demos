@@ -8,9 +8,10 @@
              x:Class="SmartMovieBooking.Views.PaymentConfirmationView"
              x:DataType="vm:PaymentConfirmationViewModel"
              Title="Booking Confirmed">
-    <Grid Padding="24" RowSpacing="16" RowDefinitions="*,Auto">
+	<Grid MaximumWidthRequest="1200"
+		  Padding="24" RowSpacing="16" RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Spacing="20" VerticalOptions="Center">
+            <VerticalStackLayout  Spacing="20" VerticalOptions="Center">
                 <Grid HeightRequest="120" HorizontalOptions="Center">
                     <Ellipse Fill="#9DEAF6" WidthRequest="120" HeightRequest="120" />
                     <Label Text="✓" FontSize="60" FontFamily="OpenSansSemibold"

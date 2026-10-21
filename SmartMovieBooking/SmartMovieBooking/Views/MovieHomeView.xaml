@@ -10,7 +10,8 @@
              x:DataType="vm:HomeViewModel"
              Title="Movie Home">
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
+		<VerticalStackLayout MaximumWidthRequest="1200"
+							 Padding="24" Spacing="16">
             <VerticalStackLayout Spacing="4">
                 <Label Text="Discover Movies" FontFamily="OpenSansSemibold" FontSize="28"
                        FontAttributes="Bold" TextColor="#1A1A2E" />
@@ -46,104 +47,120 @@
                                    ItemsSource="{Binding FilteredMovies}"
                                    ItemSpacing="12"
                                    AutoFitMode="DynamicHeight"
-                                   BackgroundColor="Transparent"
+								   IsScrollingEnabled="False"
+								   BackgroundColor="Transparent"
                                    SelectionMode="Single"
                                    SelectionChanged="OnMovieTapped">
                 <syncfusion:SfListView.ItemsLayout>
-                    <syncfusion:GridLayout SpanCount="2" />
+                    <syncfusion:GridLayout SpanCount="3" />
                 </syncfusion:SfListView.ItemsLayout>
-                <syncfusion:SfListView.ItemTemplate>
-                    <!-- NOTE: x:DataType deliberately omitted here. SfListView with
-                         runtime inflator does not reliably resolve compiled bindings
-                         on inner DataTemplates (XLS errors / silent empty bindings).
-                         Without x:DataType the bindings resolve at runtime via
-                         reflection against the DataContext, which is the Movie item. -->
-                    <DataTemplate>
+				<syncfusion:SfListView.ItemTemplate>
+					<DataTemplate>
+						<Grid RowDefinitions="320">
                         <syncfusionCards:SfCardView CornerRadius="16"
                                                      BackgroundColor="#FFFFFF"
                                                      Padding="0">
-                            <syncfusionCards:SfCardView.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnMovieCardTapped"
-                                                        CommandParameter="{Binding .}" />
-                            </syncfusionCards:SfCardView.GestureRecognizers>
-                            <VerticalStackLayout Spacing="0">
-                                <!-- Poster area -->
-                                <Grid HeightRequest="180" BackgroundColor="#E5E6F1">
-                                    <Label Text="🎬" FontSize="56"
-                                           HorizontalTextAlignment="Center"
-                                           VerticalTextAlignment="Center"
-                                           TextColor="#7A7B8C" />
-                                    <!-- Rating badge -->
-                                    <Border BackgroundColor="#2F2F44"
-                                            StrokeShape="RoundRectangle 999"
-                                            Padding="8,3"
-                                            HorizontalOptions="End"
-                                            VerticalOptions="Start"
-                                            Margin="0,8,8,0">
-                                        <HorizontalStackLayout Spacing="3" VerticalOptions="Center">
-                                            <Label Text="★" FontSize="10" TextColor="#FFB740" />
-                                            <Label Text="{Binding Rating}"
-                                                   FontFamily="OpenSansSemibold"
-                                                   FontSize="10" TextColor="#F1F2F8" />
-                                        </HorizontalStackLayout>
-                                    </Border>
-                                    <!-- Format chip -->
-                                    <Border BackgroundColor="#4F46E5"
-                                            StrokeShape="RoundRectangle 999"
-                                            Padding="8,3"
-                                            HorizontalOptions="Start"
-                                            VerticalOptions="Start"
-                                            Margin="8,8,0,0">
-                                        <Label Text="{Binding Format}"
-                                               FontFamily="OpenSansSemibold"
-                                               FontSize="10" TextColor="#FFFFFF" />
-                                    </Border>
-                                </Grid>
-                                <!-- Card body -->
-                                <VerticalStackLayout Padding="12" Spacing="4">
-                                    <!-- Movie TITLE -->
-                                    <Label Text="{Binding Title}"
-                                           FontFamily="OpenSansSemibold"
-                                           FontAttributes="Bold"
-                                           FontSize="13"
-                                           LineBreakMode="TailTruncation"
-                                           MaxLines="1"
-                                           TextColor="#1A1A2E" />
-                                    <!-- Tagline -->
-                                    <Label Text="{Binding Tagline}"
-                                           FontSize="10"
-                                           LineBreakMode="TailTruncation"
-                                           MaxLines="2"
-                                           TextColor="#49454F" />
-                                    <!-- Genre · Duration · Certificate -->
-                                    <HorizontalStackLayout Spacing="4" Margin="0,4,0,0">
-                                        <Label Text="{Binding PrimaryGenre}"
-                                               FontSize="9" TextColor="#7A7B8C"
-                                               VerticalTextAlignment="Center" />
-                                        <Label Text="·" FontSize="9" TextColor="#7A7B8C" />
-                                        <Label Text="{Binding Duration}"
-                                               FontSize="9" TextColor="#7A7B8C"
-                                               VerticalTextAlignment="Center" />
-                                        <Label Text="·" FontSize="9" TextColor="#7A7B8C" />
-                                        <Label Text="{Binding Certificate}"
-                                               FontSize="9" TextColor="#7A7B8C"
-                                               VerticalTextAlignment="Center" />
-                                    </HorizontalStackLayout>
-                                    <!-- Book Now button -->
-                                    <syncfusionButtons:SfButton Text="Book Now"
-                                                                 Background="#3525CD"
-                                                                 TextColor="#FFFFFF"
-                                                                 CornerRadius="10"
-                                                                 HeightRequest="36"
-                                                                 Margin="0,8,0,0"
-                                                                 FontFamily="OpenSansSemibold"
-                                                                 FontSize="12"
-                                                                 HorizontalOptions="Fill"
-                                                                 CommandParameter="{Binding .}"
-                                                                 Clicked="OnBookNowClicked" />
-                                </VerticalStackLayout>
-                            </VerticalStackLayout>
-                        </syncfusionCards:SfCardView>
+							<syncfusionCards:SfCardView.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnMovieCardTapped"
+													  CommandParameter="{Binding .}" />
+							</syncfusionCards:SfCardView.GestureRecognizers>
+							<!-- Poster area -->
+							<Grid RowDefinitions="180,100">
+								<Grid Grid.Row="0"
+									  HeightRequest="180"
+									  BackgroundColor="#E5E6F1">
+									<Label Text="🎬"
+										   FontSize="56"
+										   HorizontalTextAlignment="Center"
+										   VerticalTextAlignment="Center"
+										   TextColor="#7A7B8C" />
+									<!-- Rating badge -->
+									<Border BackgroundColor="#2F2F44"
+											StrokeShape="RoundRectangle 999"
+											Padding="8,3"
+											HorizontalOptions="End"
+											VerticalOptions="Start"
+											Margin="0,8,8,0">
+										<HorizontalStackLayout Spacing="3"
+															   VerticalOptions="Center">
+											<Label Text="★"
+												   FontSize="10"
+												   TextColor="#FFB740" />
+											<Label Text="{Binding Rating}"
+												   FontFamily="OpenSansSemibold"
+												   FontSize="10"
+												   TextColor="#F1F2F8" />
+										</HorizontalStackLayout>
+									</Border>
+									<!-- Format chip -->
+									<Border BackgroundColor="#4F46E5"
+											StrokeShape="RoundRectangle 999"
+											Padding="8,3"
+											HorizontalOptions="Start"
+											VerticalOptions="Start"
+											Margin="8,8,0,0">
+										<Label Text="{Binding Format}"
+											   FontFamily="OpenSansSemibold"
+											   FontSize="10"
+											   TextColor="#FFFFFF" />
+									</Border>
+								</Grid>
+								<!-- Card body -->
+								<VerticalStackLayout Grid.Row="1"
+													 Padding="12"
+													 Spacing="4">
+									<!-- Movie TITLE -->
+									<Label Text="{Binding Title}"
+										   FontFamily="OpenSansSemibold"
+										   FontAttributes="Bold"
+										   FontSize="13"
+										   LineBreakMode="TailTruncation"
+										   MaxLines="1"
+										   TextColor="#1A1A2E" />
+									<!-- Tagline -->
+									<Label Text="{Binding Tagline}"
+										   FontSize="10"
+										   LineBreakMode="TailTruncation"
+										   MaxLines="2"
+										   TextColor="#49454F" />
+									<!-- Genre · Duration · Certificate -->
+									<HorizontalStackLayout Spacing="4"
+														   Margin="0,4,0,0">
+										<Label Text="{Binding PrimaryGenre}"
+											   FontSize="9"
+											   TextColor="#7A7B8C"
+											   VerticalTextAlignment="Center" />
+										<Label Text="·"
+											   FontSize="9"
+											   TextColor="#7A7B8C" />
+										<Label Text="{Binding Duration}"
+											   FontSize="9"
+											   TextColor="#7A7B8C"
+											   VerticalTextAlignment="Center" />
+										<Label Text="·"
+											   FontSize="9"
+											   TextColor="#7A7B8C" />
+										<Label Text="{Binding Certificate}"
+											   FontSize="9"
+											   TextColor="#7A7B8C"
+											   VerticalTextAlignment="Center" />
+									</HorizontalStackLayout>
+									<!-- Book Now button -->
+									<syncfusionButtons:SfButton Text="Book Now"
+																Background="#3525CD"
+																TextColor="#FFFFFF"
+																CornerRadius="10"
+																HeightRequest="36"
+																Margin="0,8,0,0"
+																FontFamily="OpenSansSemibold"
+																FontSize="12"
+																HorizontalOptions="Fill"
+																CommandParameter="{Binding .}"
+																Clicked="OnBookNowClicked" />
+								</VerticalStackLayout>
+							</Grid>
+						</syncfusionCards:SfCardView>
+						</Grid>
                     </DataTemplate>
                 </syncfusion:SfListView.ItemTemplate>
                 <syncfusion:SfListView.EmptyView>
