@@ -10,11 +10,5 @@ namespace DiagramBuilder
             InitializeComponent();
             BindingContext = viewModel;
         }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            _ = Shell.Current.GoToAsync($"//{AppConstants.RouteCreateDiagram}");
-        }
     }
 }
