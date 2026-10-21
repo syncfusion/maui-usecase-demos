@@ -68,6 +68,16 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="*" />
+		<!-- Syncfusion controls: Diagram (SfDiagram + SymbolPalette), Core (ConfigureSyncfusionCore),
+		     Buttons (SfButton + SfChip/SfChipGroup), Inputs (SfNumericEntry + SfColorPicker +
+		     SfTextInputLayout), Expander (SfAccordion), Toolkit (SfPopup). -->
+		<PackageReference Include="Syncfusion.Maui.Diagram" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Core" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Buttons" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Inputs" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Expander" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Toolkit" Version="*" />
 	</ItemGroup>
 
 </Project>

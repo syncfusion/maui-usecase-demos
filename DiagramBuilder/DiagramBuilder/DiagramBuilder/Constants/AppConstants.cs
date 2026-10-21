@@ -14,7 +14,7 @@ public static class AppConstants
     public const double ToolbarHeight = 48;
     public const double ToolbarButtonSize = 36;
     public const double StatusbarHeight = 26;
-    public const double PanelCornerRadius = 8;
+    public const double PanelCornerRadius = 12;
     public const double ResponsiveCollapseWidth = 1000;
 
     // Diagram defaults
@@ -94,4 +94,9 @@ public static class AppConstants
     public const string ToolConnectorOrthogonal = "tool.connector.orthogonal";
     public const string ToolConnectorBezier = "tool.connector.bezier";
     public const string ToolText = "tool.text";
+
+    // Shell routes
+    public const string RouteMain = "MainPage";
+    public const string RouteCreateDiagram = "create-diagram";
+    public const string RouteDesigner = "designer";
 }
