@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Core"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
@@ -9,60 +8,65 @@
              x:DataType="vm:SeatSelectionViewModel"
              Title="Select Tickets">
     <Grid MaximumWidthRequest="1200"
-          Padding="20" RowSpacing="16" RowDefinitions="Auto,*,Auto" BackgroundColor="#FFFFFF">
+          Padding="20"
+          RowSpacing="16"
+          RowDefinitions="Auto,*,Auto"
+          BackgroundColor="#FFFFFF">
 
         <VerticalStackLayout Grid.Row="0" Spacing="4">
-            <Label x:Name="ScreenTitleLabel" Text="Select Tickets"
-                   FontFamily="OpenSansSemibold" FontSize="22"
-                   FontAttributes="Bold" TextColor="#1A1A2E" />
-            <Label x:Name="TheaterLabel" Text=""
-                   FontSize="13" TextColor="#49454F" />
+            <Label x:Name="ScreenTitleLabel"
+                   Text="Select Tickets"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="#1A1A2E" />
+            <Label x:Name="TheaterLabel"
+                   Text=""
+                   FontSize="13"
+                   TextColor="#49454F" />
         </VerticalStackLayout>
 
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="16">
-                <syncfusionCards:SfCardView CornerRadius="12"
+                <syncfusionCards:SfCardView CornerRadius="16"
                                             BackgroundColor="#1A1A2E"
-                                            Padding="20,8">
-                    <Label Text="🎬 All eyes this way 🎬"
-                           FontFamily="OpenSansSemibold"
-                           FontSize="11"
-                           HorizontalTextAlignment="Center"
-                           TextColor="#FFFFFF" />
+                                            Padding="20">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="🎬"
+                               FontSize="28"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Choose the number of tickets"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="16"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#FFFFFF" />
+                        <Label Text="Adjust quantity for the selected showtime"
+                               FontSize="11"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#D1D5DB" />
+                    </VerticalStackLayout>
                 </syncfusionCards:SfCardView>
 
                 <syncfusionCards:SfCardView CornerRadius="16"
                                             BackgroundColor="#FFFFFF"
                                             Padding="20">
-                    <VerticalStackLayout Spacing="16">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="Ticket Count"
-                                   FontFamily="OpenSansSemibold"
-                                   FontSize="13"
-                                   TextColor="#7A7B8C" />
-                            <Label Text="Choose how many tickets you need"
-                                   FontFamily="OpenSansSemibold"
-                                   FontAttributes="Bold"
-                                   FontSize="18"
-                                   TextColor="#1A1A2E" />
-                        </VerticalStackLayout>
-
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14" VerticalOptions="Center">
-                            <syncfusionButtons:SfButton Text="-"
-                                                         WidthRequest="44"
-                                                         HeightRequest="44"
-                                                         CornerRadius="12"
+                    <VerticalStackLayout Spacing="18">
+                        <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                            <syncfusionButtons:SfButton Text="−"
+                                                         WidthRequest="48"
+                                                         HeightRequest="48"
+                                                         CornerRadius="14"
                                                          BackgroundColor="#F1F2F8"
                                                          TextColor="#1A1A2E"
                                                          FontFamily="OpenSansSemibold"
                                                          FontAttributes="Bold"
-                                                         FontSize="22"
+                                                         FontSize="24"
                                                          Clicked="OnDecreaseClicked" />
 
                             <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2">
                                 <Label Text="{Binding SelectedCount}"
                                        FontFamily="OpenSansSemibold"
-                                       FontSize="28"
+                                       FontSize="34"
                                        FontAttributes="Bold"
                                        HorizontalTextAlignment="Center"
                                        TextColor="#3525CD" />
@@ -74,48 +78,50 @@
 
                             <syncfusionButtons:SfButton Grid.Column="2"
                                                          Text="+"
-                                                         WidthRequest="44"
-                                                         HeightRequest="44"
-                                                         CornerRadius="12"
+                                                         WidthRequest="48"
+                                                         HeightRequest="48"
+                                                         CornerRadius="14"
                                                          BackgroundColor="#3525CD"
                                                          TextColor="#FFFFFF"
                                                          FontFamily="OpenSansSemibold"
                                                          FontAttributes="Bold"
-                                                         FontSize="22"
+                                                         FontSize="24"
                                                          Clicked="OnIncreaseClicked" />
                         </Grid>
 
-                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="Screening time"
-                                   FontSize="12"
-                                   TextColor="#7A7B8C" />
-                            <Label Grid.Row="0" Grid.Column="1"
-                                   Text="{Binding ShowtimeStartTime}"
-                                   FontFamily="OpenSansSemibold"
-                                   FontSize="12"
-                                   TextColor="#1A1A2E" />
-
-                            <Label Grid.Row="1" Grid.Column="0"
-                                   Text="Price per ticket"
-                                   FontSize="12"
-                                   TextColor="#7A7B8C" />
-                            <Label Grid.Row="1" Grid.Column="1"
-                                   Text="{Binding ShowtimeLabel}"
-                                   FontFamily="OpenSansSemibold"
-                                   FontSize="12"
-                                   TextColor="#1A1A2E" />
-
-                            <Label Grid.Row="2" Grid.Column="0"
-                                   Text="Subtotal"
-                                   FontSize="12"
-                                   TextColor="#7A7B8C" />
-                            <Label Grid.Row="2" Grid.Column="1"
-                                   Text="{Binding FormattedSubtotal}"
-                                   FontFamily="OpenSansSemibold"
-                                   FontSize="12"
-                                   TextColor="#1A1A2E" />
-                        </Grid>
+                        <Border BackgroundColor="#F8F7FF"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="14">
+                            <VerticalStackLayout Spacing="10">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Showtime"
+                                           FontSize="12"
+                                           TextColor="#7A7B8C" />
+                                    <Label Text="{Binding ShowtimeStartTime}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="12"
+                                           TextColor="#1A1A2E" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Price per ticket"
+                                           FontSize="12"
+                                           TextColor="#7A7B8C" />
+                                    <Label Text="{Binding FormattedSubtotal}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="12"
+                                           TextColor="#1A1A2E" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Convenience fee"
+                                           FontSize="12"
+                                           TextColor="#7A7B8C" />
+                                    <Label Text="{Binding FormattedConvenienceFee}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="12"
+                                           TextColor="#1A1A2E" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
                     </VerticalStackLayout>
                 </syncfusionCards:SfCardView>
             </VerticalStackLayout>
@@ -127,11 +133,13 @@
                                     Padding="20,12,20,16">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                 <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
-                    <Label x:Name="SeatsSummaryLabel" Text="0 tickets"
+                    <Label x:Name="SeatsSummaryLabel"
+                           Text="0 tickets"
                            FontFamily="OpenSansSemibold"
                            FontSize="13"
                            TextColor="#1A1A2E" />
-                    <Label x:Name="TotalLabel" Text="$0.00"
+                    <Label x:Name="TotalLabel"
+                           Text="$0.00"
                            FontFamily="OpenSansSemibold"
                            FontAttributes="Bold"
                            FontSize="18"
