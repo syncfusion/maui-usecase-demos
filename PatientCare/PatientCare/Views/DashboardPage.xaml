@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts" 
-             xmlns:gauge="clr-namespace:Syncfusion.Maui.Gauges;assembly=Syncfusion.Maui.Gauges" 
              xmlns:progressBar="clr-namespace:Syncfusion.Maui.ProgressBar;assembly=Syncfusion.Maui.ProgressBar"
              xmlns:list="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView" 
              xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core" 
@@ -10,6 +9,7 @@
              xmlns:models="clr-namespace:PatientCare.Models"
              xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
              xmlns:controls="clr-namespace:PatientCare.Controls"
+            xmlns:converters="clr-namespace:PatientCare.Converters"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="PatientCare.Views.DashboardPage"
              Title="Dashboard" 
@@ -17,6 +17,7 @@
              BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColor}, Dark={StaticResource BackgroundColorDark}}">
     
     <ContentPage.Resources>
+        <converters:StatusColorsConverter x:Key="StatusColorsConverter" />
         <Style TargetType="list:ListViewItem">
             <Setter Property="VisualStateManager.VisualStateGroups">
                 <VisualStateGroupList>
@@ -197,16 +198,16 @@
                         <VerticalStackLayout Spacing="12">
                             <Label Text="VISIT STATUS" FontFamily="OpenSansSemibold" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource DarkText}, Dark={StaticResource DarkTextDark}}" />
                             <chart:SfCircularChart HeightRequest="200">
-                                <chart:DoughnutSeries ItemsSource="{Binding VisitStatuses}" XBindingPath="Label" YBindingPath="Value" InnerRadius="0.80" />
+                                <chart:DoughnutSeries ItemsSource="{Binding VisitStatuses}" PaletteBrushes="{Binding VisitStatuses, Converter={StaticResource StatusColorsConverter}}" XBindingPath="Label" YBindingPath="Value" InnerRadius="0.80" />
                             </chart:SfCircularChart>
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="5" Padding="0,4">
                                 <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                    <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="#14B8A6" CornerRadius="12" />
+                                    <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="#087F73" CornerRadius="12" />
                                     <Label Text="Done" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource DarkText}, Dark={StaticResource DarkTextDark}}" />
                                     <Label Text="{Binding VisitStatuses[0].Percentage, StringFormat='{0:0}%'}" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource DarkText}, Dark={StaticResource DarkTextDark}}" Margin="30,0,0,0" />
                                 </HorizontalStackLayout>
                                 <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                    <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="Black" CornerRadius="12" />
+                                    <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="#2563EB" CornerRadius="12" />
                                     <Label Text="Wait" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource DarkText}, Dark={StaticResource DarkTextDark}}" />
                                     <Label Text="{Binding VisitStatuses[1].Percentage, StringFormat='{0:0}%'}" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource DarkText}, Dark={StaticResource DarkTextDark}}" Margin="34,0,0,0" />
                                 </HorizontalStackLayout>
@@ -372,16 +373,16 @@
                             <VerticalStackLayout Spacing="0">
                                 <Label Text="Visit Status" FontFamily="OpenSansSemibold" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource DarkText}" />
                                 <chart:SfCircularChart HeightRequest="130">
-                                    <chart:DoughnutSeries ItemsSource="{Binding VisitStatuses}" XBindingPath="Label" YBindingPath="Value" InnerRadius="0.80" />
+                                    <chart:DoughnutSeries ItemsSource="{Binding VisitStatuses}" PaletteBrushes="{Binding VisitStatuses, Converter={StaticResource StatusColorsConverter}}" XBindingPath="Label" YBindingPath="Value" InnerRadius="0.80" />
                                 </chart:SfCircularChart>
                                 <VerticalStackLayout HorizontalOptions="Center" Spacing="5">
                                     <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                        <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="#14B8A6" CornerRadius="12" />
+                                        <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="#087F73" CornerRadius="12" />
                                         <Label Text="Done" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{StaticResource DarkText}" />
                                         <Label Text="{Binding VisitStatuses[0].Percentage, StringFormat='{0:0}%'}" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{StaticResource DarkText}" Margin="30,0,0,0" />
                                     </HorizontalStackLayout>
                                     <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                        <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="Black" CornerRadius="12" />
+                                        <BoxView WidthRequest="10" HeightRequest="10" BackgroundColor="#2563EB" CornerRadius="12" />
                                         <Label Text="Wait" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{StaticResource DarkText}" />
                                         <Label Text="{Binding VisitStatuses[1].Percentage, StringFormat='{0:0}%'}" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{StaticResource DarkText}" Margin="34,0,0,0" />
                                     </HorizontalStackLayout>

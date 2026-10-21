@@ -19,7 +19,6 @@ public sealed class PatientsViewModel : INotifyPropertyChanged, IQueryAttributab
     private Patient? selectedPatient;
     private bool hasNoResults;
     private bool isProfileOpen;
-    private string returnRoute = string.Empty;
 
     public PatientsViewModel(PatientDataService patientDataService, ScheduleDataService scheduleDataService)
     {
@@ -84,13 +83,6 @@ public sealed class PatientsViewModel : INotifyPropertyChanged, IQueryAttributab
         set => SetField(ref isProfileOpen, value);
     }
 
-    /// <summary>Route to navigate back to when the profile closes, set when opened from another page.</summary>
-    public string ReturnRoute
-    {
-        get => returnRoute;
-        set => SetField(ref returnRoute, value);
-    }
-
     public ObservableCollection<TimelineActivity> RecentActivities { get; } = [];
 
     public List<string> FilterOptions { get; }
@@ -115,10 +107,6 @@ public sealed class PatientsViewModel : INotifyPropertyChanged, IQueryAttributab
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        ReturnRoute = query.TryGetValue("returnRoute", out var routeValue) && routeValue is string route
-            ? route
-            : string.Empty;
-
         if (query.TryGetValue("patientId", out var value) && value is string patientId)
         {
             var patient = allPatients.FirstOrDefault(p => p.PatientId == patientId);

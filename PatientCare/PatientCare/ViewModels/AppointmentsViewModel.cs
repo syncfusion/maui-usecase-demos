@@ -66,12 +66,10 @@ public sealed class AppointmentsViewModel : INotifyPropertyChanged
         {
             if (ViewMode != SchedulerView.Week)
             {
-                return SelectedDate.Date == DateTime.Today
-                    ? $" {SelectedDate:MMM dd, yyyy}"
-                    : SelectedDate.ToString("MMM dd, yyyy");
+                return SelectedDate.ToString("MMM dd, yyyy");
             }
 
-            var weekStart = SelectedDate.Date.AddDays(-(int)SelectedDate.DayOfWeek);
+            var weekStart = SelectedDate.Date.AddDays(-(int)SelectedDate.DayOfWeek + (int)DayOfWeek.Sunday);
             var weekEnd = weekStart.AddDays(6);
             return SelectedDate.Year == weekEnd.Year
                 ? $"{SelectedDate:MMM dd} - {weekEnd:MMM dd, yyyy}"
