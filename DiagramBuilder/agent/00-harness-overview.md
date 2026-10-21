@@ -76,8 +76,8 @@ the create-diagram experience opens as a modal page so the workspace can preload
   a thin behavior).
 - Every ViewModel ≤ 500 lines (DiagramDesignerViewModel delegates to child VMs).
 - `CommunityToolkit.Mvvm` with `[ObservableProperty]` and `[RelayCommand]` everywhere.
-- No hardcoded strings in views — all user-visible text via `AppResources`-style constants
-  (`AppConstants.Strings`) and theme colors via `ResourceDictionary`.
+- No hardcoded strings in views — all user-visible text via `AppStrings` constants
+  and theme colors via `ResourceDictionary`.
 - Centralized constants (`AppConstants`, `ResourceKeys`).
 - SOLID: services behind interfaces, single-responsibility VMs, controls reusable.
 - Syncfusion sample browser standards: consistent header, AdaptiveTrigger-responsive panels,

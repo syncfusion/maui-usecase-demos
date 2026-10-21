@@ -100,4 +100,4 @@ observable selection/undo state.
 
 `OnIdiom` + `OnPlatform` defaults (desktop-first), plus VisualState trigger to collapse
 left/right panels to overlay flyouts when window width < 1000. Panel visibility is bound to
-`WindowViewModel.ShowStencil / ShowProperties / ShowToolbar` observables (Window menu).
+`DiagramDesignerViewModel.ShowStencil / ShowProperties / ShowToolbar` observables (Window menu).
