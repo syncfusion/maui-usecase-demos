@@ -12,7 +12,7 @@ The Patient Care sample is a healthcare management application built with .NET M
 
 ## Setup Instructions
 1. Ensure you have Visual Studio 2022 or later with .NET MAUI workload installed
-2. Open the `PatientCare.sln` solution file
+2. Open the `PatientCare.slnx` solution file
 3. Restore NuGet packages (this will automatically restore Syncfusion packages)
 4. Add your Syncfusion license key in `MauiProgram.cs`:
    ```csharp

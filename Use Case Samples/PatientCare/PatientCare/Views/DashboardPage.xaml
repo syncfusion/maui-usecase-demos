@@ -178,7 +178,7 @@
                                     </chart:CategoryAxis>
                                 </chart:SfCartesianChart.XAxes>
                                 <chart:SfCartesianChart.YAxes>
-                                    <chart:NumericalAxis Minimum="0" Maximum="20" Interval="5" ShowMajorGridLines="False">
+                                    <chart:NumericalAxis Minimum="0" Maximum="{Binding WeeklyAppointmentsMaxValue}" Interval="5" ShowMajorGridLines="False">
                                         <chart:NumericalAxis.MajorTickStyle>
                                             <chart:ChartAxisTickStyle StrokeWidth="0"/>
                                         </chart:NumericalAxis.MajorTickStyle>
@@ -352,7 +352,7 @@
                                     </chart:CategoryAxis>
                                 </chart:SfCartesianChart.XAxes>
                                 <chart:SfCartesianChart.YAxes>
-                                    <chart:NumericalAxis ShowMajorGridLines="False" Minimum="0" Maximum="15" Interval="5">
+                                    <chart:NumericalAxis ShowMajorGridLines="False" Minimum="0" Maximum="{Binding WeeklyAppointmentsMaxValue}" Interval="5">
                                         <chart:NumericalAxis.MajorTickStyle>
                                             <chart:ChartAxisTickStyle StrokeWidth="0"/>
                                         </chart:NumericalAxis.MajorTickStyle>

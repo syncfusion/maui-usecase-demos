@@ -1,4 +1,4 @@
-﻿namespace PatientCare
+namespace PatientCare
 {
     public partial class AppShell : Shell
     {
@@ -11,6 +11,7 @@
             Routing.RegisterRoute("dashboard", typeof(Views.DashboardPage));
             Routing.RegisterRoute("patients", typeof(Views.PatientsPage));
             Routing.RegisterRoute("schedule", typeof(Views.AppointmentsPage));
+            Routing.RegisterRoute("careplans", typeof(Views.CarePlansPage));
         }
     }
 }
