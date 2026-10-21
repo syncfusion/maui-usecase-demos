@@ -27,4 +27,9 @@ public static class ResourceKeys
     public const string MenuFlyoutItemStyle = "MenuFlyoutItemStyle";
     public const string PanelTitleStyle = "PanelTitleStyle";
     public const string CaptionStyle = "CaptionStyle";
+    public const string PanelStyle = "PanelStyle";
+    public const string FlyoutPopupStyle = "FlyoutPopupStyle";
+    public const string ZoomChipStyle = "ZoomChipStyle";
+    public const string ZoomChipActiveStyle = "ZoomChipActiveStyle";
+    public const string StatusBarTextStyle = "StatusBarTextStyle";
 }
