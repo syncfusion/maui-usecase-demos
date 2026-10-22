@@ -4,6 +4,7 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
@@ -31,26 +32,27 @@
 					   TextColor="#49454F" />
 			</VerticalStackLayout>
 
-			<!-- Search box wrapped in an SfCardView (replaces plain Border) -->
-			<syncfusionCards:SfCardView CornerRadius="12"
-										BackgroundColor="#F1F2F8"
-										Padding="14,0"
-										HeightRequest="44">
-				<Grid ColumnDefinitions="Auto,*"
-					  ColumnSpacing="10"
-					  VerticalOptions="Center">
-					<Label Grid.Column="0"
-						   Text="🔍"
-						   FontSize="14"
-						   VerticalTextAlignment="Center" />
-					<Entry Grid.Column="1"
-						   x:Name="SearchEntry"
-						   Placeholder="Search by title or genre…"
-						   PlaceholderColor="#49454F"
-						   BackgroundColor="Transparent"
-						   TextChanged="OnSearchChanged" />
-				</Grid>
-			</syncfusionCards:SfCardView>
+			<!-- Search box using SfTextInputLayout -->
+			<inputLayout:SfTextInputLayout Hint="Search by title or genre…"
+											OutlineCornerRadius="12"
+											InputViewPadding="25,5"
+											ReserveSpaceForAssistiveLabels="False"
+											FocusedStrokeThickness="0.6"
+											UnfocusedStrokeThickness="0.6"
+											Stroke="#E5E6F1"
+											HeightRequest="44"
+											ContainerType="Outlined">
+				<inputLayout:SfTextInputLayout.HintLabelStyle>
+					<inputLayout:LabelStyle FontSize="14"
+												FontFamily="OpenSansRegular" />
+				</inputLayout:SfTextInputLayout.HintLabelStyle>
+				<Entry x:Name="SearchEntry"
+					   TextChanged="OnSearchChanged"
+					   BackgroundColor="Transparent"
+					   PlaceholderColor="#49454F"
+					   HeightRequest="38"
+					   Margin="16,0,0,4" />
+			</inputLayout:SfTextInputLayout>
 
 			<!-- Genre chip strip: built dynamically in code-behind -->
 			<HorizontalStackLayout x:Name="GenreChipStrip"
