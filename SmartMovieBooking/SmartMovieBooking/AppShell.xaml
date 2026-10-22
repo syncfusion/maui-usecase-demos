@@ -28,10 +28,4 @@
 
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:MovieHomeView}" />
-
-    <ShellContent Route="theaters"
-                  ContentTemplate="{DataTemplate views:TheatersView}" />
-
-    <ShellContent Route="bookings"
-                  ContentTemplate="{DataTemplate views:BookingsView}" />
 </Shell>
