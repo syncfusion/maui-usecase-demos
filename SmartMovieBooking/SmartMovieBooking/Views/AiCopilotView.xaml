@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             x:Class="SmartMovieBooking.Views.AiCopilotView"
+             x:DataType="vm:AiCopilotViewModel"
+             Title="AI Copilot">
+    <Grid Padding="20" RowSpacing="14" RowDefinitions="Auto,*,Auto" BackgroundColor="#FFFFFF">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                <Label Text="✨" FontSize="20" VerticalTextAlignment="Center" />
+                <Label Text="Cinema AI Copilot"
+                       FontFamily="OpenSansSemibold"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="#1A1A2E"
+                       VerticalTextAlignment="Center" />
+            </HorizontalStackLayout>
+            <Label Text="Ask me anything about movies"
+                   FontSize="12" TextColor="#49454F" />
+        </VerticalStackLayout>
+
+        <!-- Chat history using SfListView -->
+		<syncfusion:SfListView x:Name="ChatList"
+							   Grid.Row="1"
+							   ItemsSource="{Binding Messages}"
+							   BackgroundColor="#F8F9FF"
+							   ItemSpacing="8"
+							   SelectionMode="None">
+			<syncfusion:SfListView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <syncfusionCards:SfCardView CornerRadius="12"
+                                                 BackgroundColor="#FFFFFF"
+                                                 Padding="12,8">
+                        <Label Text="{Binding .}"
+                               FontSize="13"
+                               TextColor="#1A1A2E"
+                               LineBreakMode="WordWrap" />
+                    </syncfusionCards:SfCardView>
+                </DataTemplate>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
+
+        <!-- Input bar -->
+        <syncfusionCards:SfCardView Grid.Row="2"
+                                     CornerRadius="24"
+                                     BackgroundColor="#F1F2F8"
+                                     Padding="16,8">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                <Entry Grid.Column="0"
+                       Placeholder="Ask about movies…"
+                       BackgroundColor="Transparent"
+                       Text="{Binding Prompt, Mode=TwoWay}"
+                       ReturnCommand="{Binding SendCommand}" />
+                <syncfusionButtons:SfButton Grid.Column="1"
+                                             Text="↑"
+                                             CornerRadius="16"
+                                             WidthRequest="36"
+                                             HeightRequest="36"
+                                             BackgroundColor="#3525CD"
+                                             TextColor="#FFFFFF"
+                                             FontSize="16"
+                                             FontFamily="OpenSansSemibold"
+                                             Command="{Binding SendCommand}" />
+            </Grid>
+        </syncfusionCards:SfCardView>
+    </Grid>
+</ContentPage>

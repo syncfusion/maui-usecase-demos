@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Multi-target: Android, iOS, Mac Catalyst, Windows desktop -->
+    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SmartMovieBooking</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- NuGet 6.x+ requires explicit ProjectName during restore or it
+         silently skips non-active TFMs ("No packages found" in VS PMC). -->
+    <ProjectName>SmartMovieBooking</ProjectName>
+    <AssemblyName>SmartMovieBooking</AssemblyName>
+
+    <!-- Enable XAML source generation for built-in MAUI controls. Files using
+         Syncfusion controls are individually switched to runtime inflation
+         below because SourceGen does not understand all Syncfusion patterns. -->
+    <MauiXamlInflator>SourceGen</MauiXamlInflator>
+
+    <ApplicationTitle>Smart Movie Ticket Booking</ApplicationTitle>
+    <ApplicationId>com.syncfusion.smartmoviebooking</ApplicationId>
+    <PackageVersion>2.5</PackageVersion>
+    <ApplicationDisplayVersion>2.5</ApplicationDisplayVersion>
+    <ApplicationVersion>25</ApplicationVersion>
+
+    <WindowsPackageType>None</WindowsPackageType>
+
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#3525CD" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#3525CD" BaseSize="128,128" />
+    <MauiImage Include="Resources\Images\*" />
+    <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+    <MauiFont Include="Resources\Fonts\*" />
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Core MAUI -->
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+
+	  <PackageReference Include="Syncfusion.Maui.Core"        Version="*" />
+	  <PackageReference Include="Syncfusion.Maui.ListView"     Version="*" />
+	  <PackageReference Include="Syncfusion.Maui.Buttons"      Version="*" />
+	  <PackageReference Include="Syncfusion.Maui.Cards"        Version="*" />
+	  <PackageReference Include="Syncfusion.Maui.TabView"      Version="*" />
+	  <PackageReference Include="Syncfusion.Maui.Popup"        Version="*" />
+	  <PackageReference Include="Syncfusion.Maui.AIAssistView" Version="*" />
+
+    <!-- Syncfusion MAUI suite -->
+
+  </ItemGroup>
+
+  <!-- XAML pages that contain Syncfusion controls must use the runtime
+       inflator instead of compile-time XamlC. The MauiXaml Update with
+       Inflator="Runtime" override targets individual files only. -->
+  <ItemGroup>
+    <MauiXaml Update="Views\MovieHomeView.xaml"         Inflator="Runtime" />
+    <MauiXaml Update="Views\TheatersView.xaml"          Inflator="Runtime" />
+    <MauiXaml Update="Views\BookingsView.xaml"          Inflator="Runtime" />
+    <MauiXaml Update="Views\SeatSelectionView.xaml"     Inflator="Runtime" />
+    <MauiXaml Update="Views\PaymentConfirmationView.xaml" Inflator="Runtime" />
+    <MauiXaml Update="Views\AiCopilotView.xaml"          Inflator="Runtime" />
+    <MauiXaml Update="AppShell.xaml"                     Inflator="Runtime" />
+  </ItemGroup>
+
+</Project>

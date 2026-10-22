@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Views"
+             x:Class="SmartMovieBooking.Views.MovieHomeView"
+             x:DataType="vm:HomeViewModel"
+             Title="Movie Home">
+	<Grid RowDefinitions="{OnIdiom Default='*,Auto', Phone='*,72'}"
+		  ColumnDefinitions="{OnIdiom Default='200,*', Phone='*'}">
+		<controls:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}"
+							 ActiveTab="Movies" />
+		<Grid MaximumWidthRequest="1200"
+			  Grid.Row="{OnIdiom Default=0, Phone=0}"
+			  Grid.Column="{OnIdiom Default='1', Phone='0'}"
+			  RowDefinitions="Auto,*"
+			  Padding="{OnIdiom Default='24', Phone='16'}">
+		<VerticalStackLayout Grid.Row="0" Spacing="16">
+			<VerticalStackLayout Spacing="4">
+				<Label Text="Discover Movies"
+					   FontFamily="OpenSansSemibold"
+					   FontSize="28"
+					   FontAttributes="Bold"
+					   TextColor="#1A1A2E" />
+				<Label Text="Find the perfect show · 10 movies in catalog"
+					   FontSize="13"
+					   TextColor="#49454F" />
+			</VerticalStackLayout>
+
+			<!-- Search box using SfTextInputLayout -->
+			<inputLayout:SfTextInputLayout Hint="Search by title or genre…"
+											OutlineCornerRadius="12"
+											InputViewPadding="25,5"
+											ReserveSpaceForAssistiveLabels="False"
+											FocusedStrokeThickness="0.6"
+											UnfocusedStrokeThickness="0.6"
+											Stroke="#E5E6F1"
+											HeightRequest="44"
+											ContainerType="Outlined">
+				<inputLayout:SfTextInputLayout.HintLabelStyle>
+					<inputLayout:LabelStyle FontSize="14"
+												FontFamily="OpenSansRegular" />
+				</inputLayout:SfTextInputLayout.HintLabelStyle>
+				<Entry x:Name="SearchEntry"
+					   TextChanged="OnSearchChanged"
+					   BackgroundColor="Transparent"
+					   PlaceholderColor="#49454F"
+					   HeightRequest="38"
+					   Margin="16,0,0,4" />
+			</inputLayout:SfTextInputLayout>
+
+			<!-- Genre chip strip: built dynamically in code-behind -->
+			<HorizontalStackLayout x:Name="GenreChipStrip"
+								   Spacing="8" />
+
+				<!-- Loading indicator -->
+			<ActivityIndicator x:Name="LoadingSpinner"
+							   IsRunning="True"
+							   IsVisible="True"
+							   HorizontalOptions="Center"
+							   Color="#3525CD" />
+		</VerticalStackLayout>
+
+			<ScrollView Grid.Row="1" Margin="0,16,0,16">
+			<!-- Movie cards grid using SfListView (2-column Syncfusion layout) -->
+			<syncfusion:SfListView x:Name="MoviesList"
+								   ItemsSource="{Binding FilteredMovies}"
+								   ItemSpacing="12"
+								   AutoFitMode="DynamicHeight"
+								   IsScrollingEnabled="False"
+								   BackgroundColor="Transparent"
+								   SelectionMode="Single"
+								   SelectionChanged="OnMovieTapped">
+				<syncfusion:SfListView.ItemsLayout>
+					<syncfusion:GridLayout SpanCount="3" />
+				</syncfusion:SfListView.ItemsLayout>
+				<syncfusion:SfListView.ItemTemplate>
+					<DataTemplate>
+						<Grid RowDefinitions="320">
+							<syncfusionCards:SfCardView CornerRadius="16"
+														BackgroundColor="#FFFFFF"
+														Padding="0">
+								<syncfusionCards:SfCardView.GestureRecognizers>
+									<TapGestureRecognizer Tapped="OnMovieCardTapped"
+														  CommandParameter="{Binding .}" />
+								</syncfusionCards:SfCardView.GestureRecognizers>
+								<!-- Poster area -->
+								<Grid RowDefinitions="180,100">
+									<Grid Grid.Row="0"
+										  HeightRequest="180"
+										  BackgroundColor="#E5E6F1">
+										<Label Text="🎬"
+											   FontSize="56"
+											   HorizontalTextAlignment="Center"
+											   VerticalTextAlignment="Center"
+											   TextColor="#7A7B8C" />
+										<!-- Rating badge -->
+										<Border BackgroundColor="#2F2F44"
+												StrokeShape="RoundRectangle 999"
+												Padding="8,3"
+												HorizontalOptions="End"
+												VerticalOptions="Start"
+												Margin="0,8,8,0">
+											<HorizontalStackLayout Spacing="3"
+																   VerticalOptions="Center">
+												<Label Text="★"
+													   FontSize="10"
+													   TextColor="#FFB740" />
+												<Label Text="{Binding Rating}"
+													   FontFamily="OpenSansSemibold"
+													   FontSize="10"
+													   TextColor="#F1F2F8" />
+											</HorizontalStackLayout>
+										</Border>
+										<!-- Format chip -->
+										<Border BackgroundColor="#4F46E5"
+												StrokeShape="RoundRectangle 999"
+												Padding="8,3"
+												HorizontalOptions="Start"
+												VerticalOptions="Start"
+												Margin="8,8,0,0">
+											<Label Text="{Binding Format}"
+												   FontFamily="OpenSansSemibold"
+												   FontSize="10"
+												   TextColor="#FFFFFF" />
+										</Border>
+									</Grid>
+									<!-- Card body -->
+									<VerticalStackLayout Grid.Row="1"
+														 Padding="12"
+														 Spacing="4">
+										<!-- Movie TITLE -->
+										<Label Text="{Binding Title}"
+											   FontFamily="OpenSansSemibold"
+											   FontAttributes="Bold"
+											   FontSize="13"
+											   LineBreakMode="TailTruncation"
+											   MaxLines="1"
+											   TextColor="#1A1A2E" />
+										<!-- Tagline -->
+										<Label Text="{Binding Tagline}"
+											   FontSize="10"
+											   LineBreakMode="TailTruncation"
+											   MaxLines="2"
+											   TextColor="#49454F" />
+										<!-- Genre · Duration · Certificate -->
+										<HorizontalStackLayout Spacing="4"
+															   Margin="0,4,0,0">
+											<Label Text="{Binding PrimaryGenre}"
+												   FontSize="9"
+												   TextColor="#7A7B8C"
+												   VerticalTextAlignment="Center" />
+											<Label Text="·"
+												   FontSize="9"
+												   TextColor="#7A7B8C" />
+											<Label Text="{Binding Duration}"
+												   FontSize="9"
+												   TextColor="#7A7B8C"
+												   VerticalTextAlignment="Center" />
+											<Label Text="·"
+												   FontSize="9"
+												   TextColor="#7A7B8C" />
+											<Label Text="{Binding Certificate}"
+												   FontSize="9"
+												   TextColor="#7A7B8C"
+												   VerticalTextAlignment="Center" />
+										</HorizontalStackLayout>
+										<!-- Book Now button -->
+										<syncfusionButtons:SfButton Text="Book Now"
+																	Background="#3525CD"
+																	TextColor="#FFFFFF"
+																	CornerRadius="10"
+																	HeightRequest="36"
+																	Margin="0,8,0,0"
+																	FontFamily="OpenSansSemibold"
+																	FontSize="12"
+																	HorizontalOptions="Fill"
+																	CommandParameter="{Binding .}"
+																	Clicked="OnBookNowClicked" />
+									</VerticalStackLayout>
+								</Grid>
+							</syncfusionCards:SfCardView>
+						</Grid>
+					</DataTemplate>
+				</syncfusion:SfListView.ItemTemplate>
+				<syncfusion:SfListView.EmptyView>
+					<VerticalStackLayout Padding="40"
+										 Spacing="8"
+										 HorizontalOptions="Center">
+						<Label Text="🎞️"
+							   FontSize="48"
+							   HorizontalTextAlignment="Center" />
+						<Label Text="No movies match your filters"
+							   FontFamily="OpenSansSemibold"
+							   FontSize="14"
+							   HorizontalTextAlignment="Center"
+							   TextColor="#1A1A2E" />
+						<Label Text="Try clearing the search or selecting a different genre."
+							   FontSize="11"
+							   HorizontalTextAlignment="Center"
+							   TextColor="#49454F" />
+					</VerticalStackLayout>
+				</syncfusion:SfListView.EmptyView>
+			</syncfusion:SfListView>
+		</ScrollView>
+		</Grid>
+	</Grid>
+</ContentPage>

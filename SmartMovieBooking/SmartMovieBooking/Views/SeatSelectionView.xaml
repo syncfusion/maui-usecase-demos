@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             x:Class="SmartMovieBooking.Views.SeatSelectionView"
+             x:DataType="vm:SeatSelectionViewModel"
+             Title="Select Seats">
+	<Grid MaximumWidthRequest="1200"
+		  Padding="20" RowSpacing="16" RowDefinitions="Auto,*,Auto" BackgroundColor="#FFFFFF">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label x:Name="ScreenTitleLabel" Text="Select Your Seats"
+                   FontFamily="OpenSansSemibold" FontSize="22"
+                   FontAttributes="Bold" TextColor="#1A1A2E" />
+            <Label x:Name="TheaterLabel" Text=""
+                   FontSize="13" TextColor="#49454F" />
+        </VerticalStackLayout>
+
+        <!-- Screen + seat grid using SfListView with GridLayout -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="12">
+                <syncfusionCards:SfCardView CornerRadius="12"
+                                             BackgroundColor="#1A1A2E"
+                                             Padding="20,8">
+                    <Label Text="🎬 ALL EYES THIS WAY 🎬"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="11"
+                           HorizontalTextAlignment="Center"
+                           TextColor="#FFFFFF" />
+                </syncfusionCards:SfCardView>
+
+                <syncfusion:SfListView x:Name="SeatGrid"
+                                       ItemsSource="{Binding Seats}"
+                                       ItemSpacing="6"
+                                       BackgroundColor="Transparent"
+                                       SelectionMode="None">
+                    <syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:GridLayout SpanCount="14" />
+                    </syncfusion:SfListView.ItemsLayout>
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Seat">
+                            <syncfusionButtons:SfButton Text="{Binding Id}"
+                                                         CornerRadius="6"
+                                                         WidthRequest="32"
+                                                         HeightRequest="32"
+                                                         FontSize="9"
+                                                         FontFamily="OpenSansSemibold"
+                                                         BackgroundColor="{Binding ., Converter={StaticResource SeatColorConverter}}"
+                                                         TextColor="{Binding IsSelected, Converter={StaticResource SelectedFgConverter}}"
+                                                         IsEnabled="{Binding State, Converter={StaticResource SeatEnabledConverter}}"
+                                                         Clicked="OnSeatTapped" />
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+
+                <!-- Legend -->
+                <HorizontalStackLayout Spacing="14" HorizontalOptions="Center" Margin="0,12,0,0">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3" Color="#E5E6F1" />
+                        <Label Text="Available" FontSize="11" TextColor="#49454F" VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3" Color="#3525CD" />
+                        <Label Text="Selected" FontSize="11" TextColor="#49454F" VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <BoxView WidthRequest="14" HeightRequest="14" CornerRadius="3" Color="#9CA3AF" />
+                        <Label Text="Occupied" FontSize="11" TextColor="#49454F" VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Sticky pricing summary -->
+        <syncfusionCards:SfCardView Grid.Row="2"
+                                     CornerRadius="0"
+                                     BackgroundColor="#FFFFFF"
+                                     Padding="20,12,20,16">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                    <Label x:Name="SeatsSummaryLabel" Text="0 tickets"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="13"
+                           TextColor="#1A1A2E" />
+                    <Label x:Name="TotalLabel" Text="$0.00"
+                           FontFamily="OpenSansSemibold"
+                           FontAttributes="Bold"
+                           FontSize="18"
+                           TextColor="#3525CD" />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                    <syncfusionButtons:SfButton Text="Cancel"
+                                                 BackgroundColor="#3525CD"
+                                                 TextColor="#FFFFFF"
+                                                 CornerRadius="10"
+                                                 FontFamily="OpenSansSemibold"
+                                                 WidthRequest="88"
+                                                 HeightRequest="40"
+                                                 Clicked="OnCancelClicked" />
+                    <syncfusionButtons:SfButton Text="Proceed to Pay"
+                                                 BackgroundColor="#3525CD"
+                                                 TextColor="#FFFFFF"
+                                                 CornerRadius="10"
+                                                 FontFamily="OpenSansSemibold"
+                                                 FontAttributes="Bold"
+                                                 WidthRequest="160"
+                                                 HeightRequest="40"
+                                                 Clicked="OnConfirmClicked" />
+                </HorizontalStackLayout>
+            </Grid>
+        </syncfusionCards:SfCardView>
+    </Grid>
+</ContentPage>

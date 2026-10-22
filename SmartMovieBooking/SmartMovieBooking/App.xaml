@@ -1,0 +1,36 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SmartMovieBooking"
+             xmlns:conv="clr-namespace:SmartMovieBooking"
+             xmlns:syncTheme="clr-namespace:Syncfusion.Maui.Themes;assembly=Syncfusion.Maui.Core"
+             x:Class="SmartMovieBooking.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <!-- Syncfusion theme dictionary (registers SfButton/SfListView/SfCard
+                     styles under our brand colors). MaterialLight matches the
+                     Stitch design system. -->
+                <syncTheme:SyncfusionThemeResourceDictionary VisualTheme="MaterialLight"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Global value converters -->
+            <conv:InverseBoolConverter        x:Key="InverseBoolConverter" />
+            <conv:CountToBoolConverter         x:Key="CountToBoolConverter" />
+            <conv:CountToInverseBoolConverter  x:Key="CountToInverseBoolConverter" />
+            <conv:StringEqualsConverter        x:Key="StringEqualsConverter" />
+            <conv:NotNullConverter            x:Key="NotNullConverter" />
+            <conv:CurrencyConverter           x:Key="CurrencyConverter" />
+            <conv:SelectedToBackgroundConverter x:Key="SelectedBgConverter" />
+            <conv:SelectedToForegroundConverter x:Key="SelectedFgConverter" />
+            <conv:EnumToBoolConverter          x:Key="EnumToBoolConverter" />
+            <conv:DateLabelConverter           x:Key="DateLabelConverter" />
+            <conv:ShowtimeStatusLabelConverter  x:Key="ShowtimeStatusLabelConverter" />
+            <conv:ShowtimeStatusColorConverter  x:Key="ShowtimeStatusColorConverter" />
+            <conv:SeatColorConverter           x:Key="SeatColorConverter" />
+            <conv:SeatEnabledConverter         x:Key="SeatEnabledConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
