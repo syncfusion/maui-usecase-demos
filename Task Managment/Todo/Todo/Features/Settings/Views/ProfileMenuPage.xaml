@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.Settings.Views.ProfileMenuPage"
+             Shell.NavBarIsVisible="False"
+             Shell.PresentationMode="ModalNotAnimated"
+             BackgroundColor="#80000000">
+    <Grid>
+        <BoxView Color="Transparent">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOutsideTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+        <Border WidthRequest="300"
+                Margin="0,20,0,0"
+                Padding="20"
+                BackgroundColor="{StaticResource SurfaceColor}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 10"
+                HorizontalOptions="End"
+                VerticalOptions="Start">
+            <VerticalStackLayout Spacing="12">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                    <Border WidthRequest="48" HeightRequest="48" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 24">
+                        <Image Source="profile.png" Aspect="AspectFill" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                        <Label Text="Hi John" FontAttributes="Bold" />
+                        <Label Text="john@gmail.com" FontSize="12"
+                               TextColor="{StaticResource TextSecondaryColor}" />
+                    </VerticalStackLayout>
+                </Grid>
+                <BoxView HeightRequest="1" Color="{StaticResource DividerColor}" />
+                <buttons:SfButton Text="Manage Accounts" Style="{StaticResource TextButtonStyle}"
+                                  HorizontalOptions="Fill" Clicked="OnManageAccountsClicked" />
+                <buttons:SfButton Text="Settings" Style="{StaticResource TextButtonStyle}"
+                                  HorizontalOptions="Fill" Clicked="OnSettingsClicked" />
+                <buttons:SfButton Text="Sign Out" Style="{StaticResource TextButtonStyle}"
+                                  TextColor="{StaticResource DangerColor}"
+                                  HorizontalOptions="Fill" Clicked="OnSignOutClicked" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

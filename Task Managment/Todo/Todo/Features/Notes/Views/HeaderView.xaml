@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.Notes.ViewModels"
+             xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.Notes.Views.HeaderView"
+             x:DataType="vm:NotesListViewModel">
+
+    <Grid HeightRequest="{StaticResource HeaderHeight}"
+          Padding="8,0,16,0"
+          ColumnDefinitions="Auto,*,Auto"
+          BackgroundColor="{StaticResource SurfaceColor}">
+        <Grid.Shadow>
+            <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="0.10" />
+        </Grid.Shadow>
+
+        <HorizontalStackLayout Grid.Column="0"
+                               Spacing="4"
+                               VerticalOptions="Center">
+            <!-- Hamburger menu: collapses / expands the sidebar.
+                 Module-08 task 8-2: 48x48 touch target per the spec. -->
+            <buttons:SfButton  
+                    WidthRequest="18" 
+                    HeightRequest="18" Margin="10,0" CornerRadius="0"
+                    Padding="0" ImageSource="humburger.png" Background="Transparent"    
+                    Command="{Binding ToggleSidebarCommand}"
+                    SemanticProperties.Description="Toggle navigation menu">
+                <buttons:SfButton.Content>
+                    <DataTemplate>
+                        <Image Source="humburger.png"/>
+                    </DataTemplate>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
+            <Label Text="To Do List"
+                   FontSize="17"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimaryColor}"
+                   VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <!-- Search pill -->
+        <Border Grid.Column="1"
+                WidthRequest="{OnIdiom Phone=180, Default=460}"
+                Margin="0,0,0,10" Padding="2"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                BackgroundColor="Transparent"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 18">
+            <Grid ColumnDefinitions="*,Auto">
+                 
+                <syncfusionCore:SfTextInputLayout ContainerType="Outlined"
+                                OutlineCornerRadius="28" FocusedStrokeThickness="1"   Hint="Search"
+                                UnfocusedStrokeThickness="1"  ReserveSpaceForAssistiveLabels="False" Stroke="Transparent" Background="#F7F2FB"
+                                InputViewPadding="16, 0, 16, 0" EnableFloating="False" Margin="0" ShowHelperText="False"
+                                ShowHint="True"
+                                VerticalOptions="Center">
+                    <syncfusionCore:SfTextInputLayout.TrailingView>
+                        <Grid>
+                            <buttons:SfButton ImageSource="search.png"
+                                              FontSize="15"
+                                              Background="Transparent"
+                                              TextColor="{StaticResource TextSecondaryColor}"
+                                              Command="{Binding OpenSearchCommand}"
+                                              IsVisible="{Binding SearchViewModel.IsQueryEmpty}"
+                                              SemanticProperties.Description="Search notes"
+                                              VerticalOptions="Center">
+                                <buttons:SfButton.Content>
+                                    <DataTemplate>
+                                        <Image Source="search.png" HeightRequest="15" WidthRequest="15" Margin="0,2,0,0"/>
+                                    </DataTemplate>
+                                </buttons:SfButton.Content>
+                            </buttons:SfButton>
+                            <buttons:SfButton Text="&#10005;"
+                                              FontSize="16"
+                                              WidthRequest="32"
+                                              HeightRequest="32"
+                                              Padding="0"
+                                              Background="Transparent"
+                                              TextColor="{StaticResource TextSecondaryColor}"
+                                              Command="{Binding ClearSearchQueryCommand}"
+                                              IsVisible="{Binding SearchViewModel.IsQueryEmpty, Converter={StaticResource InvertedBoolConverter}}"
+                                              SemanticProperties.Description="Clear search"
+                                              VerticalOptions="Center" />
+                        </Grid>
+                    </syncfusionCore:SfTextInputLayout.TrailingView>
+
+                    <Entry Text="{Binding SearchViewModel.Query, Mode=TwoWay}"
+                            FontSize="14"
+                            TextColor="{StaticResource TextPrimaryColor}"
+                            PlaceholderColor="{StaticResource TextSecondaryColor}"
+                            IsReadOnly="False"
+                            Focused="OnSearchEntryFocused"
+                            VerticalTextAlignment="Center"
+                            VerticalOptions="Center" />
+                </syncfusionCore:SfTextInputLayout>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenSearchCommand}" />
+                </Grid.GestureRecognizers>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="2"
+                WidthRequest="34"
+                HeightRequest="34"
+                Padding="0"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 17"
+                VerticalOptions="Center">
+            <Image Source="profile.png"
+                   Aspect="AspectFill"
+                   SemanticProperties.Description="Open profile menu" />
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.78" />
+                            <Setter Property="Scale" Value="1.06" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </Border>
+    </Grid>
+
+</ContentView>
