@@ -7,7 +7,6 @@
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
-             xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SmartMovieBooking.Views.TheatersView"
              x:DataType="vm:TheatersViewModel"
@@ -66,9 +65,6 @@
                                             HeightRequest="74"
                                             WidthRequest="92"
                                             StrokeShape="RoundRectangle 14">
-                                        <Border.Behaviors>
-                                            <behaviors:TapAnimationBehavior />
-                                        </Border.Behaviors>
                                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
                                             <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
                                                    FontFamily="OpenSansSemibold"
@@ -111,9 +107,6 @@
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                 BackgroundColor="#FFFFFF"
                                                                 Padding="20">
-                                        <syncfusionCards:SfCardView.Behaviors>
-                                            <behaviors:TapAnimationBehavior />
-                                        </syncfusionCards:SfCardView.Behaviors>
                                         <VerticalStackLayout Spacing="14">
                                             <Grid ColumnDefinitions="Auto,*,Auto"
                                                   ColumnSpacing="12">
@@ -175,9 +168,6 @@
                                                         <syncfusionCards:SfCardView CornerRadius="14"
                                                                                     BackgroundColor="#F1F2F8"
                                                                                     Padding="12,8">
-                                                            <syncfusionCards:SfCardView.Behaviors>
-                                                                <behaviors:TapAnimationBehavior />
-                                                            </syncfusionCards:SfCardView.Behaviors>
                                                             <HorizontalStackLayout>
                                                                 <VerticalStackLayout Spacing="2"
                                                                                      WidthRequest="80">
