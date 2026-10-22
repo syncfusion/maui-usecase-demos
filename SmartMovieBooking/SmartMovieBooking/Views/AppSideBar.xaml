@@ -17,12 +17,12 @@
             BackgroundColor="#EAEAF0"
             Padding="8">
         <VerticalStackLayout>
-            <Grid ColumnDefinitions="{OnIdiom Default='1*,1*,1*', Phone='*'}"
-                  RowDefinitions="{OnIdiom Default='Auto', Phone='Auto,Auto,Auto'}"
-                  IsVisible="True"
-                  HorizontalOptions="Start">
+			<Grid ColumnDefinitions="{OnIdiom Default='180', Phone='92,92,92,92'}"
+				  RowDefinitions="{OnIdiom Default='52,52,52,52', Phone='Auto'}"
+				  IsVisible="{OnIdiom Default='True', Phone='False'}"
+				  HorizontalOptions="Start">
 
-                <Border Grid.Column="0"
+				<Border Grid.Column="0"
                         Grid.Row="0"
                         StrokeThickness="0"
                         Padding="12,8"
@@ -41,9 +41,9 @@
                     </HorizontalStackLayout>
                 </Border>
 
-                <Border Grid.Column="0"
-                        Grid.Row="1"
-                        StrokeThickness="0"
+				<Border Grid.Column="{OnIdiom Default='0', Phone='1'}"
+						Grid.Row="{OnIdiom Default='1', Phone='0'}"
+						StrokeThickness="0"
                         Padding="12,8"
                         BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Theaters}"
                         StrokeShape="RoundRectangle 18">
@@ -60,9 +60,9 @@
                     </HorizontalStackLayout>
                 </Border>
 
-                <Border Grid.Column="0"
-                        Grid.Row="2"
-                        StrokeThickness="0"
+				<Border Grid.Column="{OnIdiom Default='0', Phone='2'}"
+						Grid.Row="{OnIdiom Default='2', Phone='0'}"
+						StrokeThickness="0"
                         Padding="12,8"
                         BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Bookings}"
                         StrokeShape="RoundRectangle 18">
