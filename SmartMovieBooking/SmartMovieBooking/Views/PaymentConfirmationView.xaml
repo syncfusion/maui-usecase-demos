@@ -82,8 +82,8 @@
 
         <HorizontalStackLayout Grid.Row="1" Spacing="10">
             <syncfusionButtons:SfButton Text="Back to Home"
-                                         BackgroundColor="Transparent"
-                                         TextColor="#49454F"
+                                         BackgroundColor="#3525CD"
+                                         TextColor="#FFFFFF"
                                          CornerRadius="10"
                                          FontFamily="OpenSansSemibold"
                                          HeightRequest="44"

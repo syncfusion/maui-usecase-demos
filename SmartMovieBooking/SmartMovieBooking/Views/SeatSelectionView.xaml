@@ -95,8 +95,8 @@
                 </VerticalStackLayout>
                 <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
                     <syncfusionButtons:SfButton Text="Cancel"
-                                                 BackgroundColor="Transparent"
-                                                 TextColor="#49454F"
+                                                 BackgroundColor="#3525CD"
+                                                 TextColor="#FFFFFF"
                                                  CornerRadius="10"
                                                  FontFamily="OpenSansSemibold"
                                                  WidthRequest="88"
