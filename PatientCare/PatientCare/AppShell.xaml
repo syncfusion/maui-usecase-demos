@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="PatientCare.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:PatientCare"
+    xmlns:views="clr-namespace:PatientCare.Views"
+    Shell.TabBarIsVisible="False"
+    FlyoutBehavior="Disabled"
+    Title="Patient Care Management">
+
+    <!-- Splash Screen - First page shown on app startup -->
+    <ShellContent
+        Title="Splash"
+        ContentTemplate="{DataTemplate views:SplashPage}"
+        Route="splash" />
+
+    <!-- Main application content. Custom in-page navigation (sidebar/bottom bar) drives page switching; the native Shell tab bar is hidden. -->
+    <TabBar>
+        <ShellContent
+            Title="Dashboard"
+            ContentTemplate="{DataTemplate views:DashboardPage}"
+            Route="dashboard" />
+        <ShellContent
+            Title="Patients"
+            ContentTemplate="{DataTemplate views:PatientsPage}"
+            Route="patients" />
+        <ShellContent
+            Title="Schedule"
+            ContentTemplate="{DataTemplate views:AppointmentsPage}"
+            Route="schedule" />
+        <ShellContent
+            Title="Care Plans"
+            ContentTemplate="{DataTemplate views:CarePlansPage}"
+            Route="careplans" />
+    </TabBar>
+
+</Shell>
