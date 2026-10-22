@@ -22,9 +22,9 @@ public static class MauiProgram
             .ConfigureSyncfusionCore() // wires up SfButton, SfListView, SfPopup, ...
             .ConfigureFonts(fonts =>
             {
-                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
+				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+			});
 
         // Services (singletons - mock data, no network)
         builder.Services.AddSingleton<IMovieService, MovieService>();

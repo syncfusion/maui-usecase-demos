@@ -4,7 +4,7 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
-             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+			 xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
@@ -34,19 +34,19 @@
 
 			<!-- Search box using SfTextInputLayout -->
 			<inputLayout:SfTextInputLayout Hint="Search by title or genre…"
-											OutlineCornerRadius="12"
-											InputViewPadding="25,5"
-											ReserveSpaceForAssistiveLabels="False"
-											FocusedStrokeThickness="0.6"
-											UnfocusedStrokeThickness="0.6"
-											Stroke="#E5E6F1"
-											HeightRequest="44"
-											ContainerType="Outlined">
-				<inputLayout:SfTextInputLayout.HintLabelStyle>
-					<inputLayout:LabelStyle FontSize="14"
-												FontFamily="OpenSansRegular" />
-				</inputLayout:SfTextInputLayout.HintLabelStyle>
-				<Entry x:Name="SearchEntry"
+											   OutlineCornerRadius="12"
+											   InputViewPadding="25,5"
+											   ReserveSpaceForAssistiveLabels="False"
+											   FocusedStrokeThickness="0.6"
+											   UnfocusedStrokeThickness="0.6"
+											   Stroke="#919191"
+											   HeightRequest="{OnIdiom Phone='38', Default='52'}"
+											   ContainerType="Outlined">
+					<inputLayout:SfTextInputLayout.HintLabelStyle>
+						<inputLayout:LabelStyle FontSize="14"
+												FontFamily="OpenSansSemibold" />
+					</inputLayout:SfTextInputLayout.HintLabelStyle>
+					<Entry x:Name="SearchEntry"
 					   TextChanged="OnSearchChanged"
 					   BackgroundColor="Transparent"
 					   PlaceholderColor="#49454F"
