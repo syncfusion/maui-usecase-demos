@@ -34,16 +34,14 @@ public partial class TheatersView : ContentPage
         }
     }
 
-    private void OnShowtimeSelected(object? sender, ItemSelectionChangedEventArgs e)
+    private async void OnShowtimeSelected(object? sender, ItemSelectionChangedEventArgs e)
     {
         if (e.AddedItems.FirstOrDefault() is not Showtime s) return;
         _vm.SelectedShowtime = s;
+        _session.SelectedShowtime = s;
+        _session.SelectedDate = _vm.SelectedDate;
+        _session.SelectedTheater = _vm.Theaters.FirstOrDefault(t => t.Showtimes.Contains(s));
         if (sender is SfListView list) list.SelectedItem = null;
-    }
-
-    private async void OnSelectShowtimeClicked(object? sender, EventArgs e)
-    {
-        // Navigate to the seat selection popup
         await Shell.Current.GoToAsync("seat-selection");
     }
 }

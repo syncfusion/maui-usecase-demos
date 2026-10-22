@@ -11,6 +11,7 @@ public partial class BookingSession : ObservableObject
     [ObservableProperty] private Showtime? _selectedShowtime;
     [ObservableProperty] private DateTime _selectedDate = DateTime.Today;
     [ObservableProperty] private ObservableCollection<Seat> _selectedSeats = new();
+    [ObservableProperty] private int _selectedTicketCount = 1;
 
     public void Reset()
     {
@@ -19,9 +20,10 @@ public partial class BookingSession : ObservableObject
         SelectedShowtime = null;
         SelectedDate = DateTime.Today;
         SelectedSeats.Clear();
+        SelectedTicketCount = 1;
     }
 
-    public decimal Subtotal => SelectedSeats.Sum(s => s.Price);
-    public decimal ConvenienceFee => SelectedSeats.Count > 0 ? 2.50m : 0m;
+    public decimal Subtotal => SelectedShowtime is null ? 0m : SelectedTicketCount * SelectedShowtime.Price;
+    public decimal ConvenienceFee => SelectedTicketCount > 0 ? 2.50m : 0m;
     public decimal Total => Subtotal + ConvenienceFee;
 }
