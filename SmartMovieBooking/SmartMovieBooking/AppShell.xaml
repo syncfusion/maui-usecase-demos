@@ -5,27 +5,17 @@
        x:Class="SmartMovieBooking.AppShell"
        Title="Smart Movie Ticket Booking"
        Shell.NavBarIsVisible="False"
-       Shell.TabBarIsVisible="False">
-
-    <Shell.ControlTemplate>
-        <ControlTemplate>
-            <Grid RowDefinitions="{OnIdiom Default='*', Phone='*,72'}"
-                  ColumnDefinitions="{OnIdiom Default='200,*', Phone='*'}"
-                  BackgroundColor="#F6F7FB">
-
-                <views:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}"
-                                  ActiveTab="Movies" />
-
-                <Grid Grid.Row="{OnIdiom Default=0, Phone=0}"
-                      Grid.Column="{OnIdiom Default=1, Phone=0}">
-                    <ScrollView>
-                        <ContentPresenter />
-                    </ScrollView>
-                </Grid>
-            </Grid>
-        </ControlTemplate>
-    </Shell.ControlTemplate>
+       Shell.TabBarIsVisible="True">
 
     <ShellContent Route="home"
+                  Title="Movies"
                   ContentTemplate="{DataTemplate views:MovieHomeView}" />
+
+    <ShellContent Route="theaters"
+                  Title="Theaters"
+                  ContentTemplate="{DataTemplate views:TheatersView}" />
+
+    <ShellContent Route="bookings"
+                  Title="Bookings"
+                  ContentTemplate="{DataTemplate views:BookingsView}" />
 </Shell>
