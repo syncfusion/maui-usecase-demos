@@ -64,7 +64,7 @@
 							   Color="#3525CD" />
 		</VerticalStackLayout>
 
-			<ScrollView Grid.Row="1" Margin="0,16,0,16">
+			<ScrollView Grid.Row="1" Margin="0,24,0,16">
 			<!-- Movie cards grid using SfListView (2-column Syncfusion layout) -->
 			<syncfusion:SfListView x:Name="MoviesList"
 								   ItemsSource="{Binding FilteredMovies}"
