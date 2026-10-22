@@ -7,6 +7,7 @@
              xmlns:syncfusionChips="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Views"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SmartMovieBooking.Views.TheatersView"
              x:DataType="vm:TheatersViewModel"

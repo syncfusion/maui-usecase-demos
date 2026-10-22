@@ -7,11 +7,15 @@
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Views"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SmartMovieBooking.Views.BookingsView"
              x:DataType="vm:BookingsViewModel"
              Title="Bookings">
-    <ScrollView>
+    <Grid RowDefinitions="{OnIdiom Default='*,Auto', Phone='*,72'}" ColumnDefinitions="{OnIdiom Default='200,*', Phone='*'}">
+        <controls:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}" ActiveTab="Bookings" />
+
+        <ScrollView Grid.Row="{OnIdiom Default=0, Phone=0}" Grid.Column="{OnIdiom Default='1', Phone='0'}">
         <VerticalStackLayout MaximumWidthRequest="1200" Padding="24" Spacing="16">
             <VerticalStackLayout Spacing="4">
                 <Label Text="Your Bookings" FontFamily="OpenSansSemibold" FontSize="28"
@@ -115,5 +119,6 @@
                 </syncfusionTab:SfTabItem>
             </syncfusionTab:SfTabView>
         </VerticalStackLayout>
-    </ScrollView>
+            </ScrollView>
+    </Grid>
 </ContentPage>

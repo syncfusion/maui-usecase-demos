@@ -1,48 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
-namespace SmartMovieBooking
+namespace SmartMovieBooking;
+
+public class TabIconConverter : IValueConverter
 {
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is null || parameter is null)
+            return null!;
 
-	public class TabIconConverter : IValueConverter
-	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			if (value == null || parameter == null)
-				return null;
+        var activeTab = value.ToString();
+        var tab = parameter.ToString();
+        var isSelected = activeTab == tab;
 
-			string activeTab = value.ToString()!;
-			string tab = parameter.ToString()!;
+        return tab switch
+        {
+            "Movies" => isSelected ? "moviehomelight.png" : "moviehome.png",
+            "Theaters" => isSelected ? "theaterslight.png" : "theaters.png",
+            "Bookings" => isSelected ? "bookinglight.png" : "booking.png",
+            _ => null!
+        };
+    }
 
-			bool isSelected = activeTab == tab;
-
-			return tab switch
-			{
-				"Dashboard" => isSelected
-					? "dashboardselect.png"
-					: "dashboard.png",
-
-				"Inventory" => isSelected
-					? "inventoryselect.png"
-					: "inventory.png",
-
-				"Scan" => isSelected
-					? "scanselect.png"
-					: "scan.png",
-
-				"Warranty" => isSelected
-					? "warrantyselect.png"
-					: "warranty.png",
-
-				_ => null
-			};
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			throw new NotImplementedException();
-		}
-	}
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
 }
