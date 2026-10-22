@@ -4,8 +4,7 @@
        xmlns:views="clr-namespace:SmartMovieBooking.Views"
        x:Class="SmartMovieBooking.AppShell"
        Title="Smart Movie Ticket Booking"
-       Shell.NavBarIsVisible="False"
-       Shell.TabBarIsVisible="True">
+       Shell.NavBarIsVisible="False">
 
     <ShellContent Route="home"
                   Title="Movies"
