@@ -1,7 +1,7 @@
 using SmartMovieBooking.Models;
 using System.Globalization;
 
-namespace SmartMovieBooking.Converters;
+namespace SmartMovieBooking;
 
 public sealed class InverseBoolConverter : IValueConverter
 {
