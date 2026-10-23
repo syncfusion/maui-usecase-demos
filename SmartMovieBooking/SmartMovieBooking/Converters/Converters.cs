@@ -145,7 +145,7 @@ public sealed class SeatColorConverter : IValueConverter
         if (value is not Seat seat) return Color.FromArgb("#E5E6F1");
         return seat.State switch
         {
-            SeatState.Selected  => Color.FromArgb("#3525CD"),
+            SeatState.Selected  => Color.FromArgb("#1E88E5"),
             SeatState.Occupied  => Color.FromArgb("#9CA3AF"),
             SeatState.Aisle     => Colors.Transparent,
             _                   => Color.FromArgb("#E5E6F1")

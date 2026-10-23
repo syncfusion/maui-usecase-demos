@@ -115,7 +115,7 @@
                                 <Label Text="Available" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
                             <HorizontalStackLayout Grid.Column="1" Spacing="8">
-                                <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#3525CD" StrokeShape="RoundRectangle 5" />
+                                <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#1E88E5" StrokeShape="RoundRectangle 5" />
                                 <Label Text="Selected" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
                             <HorizontalStackLayout Grid.Row="1" Spacing="8">

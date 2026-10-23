@@ -7,10 +7,10 @@ public interface ISeatLayoutFactory
     IReadOnlyList<Seat> Build(string showtimeId, decimal basePrice);
 }
 
-/// <summary>10 rows × 14 cols, aisle between col 7 and 8.</summary>
+/// <summary>8 rows × 14 cols, aisle between col 7 and 8.</summary>
 public sealed class SeatLayoutFactory : ISeatLayoutFactory
 {
-    private const int Rows = 10;
+    private const int Rows = 8;
     private const int Columns = 14;
 
     public IReadOnlyList<Seat> Build(string showtimeId, decimal basePrice)
