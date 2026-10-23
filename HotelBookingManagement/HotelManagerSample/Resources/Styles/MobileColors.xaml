@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    MobileColors
+    ============
+    Stitch-aligned mobile palette. The desktop Colors.xaml already wires up
+    CommonTheme via the Syncfusion merged dictionary; this file only adds
+    keys that derive from the Stitch design tokens (primary #4F46E5,
+    secondary #E0E7FF, surface #F8FAFC, success #22C55E, etc.). References
+    to {StaticResource Mobile*} work across every Mobile page because this
+    file is registered in App.xaml together with the desktop dictionaries.
+
+    Values come straight from the brief — tokens are documented at the top
+    of the file so a designer can hand-tune them in one place.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--  Brand -->
+    <Color x:Key="MobilePrimary">#2563EB</Color>
+    <Color x:Key="MobilePrimaryDark">#4338CA</Color>
+    <Color x:Key="MobilePrimaryLight">#EEF0FE</Color>
+
+    <Color x:Key="MobileSecondary">#E0E7FF</Color>
+
+    <!-- Surfaces / neutrals -->
+    <Color x:Key="MobileSurface">#F6F8FD</Color>
+    <Color x:Key="MobileCardColor">#FFFFFF</Color>
+    <Color x:Key="MobileDivider">#EEF2F7</Color>
+    <Color x:Key="MobileBorder">#E6EAF3</Color>
+
+    <!-- Text -->
+    <Color x:Key="MobileText">#0B1C30</Color>
+    <Color x:Key="MobileTextMuted">#475569</Color>
+    <Color x:Key="MobileTextSubtle">#64748B</Color>
+    <Color x:Key="MobileTextOnPrimary">#FFFFFF</Color>
+
+    <!-- Status -->
+    <Color x:Key="MobileSuccess">#22C55E</Color>
+    <Color x:Key="MobileWarning">#F59E0B</Color>
+    <Color x:Key="MobileDanger">#EF4444</Color>
+    <Color x:Key="MobileInfo">#38BDF8</Color>
+
+    <!-- Status pill (light text) -->
+    <Color x:Key="MobileSuccessText">#15803D</Color>
+    <Color x:Key="MobileWarningText">#B45309</Color>
+    <Color x:Key="MobileDangerText">#B91C1C</Color>
+    <Color x:Key="MobileInfoText">#0369A1</Color>
+
+    <Color x:Key="MobileNeutralText">#475569</Color>
+
+    <!-- Soft tints used by chip pills + chips -->
+    <Color x:Key="MobileChipBg">#F1F5F9</Color>
+    <Color x:Key="MobileChipActiveBg">#4F46E5</Color>
+    <Color x:Key="MobileChipActiveText">#FFFFFF</Color>
+
+    <!-- Pre-built SolidColorBrushes for the Syncfusion controls that only
+         accept Brush (e.g. a FlexLayout.Background). -->
+    <SolidColorBrush x:Key="MobilePrimaryBrush"   Color="{StaticResource MobilePrimary}" />
+    <SolidColorBrush x:Key="MobileCardBrush"      Color="{StaticResource MobileCardColor}" />
+    <SolidColorBrush x:Key="MobileSurfaceBrush"   Color="{StaticResource MobileSurface}" />
+    <SolidColorBrush x:Key="MobileBorderBrush"    Color="{StaticResource MobileBorder}" />
+    <SolidColorBrush x:Key="MobileDividerBrush"   Color="{StaticResource MobileDivider}" />
+    <SolidColorBrush x:Key="MobileTextBrush"      Color="{StaticResource MobileText}" />
+    <SolidColorBrush x:Key="MobileTextMutedBrush" Color="{StaticResource MobileTextMuted}" />
+
+</ResourceDictionary>

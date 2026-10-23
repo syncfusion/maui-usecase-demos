@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+             xmlns:list="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:vm="clr-namespace:HotelManagerSample.Dashboard;assembly=HotelManagerSample"
+             xmlns:models="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:conv="clr-namespace:HotelManagerSample.Converters;assembly=HotelManagerSample"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
+             x:Class="HotelManagerSample.Dashboard.MobileDashboardPage"
+             x:DataType="vm:MobileDashboardViewModel"
+             Style="{StaticResource MobilePage}"
+             BackgroundColor="{StaticResource MobileSurface}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+            </Style>
+            
+            <!-- Converters used inline by this page only -->
+            <conv:StringToColorConverter x:Key="StringToColor" />
+            <conv:AvatarBackgroundConverter x:Key="AvatarBg" />
+            <conv:AvatarForegroundConverter x:Key="AvatarFg" />
+            <conv:GuestInitialsConverter x:Key="GuestInitials" />
+            <conv:MobileStatusPillBackgroundConverter x:Key="StatusPillBg" />
+            <conv:MobileStatusPillTextConverter x:Key="StatusPillFg" />
+
+            <!-- Donut palette — order matches InventorySegments on the VM:
+                 Occupied, Cleaned, Arriving, Maintenance. -->
+            <x:Array x:Key="MobileInvPalette" Type="{x:Type Brush}">
+                <SolidColorBrush Color="#4A43E6" />
+                <SolidColorBrush Color="#22C55E" />
+                <SolidColorBrush Color="#38BDF8" />
+                <SolidColorBrush Color="#EF4444" />
+            </x:Array>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- =================== Scrollable content =================== -->
+        <ScrollView Grid.Row="0"
+                    Padding="14,10,14,10"
+                    VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="14">
+
+                <!-- ===================== HEADER ===================== -->
+
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center">
+                        <Label Style="{StaticResource MobileHotelName}" Text="Grand Horizon" />
+                        <Label Style="{StaticResource MobileHotelSubtitle}" Text="DASHBOARD" />
+                    </VerticalStackLayout>
+                    <Border Grid.Column="1"
+                                BackgroundColor="#E0E7FF"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 17"
+                                WidthRequest="34" HeightRequest="34"
+                                VerticalOptions="Center">
+                        <Image Source="profile.png"
+                                   Aspect="AspectFill"
+                                   HeightRequest="34" WidthRequest="34" />
+                    </Border>
+                </Grid>
+
+                <!-- ===================== GREETING ===================== -->
+                <VerticalStackLayout Spacing="2">
+                    <Label Style="{StaticResource MobileEyebrow}"
+                           TextColor="{StaticResource MobilePrimary}"
+                           Text="{Binding DateLabel}" />
+                    <Label FontFamily="OpenSansSemibold"
+                           FontSize="22"
+                           TextColor="{StaticResource MobileText}"
+                           Text="{Binding Greeting}" />
+                    <Label Style="{StaticResource MobileBodyMuted}"
+                           Text="{Binding Subtitle}" />
+
+                    <HorizontalStackLayout Spacing="6" Margin="0,8,0,0">
+                        <Border BackgroundColor="{StaticResource MobilePrimaryLight}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="10,5"
+                                VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Ellipse Fill="{StaticResource MobilePrimary}"
+                                         WidthRequest="6" HeightRequest="6"
+                                         VerticalOptions="Center" />
+                                <Label Style="{StaticResource MobilePillLabel}"
+                                       Text="{Binding ShiftLabel}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Label Style="{StaticResource MobileBodyMuted}"
+                               Text="Live Synced"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- ===================== SECTION EYEBROW + KPI ROW ===================== -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Border Grid.Column="0" Style="{StaticResource MobileKpiCard}">
+                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto">
+                            <Label Style="{StaticResource MobileEyebrow}" Grid.ColumnSpan="2" Text="Total Bookings" />
+                            <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource MobileKpiValue}" Text="{Binding TotalBookings}" />
+                            <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                <Border BackgroundColor="{StaticResource MobilePrimaryLight}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="7,2">
+                                    <Label Style="{StaticResource MobilePillLabel}"
+                                           FontSize="10"
+                                           Text="+12.5%" />
+                                </Border>
+                                <Label Style="{StaticResource MobileKpiCaption}"
+                                       Text="vs last month"
+                                       FontSize="12"/>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource MobileKpiCard}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Style="{StaticResource MobileEyebrow}" Text="Available Rooms" />
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Label Style="{StaticResource MobileKpiValue}"
+                                       Text="{Binding AvailableRooms}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- ===================== OCCUPANCY CARD ===================== -->
+                <Border Style="{StaticResource MobileCard}">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,2,0,0">
+                            <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                <VerticalStackLayout Spacing="-2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource MobileSectionHeading}"
+                                           FontSize="14"
+                                           Text="Room Occupancy" />
+                                    <Label Style="{StaticResource MobileKpiCaption}"
+                                           Text="Live KPI • 6/15 units" />
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{StaticResource MobilePrimaryLight}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="9,4"
+                                    VerticalOptions="Center">
+                                <Label Style="{StaticResource MobilePillLabel}"
+                                       FontSize="9"
+                                       Text="TIER 1 TARGET MET" />
+                            </Border>
+                        </Grid>
+
+                        <!-- ============== Donut chart ============== -->
+                        <Grid ColumnDefinitions="140,*"
+                              ColumnSpacing="36">
+
+                            <!-- Doughnut Chart with Center Content -->
+                            <Grid Grid.Column="0"
+                                  Margin="20,0,0,0"
+                                  WidthRequest="180"
+                                  HeightRequest="180">
+
+                                <chart:SfCircularChart>
+                                    <chart:SfCircularChart.Series>
+                                        <chart:DoughnutSeries ItemsSource="{Binding InventorySegments}"
+                                                              XBindingPath="Category"
+                                                              YBindingPath="Value"
+                                                              InnerRadius="0.70"
+                                                              Stroke="White"
+                                                              StrokeWidth="1.5"
+                                                              PaletteBrushes="{StaticResource MobileInvPalette}"
+                                                              StartAngle="-90"
+                                                              EndAngle="270" />
+                                    </chart:SfCircularChart.Series>
+                                </chart:SfCircularChart>
+
+                                <!-- Center Content -->
+                                <VerticalStackLayout
+                                    Spacing="0"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+
+                                    <HorizontalStackLayout
+                                        Spacing="2"
+                                        HorizontalOptions="Center">
+
+                                        <Label Text="{Binding AvailabilityPercent, StringFormat='{0} %'}"
+                                               FontSize="24"
+                                               FontFamily="OpenSansSemibold"
+                                               TextColor="{StaticResource MobileText}" />
+                                    </HorizontalStackLayout>
+
+                                    <Label Text="{Binding OccupancyTierLabel}"
+                                           FontSize="11"
+                                           FontFamily="OpenSansSemibold"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="{StaticResource MobilePrimary}" />
+                                </VerticalStackLayout>
+
+                            </Grid>
+
+                            <!-- Legend -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 Spacing="4"
+                                                 VerticalOptions="Center">
+
+                                <Border BackgroundColor="#F1F4FA" StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="10,7" Margin="0,1">
+                                    <Grid ColumnDefinitions="8,*,Auto" ColumnSpacing="6">
+                                        <Ellipse Fill="#22C55E"
+                                                 WidthRequest="10"
+                                                 HeightRequest="10"
+                                                 VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="Available: " Style="{StaticResource MobileKpiCaption}" />
+                                        <Label Grid.Column="2" Text="{Binding AvailableRooms}" Style="{StaticResource MobileKpiCaption}" />
+                                    </Grid>
+                                </Border>
+
+                                <Border BackgroundColor="#F1F4FA" StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="10,7" Margin="0,1">
+                                    <Grid ColumnDefinitions="8,*,Auto" ColumnSpacing="6">
+                                        <Ellipse Fill="#38BDF8"
+                                                 WidthRequest="10"
+                                                 HeightRequest="10"
+                                                 VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="Arriving: " Style="{StaticResource MobileKpiCaption}" />
+                                        <Label Grid.Column="2" Text="{Binding ArrivingKeyCount}" Style="{StaticResource MobileKpiCaption}" />
+                                    </Grid>
+                                </Border>
+
+                                <Border BackgroundColor="#F1F4FA" StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="10,7" Margin="0,1">
+                                    <Grid ColumnDefinitions="8,*,Auto" ColumnSpacing="6">
+                                        <Ellipse Fill="#94A3B8"
+                                                 WidthRequest="10"
+                                                 HeightRequest="10"
+                                                 VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="Occupied: " Style="{StaticResource MobileKpiCaption}" />
+                                        <Label Grid.Column="2" Text="{Binding OccupiedKeyCount}" Style="{StaticResource MobileKpiCaption}" />
+                                    </Grid>
+                                </Border>
+
+                                <Border BackgroundColor="#F1F4FA" StrokeThickness="0" StrokeShape="RoundRectangle 9" Padding="10,7" Margin="0,1">
+                                    <Grid ColumnDefinitions="8,*,Auto" ColumnSpacing="6">
+                                        <Ellipse Fill="#EF4444"
+                                                 WidthRequest="10"
+                                                 HeightRequest="10"
+                                                 VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="Maintenance: " Style="{StaticResource MobileKpiCaption}" />
+                                        <Label Grid.Column="2" Text="{Binding MaintenanceCount}" Style="{StaticResource MobileKpiCaption}" />
+                                    </Grid>
+                                </Border>
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ===================== SHIFT TURNOVER MATRIX ===================== -->
+                <Grid ColumnDefinitions="*,Auto" Padding="0,2,0,0">
+                    <Label Grid.Column="0"
+                           Style="{StaticResource MobileSectionEyebrow}"
+                           Text="Shift Turnover Matrix" />
+                    <Label Grid.Column="1"
+                           Style="{StaticResource MobileKpiCaption}"
+                           TextColor="{StaticResource MobilePrimary}"
+                           Text="Floor Ops View" />
+                </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto" RowSpacing="10">
+                    <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource MobileKpiCard}">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Style="{StaticResource MobileKpiCaption}" Text="Check-ins" />
+                                <Label Style="{StaticResource MobileKpiValue}"
+                                       Text="{Binding CheckInsCount}" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{StaticResource MobilePrimaryLight}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    WidthRequest="46" HeightRequest="46">
+                                <Image Source="exit.png" HeightRequest="20" WidthRequest="20"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" Grid.Row="0" Style="{StaticResource MobileKpiCard}">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Style="{StaticResource MobileKpiCaption}" Text="Check-outs" />
+                                <Label Style="{StaticResource MobileKpiValue}"
+                                       Text="{Binding CheckOutsCount}" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{StaticResource MobilePrimaryLight}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    WidthRequest="46" HeightRequest="46">
+                                <Image Source="checkout.png" HeightRequest="20" WidthRequest="20"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="0" Grid.Row="1" Style="{StaticResource MobileKpiCard}">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Style="{StaticResource MobileKpiCaption}" Text="In Cleaning" />
+                                <Label Style="{StaticResource MobileKpiValue}"
+                                       Text="0" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="#FEF3C7"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    WidthRequest="46" HeightRequest="46">
+                                <Image Source="cleaning.png"
+                                       WidthRequest="20" HeightRequest="20"
+                                       Aspect="AspectFit"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource MobileKpiCard}">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Style="{StaticResource MobileKpiCaption}" Text="Maintenance" />
+                                <Label Style="{StaticResource MobileKpiValue}"
+                                       TextColor="{StaticResource MobileDanger}"
+                                       Text="{Binding MaintenanceCount}" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="#FEE2E2"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    WidthRequest="46" HeightRequest="46">
+                                <Image Source="maintainance.png"
+                                       WidthRequest="20" HeightRequest="20"
+                                       Aspect="AspectFit"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- ===================== RECENT BOOKINGS ===================== -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <Label Grid.Column="0"
+                           Style="{StaticResource MobileSectionHeading}"
+                           Text="Recent Bookings" />
+                    <buttons:SfButton Grid.Column="1"
+                                      Text="View All  >"
+                                      Background="Transparent"
+                                      TextColor="{StaticResource MobilePrimary}"
+                                      FontFamily="OpenSansSemibold"
+                                      FontSize="12"
+                                      WidthRequest="80"
+                                      HeightRequest="32"
+                                      HorizontalOptions="End"
+                                      VerticalOptions="Center"
+                                      Clicked="OnViewAllBookingsClicked" />
+                </Grid>
+
+                <list:SfListView ItemsSource="{Binding RecentBookings}"
+                                 ItemSpacing="0"
+                                 SelectionMode="None"
+                                 BackgroundColor="Transparent"
+                                 AutoFitMode="Height"
+                                 IsScrollingEnabled="False">
+                    <list:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Booking">
+                            <Border Style="{StaticResource MobileCard}"
+                                    Stroke="{StaticResource MobileDivider}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="12,10"
+                                    Margin="0,4">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRecentBookingTapped"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="6">
+                                    <Grid ColumnDefinitions="34,*,Auto" ColumnSpacing="10">
+                                        <Border Grid.Column="0"
+                                                HeightRequest="34" WidthRequest="34"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 17"
+                                                BackgroundColor="{Binding Guest, Converter={StaticResource AvatarBg}}">
+                                            <Label FontFamily="OpenSansSemibold"
+                                                   FontSize="11"
+                                                   TextColor="{Binding Guest, Converter={StaticResource AvatarFg}}"
+                                                   Text="{Binding ., Converter={StaticResource GuestInitials}}"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center" />
+                                        </Border>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                            <Label Style="{StaticResource MobileBody}"
+                                                   FontFamily="OpenSansSemibold"
+                                                   Text="{Binding Guest}" />
+                                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                <Image Source="bed.png" HeightRequest="11" WidthRequest="11" Aspect="AspectFit" />
+                                                <Label Style="{StaticResource MobileKpiCaption}"
+                                                       Text="{Binding Room, StringFormat='{0} · '}" />
+                                                <Label Style="{StaticResource MobileKpiCaption}"
+                                                       FontFamily="OpenSansSemibold"
+                                                       Text="{Binding RoomType}" />
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+                                        <Border Grid.Column="2"
+                                                BackgroundColor="{Binding Status, Converter={StaticResource StatusPillBg}}"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 14"
+                                                Padding="8,3"
+                                                VerticalOptions="Center">
+                                            <Label FontFamily="OpenSansSemibold"
+                                                   FontSize="9"
+                                                   TextColor="{Binding Status, Converter={StaticResource StatusPillFg}}"
+                                                   Text="{Binding Status}" />
+                                        </Border>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto" Padding="0,3,0,0">
+                                        <Label Grid.Column="0"
+                                               Style="{StaticResource MobileKpiCaption}"
+                                               VerticalOptions="Center"
+                                               Text="{Binding CheckIn, StringFormat='Sep {0:dd} - '}" />
+                                        <Label Style="{StaticResource MobileKpiCaption}"
+                                               FontFamily="OpenSansSemibold"
+                                               TextColor="{StaticResource MobileText}"
+                                               Text="{Binding Dates}" />
+                                        <Label Grid.Column="1"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="13"
+                                               TextColor="{StaticResource MobileText}"
+                                               VerticalOptions="Center"
+                                               Text="{Binding Total, StringFormat='Amount: ${0:N0}'}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </list:SfListView.ItemTemplate>
+                </list:SfListView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ===================== FAB ===================== -->
+        <buttons:SfButton Grid.Row="0"
+                         Margin="0,0,16,16"
+                         VerticalOptions="End"
+                         HorizontalOptions="End"
+                         Background="#2563EB"
+                         CornerRadius="24"
+                         WidthRequest="150"
+                         HeightRequest="48"
+                         Clicked="OnNewBookingTapped">
+
+            <buttons:SfButton.Content>
+                <DataTemplate>
+                    <HorizontalStackLayout Spacing="6"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center">
+                        <Label Text="&#xe70d;"
+                               FontFamily="MaterialAssets"
+                               FontSize="16"
+                               TextColor="White"
+                               VerticalTextAlignment="Center" />
+
+                        <Label Text="New Booking"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="13"
+                               TextColor="White"
+                               VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                </DataTemplate>
+            </buttons:SfButton.Content>
+
+        </buttons:SfButton>
+    </Grid>
+</ContentView>

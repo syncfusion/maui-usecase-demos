@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:pager="clr-namespace:Syncfusion.Maui.DataPager;assembly=Syncfusion.Maui.DataPager"
+             xmlns:syncfusionPopup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:conv="clr-namespace:HotelManagerSample.Converters;assembly=HotelManagerSample"
+             xmlns:vm="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:models="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:controls="clr-namespace:HotelManagerSample.Controls;assembly=HotelManagerSample"
+             x:Class="HotelManagerSample.BookingsPage"
+             x:DataType="vm:BookingsViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F6F8FD">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:ReservationStatusToBrushConverter x:Key="StatusBrush" />
+            <conv:ReservationStatusToDotColorConverter x:Key="StatusDot" />
+            <conv:GuestInitialsConverter x:Key="GuestInitials" />
+            <conv:AvatarBackgroundConverter x:Key="AvatarBg" />
+            <conv:AvatarForegroundConverter x:Key="AvatarFg" />
+            <conv:StringToColorConverter x:Key="StringToColor" />
+            <conv:StringToBoolConverter x:Key="StringToBool" />
+
+            <syncfusion:DataGridStyle x:Key="BookingsStyle"
+                                      RowBackground="#FFFFFF"
+                                      AlternateRowBackground="#EEF2FC"
+                                      HeaderRowBackground="#EEF2FC"
+                                      HeaderRowTextColor="#1B2435"
+                                      HeaderRowFontSize="11"
+                                      HeaderRowFontFamily="OpenSansSemibold"
+                                      RowTextColor="#1B2435"
+                                      GridLineColor="#C7D0E2"
+                                      GridLineStrokeThickness="1"
+                                      HeaderGridLineColor="#A8B5CC"
+                                      HeaderGridLineStrokeThickness="1" />
+
+            <pager:DataPagerStyle x:Key="BookingsPagerStyle"
+                                  DataPagerBackgroundColor="Transparent"
+                                  NumericButtonBackgroundColor="Transparent"
+                                  NumericButtonSelectionBackgroundColor="#1B2435"
+                                  NumericButtonTextColor="#3A4658"
+                                  NumericButtonSelectionTextColor="White"
+                                  NavigationButtonBackgroundColor="Transparent"
+                                  NavigationButtonDisableBackgroundColor="Transparent"
+                                  NavigationButtonIconColor="#526075"
+                                  NavigationButtonDisableIconColor="#526075" />
+
+            <syncfusionPopup:PopupStyle x:Key="BookingPopupStyle"
+                                        PopupBackground="Transparent"
+                                        CornerRadius="14" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="252,*">
+
+        <!-- ============= SIDEBAR ============= -->
+        <controls:AppSidebar Grid.Column="0"
+                             ActiveTab="Bookings"
+                             BookingsBadgeText="{Binding TotalRecordLabel}" />
+
+        <!-- ============= MAIN CONTENT ============= -->
+        <ScrollView Grid.Column="1" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Padding="24,10,24,28" Spacing="12">
+
+                <!-- Page header -->
+                <Grid ColumnDefinitions="*, Auto,Auto" ColumnSpacing="12">
+                    <VerticalStackLayout Spacing="3" Grid.Column="0">
+                        <Label Text="Bookings" FontSize="25" FontFamily="OpenSansSemibold" TextColor="#17243A" />
+                        <Label Text="{Binding Subtitle}" FontSize="11" TextColor="#3A4658" />
+                    </VerticalStackLayout>
+                    <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Start" Margin="0,10,0,0">
+                        <Image Source="date.png" HeightRequest="18" WidthRequest="18" Aspect="AspectFit" VerticalOptions="Start" />
+                        <Label Text="{Binding DateLabel}" FontSize="11" TextColor="#3A4658" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <Border Grid.Column="2" BackgroundColor="#5146E5" StrokeThickness="0" StrokeShape="RoundRectangle 4" Padding="12,7" HorizontalOptions="End" VerticalOptions="Start">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnNewBookingTapped" />
+                        </Border.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                            <Border BackgroundColor="#3F38B8" StrokeThickness="0" StrokeShape="RoundRectangle 11" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                                <Image Source="plus.png" HeightRequest="12" WidthRequest="12" Aspect="AspectFit" VerticalOptions="Center" HorizontalOptions="Center" />
+                            </Border>
+                            <Label Text="Add Booking" FontFamily="OpenSansSemibold" FontSize="10" TextColor="White" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- KPI cards (compact, matching the expected UI) -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
+                    <Border Style="{StaticResource DashboardCard}">
+                        <Grid RowDefinitions="Auto,Auto,Auto" Padding="0">
+                            <Label Text="Today's Arrivals" Style="{StaticResource DashboardEyebrow}" MaxLines="2" LineBreakMode="WordWrap" />
+                            <HorizontalStackLayout Grid.Row="1" Spacing="6" Margin="0,-20,0,0" VerticalOptions="End">
+                                <Label Text="{Binding TodaysArrivals}" Style="{StaticResource DashboardNumber}" />
+                                <Label Text="/" FontSize="16" TextColor="#526075" VerticalOptions="End" Margin="0,0,0,6" />
+                                <Label Text="{Binding ArrivalsTotal, StringFormat='{0} total'}" FontSize="11" TextColor="#3A4658" VerticalOptions="End" Margin="0,0,0,6" />
+                            </HorizontalStackLayout>
+                            <Border Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#EEF2FF" StrokeThickness="0" StrokeShape="RoundRectangle 8" WidthRequest="32" HeightRequest="32" VerticalOptions="Center" HorizontalOptions="End" Margin="0,4,0,0">
+                                <Image Source="calender.png" HeightRequest="16" WidthRequest="16" Aspect="AspectFit" VerticalOptions="Center" HorizontalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
+                        <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+                            <Label Text="In-House Stays" Style="{StaticResource DashboardEyebrow}" MaxLines="2" LineBreakMode="WordWrap" />
+                            <HorizontalStackLayout Grid.Row="1" Spacing="6" Margin="0,-20,0,0" VerticalOptions="End">
+                                <Label Text="{Binding InHouseStays}" Style="{StaticResource DashboardNumber}" />
+                                <HorizontalStackLayout Spacing="2" VerticalOptions="End" Margin="0,0,0,7">
+                                    <Label Text="{Binding InHouseDeltaLabel}" FontSize="11" TextColor="#188A61" FontFamily="OpenSansSemibold" />
+                                    <Label Text="{Binding InHouseDeltaDetail}" FontSize="9" TextColor="#3A4658" VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                            <Border Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#FFF3E1" StrokeThickness="0" StrokeShape="RoundRectangle 8" WidthRequest="32" HeightRequest="32" VerticalOptions="Center" HorizontalOptions="End" Margin="0,4,0,0">
+                                <Image Source="bed.png" HeightRequest="16" WidthRequest="16" Aspect="AspectFit" VerticalOptions="Center" HorizontalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource DashboardCard}">
+                        <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+                            <Label Text="Revenue" Style="{StaticResource DashboardEyebrow}" MaxLines="2" LineBreakMode="WordWrap" />
+                            <HorizontalStackLayout Grid.Row="1" Spacing="6" Margin="0,-20,0,0" VerticalOptions="End">
+                                <Label Text="{Binding FolioVolume, StringFormat='${0:N0}'}" Style="{StaticResource DashboardNumber}" />
+                                <HorizontalStackLayout Spacing="2" VerticalOptions="End" Margin="0,0,0,7">
+                                    <Label Text="{Binding FolioDeltaLabel}" FontSize="11" TextColor="#188A61" FontFamily="OpenSansSemibold" />
+                                    <Label Text="{Binding FolioDeltaDetail}" FontSize="9" TextColor="#3A4658" VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                            <Border Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="#EEF2FF" StrokeThickness="0" StrokeShape="RoundRectangle 8" WidthRequest="32" HeightRequest="32" VerticalOptions="Center" HorizontalOptions="End" Margin="0,4,0,0">
+                                <Image Source="purse.png" HeightRequest="16" WidthRequest="16" Aspect="AspectFit" VerticalOptions="Center" HorizontalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Filter / view-mode card with the bookings DataGrid -->
+                <Border Style="{StaticResource PanelCard}">
+                    <VerticalStackLayout Padding="14,12" Spacing="10">
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" RowDefinitions="Auto">
+
+                            <Border Grid.Row="0" Grid.Column="0"
+                                    BackgroundColor="#F1F4FA"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="10,0"
+                                    HeightRequest="32"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Start">
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      ColumnSpacing="8"
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="Fill">
+                                    <Label Grid.Column="0"
+                                           Text="&#xe715;"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="#3A4658"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <controls:SfEntry x:Name="BookingsSearchEntry"
+                                                      Grid.Column="1"
+                                                      Placeholder="Filter by guest name or room..."
+                                                      PlaceholderColor="#9AA3B7"
+                                                      FontFamily="OpenSansRegular"
+                                                      FontSize="11"
+                                                      TextColor="#1B2435"
+                                                      BackgroundColor="Transparent"
+                                                      IsTextPredictionEnabled="False"
+                                                      IsSpellCheckEnabled="False"
+                                                      VerticalOptions="Center"
+                                                      HorizontalOptions="Fill"
+                                                      Margin="0"
+                                                      Text="{Binding SearchText, Mode=TwoWay}"
+                                                      TextChanged="OnBookingsSearchTextChanged" />
+                                    <Label x:Name="BookingsSearchClear"
+                                           Grid.Column="2"
+                                           Text="&#xe5cd;"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="#3A4658"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           IsVisible="False">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnBookingsSearchClearTapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <!-- DataGrid -->
+                        <syncfusion:SfDataGrid x:Name="BookingsGrid"
+                                               ItemsSource="{Binding Source={x:Reference BookingsPager}, Path=PagedSource}"
+                                               AutoGenerateColumnsMode="None"
+                                               DefaultStyle="{StaticResource BookingsStyle}"
+                                               HeaderRowHeight="32"
+                                               RowHeight="56"
+                                               HorizontalOptions="Fill"
+                                               VerticalOptions="Fill"
+                                               SelectionMode="Single"
+                                               SelectedRow="{Binding SelectedBooking, Mode=TwoWay}"
+                                               SelectionChanged="OnBookingsGridSelectionChanged"
+                                               CellTapped="OnBookingsGridCellTapped"
+                                               SortingMode="Multiple"
+                                               ShowRowHeader="False"
+                                               VerticalScrollBarVisibility="Never"
+                                               HorizontalScrollBarVisibility="Never"
+                                               HorizontalOverScrollMode="Bounce"
+                                               HeightRequest="{Binding BookingsGridHeight}">
+
+                            <syncfusion:SfDataGrid.Columns>
+
+                                <!-- BOOKING ID -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Reference"
+                                                                   HeaderText="Booking ID"
+                                                                   Width="120">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:SelectableBooking">
+                                            <VerticalStackLayout Spacing="1" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <Label Text="{Binding Reference}"
+                                                       FontSize="10" FontFamily="OpenSansSemibold" TextColor="#4A43E6" />
+                                                <Label Text="{Binding SourceSegment}" FontSize="8" FontFamily="OpenSansSemibold" TextColor="{Binding SourceTagColor, Converter={StaticResource StringToColor}}" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- GUEST -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Guest"
+                                                                   HeaderText="Guest Name"
+                                                                   HeaderTextAlignment="Center"
+                                                                   Width="150">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:SelectableBooking">
+                                            <Grid ColumnDefinitions="34,*,Auto" ColumnSpacing="10" Padding="2,0" VerticalOptions="Center" HorizontalOptions="Start">
+                                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                                    <Label Text="{Binding Guest}" FontSize="10" FontFamily="OpenSansSemibold" TextColor="#1B2435" LineBreakMode="TailTruncation" />
+                                                    <Label Text="{Binding Phone}" FontSize="9" TextColor="#3A4658" LineBreakMode="TailTruncation" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 4) ASSIGNED KEY / ROOM -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Room"
+                                                                   HeaderText="Assigned Room"
+                                                                   Width="200">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:SelectableBooking">
+                                            <VerticalStackLayout Spacing="6" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <Border BackgroundColor="#EEF2FF"
+                                                        StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                                                        Padding="6,3" VerticalOptions="Center">
+                                                    <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                        <Label Text="&#xe73b;" FontFamily="MaterialAssets" FontSize="11" TextColor="#4A43E6" VerticalTextAlignment="Center" />
+                                                        <Label Text="{Binding Room, StringFormat='{0}'}" FontSize="9" FontFamily="OpenSansSemibold" TextColor="#4A43E6" VerticalTextAlignment="Center" />
+                                                    </HorizontalStackLayout>
+                                                </Border>
+                                                <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                                    <Label Text="{Binding RoomSegment}" FontSize="9" TextColor="#3A4658" LineBreakMode="TailTruncation" />
+                                                </VerticalStackLayout>
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 5) STAY SCHEDULE -->
+                                <syncfusion:DataGridTemplateColumn MappingName="CheckIn"
+                                                                   HeaderText="Stay Schedule"
+                                                                   Width="150">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:SelectableBooking">
+                                            <VerticalStackLayout Spacing="2" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Label Text="{Binding CheckIn, StringFormat='{0:MMM dd}'}" FontSize="9" FontFamily="OpenSansSemibold" TextColor="#1B2435" />
+                                                    <Label Text="—" FontSize="9" TextColor="#526075" />
+                                                    <Label Text="{Binding CheckOut, StringFormat='{0:MMM dd, yyyy}'}" FontSize="9" FontFamily="OpenSansSemibold" TextColor="#1B2435" />
+                                                </HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Label Text="{Binding Nights, StringFormat='{0} Nights'}" FontSize="9" TextColor="#3A4658" />
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 6) GUESTS -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Adults"
+                                                                   HeaderText="Guests"
+                                                                   Width="90">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:SelectableBooking">
+                                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <Label Text="{Binding PartyLabel}" FontSize="9" TextColor="#1B2435" VerticalTextAlignment="Center" />
+                                            </HorizontalStackLayout>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 7) BILLING DETAILS -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Total"
+                                                                   HeaderText="Billing Details"
+                                                                   Width="100">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:SelectableBooking">
+                                            <VerticalStackLayout Spacing="0" Margin="30,0,0,0" VerticalOptions="Center" HorizontalOptions="Start">
+                                                <Label Text="{Binding Total, StringFormat='${0:N0}'}"
+                                                       FontSize="11" FontFamily="OpenSansSemibold" TextColor="#1B2435" />
+                                                <Label Text="{Binding FollowUp}" FontSize="9" TextColor="#3A4658" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 8) STATUS -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Status"
+                                                                   HeaderText="Status"
+                                                                   Width="180">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:SelectableBooking">
+                                            <Border BackgroundColor="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=Bg}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 10"
+                                                    Padding="8,4" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                    <Ellipse Fill="{Binding Status, Converter={StaticResource StatusDot}}"
+                                                             WidthRequest="5" HeightRequest="5" VerticalOptions="Center" />
+                                                    <Label Text="{Binding Status}"
+                                                           FontSize="8" FontAttributes="Bold"
+                                                           TextColor="{Binding Status, Converter={StaticResource StatusBrush}}"
+                                                           VerticalTextAlignment="Center" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                            </syncfusion:SfDataGrid.Columns>
+                        </syncfusion:SfDataGrid>
+
+                        <!-- Pagination footer -->
+                        <Grid Padding="0,10,0,0" ColumnDefinitions="*,Auto" ColumnSpacing="20" HorizontalOptions="Fill" VerticalOptions="Center">
+
+                            <Label Text="{Binding ShowingRangeLabel}"
+                                   Grid.Column="0"
+                                   FontSize="11" TextColor="#3A4658"
+                                   HorizontalTextAlignment="Start"
+                                   VerticalTextAlignment="Center" />
+
+                            <pager:SfDataPager Grid.Column="1"
+                                               x:Name="BookingsPager"
+                                               PageSize="10"
+                                               Margin="-150,0,0,0"
+                                               NumericButtonCount="3"
+                                               NumericButtonsGenerateMode="Auto"
+                                               DisplayMode="PreviousNextNumeric"
+                                               Source="{Binding VisibleBookings}"
+                                               PageChanged="OnPagerPageChanged"
+                                               DefaultStyle="{StaticResource BookingsPagerStyle}"
+                                               ButtonSize="20"
+                                               ButtonFontSize="11"
+                                               Orientation="Horizontal"
+                                               HorizontalOptions="Start"
+                                               VerticalOptions="Center"
+                                               HeightRequest="36" />
+                        </Grid>
+
+                        <!-- Selection detail strip — populated by the grid's
+                             RecordClick / SelectionChanged pair. This is the
+                             payoff for making the SfDataGrid interactive
+                             instead of a passive renderer. -->
+                        <Border IsVisible="{Binding HasSelectedBooking}"
+                                BackgroundColor="#F1F4FA"
+                                Stroke="#E3E9F5"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="12,8">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="Selected Booking" FontSize="8" FontFamily="OpenSansSemibold" TextColor="#6E7A8F" />
+                                    <Label Text="{Binding SelectedBookingSummary}" FontSize="10" TextColor="#1B2435" LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
+                                <Border Grid.Column="1" BackgroundColor="Transparent" StrokeThickness="0" Padding="8,2" VerticalOptions="Center">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnClearSelectionTapped" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="&#xe5cd;" FontFamily="MaterialAssets" FontSize="13" TextColor="#6E7A8F" VerticalTextAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ============= ADD-BOOKING POPUP =============
+             Hosted as a sibling of the sidebar grid so it floats centered over
+             the entire content area. The ContentTemplate inflates our
+             AddBookingPopupContent control which raises Committed / Cancelled
+             events that the code-behind translates into real bookings.
+        -->
+        <syncfusionPopup:SfPopup Grid.ColumnSpan="2"
+                                 x:Name="AddBookingPopup"
+                                 IsOpen="False"
+                                 ShowHeader="False"
+                                 ShowFooter="False"
+                                 AutoSizeMode="Both"
+                                 ShowCloseButton="True"
+                                 BackgroundColor="Transparent"
+                                 InputTransparent="True"
+                                 PopupStyle="{StaticResource BookingPopupStyle}" />
+
+    </Grid>
+</ContentPage>

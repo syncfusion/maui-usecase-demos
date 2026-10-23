@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             x:Class="HotelManagerSample.Controls.MobileBusyOverlay"
+             IsVisible="False">
+
+    <Grid BackgroundColor="#80000000">
+        <Border BackgroundColor="White"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 14"
+                Padding="22,18"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                WidthRequest="120">
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <syncfusion:SfBusyIndicator IsRunning="True"
+                                            AnimationType="CircularMaterial"
+                                            IndicatorColor="#4F46E5"
+                                            WidthRequest="36"
+                                            HeightRequest="36"
+                                            HorizontalOptions="Center" />
+                <Label x:Name="BusyMessageLabel"
+                       Text="Loading…"
+                       FontSize="11"
+                       FontFamily="OpenSansRegular"
+                       TextColor="#0F172A"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentView>
