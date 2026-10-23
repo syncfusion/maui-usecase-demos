@@ -37,9 +37,9 @@ public sealed class MultiplyByConverter : IValueConverter
 /// note card. The first binding supplies the note's <c>Id</c>, the
 /// second supplies the ViewModel's <c>DraggingNoteId</c>, and the
 /// converter returns the dragged-state color when the two match
-/// or the resting color otherwise. Both colors are passed in
+/// or the resting color otherwise. Light and dark colors are passed in
 /// <c>ConverterParameter</c> as
-/// <c>"resting|dragged"</c> hex pairs to keep the XAML compact.
+/// <c>"light-resting|light-dragged|dark-resting|dark-dragged"</c>.
 /// </summary>
 public sealed class DragStateColorConverter : IMultiValueConverter
 {
@@ -57,6 +57,13 @@ public sealed class DragStateColorConverter : IMultiValueConverter
             return isDragged ? Color.FromArgb("#EEEAFB") : Colors.Transparent;
 
         var parts = param.Split('|');
+        var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
+        if (parts.Length == 4)
+        {
+            var offset = isDark ? 2 : 0;
+            return isDragged ? Color.FromArgb(parts[offset + 1]) : Color.FromArgb(parts[offset]);
+        }
+
         if (parts.Length != 2) return Colors.Transparent;
         var resting = Color.FromArgb(parts[0]);
         var dragged = Color.FromArgb(parts[1]);

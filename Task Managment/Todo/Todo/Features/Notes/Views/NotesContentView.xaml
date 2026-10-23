@@ -22,7 +22,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Border BackgroundColor="{StaticResource BackgroundColor}"
+    <Border BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColor}, Dark={StaticResource BackgroundDarkColor}}"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 14">
         <Grid RowDefinitions="Auto,*,Auto">
@@ -30,10 +30,13 @@
             <!-- Background image for the active category -->
             <Image Grid.RowSpan="3"
                    Source="{Binding BackgroundImage}"
+                   IsVisible="{Binding HasBackgroundImage}"
                    Aspect="AspectFill"
                    HorizontalOptions="Fill"
                    VerticalOptions="Fill" />
-            <BoxView Grid.RowSpan="3" Color="#66000000" />
+            <BoxView Grid.RowSpan="3"
+                     Color="#66000000"
+                     IsVisible="{Binding HasBackgroundImage}" />
 
             <!-- Page title bar inside the content area -->
             <Grid Grid.Row="0"
@@ -62,8 +65,15 @@
                     <Label Text="{Binding HeaderTitle}"
                            FontSize="20"
                            FontAttributes="Bold"
-                           TextColor="{StaticResource OnPrimaryColor}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
                            VerticalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding HasBackgroundImage}"
+                                         Value="True">
+                                <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
+                            </DataTrigger>
+                        </Label.Triggers>
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding RenameSelectedListCommand}" />
                         </Label.GestureRecognizers>
@@ -100,18 +110,41 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="12">
+                    <Image Source="notesicon.png"
+                           WidthRequest="56"
+                           HeightRequest="56"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding IsCustomListSelected}" />
                     <Label Text="&#128203;"
                            FontSize="56"
                            TextColor="{StaticResource OnPrimaryColor}"
-                           HorizontalOptions="Center" />
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding IsCustomListSelected, Converter={StaticResource InvertedBoolConverter}}" />
                     <Label Text="{Binding EmptyStateTitle}"
                            Style="{StaticResource EmptyStateMessageStyle}"
-                           TextColor="{StaticResource OnPrimaryColor}"
-                           HorizontalTextAlignment="Center" />
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           HorizontalTextAlignment="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding HasBackgroundImage}"
+                                         Value="True">
+                                <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
                     <Label Text="{Binding EmptyStateMessage}"
                            Style="{StaticResource EmptyStateMessageStyle}"
-                           TextColor="{StaticResource OnPrimaryColor}"
-                           HorizontalTextAlignment="Center" />
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           HorizontalTextAlignment="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding HasBackgroundImage}"
+                                         Value="True">
+                                <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
                 </VerticalStackLayout>
 
                 <!-- Module-07 task 7-1: gap-highlight bar that appears
@@ -170,6 +203,7 @@
                         <DataTemplate x:DataType="models:Note">
                             <Border Margin="16,6"
                                     Padding="14,12"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10">
                                 <!-- Module-07 task 7-1 (draganddrop.png):
@@ -181,15 +215,6 @@
                                      parent ViewModel's DraggingNoteId
                                      and a DragStateColorConverter to
                                      pick the right color. -->
-                                <Border.BackgroundColor>
-                                    <MultiBinding Converter="{StaticResource DragStateColorConverter}"
-                                                  ConverterParameter="#FFFFFF|#EEEAFB">
-                                        <Binding Path="Id" />
-                                        <Binding Source="{x:Reference NotesContentRoot}"
-                                                 Path="BindingContext.DraggingNoteId" />
-                                    </MultiBinding>
-                                </Border.BackgroundColor>
-
                                 <Border.GestureRecognizers>
                                     <!-- Tap on the card body opens the
                                          EditNote dialog. The inner
@@ -222,6 +247,17 @@
                                 <Grid ColumnDefinitions="Auto,*,Auto,Auto"
                                       ColumnSpacing="10"
                                       VerticalOptions="Center">
+                                    <BoxView Grid.ColumnSpan="4"
+                                             InputTransparent="True">
+                                        <BoxView.Color>
+                                            <MultiBinding Converter="{StaticResource DragStateColorConverter}"
+                                                          ConverterParameter="#00000000|#EEEAFB|#00000000|#383442">
+                                                <Binding Path="Id" />
+                                                <Binding Source="{x:Reference NotesContentRoot}"
+                                                         Path="BindingContext.DraggingNoteId" />
+                                            </MultiBinding>
+                                        </BoxView.Color>
+                                    </BoxView>
 
                                     <!--
                                         Complete / checkbox. IsChecked is
@@ -233,7 +269,7 @@
                                     <CheckBox Grid.Column="0"
                                               IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                               CheckedChanged="OnCheckChanged"
-                                              Color="{StaticResource PrimaryColor}"
+                                              Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}"
                                               VerticalOptions="Center" />
 
                                     <!-- Title + metadata -->
@@ -290,7 +326,7 @@
                                             FontSize="22"
                                             Rotation="90"
                                             Background="Transparent"
-                                            TextColor="{StaticResource TextSecondaryColor}"
+                                            TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                             WidthRequest="40"
                                             HeightRequest="40"
                                             Padding="0"
@@ -309,13 +345,13 @@
                                      AnimationDuration="180">
                     <expander:SfExpander.Header>
                         <Grid Padding="20,12" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8">
-                            <Label Text="&#10003;" TextColor="{StaticResource TextSecondaryColor}"
+                            <Label Text="&#10003;" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                    VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="{Binding CompletedCount, StringFormat='Completed ({0})'}"
-                                   TextColor="{StaticResource TextSecondaryColor}"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                    FontAttributes="Bold" VerticalOptions="Center" />
                             <Label Grid.Column="2" Text="&#9662;"
-                                   TextColor="{StaticResource TextSecondaryColor}"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                    HorizontalOptions="End" VerticalOptions="Center" />
                         </Grid>
                     </expander:SfExpander.Header>
@@ -327,7 +363,7 @@
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
                                     <Border Margin="16,4" Padding="12,8"
-                                            BackgroundColor="{StaticResource SurfaceColor}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                             StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                         <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
                                             <CheckBox IsChecked="{Binding IsCompleted, Mode=OneWay}"
@@ -336,7 +372,7 @@
                                             <Label Grid.Column="1" Text="{Binding Title}"
                                                    VerticalOptions="Center"
                                                    TextDecorations="Strikethrough"
-                                                   TextColor="{StaticResource TextSecondaryColor}">
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}">
                                                 <Label.GestureRecognizers>
                                                     <TapGestureRecognizer
                                                         Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.EditNoteCommand}"
@@ -368,7 +404,7 @@
             <Border Grid.Row="2"
                     Margin="16,12,16,16"
                     Padding="10,4"
-                    BackgroundColor="White"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource BottomBarBackgroundColor}, Dark={StaticResource SurfaceDarkColor}}"
                     StrokeThickness="0"  
                     StrokeShape="RoundRectangle 12">
                 <Grid ColumnDefinitions="*" VerticalOptions="Center">
@@ -376,7 +412,8 @@
                                                      Hint="Add a note"
                                                      ContainerType="Outlined" 
                                                      OutlineCornerRadius="28"
-                                                     FocusedStrokeThickness="1" Background="White"
+                                                     FocusedStrokeThickness="1"
+                                                     Background="{AppThemeBinding Light={StaticResource BottomBarBackgroundColor}, Dark={StaticResource SurfaceDarkColor}}"
                                                      UnfocusedStrokeThickness="1" 
                                                      ShowHint="True" Stroke="Transparent"
                                                      EnableFloating="False" 

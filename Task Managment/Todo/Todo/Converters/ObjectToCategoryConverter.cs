@@ -5,7 +5,7 @@ namespace Todo.Converters;
 
 /// <summary>
 /// Converts between <see cref="object"/> (the type used by
-/// <c>CollectionView.SelectedItem</c>) and <see cref="NotesListCategory"/>.
+/// <c>SfListView.SelectedItem</c>) and <see cref="NotesListCategory"/>.
 /// <c>null</c> values round-trip as <see cref="NotesListCategory.MyNotes"/>.
 /// </summary>
 public sealed class ObjectToCategoryConverter : IValueConverter

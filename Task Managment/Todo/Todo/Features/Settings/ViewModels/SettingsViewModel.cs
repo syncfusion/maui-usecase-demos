@@ -12,21 +12,14 @@ public partial class SettingsViewModel : ViewModelBase
         new[] { "System Default", "Light", "Dark" };
 
     [ObservableProperty]
-    private bool notificationsEnabled;
-
-    [ObservableProperty]
     private string selectedTheme = "System Default";
 
     public SettingsViewModel(INavigationService navigation)
     {
         _navigation = navigation;
-        NotificationsEnabled = Preferences.Default.Get("NotificationsEnabled", true);
         SelectedTheme = Preferences.Default.Get("AppTheme", "System Default");
         ApplyTheme(SelectedTheme);
     }
-
-    partial void OnNotificationsEnabledChanged(bool value)
-        => Preferences.Default.Set("NotificationsEnabled", value);
 
     partial void OnSelectedThemeChanged(string value)
     {

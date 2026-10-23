@@ -8,7 +8,7 @@ namespace Todo.Features.Bin;
 /// Shows soft-deleted notes. Reuses the shared
 /// <see cref="NotesListViewModel"/> via the central layout. Each
 /// item exposes a "Restore" action and a "Delete permanently" action
-/// (matching <c>bin.png</c> and <c>deletepermently.png</c>).
+/// in the shared task list.
 /// </summary>
 public partial class BinPage : NotesFilterPageBase
 {

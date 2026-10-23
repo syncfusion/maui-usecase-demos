@@ -18,7 +18,7 @@
         <Border MaximumWidthRequest="480"
             WidthRequest="{OnIdiom Phone=340, Default=440}"
             MaximumHeightRequest="720"
-                BackgroundColor="{StaticResource SurfaceColor}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 16"
                 Padding="24">
@@ -34,7 +34,7 @@
                 <Label Text="{Binding DialogTitle}"
                        FontSize="20"
                        FontAttributes="Bold"
-                       TextColor="{StaticResource TextPrimaryColor}" />
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
 
                 <!-- Title input -->
                 <syncfusionCore:SfTextInputLayout Hint="Note title"
@@ -42,7 +42,7 @@
                                                   ShowHint="True">
                     <Entry Text="{Binding Title, Mode=TwoWay}"
                            FontSize="14"
-                           TextColor="{StaticResource TextPrimaryColor}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
                            ReturnType="Done" />
                 </syncfusionCore:SfTextInputLayout>
 

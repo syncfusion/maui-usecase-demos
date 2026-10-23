@@ -60,6 +60,14 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task UpdateAsync(Note note)
     {
+        if (note.ReminderDate.HasValue)
+        {
+            // Reminder is a destination category, not an additional tag.
+            note.IsImportant = false;
+            note.ListId = null;
+            note.DeletedAt = null;
+        }
+
         note.UpdatedAt = DateTime.Now;
         // ObservableCollection replaces items in-place; binding systems
         // observe property-level notifications on Note itself.
@@ -114,6 +122,13 @@ public sealed class InMemoryNoteService : INoteService
             return Task.CompletedTask;
 
         existing.IsImportant = !existing.IsImportant;
+        if (existing.IsImportant)
+        {
+            // Starring moves the note out of other views and into Important.
+            existing.ReminderDate = null;
+            existing.ListId = null;
+            existing.DeletedAt = null;
+        }
         existing.UpdatedAt = DateTime.Now;
         return Task.CompletedTask;
     }
@@ -130,16 +145,16 @@ public sealed class InMemoryNoteService : INoteService
                                                            && !n.IsImportant
                                                            && n.ReminderDate is null),
 
-            // Per the design (important.png), Important shows every note
+            // Important shows every active note that has been starred.
             // that has been starred – including ones that have since been
             // moved to the Bin so users can still find them via the star.
             NotesListCategory.Important => query.Where(n => n.DeletedAt is null && n.IsImportant),
 
-            // Per the design (remainder.png), Reminder shows every note
+            // Reminder shows every active note with a reminder date.
             // that has a reminder date set, regardless of soft-delete.
             NotesListCategory.Reminder => query.Where(n => n.DeletedAt is null && n.ReminderDate.HasValue),
 
-            // Per the design (bin.png), Bin shows every soft-deleted note.
+            // Bin shows every soft-deleted note.
             NotesListCategory.Bin => query.Where(n => n.DeletedAt is not null),
             _ => query
         };

@@ -19,7 +19,7 @@
           Margin="0,10,0,0"
           RowDefinitions="60,*"
           ColumnDefinitions="{OnIdiom Phone='0,*', Default='220,*'}"
-          Background="#F7F2FB">
+          Background="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}">
 
         <!-- Shared application header (spans both columns) -->
         <views:HeaderView Grid.Row="0"
@@ -29,11 +29,11 @@
                  Grid.ColumnSpan="2"
                  HeightRequest="1"
                  VerticalOptions="End"
-                 Color="{StaticResource DividerColor}" />
+                 Color="{AppThemeBinding Light={StaticResource DividerColor}, Dark={StaticResource DividerDarkColor}}" />
 
         <!-- Sidebar (hides on Phone per collapsed.png) -->
         <views:SidebarView x:Name="Sidebar"
-                           Grid.Row="1" Background="White"
+                           Grid.Row="1"
                            Grid.Column="0" />
 
         <!-- Main content area (consumes the freed space when sidebar collapses) -->
@@ -48,11 +48,11 @@
           Margin="16,0,16,20"
           HorizontalOptions="Center"
           VerticalOptions="End"
-          BackgroundColor="{StaticResource TextPrimaryColor}"
+          BackgroundColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource SurfaceDarkColor}}"
           StrokeThickness="0"
           StrokeShape="RoundRectangle 8">
             <Label Text="{Binding ToastMessage}"
-             TextColor="{StaticResource SurfaceColor}"
+             TextColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource TextPrimaryDarkColor}}"
              FontAttributes="Bold" />
         </Border>
     </Grid>

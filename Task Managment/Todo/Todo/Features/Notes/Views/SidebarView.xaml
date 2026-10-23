@@ -10,14 +10,14 @@
              x:Class="Todo.Features.Notes.Views.SidebarView"
              x:Name="SidebarRoot"
              x:DataType="vm:NotesListViewModel"
-             BackgroundColor="{StaticResource SidebarBackgroundColor}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource SidebarBackgroundColor}, Dark={StaticResource SidebarBackgroundDarkColor}}">
 
     <Grid RowDefinitions="192,Auto,*,Auto" Padding="0,12,0,16">
         <syncfusion:SfListView Grid.Row="0"
                                 ItemSize="45"
                                 ItemsSource="{Binding AvailableCategories}"
-                                SelectionMode="Single"
-                                SelectedItem="{Binding SelectedCategory, Mode=TwoWay, Converter={StaticResource ObjectToCategoryConverter}}"
+                                SelectionMode="Single" SelectionBackground="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}"
+                                SelectedItem="{Binding SelectedCategory, Mode=OneWay, Converter={StaticResource ObjectToCategoryConverter}}"
                                 BackgroundColor="Transparent"
                                 SelectionChanged="OnSidebarSelectionChanged">
             <syncfusion:SfListView.ItemTemplate>
@@ -33,7 +33,7 @@
                                         <VisualState x:Name="Normal" /> 
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="{StaticResource SidebarSelectionColor}" />
+                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -70,7 +70,7 @@
                  HeightRequest="1"
                  Margin="16,0"
                  VerticalOptions="Center"
-                 Color="{StaticResource DividerColor}" />
+                 Color="{AppThemeBinding Light={StaticResource DividerColor}, Dark={StaticResource DividerDarkColor}}" />
 
         <Grid Grid.Row="2" RowDefinitions="Auto,*">
             <Label Grid.Row="0" Text="Lists" Style="{StaticResource SidebarSectionHeaderStyle}"
@@ -89,7 +89,7 @@
                 </VerticalStackLayout>
 
                 <syncfusion:SfListView x:Name="CustomListsView" ItemsSource="{Binding CustomLists}"
-                                SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45"
+                                SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45" SelectionBackground="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}"
                                 SelectionChanged="OnCustomListSelectionChanged">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="custmodels:NoteList">
@@ -105,7 +105,7 @@
                                         <VisualState x:Name="Normal" /> 
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="{StaticResource SidebarSelectionColor}" />
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -119,7 +119,7 @@
                                            IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}" />
                                     <buttons:SfButton Grid.Column="2" Text="&#8943;" FontSize="18" Rotation="90"
                                                       WidthRequest="32" HeightRequest="32" Padding="0"
-                                                      Background="Transparent" TextColor="{StaticResource TextSecondaryColor}"
+                                                      Background="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                                       Command="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.ShowListMenuCommand}"
                                                       CommandParameter="{Binding .}"
                                                       SemanticProperties.Description="More list options" />

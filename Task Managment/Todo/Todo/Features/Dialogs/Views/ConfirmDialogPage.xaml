@@ -15,7 +15,7 @@
 
         <Border MaximumWidthRequest="440"
                 WidthRequest="{OnIdiom Phone=300, Default=400}"
-                BackgroundColor="{StaticResource SurfaceColor}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 16"
                 Padding="24">
@@ -30,11 +30,11 @@
                 <Label Text="{Binding Title}"
                        FontSize="20"
                        FontAttributes="Bold"
-                       TextColor="{StaticResource TextPrimaryColor}" />
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
 
                 <Label Text="{Binding Message}"
                        FontSize="14"
-                       TextColor="{StaticResource TextSecondaryColor}" />
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
 
                 <Grid ColumnDefinitions="*,Auto,Auto"
                       ColumnSpacing="12"

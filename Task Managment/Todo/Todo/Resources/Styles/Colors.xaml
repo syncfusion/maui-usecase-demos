@@ -39,9 +39,15 @@
     <Color x:Key="SidebarSelectionColor">#EEEAFB</Color>
     <Color x:Key="DividerColor">#E0E0E0</Color>
     <Color x:Key="BorderColor">#E0E0E0</Color>
+    <Color x:Key="BackgroundDarkColor">#121212</Color>
+    <Color x:Key="SurfaceDarkColor">#1E1E1E</Color>
+    <Color x:Key="SidebarBackgroundDarkColor">#18181B</Color>
+    <Color x:Key="SidebarSelectionDarkColor">#5C4EAE</Color>
+    <Color x:Key="DividerDarkColor">#3F3F46</Color>
 
     <Color x:Key="BottomBarBackgroundColor">#FFFFFF</Color>
     <Color x:Key="InputPillBackgroundColor">#F5F5F5</Color>
+    <Color x:Key="InputPillBackgroundDarkColor">#2A2A2E</Color>
 
     <!-- ============================================================ -->
     <!-- Text                                                         -->
@@ -49,6 +55,9 @@
     <Color x:Key="TextPrimaryColor">#212121</Color>
     <Color x:Key="TextSecondaryColor">#757575</Color>
     <Color x:Key="TextTertiaryColor">#9E9E9E</Color>
+    <Color x:Key="TextPrimaryDarkColor">#F5F5F5</Color>
+    <Color x:Key="TextSecondaryDarkColor">#C4C4CC</Color>
+    <Color x:Key="TextTertiaryDarkColor">#A1A1AA</Color>
     <Color x:Key="TextOnDarkColor">#FFFFFF</Color>
     <Color x:Key="TextInverseColor">#FFFFFF</Color>
 
@@ -56,6 +65,7 @@
     <!-- Status                                                       -->
     <!-- ============================================================ -->
     <Color x:Key="ErrorColor">#D32F2F</Color>
+    <Color x:Key="DangerColor">#D32F2F</Color>
     <Color x:Key="SuccessColor">#388E3C</Color>
     <Color x:Key="WarningColor">#F57C00</Color>
 

@@ -11,7 +11,7 @@
     <Grid Padding="24" HorizontalOptions="Center" VerticalOptions="Center">
         <Border WidthRequest="{OnIdiom Phone=320, Default=420}"
                 Padding="24"
-                BackgroundColor="{StaticResource SurfaceColor}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 12">
             <VerticalStackLayout Spacing="20">
@@ -19,7 +19,7 @@
                     <Label Text="Settings"
                            FontSize="22"
                            FontAttributes="Bold"
-                           TextColor="{StaticResource TextPrimaryColor}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
                                       Text="Close"
@@ -28,20 +28,10 @@
                                       SemanticProperties.Description="Close settings" />
                 </Grid>
 
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                        <Label Text="Notifications" FontAttributes="Bold" />
-                        <Label Text="Enable reminder notifications" FontSize="12"
-                               TextColor="{StaticResource TextSecondaryColor}" />
-                    </VerticalStackLayout>
-                    <buttons:SfSwitch Grid.Column="1"
-                                      IsOn="{Binding NotificationsEnabled, Mode=TwoWay}"
-                                      VerticalOptions="Center"
-                                      SemanticProperties.Description="Enable notifications" />
-                </Grid>
-
                 <VerticalStackLayout Spacing="6">
-                    <Label Text="Theme" FontAttributes="Bold" />
+                    <Label Text="Theme"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
                     <Picker ItemsSource="{Binding ThemeOptions}"
                             SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
                             Title="Choose a theme" />

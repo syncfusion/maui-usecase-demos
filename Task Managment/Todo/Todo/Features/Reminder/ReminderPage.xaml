@@ -6,4 +6,4 @@
                            x:DataType="local:ReminderPage"
                            Title="Reminder"
                            Shell.NavBarIsVisible="False"
-                           BackgroundColor="{StaticResource BackgroundColor}" />
+                           BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColor}, Dark={StaticResource BackgroundDarkColor}}" />

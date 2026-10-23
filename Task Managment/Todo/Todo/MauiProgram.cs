@@ -21,8 +21,6 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // Note store is empty on startup by design (Module-02 spec).
-
         // Common infrastructure
         builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
 
@@ -31,14 +29,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IListService, InMemoryListService>();
         builder.Services.AddSingleton<Features.Search.Services.INoteSearchService, Features.Search.Services.InMemoryNoteSearchService>();
 
-        // ViewModels — shared singleton across all four filter pages.
-        // PR #37 review issue #13: the modal/dialog pages and their VMs
-        // (EditNotePage, ConfirmDialogPage, CreateListDialogPage,
-        // RenameListDialogPage, SearchResultsView, PermanentDeleteDialog)
-        // are always created with `new` by their callers, so they do
-        // not need (and must not have) DI registrations. The sidebar
-        // commands live on NotesListViewModel (issue #9 — the duplicate
-        // CustomListsViewModel has been removed).
+        // Shared by all four filter pages.
         builder.Services.AddSingleton<NotesListViewModel>();
 
         // Pages (separate routes for My Notes, Important, Reminder, Bin)

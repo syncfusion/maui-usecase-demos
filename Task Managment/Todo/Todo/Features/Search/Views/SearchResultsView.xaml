@@ -9,13 +9,13 @@
              x:Name="SearchRoot"
              x:DataType="vm:SearchResultsViewModel"
              Padding="16"
-             BackgroundColor="#F7F2FB">
+             BackgroundColor="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}">
 
-    <Border BackgroundColor="{StaticResource SurfaceColor}"
+    <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 14">
         <Grid RowDefinitions="Auto,*,Auto"
-              BackgroundColor="{StaticResource SurfaceColor}">
+              BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}">
 
             <Grid Grid.Row="1">
                 <VerticalStackLayout IsVisible="{Binding IsQueryEmpty}"
@@ -29,7 +29,7 @@
                            HorizontalOptions="Center" />
                     <Label Text="You can search the created notes here"
                            FontSize="16"
-                           TextColor="{StaticResource TextSecondaryColor}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
@@ -44,7 +44,7 @@
                            HorizontalOptions="Center" />
                     <Label Text="No notes found. Try adjusting your search."
                            FontSize="16"
-                           TextColor="{StaticResource TextSecondaryColor}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
@@ -58,7 +58,7 @@
                                 <DataTemplate x:DataType="models:Note">
                                     <Border Margin="16,6"
                                             Padding="14,12"
-                                            BackgroundColor="{StaticResource SurfaceColor}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                             StrokeThickness="0"
                                             StrokeShape="RoundRectangle 10">
                                         <Border.GestureRecognizers>
@@ -128,7 +128,7 @@
                                                     FontSize="22"
                                                     Rotation="90"
                                                     Background="Transparent"
-                                                    TextColor="{StaticResource TextSecondaryColor}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                                     WidthRequest="40"
                                                     HeightRequest="40"
                                                     Padding="0"

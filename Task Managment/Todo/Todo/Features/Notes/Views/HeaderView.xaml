@@ -10,7 +10,7 @@
     <Grid HeightRequest="{StaticResource HeaderHeight}"
           Padding="8,0,16,0"
           ColumnDefinitions="Auto,*,Auto"
-          BackgroundColor="{StaticResource SurfaceColor}">
+          BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}">
         <Grid.Shadow>
             <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="0.10" />
         </Grid.Shadow>
@@ -35,7 +35,7 @@
             <Label Text="To Do List"
                    FontSize="17"
                    FontAttributes="Bold"
-                   TextColor="{StaticResource TextPrimaryColor}"
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
                    VerticalOptions="Center" />
         </HorizontalStackLayout>
 
@@ -52,7 +52,8 @@
                  
                 <syncfusionCore:SfTextInputLayout ContainerType="Outlined"
                                 OutlineCornerRadius="28" FocusedStrokeThickness="1"   Hint="Search"
-                                UnfocusedStrokeThickness="1"  ReserveSpaceForAssistiveLabels="False" Stroke="Transparent" Background="#F7F2FB"
+                                UnfocusedStrokeThickness="1"  ReserveSpaceForAssistiveLabels="False" Stroke="Transparent"
+                                Background="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
                                 InputViewPadding="16, 0, 16, 0" EnableFloating="False" Margin="0" ShowHelperText="False"
                                 ShowHint="True"
                                 VerticalOptions="Center">
@@ -61,7 +62,7 @@
                             <buttons:SfButton ImageSource="search.png"
                                               FontSize="15"
                                               Background="Transparent"
-                                              TextColor="{StaticResource TextSecondaryColor}"
+                                              TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                               Command="{Binding OpenSearchCommand}"
                                               IsVisible="{Binding SearchViewModel.IsQueryEmpty}"
                                               SemanticProperties.Description="Search notes"
@@ -78,7 +79,7 @@
                                               HeightRequest="32"
                                               Padding="0"
                                               Background="Transparent"
-                                              TextColor="{StaticResource TextSecondaryColor}"
+                                              TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                               Command="{Binding ClearSearchQueryCommand}"
                                               IsVisible="{Binding SearchViewModel.IsQueryEmpty, Converter={StaticResource InvertedBoolConverter}}"
                                               SemanticProperties.Description="Clear search"
@@ -88,8 +89,8 @@
 
                     <Entry Text="{Binding SearchViewModel.Query, Mode=TwoWay}"
                             FontSize="14"
-                            TextColor="{StaticResource TextPrimaryColor}"
-                            PlaceholderColor="{StaticResource TextSecondaryColor}"
+                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                            PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                             IsReadOnly="False"
                             Focused="OnSearchEntryFocused"
                             VerticalTextAlignment="Center"
@@ -110,7 +111,10 @@
                 VerticalOptions="Center">
             <Image Source="profile.png"
                    Aspect="AspectFill"
-                   SemanticProperties.Description="Open profile menu" />
+                   SemanticProperties.Description="Open theme settings" />
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+            </Border.GestureRecognizers>
 
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">

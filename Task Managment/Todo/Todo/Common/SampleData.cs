@@ -8,15 +8,13 @@ namespace Todo.Common;
 /// <para>
 /// The data set is laid out so that each built-in filter view
 /// (<b>Important</b>, <b>Reminder</b>, <b>Bin</b>) shows a distinct
-/// list of notes whose size and content match the design images
-/// <c>images/important.png</c>, <c>images/remainder.png</c> and
-/// <c>images/bin.png</c>:
+/// list of notes:
 /// </para>
 /// <list type="bullet">
 ///   <item><b>Important</b> shows 5 starred notes (no reminder, not soft-deleted).</item>
 ///   <item><b>Reminder</b> shows 3 notes that have a reminder date (not starred, not soft-deleted).</item>
 ///   <item><b>Bin</b> shows 3 soft-deleted notes (not starred, no reminder).</item>
-///   <item><b>My Notes</b> is empty at first launch, matching <c>images/mynotes.png</c>.</item>
+///   <item><b>My Notes</b> is empty at first launch.</item>
 /// </list>
 /// </summary>
 public static class SampleData
@@ -46,7 +44,7 @@ public static class SampleData
             _seeded = new List<Note>
             {
                 // ---------------------------------------------------
-                //  Important (5 starred notes — match important.png)
+                //  Important (5 starred notes)
                 // ---------------------------------------------------
                 new()
                 {
@@ -94,7 +92,7 @@ public static class SampleData
                 },
 
                 // ---------------------------------------------------
-                //  Reminder (3 notes with a reminder date — match remainder.png)
+                //  Reminder (3 notes with a reminder date)
                 // ---------------------------------------------------
                 new()
                 {
@@ -125,7 +123,7 @@ public static class SampleData
                 },
 
                 // ---------------------------------------------------
-                //  Bin (3 soft-deleted notes — match bin.png)
+                //  Bin (3 soft-deleted notes)
                 // ---------------------------------------------------
                 new()
                 {

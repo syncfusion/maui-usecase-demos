@@ -156,6 +156,7 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(EmptyStateMessage));
         OnPropertyChanged(nameof(AccentColorKey));
         OnPropertyChanged(nameof(BackgroundImage));
+        OnPropertyChanged(nameof(HasBackgroundImage));
     }
 
     partial void OnSelectedListIdChanged(string? value)
@@ -172,6 +173,7 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsCustomListSelected));
         OnPropertyChanged(nameof(AccentColorKey));
         OnPropertyChanged(nameof(BackgroundImage));
+        OnPropertyChanged(nameof(HasBackgroundImage));
     }
 
     private string? ResolveCustomListName(string listId)
@@ -201,10 +203,13 @@ public partial class NotesListViewModel : ViewModelBase
         get
         {
             if (!string.IsNullOrEmpty(SelectedListId))
-                return ResolveCustomList(SelectedListId)?.BackgroundImageSource ?? SelectedCategory.ToBackgroundImage();
+                return ResolveCustomList(SelectedListId)?.BackgroundImageSource
+                    ?? NotesListCategory.MyNotes.ToBackgroundImage();
             return SelectedCategory.ToBackgroundImage();
         }
     }
+
+    public bool HasBackgroundImage => !string.IsNullOrEmpty(BackgroundImage);
 
     // ---------------------------------------------------------------
     //  Empty-state copy (matched to design)
@@ -297,6 +302,7 @@ public partial class NotesListViewModel : ViewModelBase
     {
         if (string.IsNullOrEmpty(listId)) return;
         CloseSearch();
+        SelectedCategory = NotesListCategory.MyNotes;
         SelectedListId = listId;
     }
 
@@ -313,7 +319,9 @@ public partial class NotesListViewModel : ViewModelBase
     {
         var vm = new Todo.Features.CustomLists.ViewModels.CreateListDialogViewModel(_listService, _navigation);
         var page = new Todo.Features.CustomLists.Views.CreateListDialogPage(vm);
-        await _navigation.PushModalAsync(page);
+        var result = await _navigation.PushModalAsync(page);
+        if (result is string listId)
+            NavigateToList(listId);
     }
 
     /// <summary>
@@ -487,9 +495,9 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task OpenProfileMenuAsync()
+    private async Task OpenSettingsAsync()
     {
-        await _navigation.PushModalAsync(new Todo.Features.Settings.Views.ProfileMenuPage(_navigation));
+        await _navigation.PushModalAsync(new Todo.Features.Settings.Views.SettingsPage(new Todo.Features.Settings.ViewModels.SettingsViewModel(_navigation)));
     }
 
     // ---------------------------------------------------------------
@@ -755,7 +763,7 @@ public partial class NotesListViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenCreateNoteAsync()
     {
-        var viewModel = new EditNoteViewModel(_noteService, _navigation)
+        var viewModel = new EditNoteViewModel(_noteService, _navigation, existing: null, listId: SelectedListId)
         {
             Title = NewNoteTitle
         };
@@ -942,6 +950,7 @@ public partial class NotesListViewModel : ViewModelBase
             OnPropertyChanged(nameof(HeaderTitle));
             OnPropertyChanged(nameof(EmptyStateTitle));
             OnPropertyChanged(nameof(BackgroundImage));
+            OnPropertyChanged(nameof(HasBackgroundImage));
             if (e.PropertyName == nameof(Todo.Features.CustomLists.Models.NoteList.SortOrder)
                 && SelectedListId == ((Todo.Features.CustomLists.Models.NoteList)sender!).Id)
                 ApplyFilter();

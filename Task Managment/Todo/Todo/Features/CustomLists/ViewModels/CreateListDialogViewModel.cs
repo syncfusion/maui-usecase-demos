@@ -60,8 +60,8 @@ public partial class CreateListDialogViewModel : ViewModelBase
 
         try
         {
-            await _listService.CreateAsync(trimmed);
-            await _navigation.PopModalAsync(true);
+            var list = await _listService.CreateAsync(trimmed);
+            await _navigation.PopModalAsync(list.Id);
         }
         catch (ArgumentException ex)
         {

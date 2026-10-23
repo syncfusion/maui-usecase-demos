@@ -16,7 +16,7 @@
 
         <Border MaximumWidthRequest="420"
                 WidthRequest="{OnIdiom Phone=300, Default=400}"
-                BackgroundColor="{StaticResource SurfaceColor}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 16"
                 Padding="24">
@@ -32,7 +32,7 @@
                 <Label Text="{Binding DialogTitle}"
                        FontSize="20"
                        FontAttributes="Bold"
-                       TextColor="{StaticResource TextPrimaryColor}" />
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
 
                 <!-- List-name input -->
                 <syncfusionCore:SfTextInputLayout Hint="List name"
@@ -43,9 +43,9 @@
                     <Entry Text="{Binding ListName, Mode=TwoWay}"
                            Placeholder="List name"
                            FontSize="14"
-                           TextColor="{StaticResource TextPrimaryColor}"
-                           PlaceholderColor="{StaticResource TextTertiaryColor}"
-                           BackgroundColor="{StaticResource InputPillBackgroundColor}"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextTertiaryColor}, Dark={StaticResource TextTertiaryDarkColor}}"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource InputPillBackgroundColor}, Dark={StaticResource InputPillBackgroundDarkColor}}"
                            MinimumHeightRequest="44" />
                 </syncfusionCore:SfTextInputLayout>
 

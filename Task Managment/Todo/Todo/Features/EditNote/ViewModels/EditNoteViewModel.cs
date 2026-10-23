@@ -22,6 +22,7 @@ public partial class EditNoteViewModel : ViewModelBase
     private readonly INoteService _noteService;
     private readonly INavigationService _navigation;
     private readonly Note? _existing;
+    private readonly string? _listId;
 
     /// <summary>The note currently being edited, or <c>null</c> when
     /// creating a new note.</summary>
@@ -58,15 +59,16 @@ public partial class EditNoteViewModel : ViewModelBase
     public string PrimaryButtonText => IsExisting ? "Save" : "Create";
 
     public EditNoteViewModel(INoteService noteService, INavigationService navigation)
-        : this(noteService, navigation, null)
+        : this(noteService, navigation, null, null)
     {
     }
 
-    public EditNoteViewModel(INoteService noteService, INavigationService navigation, Note? existing)
+    public EditNoteViewModel(INoteService noteService, INavigationService navigation, Note? existing, string? listId = null)
     {
         _noteService = noteService;
         _navigation = navigation;
         _existing = existing;
+        _listId = listId;
 
         if (existing is not null)
         {
@@ -96,7 +98,7 @@ public partial class EditNoteViewModel : ViewModelBase
 
         if (_existing is null)
         {
-            await _noteService.CreateAsync(trimmed, dueDate, reminderDate, repeatFrequency: RepeatFrequency);
+            await _noteService.CreateAsync(trimmed, dueDate, reminderDate, listId: _listId, repeatFrequency: RepeatFrequency);
         }
         else
         {

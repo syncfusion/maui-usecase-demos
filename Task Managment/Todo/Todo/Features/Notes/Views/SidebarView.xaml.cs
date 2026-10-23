@@ -24,10 +24,10 @@ public partial class SidebarView : ContentView
     /// as a side effect of
     /// <see cref="NotesListViewModel.NavigateToCategoryCommand"/>.
     /// </summary>
-    private void OnSidebarSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void OnSidebarSelectionChanged(object? sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
     {
         if (BindingContext is not NotesListViewModel vm) return;
-        if (e.CurrentSelection.FirstOrDefault() is not NotesListCategory category) return;
+        if (e.AddedItems?.FirstOrDefault() is not NotesListCategory category) return;
 
         if (vm.SelectedCategory == category)
         {
@@ -42,10 +42,10 @@ public partial class SidebarView : ContentView
     /// centralized ViewModel. Custom lists reuse the My Notes chrome,
     /// so the only state change is the active <c>SelectedListId</c>.
     /// </summary>
-    private void OnCustomListSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void OnCustomListSelectionChanged(object? sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
     {
         if (BindingContext is not NotesListViewModel vm) return;
-        if (e.CurrentSelection.FirstOrDefault() is not NoteList list) return;
+        if (e.AddedItems?.FirstOrDefault() is not NoteList list) return;
 
         if (string.Equals(vm.SelectedListId, list.Id, StringComparison.Ordinal))
         {
@@ -75,10 +75,7 @@ public partial class SidebarView : ContentView
         var key = NotesListViewModel.EncodeDropTarget(category);
         vm.DropTargetKey = key;
         ApplyDropVisual(border, active: true);
-        // MAUI's DataPackageOperation only exposes None/Copy (see
-        // Microsoft.Maui.Controls DragAndDrop). "Move" is not part of
-        // the cross-platform enum; we use Copy so the drop is accepted
-        // and the in-app move command runs to relocate the note.
+        // Accept the drop as a copy; the in-app move command relocates the note.
         e.AcceptedOperation = DataPackageOperation.Copy;
     }
 
@@ -128,8 +125,7 @@ public partial class SidebarView : ContentView
             : NotesListViewModel.EncodeDropTarget(list.Id);
         vm.DropTargetKey = key;
         ApplyDropVisual(border, active: true);
-        // MAUI's DataPackageOperation only exposes None/Copy; use Copy
-        // to accept the drop (see handler in OnSidebarDragOver).
+        // Accept the drop; the in-app command performs the list reorder.
         e.AcceptedOperation = DataPackageOperation.Copy;
     }
 
@@ -204,13 +200,4 @@ public partial class SidebarView : ContentView
         border.StrokeThickness = 0;
     }
 
-    private void OnSidebarSelectionChanged(object sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
-    {
-
-    }
-
-    private void OnCustomListSelectionChanged(object sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
-    {
-
-    }
 }

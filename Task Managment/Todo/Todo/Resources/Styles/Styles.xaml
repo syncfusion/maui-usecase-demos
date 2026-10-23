@@ -95,7 +95,7 @@
     </Style>
 
     <Style TargetType="Editor">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
@@ -477,7 +477,7 @@
     <Style x:Key="SidebarItemLabelStyle" TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyRegular}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
@@ -485,7 +485,7 @@
     <Style x:Key="HeaderTitleStyle" TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeHeading}" />
-        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
         <Setter Property="VerticalOptions" Value="Center" />
         <Setter Property="HorizontalOptions" Value="Center" />
     </Style>
@@ -502,7 +502,7 @@
     <Style x:Key="NoteTitleStyle" TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyRegular}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
-        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
         <Setter Property="LineBreakMode" Value="TailTruncation" />
         <Setter Property="MaxLines" Value="2" />
     </Style>
@@ -511,14 +511,14 @@
     <Style x:Key="NoteMetaStyle" TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyRegular}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}" />
-        <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
     </Style>
 
     <!-- Sidebar section header (e.g. "Custom Lists") -->
     <Style x:Key="SidebarSectionHeaderStyle" TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}" />
-        <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
         <Setter Property="Padding" Value="16,8,16,4" />
     </Style>
 
@@ -526,7 +526,7 @@
     <Style x:Key="EmptyStateMessageStyle" TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyRegular}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
-        <Setter Property="TextColor" Value="{StaticResource TextTertiaryColor}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextTertiaryColor}, Dark={StaticResource TextTertiaryDarkColor}}" />
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />
     </Style>
@@ -535,8 +535,8 @@
     <Style x:Key="InputPillEntryStyle" TargetType="Entry">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyRegular}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
-        <Setter Property="PlaceholderColor" Value="{StaticResource TextTertiaryColor}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource TextTertiaryColor}, Dark={StaticResource TextTertiaryDarkColor}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="MinimumHeightRequest" Value="44" />
         <Setter Property="VerticalOptions" Value="Center" />
