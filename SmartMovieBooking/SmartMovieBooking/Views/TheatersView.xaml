@@ -46,42 +46,42 @@
                                 HorizontalScrollBarVisibility="Never">
                         <syncfusion:SfListView x:Name="DateList"
                                                ItemsSource="{Binding Dates}"
-                                               ItemSpacing="12"
+                                               ItemSpacing="10"
                                                IsScrollingEnabled="False"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
-                                               HeightRequest="110"
+                                               HeightRequest="104"
                                                SelectionMode="Single"
                                                SelectionChanged="OnDateSelected">
                             <syncfusion:SfListView.ItemsLayout>
-                                <syncfusion:GridLayout SpanCount="10" />
+                                <syncfusion:GridLayout SpanCount="1" />
                             </syncfusion:SfListView.ItemsLayout>
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="sys:DateTime">
                                     <Border StrokeThickness="1"
                                             Stroke="#D7D8E6"
                                             BackgroundColor="#FFFFFF"
-                                            Padding="12,10"
-                                            HeightRequest="86"
-                                            WidthRequest="92"
+                                            Padding="10,8"
+                                            HeightRequest="78"
+                                            WidthRequest="84"
                                             StrokeShape="RoundRectangle 14">
                                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
                                             <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
                                                    FontFamily="OpenSansSemibold"
-                                                   FontSize="10"
+                                                   FontSize="9"
                                                    TextColor="#49454F"
                                                    HorizontalTextAlignment="Center" />
                                             <Label Grid.Row="1"
                                                    Text="{Binding ., StringFormat='{0:dd}'}"
                                                    FontFamily="OpenSansSemibold"
                                                    FontAttributes="Bold"
-                                                   FontSize="16"
+                                                   FontSize="15"
                                                    TextColor="#1A1A2E"
                                                    HorizontalTextAlignment="Center" />
                                             <Label Grid.Row="2"
                                                    Text="{Binding ., StringFormat='{0:ddd MMM}'}"
                                                    FontFamily="OpenSansSemibold"
-                                                   FontSize="10"
+                                                   FontSize="9"
                                                    TextColor="#49454F"
                                                    HorizontalTextAlignment="Center" />
                                         </Grid>

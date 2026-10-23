@@ -44,7 +44,7 @@
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                  BackgroundColor="#FFFFFF"
                                                                  Padding="16">
-                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                        <Grid ColumnDefinitions="64,*,Auto" ColumnSpacing="14" VerticalOptions="Center">
                                             <Border Grid.Column="0"
                                                     WidthRequest="64" HeightRequest="80"
                                                     StrokeShape="RoundRectangle 12"
@@ -75,13 +75,21 @@
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
                                             <VerticalStackLayout Grid.Column="2" Spacing="6"
-                                                                 HorizontalOptions="End">
-                                                <Border BackgroundColor="#9DEAF6" StrokeShape="RoundRectangle 999" Padding="8,3">
-                                                <Label Text="CONFIRMED" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#002A33" />
-                                              </Border>
+                                                                 HorizontalOptions="End"
+                                                                 VerticalOptions="Center">
+                                                <Border BackgroundColor="#9DEAF6"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        Padding="8,3"
+                                                        HorizontalOptions="End">
+                                                    <Label Text="CONFIRMED"
+                                                           FontFamily="OpenSansSemibold"
+                                                           FontSize="10"
+                                                           TextColor="#002A33" />
+                                                </Border>
                                                 <Label Text="{Binding BookingId}"
                                                        FontFamily="OpenSansSemibold"
                                                        FontSize="10"
+                                                       HorizontalTextAlignment="End"
                                                        TextColor="#7A7B8C" />
                                             </VerticalStackLayout>
                                         </Grid>
