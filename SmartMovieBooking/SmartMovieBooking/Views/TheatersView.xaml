@@ -50,7 +50,7 @@
                                                IsScrollingEnabled="False"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
-                                               HeightRequest="88"
+                                               HeightRequest="110"
                                                SelectionMode="Single"
                                                SelectionChanged="OnDateSelected">
                             <syncfusion:SfListView.ItemsLayout>
@@ -61,8 +61,8 @@
                                     <Border StrokeThickness="1"
                                             Stroke="#D7D8E6"
                                             BackgroundColor="#FFFFFF"
-                                            Padding="10,8"
-                                            HeightRequest="78"
+                                            Padding="12,10"
+                                            HeightRequest="86"
                                             WidthRequest="92"
                                             StrokeShape="RoundRectangle 14">
                                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
@@ -81,7 +81,7 @@
                                             <Label Grid.Row="2"
                                                    Text="{Binding ., StringFormat='{0:ddd MMM}'}"
                                                    FontFamily="OpenSansSemibold"
-                                                   FontSize="9"
+                                                   FontSize="10"
                                                    TextColor="#49454F"
                                                    HorizontalTextAlignment="Center" />
                                         </Grid>
@@ -91,8 +91,6 @@
                         </syncfusion:SfListView>
                     </ScrollView>
                 </VerticalStackLayout>
-            </VerticalStackLayout>
-
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout Spacing="16">
                     <syncfusion:SfListView ItemsSource="{Binding Theaters}"
