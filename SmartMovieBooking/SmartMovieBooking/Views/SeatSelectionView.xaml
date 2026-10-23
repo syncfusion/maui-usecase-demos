@@ -53,6 +53,7 @@
                 </syncfusionCards:SfCardView>
 
                 <syncfusionCards:SfCardView CornerRadius="18"
+                                            HeightRequest="460"
                                             BackgroundColor="#FFFFFF"
                                             Padding="18">
                     <VerticalStackLayout Spacing="16">
@@ -71,7 +72,7 @@
                                              BindableLayout.ItemsSource="{Binding SeatRows}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="vm:SeatRowViewModel">
-                                    <Grid ColumnDefinitions="18,*" ColumnSpacing="4">
+                                    <HorizontalStackLayout Spacing="18" HorizontalOptions="Center">
                                         <Label Text="{Binding RowLabel}"
                                                VerticalTextAlignment="Center"
                                                HorizontalTextAlignment="End"
@@ -106,12 +107,12 @@
                                                 </DataTemplate>
                                             </BindableLayout.ItemTemplate>
                                         </HorizontalStackLayout>
-                                    </Grid>
+                                    </HorizontalStackLayout>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
 
-                        <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="18">
+                        <Grid HorizontalOptions="Center" Margin="0,12,0,0" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="18">
                             <HorizontalStackLayout Spacing="8">
                                 <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#E5E6F1" StrokeShape="RoundRectangle 5" />
                                 <Label Text="Available" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
@@ -120,15 +121,18 @@
                                 <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#1E88E5" StrokeShape="RoundRectangle 5" />
                                 <Label Text="Selected" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
-                            <HorizontalStackLayout Grid.Column="2" Spacing="8">
-                                <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#9CA3AF" StrokeShape="RoundRectangle 5" />
-                                <Label Text="Occupied" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout Grid.Column="3" Spacing="8">
-                                <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#F3E8FF" StrokeShape="RoundRectangle 5" />
-                                <Label Text="Aisle" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
-                            </HorizontalStackLayout>
-                        </Grid>
+							<HorizontalStackLayout Grid.Column="2"
+												   Spacing="8">
+								<Border WidthRequest="18"
+										HeightRequest="18"
+										BackgroundColor="#9CA3AF"
+										StrokeShape="RoundRectangle 5" />
+								<Label Text="Occupied"
+									   FontSize="12"
+									   TextColor="#49454F"
+									   VerticalTextAlignment="Center" />
+							</HorizontalStackLayout>
+						</Grid>
                     </VerticalStackLayout>
                 </syncfusionCards:SfCardView>
             </VerticalStackLayout>
