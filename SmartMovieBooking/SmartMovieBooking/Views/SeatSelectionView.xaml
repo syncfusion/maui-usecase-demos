@@ -86,8 +86,8 @@
                                             <BindableLayout.ItemTemplate>
                                                 <DataTemplate x:DataType="models:Seat">
                                                     <Border StrokeThickness="1"
-                                                            Stroke="{Binding ., Converter={StaticResource SeatColorConverter}}"
-                                                            BackgroundColor="{Binding ., Converter={StaticResource SeatColorConverter}}"
+                                                            Stroke="{Binding State, Converter={StaticResource SeatColorConverter}}"
+                                                            BackgroundColor="{Binding State, Converter={StaticResource SeatColorConverter}}"
                                                             WidthRequest="28"
                                                             HeightRequest="28"
                                                             StrokeShape="RoundRectangle 8">
@@ -99,7 +99,7 @@
                                                                FontFamily="OpenSansSemibold"
                                                                HorizontalTextAlignment="Center"
                                                                VerticalTextAlignment="Center"
-                                                               TextColor="{Binding ., Converter={StaticResource SeatTextColorConverter}}" />
+                                                               TextColor="{Binding State, Converter={StaticResource SeatTextColorConverter}}" />
                                                     </Border>
                                                 </DataTemplate>
                                             </BindableLayout.ItemTemplate>
@@ -109,7 +109,7 @@
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
 
-                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="14" RowSpacing="10">
+                        <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="18">
                             <HorizontalStackLayout Spacing="8">
                                 <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#E5E6F1" StrokeShape="RoundRectangle 5" />
                                 <Label Text="Available" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
@@ -118,11 +118,11 @@
                                 <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#1E88E5" StrokeShape="RoundRectangle 5" />
                                 <Label Text="Selected" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
-                            <HorizontalStackLayout Grid.Row="1" Spacing="8">
+                            <HorizontalStackLayout Grid.Column="2" Spacing="8">
                                 <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#9CA3AF" StrokeShape="RoundRectangle 5" />
                                 <Label Text="Occupied" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>
-                            <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="8">
+                            <HorizontalStackLayout Grid.Column="3" Spacing="8">
                                 <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#F3E8FF" StrokeShape="RoundRectangle 5" />
                                 <Label Text="Aisle" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
                             </HorizontalStackLayout>

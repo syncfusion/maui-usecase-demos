@@ -142,8 +142,8 @@ public sealed class SeatColorConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is not Seat seat) return Color.FromArgb("#E5E6F1");
-        return seat.State switch
+        if (value is not SeatState state) return Color.FromArgb("#E5E6F1");
+        return state switch
         {
             SeatState.Selected  => Color.FromArgb("#1E88E5"),
             SeatState.Occupied  => Color.FromArgb("#9CA3AF"),
@@ -158,7 +158,7 @@ public sealed class SeatColorConverter : IValueConverter
 public sealed class SeatTextColorConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value is Seat seat && seat.State == SeatState.Selected
+        => value is SeatState state && state == SeatState.Selected
             ? Colors.White
             : Color.FromArgb("#1A1A2E");
 
