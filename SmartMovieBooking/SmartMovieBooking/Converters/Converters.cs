@@ -155,6 +155,17 @@ public sealed class SeatColorConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
+public sealed class SeatTextColorConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is Seat seat && seat.State == SeatState.Selected
+            ? Colors.White
+            : Color.FromArgb("#1A1A2E");
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
 public sealed class SeatEnabledConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

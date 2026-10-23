@@ -30,6 +30,7 @@
             <conv:ShowtimeStatusLabelConverter  x:Key="ShowtimeStatusLabelConverter" />
             <conv:ShowtimeStatusColorConverter  x:Key="ShowtimeStatusColorConverter" />
             <conv:SeatColorConverter           x:Key="SeatColorConverter" />
+            <conv:SeatTextColorConverter       x:Key="SeatTextColorConverter" />
             <conv:SeatEnabledConverter         x:Key="SeatEnabledConverter" />
         </ResourceDictionary>
     </Application.Resources>

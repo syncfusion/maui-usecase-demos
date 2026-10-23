@@ -1,3 +1,4 @@
+using SmartMovieBooking.Models;
 using SmartMovieBooking.ViewModels;
 
 namespace SmartMovieBooking.Views;
@@ -24,19 +25,14 @@ public partial class SeatSelectionView : ContentPage
 
     private void UpdatePricing()
     {
-        SeatsSummaryLabel.Text = $"{_vm.SelectedCount} tickets";
+        SeatsSummaryLabel.Text = _vm.SelectedSeatSummary;
         TotalLabel.Text = _vm.FormattedTotal;
     }
 
-    private void OnIncreaseClicked(object? sender, EventArgs e)
+    private void OnSeatTapped(object? sender, TappedEventArgs e)
     {
-        _vm.IncreaseCommand.Execute(null);
-        UpdatePricing();
-    }
-
-    private void OnDecreaseClicked(object? sender, EventArgs e)
-    {
-        _vm.DecreaseCommand.Execute(null);
+        if (sender is not Border border || border.BindingContext is not Seat seat) return;
+        _vm.ToggleSeat(seat);
         UpdatePricing();
     }
 
