@@ -91,7 +91,8 @@
                         </syncfusion:SfListView>
                     </ScrollView>
                 </VerticalStackLayout>
-            <ScrollView Grid.Row="1">
+                </VerticalStackLayout>
+			<ScrollView Grid.Row="1">
                 <VerticalStackLayout Spacing="16">
                     <syncfusion:SfListView ItemsSource="{Binding Theaters}"
                                            ItemSpacing="12"
