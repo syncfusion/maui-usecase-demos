@@ -50,7 +50,7 @@
                                                IsScrollingEnabled="False"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
-                                               HeightRequest="96"
+                                               HeightRequest="88"
                                                SelectionMode="Single"
                                                SelectionChanged="OnDateSelected">
                             <syncfusion:SfListView.ItemsLayout>
@@ -61,8 +61,8 @@
                                     <Border StrokeThickness="1"
                                             Stroke="#D7D8E6"
                                             BackgroundColor="#FFFFFF"
-                                            Padding="12,10"
-                                            HeightRequest="74"
+                                            Padding="10,8"
+                                            HeightRequest="78"
                                             WidthRequest="92"
                                             StrokeShape="RoundRectangle 14">
                                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
@@ -81,7 +81,7 @@
                                             <Label Grid.Row="2"
                                                    Text="{Binding ., StringFormat='{0:ddd MMM}'}"
                                                    FontFamily="OpenSansSemibold"
-                                                   FontSize="10"
+                                                   FontSize="9"
                                                    TextColor="#49454F"
                                                    HorizontalTextAlignment="Center" />
                                         </Grid>
