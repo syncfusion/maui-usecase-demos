@@ -25,12 +25,14 @@ public partial class TheatersView : ContentPage
         MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
     }
 
-    private void OnDateSelected(object? sender, ItemSelectionChangedEventArgs e)
+    private async void OnDateSelected(object? sender, ItemSelectionChangedEventArgs e)
     {
         if (e.AddedItems.FirstOrDefault() is DateTime d)
         {
             _vm.SelectedDate = d;
             DateList.SelectedItem = null;
+            await _vm.LoadAsync();
+            MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
         }
     }
 
