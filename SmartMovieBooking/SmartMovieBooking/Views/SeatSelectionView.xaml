@@ -71,11 +71,13 @@
                                              BindableLayout.ItemsSource="{Binding SeatRows}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="vm:SeatRowViewModel">
-                                    <Grid ColumnDefinitions="28,*" ColumnSpacing="10">
+                                    <Grid ColumnDefinitions="18,*" ColumnSpacing="4">
                                         <Label Text="{Binding RowLabel}"
                                                VerticalTextAlignment="Center"
+                                               HorizontalTextAlignment="End"
                                                FontFamily="OpenSansSemibold"
                                                FontSize="12"
+                                               Margin="0,0,2,0"
                                                TextColor="#7A7B8C" />
                                         <HorizontalStackLayout Grid.Column="1"
                                                                Spacing="6"
