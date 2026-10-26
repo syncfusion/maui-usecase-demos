@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
-using Syncfusion.Maui.Toolkit.Chips;
+using Syncfusion.Maui.Toolkit;
 using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
 using SmartMovieBooking.Views;
+using Syncfusion.Maui.Toolkit.Hosting;
 
 namespace SmartMovieBooking;
 
@@ -20,12 +21,8 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .ConfigureSyncfusionCore() // wires up SfButton, SfListView, SfPopup, ...
-            .ConfigureMauiHandlers(handlers =>
-            {
-                handlers.AddHandler<SfChip, SfChipHandler>();
-                handlers.AddHandler<SfChipGroup, SfChipGroupHandler>();
-            })
+            .ConfigureSyncfusionToolkit() // wires up SfCardView, SfChipGroup, SfTextInputLayout, ...
+			.ConfigureSyncfusionCore() // wires up SfButton, SfListView, SfPopup, ...
             .ConfigureFonts(fonts =>
             {
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

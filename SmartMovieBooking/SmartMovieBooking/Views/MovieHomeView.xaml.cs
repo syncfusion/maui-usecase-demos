@@ -27,19 +27,12 @@ public partial class MovieHomeView : ContentPage
 
     private void CategoryChipGroup_ChipClicked(object sender, EventArgs e)
     {
-        try
-        {
-            var selected = categoryChipGroup.SelectedItem;
+        var selected = categoryChipGroup.SelectedItem;
 
-            if (selected == null)
-                return;
+        if (selected == null)
+            return;
 
-            _vm.SelectedGenre = selected.ToString() ?? "All Genres";
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"[MovieHomeView] CategoryChipGroup_ChipClicked failed: {ex.Message}");
-        }
+        _vm.SelectedGenre = selected.ToString() ?? "All Genres";
     }
 
     private void OnSearchChanged(object? sender, TextChangedEventArgs e)
