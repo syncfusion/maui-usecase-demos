@@ -57,8 +57,7 @@
 
 			<!-- Genre chip strip: built dynamically in code-behind -->
 				<chips:SfChipGroup x:Name="genresChipGroup"
-								   ChipClicked="GenresChipGroup_ChipClicked"
-								   ItemsSource="{Binding Genres}"
+								   								   ItemsSource="{Binding Genres}"
 								   ChipType="Choice"
 								   ChoiceMode="Single"
 								   ChipCornerRadius="16"

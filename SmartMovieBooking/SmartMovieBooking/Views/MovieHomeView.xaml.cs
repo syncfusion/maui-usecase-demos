@@ -15,6 +15,7 @@ public partial class MovieHomeView : ContentPage
         _vm = vm;
         _session = session;
         BindingContext = _vm;
+        genresChipGroup.ChipClicked += GenresChipGroup_ChipClicked;
         _ = LoadAsync();
     }
 
