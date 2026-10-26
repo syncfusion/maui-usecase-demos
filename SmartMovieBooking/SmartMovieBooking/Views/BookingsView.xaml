@@ -53,15 +53,25 @@
                                                        HorizontalTextAlignment="Center"
                                                        VerticalTextAlignment="Center" />
                                             </Border>
-                                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                            <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
                                                 <Label Text="{Binding Movie.Title, FallbackValue='Movie'}"
                                                        FontFamily="OpenSansSemibold"
                                                        FontAttributes="Bold"
                                                        FontSize="14"
                                                        TextColor="#1A1A2E" />
-                                                <Label Text="{Binding Theater.Name, FallbackValue='Theater'}"
-                                                       FontSize="11" TextColor="#49454F" />
-                                                <HorizontalStackLayout Spacing="6">
+													<HorizontalStackLayout Spacing="6">
+														<Label Text="{Binding Theater.Name, FallbackValue='Theater'}"
+															   FontFamily="OpenSansSemibold"
+															   FontAttributes="Bold"
+															   FontSize="11"
+															   TextColor="#1A1A2E" />
+														<Label Text="{Binding Total, StringFormat='${0:F2}'}"
+															   FontFamily="OpenSansSemibold"
+															   FontSize="11"
+															   TextColor="#3525CD"
+															   VerticalTextAlignment="Center" />
+													</HorizontalStackLayout>
+													<!--<HorizontalStackLayout Spacing="6">
                                                     <Label Text="💺" FontSize="11"
                                                            VerticalTextAlignment="Center" />
                                                     <Label Text="{Binding SeatCount, StringFormat='{0} seats'}"
@@ -72,15 +82,17 @@
                                                            FontFamily="OpenSansSemibold"
                                                            FontSize="11" TextColor="#3525CD"
                                                            VerticalTextAlignment="Center" />
-                                                </HorizontalStackLayout>
+                                                </HorizontalStackLayout>-->
                                             </VerticalStackLayout>
                                             <VerticalStackLayout Grid.Column="2" Spacing="6"
+                                            VerticalOptions="Center"
                                                                  HorizontalOptions="End">
                                                 <Border BackgroundColor="#9DEAF6" StrokeShape="RoundRectangle 999" Padding="8,3">
                                                 <Label Text="CONFIRMED" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#002A33" />
                                               </Border>
                                                 <Label Text="{Binding BookingId}"
                                                        FontFamily="OpenSansSemibold"
+                                                       Margin="12,0,0,0"
                                                        FontSize="10"
                                                        TextColor="#7A7B8C" />
                                             </VerticalStackLayout>

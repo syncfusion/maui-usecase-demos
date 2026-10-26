@@ -61,26 +61,41 @@
                 <syncfusionCards:SfCardView CornerRadius="16"
                                              BackgroundColor="#FFFFFF"
                                              Padding="16">
-                    <VerticalStackLayout Spacing="8">
-                        <Label Text="TICKET DETAILS"
-                               FontFamily="OpenSansSemibold" FontSize="10"
-                               TextColor="#7A7B8C" />
-                        <Label x:Name="MovieTitleLabel" Text=""
-                               FontFamily="OpenSansSemibold" FontAttributes="Bold"
-                               FontSize="15"
-                               TextColor="#1A1A2E" />
-                        <Label x:Name="TheaterLabel" Text=""
-                               FontSize="12" TextColor="#49454F" />
-                        <Label x:Name="ShowtimeLabel" Text=""
-                               FontSize="12" TextColor="#49454F" />
-                        <Label x:Name="SeatsLabel" Text=""
-                               FontSize="12" TextColor="#49454F" />
-                    </VerticalStackLayout>
-                </syncfusionCards:SfCardView>
+					<Grid RowDefinitions="Auto,*">
+					<Label Text="TICKET DETAILS"
+						   FontFamily="OpenSansSemibold"
+						   FontSize="10"
+						   TextColor="#7A7B8C" />
+					<Grid Padding="0,12,0,12" Grid.Row="1" ColumnDefinitions="*,*">
+						<VerticalStackLayout Spacing="8">
+							<Label x:Name="MovieTitleLabel"
+								   Text=""
+								   FontFamily="OpenSansSemibold"
+								   FontAttributes="Bold"
+								   FontSize="15"
+								   TextColor="#1A1A2E" />
+							<Label x:Name="TheaterLabel"
+								   Text=""
+								   FontSize="12"
+								   TextColor="#49454F" />
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Spacing="8">
+							<Label x:Name="ShowtimeLabel"
+								   Text=""
+								   FontSize="12"
+								   TextColor="#49454F" />
+							<Label x:Name="SeatsLabel"
+								   Text=""
+								   FontSize="12"
+								   TextColor="#49454F" />
+						</VerticalStackLayout>
+						</Grid>
+					</Grid>
+				</syncfusionCards:SfCardView>
             </VerticalStackLayout>
         </ScrollView>
 
-        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+        <HorizontalStackLayout HorizontalOptions="End" Grid.Row="1" Spacing="10">
             <syncfusionButtons:SfButton Text="Back to Home"
                                          BackgroundColor="#3525CD"
                                          TextColor="#FFFFFF"

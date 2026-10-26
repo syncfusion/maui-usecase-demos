@@ -25,26 +25,25 @@
               RowSpacing="16">
             <VerticalStackLayout Grid.Row="0" Spacing="10">
                 <VerticalStackLayout Spacing="4">
-                    <Label Text="Select Theater"
-                           FontFamily="OpenSansSemibold"
-                           FontSize="28"
-                           FontAttributes="Bold"
-                           TextColor="#1A1A2E" />
-                    <Label x:Name="MovieLabel"
-                           Text=""
-                           FontSize="13"
-                           TextColor="#49454F" />
-                </VerticalStackLayout>
+					<Label x:Name="MovieLabel"
+						   Text=""
+						   FontFamily="OpenSansSemibold"
+						   FontSize="28"
+						   FontAttributes="Bold"
+						   TextColor="#1A1A2E" />
+					<Label Text="Select Theater"
+						   FontFamily="OpenSansSemibold"
+						   FontSize="18"
+						   FontAttributes="Bold"
+						   TextColor="#1A1A2E" />
+				</VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="Select Date"
-                           FontFamily="OpenSansSemibold"
-                           FontSize="10"
-                           TextColor="#7A7B8C"
-                           CharacterSpacing="1" />
-                    <ScrollView Orientation="Horizontal"
+				<Border Stroke="#CAC7D0"
+						StrokeShape="RoundRectangle 18"
+						Padding="8">
+					<ScrollView Orientation="Horizontal"
                                 HorizontalScrollBarVisibility="Never">
-                        <syncfusion:SfListView x:Name="DateList"
+                        <syncfusion:SfListView x:Name="DateList"                        
                                                ItemsSource="{Binding Dates}"
                                                ItemSpacing="10"
                                                IsScrollingEnabled="False"
@@ -54,7 +53,7 @@
                                                SelectionMode="Single"
                                                SelectionChanged="OnDateSelected">
                             <syncfusion:SfListView.ItemsLayout>
-                                <syncfusion:GridLayout SpanCount="1" />
+                                <syncfusion:GridLayout SpanCount="10" />
                             </syncfusion:SfListView.ItemsLayout>
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="sys:DateTime">
@@ -90,7 +89,7 @@
                             </syncfusion:SfListView.ItemTemplate>
                         </syncfusion:SfListView>
                     </ScrollView>
-                </VerticalStackLayout>
+                </Border>
                 </VerticalStackLayout>
 
 			<ScrollView Grid.Row="1">
