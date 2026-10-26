@@ -15,35 +15,61 @@ public partial class MovieHomeView : ContentPage
         _vm = vm;
         _session = session;
         BindingContext = _vm;
-        genresChipGroup.ChipClicked += GenresChipGroup_ChipClicked;
         _ = LoadAsync();
     }
 
     private async Task LoadAsync()
     {
         await _vm.LoadAsync();
+        BuildGenreChips();
         LoadingSpinner.IsRunning = false;
         LoadingSpinner.IsVisible = false;
     }
 
-	private void GenresChipGroup_ChipClicked(object sender, EventArgs e)
-	{
-		try
-		{
-			var selected = genresChipGroup.SelectedItem;
+    // Build the genre chip strip with plain Borders (no Syncfusion SfChip).
+    // Syncfusion's SfChip API has incompatible property names between minor
+    // versions, so a plain Border + Label + TapGestureRecognizer is used.
+    private void BuildGenreChips()
+    {
+        GenreChipStrip.Children.Clear();
+        foreach (var genre in _vm.Genres)
+        {
+            bool isSelected = genre == _vm.SelectedGenre;
 
-			if (selected == null)
-				return;
+            var label = new Label
+            {
+                Text = genre,
+                FontFamily = "OpenSansSemibold",
+                FontSize = 11,
+                TextColor = isSelected ? Colors.White : Color.FromArgb("#49454F"),
+                VerticalTextAlignment = TextAlignment.Center
+            };
 
-			_vm.SelectedGenre = selected.ToString() ?? "All Genres";
-		}
-		catch (Exception ex)
-		{
-			System.Diagnostics.Debug.WriteLine($"[InventoryPage] GenresChipGroup_ChipClicked failed: {ex.Message}");
-		}
-	}
+            var border = new Border
+            {
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 999 },
+                BackgroundColor = isSelected ? Color.FromArgb("#4F46E5") : Color.FromArgb("#F1F2F8"),
+                Padding = new Thickness(14, 6),
+                Content = label
+            };
 
-	private void OnSearchChanged(object? sender, TextChangedEventArgs e)
+            var tap = new TapGestureRecognizer();
+            string capturedGenre = genre;
+            tap.Tapped += (s, e) => OnGenreChipTapped(capturedGenre);
+            border.GestureRecognizers.Add(tap);
+
+            GenreChipStrip.Children.Add(border);
+        }
+    }
+
+    private void OnGenreChipTapped(string genre)
+    {
+        _vm.SelectedGenre = genre;
+        BuildGenreChips();
+    }
+
+    private void OnSearchChanged(object? sender, TextChangedEventArgs e)
         => _vm.SearchText = e.NewTextValue ?? string.Empty;
 
     // Called from TapGestureRecognizer on each movie card (whole-card tap).

@@ -5,8 +5,7 @@
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
 			 xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
-			 xmlns:chips="clr-namespace:Syncfusion.Maui.Toolkit.Chips;assembly=Syncfusion.Maui.Toolkit"
-			 xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
              x:Class="SmartMovieBooking.Views.MovieHomeView"
@@ -56,26 +55,8 @@
 			</inputLayout:SfTextInputLayout>
 
 			<!-- Genre chip strip: built dynamically in code-behind -->
-				<chips:SfChipGroup x:Name="genresChipGroup"
-								   								   ItemsSource="{Binding Genres}"
-								   ChipType="Choice"
-								   ChoiceMode="Single"
-								   ChipCornerRadius="16"
-								   VerticalOptions="Center"
-								   ChipPadding="{OnIdiom Default='4,6', Phone='2,4'}"
-								   SelectedChipBackground="#4F46E5"
-								   ChipTextColor="{AppThemeBinding Light=#313032, Dark=#FFFFFF}"
-								   SelectedChipTextColor="{AppThemeBinding Light=#FFFFFF, Dark=#FFFFFF}"
-								   ChipStrokeThickness="1"
-								   ChipTextSize="13"
-								   SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
-
-					<chips:SfChipGroup.ChipLayout>
-						<FlexLayout JustifyContent="Start"
-									Wrap="Wrap"
-									Direction="Row" />
-					</chips:SfChipGroup.ChipLayout>
-				</chips:SfChipGroup>
+			<HorizontalStackLayout x:Name="GenreChipStrip"
+								   Spacing="8" />
 
 				<!-- Loading indicator -->
 			<ActivityIndicator x:Name="LoadingSpinner"
