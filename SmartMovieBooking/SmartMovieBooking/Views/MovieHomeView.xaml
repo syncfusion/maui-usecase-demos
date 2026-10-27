@@ -20,7 +20,7 @@
 			  Grid.Row="{OnIdiom Default=0, Phone=0}"
 			  Grid.Column="{OnIdiom Default='1', Phone='0'}"
 			  RowDefinitions="Auto,*"
-			  Padding="{OnIdiom Default='24', Phone='16'}">
+			  Padding="{OnIdiom Default='24', Phone='12,12,12,0'}">
 		<VerticalStackLayout Grid.Row="0" Spacing="16">
 			<VerticalStackLayout Spacing="4">
 				<Label Text="Discover Movies"
