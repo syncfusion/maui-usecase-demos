@@ -52,7 +52,7 @@
                                                BackgroundColor="Transparent"
                                                SelectionBackground="Transparent"
                                                HeightRequest="104"
-                                               SelectionMode="{OnIdiom Default=Single, Phone=None}"
+                                               SelectionMode="Single"
                                                SelectionChanged="OnDateSelected">
                             <syncfusion:SfListView.ItemsLayout>
                                 <syncfusion:GridLayout SpanCount="{OnIdiom Default='10', Phone='6'}" />
@@ -167,7 +167,7 @@
                                                                        HeightRequest="104"
                                                                        IsScrollingEnabled="False"
                                                                        AutoFitMode="DynamicHeight"
-                                                                       SelectionMode="{OnIdiom Default=Single, Phone=None}"
+                                                                       SelectionMode="Single"
                                                                        SelectionChanged="OnShowtimeSelected">
                                                     <syncfusion:SfListView.ItemsLayout>
                                                         <syncfusion:GridLayout SpanCount="{OnIdiom Default='5', Phone='4'}" />
@@ -177,9 +177,6 @@
                                                         <syncfusionCards:SfCardView CornerRadius="14"
                                                                                     BackgroundColor="#F1F2F8"
                                                                                     Padding="{OnIdiom Default='12,8', Phone='10,8'}">
-                                                            <syncfusionCards:SfCardView.GestureRecognizers>
-                                                                <TapGestureRecognizer Tapped="OnShowtimeTapped" CommandParameter="{Binding .}" />
-                                                            </syncfusionCards:SfCardView.GestureRecognizers>
                                                             <syncfusionCards:SfCardView.Behaviors>
                                                                 <behaviors:HoverAnimationBehavior />
                                                             </syncfusionCards:SfCardView.Behaviors>

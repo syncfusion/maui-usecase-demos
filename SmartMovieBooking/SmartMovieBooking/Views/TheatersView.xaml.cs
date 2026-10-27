@@ -47,24 +47,3 @@ public partial class TheatersView : ContentPage
         await Shell.Current.GoToAsync("seat-selection");
     }
 
-    private async void OnDateTapped(object? sender, TappedEventArgs e)
-    {
-        if (DeviceInfo.Idiom != DeviceIdiom.Phone || sender is not BindableObject bindable || bindable.BindingContext is not DateTime d) return;
-
-        _vm.SelectedDate = d;
-        await _vm.LoadAsync();
-        DateList.SelectedItem = d;
-        MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
-    }
-
-    private async void OnShowtimeTapped(object? sender, TappedEventArgs e)
-    {
-        if (DeviceInfo.Idiom != DeviceIdiom.Phone || sender is not BindableObject bindable || bindable.BindingContext is not Showtime s) return;
-
-        _vm.SelectedShowtime = s;
-        _session.SelectedShowtime = s;
-        _session.SelectedDate = _vm.SelectedDate;
-        _session.SelectedTheater = _vm.Theaters.FirstOrDefault(t => t.Showtimes.Contains(s));
-        await Shell.Current.GoToAsync("seat-selection");
-    }
-}
