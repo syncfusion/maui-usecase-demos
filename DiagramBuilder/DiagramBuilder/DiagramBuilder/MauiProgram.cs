@@ -1,3 +1,4 @@
+using DiagramBuilder.Services;
 using DiagramBuilder.ViewModels;
 using DiagramBuilder.Views;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,14 @@ namespace DiagramBuilder
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            // Services (mock implementations, in-memory, no backend)
+            builder.Services.AddSingleton<IDiagramService, DiagramService>();
+            builder.Services.AddSingleton<ITemplateService, TemplateService>();
+            builder.Services.AddSingleton<IExportService, MockExportService>();
+            builder.Services.AddSingleton<ISelectionService, SelectionService>();
+            builder.Services.AddSingleton<IPropertyService, PropertyService>();
+            builder.Services.AddSingleton<IDialogService, DialogService>();
 
             // ViewModels
             builder.Services.AddSingleton<MainViewModel>();
