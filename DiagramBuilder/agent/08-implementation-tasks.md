@@ -21,7 +21,9 @@
       complete; catalogs in Services/Catalogs.cs.)*
 - [x] `DiagramModelAdapter` (domain ↔ Syncfusion Node/Connector/Annotation mapping) — verified
       against the shipped package 35.1.41, see `09-verified-diagram-api-notes.md`.
-- [ ] Template JSON payloads (3 predefined templates) + C# fallback seeds. *(C# fallback seeds
+- [x] Template JSON payloads (3 predefined templates) + C# fallback seeds. *(JSON files
+      authored per tasks.md Task 4; packaged as MauiAsset under `Templates/`; validated against
+      the DTOs with all connector endpoints resolvable.)* *(C# fallback seeds
       complete and verified; the JSON payload files under Resources/Raw/Templates are still
       to be authored — tasks.md Task 4.)*
 

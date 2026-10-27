@@ -1,0 +1,217 @@
+{
+  "id": "orgchart-company-hierarchy",
+  "category": "OrganizationChart",
+  "title": "Company Hierarchy",
+  "description": "Executive, director and team reporting tree.",
+  "layout": {
+    "type": "OrganizationalChart",
+    "orientation": "TopToBottom"
+  },
+  "nodes": [
+    {
+      "id": "ceo",
+      "text": "CEO",
+      "shapeType": "Rectangle",
+      "x": 460,
+      "y": 60,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "PrimaryColor",
+      "isManager": true
+    },
+    {
+      "id": "cto",
+      "text": "CTO",
+      "shapeType": "Rectangle",
+      "x": 460,
+      "y": 180,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "PrimaryColor",
+      "isManager": true
+    },
+    {
+      "id": "coo",
+      "text": "COO",
+      "shapeType": "Rectangle",
+      "x": 180,
+      "y": 180,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "PrimaryColor",
+      "isManager": true
+    },
+    {
+      "id": "cmo",
+      "text": "CMO",
+      "shapeType": "Rectangle",
+      "x": 740,
+      "y": 180,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "PrimaryColor",
+      "isManager": true
+    },
+    {
+      "id": "d-eng",
+      "text": "Director, Engineering",
+      "shapeType": "Rectangle",
+      "x": 250,
+      "y": 300,
+      "width": 180,
+      "height": 50,
+      "fillColorKey": "PrimaryColor",
+      "isManager": true
+    },
+    {
+      "id": "d-data",
+      "text": "Director, Data",
+      "shapeType": "Rectangle",
+      "x": 670,
+      "y": 300,
+      "width": 180,
+      "height": 50,
+      "fillColorKey": "PrimaryColor",
+      "isManager": true
+    },
+    {
+      "id": "t-ops",
+      "text": "Operations Team",
+      "shapeType": "Rectangle",
+      "x": 180,
+      "y": 300,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "t-mob",
+      "text": "Mobile Team",
+      "shapeType": "Rectangle",
+      "x": 60,
+      "y": 420,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "t-web",
+      "text": "Web Team",
+      "shapeType": "Rectangle",
+      "x": 240,
+      "y": 420,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "t-qa",
+      "text": "QA Team",
+      "shapeType": "Rectangle",
+      "x": 420,
+      "y": 420,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "t-ml",
+      "text": "ML Team",
+      "shapeType": "Rectangle",
+      "x": 620,
+      "y": 420,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "t-bi",
+      "text": "BI Team",
+      "shapeType": "Rectangle",
+      "x": 800,
+      "y": 420,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "c1",
+      "sourceId": "ceo",
+      "targetId": "cto",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c2",
+      "sourceId": "ceo",
+      "targetId": "coo",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c3",
+      "sourceId": "ceo",
+      "targetId": "cmo",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c4",
+      "sourceId": "cto",
+      "targetId": "d-eng",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c5",
+      "sourceId": "cto",
+      "targetId": "d-data",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c6",
+      "sourceId": "coo",
+      "targetId": "t-ops",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c7",
+      "sourceId": "d-eng",
+      "targetId": "t-mob",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c8",
+      "sourceId": "d-eng",
+      "targetId": "t-web",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c9",
+      "sourceId": "d-eng",
+      "targetId": "t-qa",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c10",
+      "sourceId": "d-data",
+      "targetId": "t-ml",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c11",
+      "sourceId": "d-data",
+      "targetId": "t-bi",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    }
+  ]
+}

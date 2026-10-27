@@ -1,0 +1,309 @@
+{
+  "id": "mindmap-product-planning",
+  "category": "MindMap",
+  "title": "Product Planning",
+  "description": "Product planning branches for a new release.",
+  "nodes": [
+    {
+      "id": "center",
+      "text": "Product Planning",
+      "shapeType": "Circle",
+      "x": 520,
+      "y": 320,
+      "width": 170,
+      "height": 90,
+      "fillColorKey": "AccentMindMap"
+    },
+    {
+      "id": "research",
+      "text": "Research",
+      "shapeType": "Circle",
+      "x": 160,
+      "y": 100,
+      "width": 130,
+      "height": 60,
+      "fillColorKey": "AccentMindMap"
+    },
+    {
+      "id": "user-interviews",
+      "text": "User Interviews",
+      "shapeType": "Circle",
+      "x": 60,
+      "y": 200,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "market-scan",
+      "text": "Market Scan",
+      "shapeType": "Circle",
+      "x": 60,
+      "y": 280,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "competitors",
+      "text": "Competitors",
+      "shapeType": "Circle",
+      "x": 160,
+      "y": 360,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "design",
+      "text": "Design",
+      "shapeType": "Circle",
+      "x": 880,
+      "y": 100,
+      "width": 130,
+      "height": 60,
+      "fillColorKey": "AccentMindMap"
+    },
+    {
+      "id": "wireframes",
+      "text": "Wireframes",
+      "shapeType": "Circle",
+      "x": 980,
+      "y": 200,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "prototype",
+      "text": "Prototype",
+      "shapeType": "Circle",
+      "x": 980,
+      "y": 280,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "development",
+      "text": "Development",
+      "shapeType": "Circle",
+      "x": 160,
+      "y": 480,
+      "width": 140,
+      "height": 60,
+      "fillColorKey": "AccentMindMap"
+    },
+    {
+      "id": "architecture",
+      "text": "Architecture",
+      "shapeType": "Circle",
+      "x": 60,
+      "y": 580,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "implementation",
+      "text": "Implementation",
+      "shapeType": "Circle",
+      "x": 60,
+      "y": 660,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "qa",
+      "text": "QA",
+      "shapeType": "Circle",
+      "x": 160,
+      "y": 740,
+      "width": 120,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "marketing",
+      "text": "Marketing",
+      "shapeType": "Circle",
+      "x": 880,
+      "y": 480,
+      "width": 130,
+      "height": 60,
+      "fillColorKey": "AccentMindMap"
+    },
+    {
+      "id": "messaging",
+      "text": "Messaging",
+      "shapeType": "Circle",
+      "x": 980,
+      "y": 580,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "campaigns",
+      "text": "Campaigns",
+      "shapeType": "Circle",
+      "x": 980,
+      "y": 660,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "launch",
+      "text": "Launch",
+      "shapeType": "Circle",
+      "x": 520,
+      "y": 640,
+      "width": 130,
+      "height": 60,
+      "fillColorKey": "AccentMindMap"
+    },
+    {
+      "id": "release-notes",
+      "text": "Release Notes",
+      "shapeType": "Circle",
+      "x": 420,
+      "y": 740,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    },
+    {
+      "id": "go-live",
+      "text": "Go Live",
+      "shapeType": "Circle",
+      "x": 620,
+      "y": 740,
+      "width": 130,
+      "height": 50,
+      "fillColorKey": "PanelBackground"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "c1",
+      "sourceId": "center",
+      "targetId": "research",
+      "kind": "Bezier",
+      "strokeColorKey": "AccentMindMap"
+    },
+    {
+      "id": "c2",
+      "sourceId": "center",
+      "targetId": "design",
+      "kind": "Bezier",
+      "strokeColorKey": "AccentMindMap"
+    },
+    {
+      "id": "c3",
+      "sourceId": "center",
+      "targetId": "development",
+      "kind": "Bezier",
+      "strokeColorKey": "AccentMindMap"
+    },
+    {
+      "id": "c4",
+      "sourceId": "center",
+      "targetId": "marketing",
+      "kind": "Bezier",
+      "strokeColorKey": "AccentMindMap"
+    },
+    {
+      "id": "c5",
+      "sourceId": "center",
+      "targetId": "launch",
+      "kind": "Bezier",
+      "strokeColorKey": "AccentMindMap"
+    },
+    {
+      "id": "c6",
+      "sourceId": "research",
+      "targetId": "user-interviews",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c7",
+      "sourceId": "research",
+      "targetId": "market-scan",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c8",
+      "sourceId": "research",
+      "targetId": "competitors",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c9",
+      "sourceId": "design",
+      "targetId": "wireframes",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c10",
+      "sourceId": "design",
+      "targetId": "prototype",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c11",
+      "sourceId": "development",
+      "targetId": "architecture",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c12",
+      "sourceId": "development",
+      "targetId": "implementation",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c13",
+      "sourceId": "development",
+      "targetId": "qa",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c14",
+      "sourceId": "marketing",
+      "targetId": "messaging",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c15",
+      "sourceId": "marketing",
+      "targetId": "campaigns",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c16",
+      "sourceId": "launch",
+      "targetId": "release-notes",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c17",
+      "sourceId": "launch",
+      "targetId": "go-live",
+      "kind": "Bezier",
+      "strokeColorKey": "PanelBorderColor"
+    }
+  ]
+}
