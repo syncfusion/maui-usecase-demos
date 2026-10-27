@@ -8,5 +8,11 @@ public partial class CreateDiagramPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
+        Appearing += async (_, _) => await viewModel.InitializeAsync();
+    }
+
+    private async void OnCloseClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.Navigation.PopModalAsync();
     }
 }
