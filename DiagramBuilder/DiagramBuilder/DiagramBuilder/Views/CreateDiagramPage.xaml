@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
              xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:models="clr-namespace:DiagramBuilder.Models"
              x:Class="DiagramBuilder.Views.CreateDiagramPage"
