@@ -68,49 +68,51 @@
                                    TextColor="#7A7B8C" />
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout Spacing="10"
-                                             BindableLayout.ItemsSource="{Binding SeatRows}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="vm:SeatRowViewModel">
-                                    <HorizontalStackLayout Spacing="18" HorizontalOptions="Center">
-                                        <Label Text="{Binding RowLabel}"
-                                               VerticalTextAlignment="Center"
-                                               HorizontalTextAlignment="End"
-                                               FontFamily="OpenSansSemibold"
-                                               FontSize="12"
-                                               Margin="0,0,2,0"
-                                               TextColor="#7A7B8C" />
-                                        <HorizontalStackLayout Grid.Column="1"
-                                                               Spacing="6"
-                                                               HorizontalOptions="Center">
-                                            <BindableLayout.ItemsSource>
-                                                <Binding Path="Seats" />
-                                            </BindableLayout.ItemsSource>
-                                            <BindableLayout.ItemTemplate>
-                                                <DataTemplate x:DataType="models:Seat">
-                                                    <Border StrokeThickness="1"
-                                                            Stroke="{Binding State, Converter={StaticResource SeatColorConverter}}"
-                                                            BackgroundColor="{Binding State, Converter={StaticResource SeatColorConverter}}"
-                                                            WidthRequest="28"
-                                                            HeightRequest="28"
-                                                            StrokeShape="RoundRectangle 8">
-                                                        <Border.GestureRecognizers>
-                                                            <TapGestureRecognizer Tapped="OnSeatTapped" />
-                                                        </Border.GestureRecognizers>
-                                                        <Label Text="{Binding Column}"
-                                                               FontSize="10"
-                                                               FontFamily="OpenSansSemibold"
-                                                               HorizontalTextAlignment="Center"
-                                                               VerticalTextAlignment="Center"
-                                                               TextColor="{Binding State, Converter={StaticResource SeatTextColorConverter}}" />
-                                                    </Border>
-                                                </DataTemplate>
-                                            </BindableLayout.ItemTemplate>
+                        <ScrollView Orientation="{OnIdiom Default=Vertical, Phone=Horizontal}">
+                            <VerticalStackLayout Spacing="10"
+                                                 BindableLayout.ItemsSource="{Binding SeatRows}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SeatRowViewModel">
+                                        <HorizontalStackLayout Spacing="18" HorizontalOptions="Center">
+                                            <Label Text="{Binding RowLabel}"
+                                                   VerticalTextAlignment="Center"
+                                                   HorizontalTextAlignment="End"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="12"
+                                                   Margin="0,0,2,0"
+                                                   TextColor="#7A7B8C" />
+                                            <HorizontalStackLayout Grid.Column="1"
+                                                                   Spacing="6"
+                                                                   HorizontalOptions="Center">
+                                                <BindableLayout.ItemsSource>
+                                                    <Binding Path="Seats" />
+                                                </BindableLayout.ItemsSource>
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:Seat">
+                                                        <Border StrokeThickness="1"
+                                                                Stroke="{Binding State, Converter={StaticResource SeatColorConverter}}"
+                                                                BackgroundColor="{Binding State, Converter={StaticResource SeatColorConverter}}"
+                                                                WidthRequest="28"
+                                                                HeightRequest="28"
+                                                                StrokeShape="RoundRectangle 8">
+                                                            <Border.GestureRecognizers>
+                                                                <TapGestureRecognizer Tapped="OnSeatTapped" />
+                                                            </Border.GestureRecognizers>
+                                                            <Label Text="{Binding Column}"
+                                                                   FontSize="10"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   HorizontalTextAlignment="Center"
+                                                                   VerticalTextAlignment="Center"
+                                                                   TextColor="{Binding State, Converter={StaticResource SeatTextColorConverter}}" />
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </HorizontalStackLayout>
                                         </HorizontalStackLayout>
-                                    </HorizontalStackLayout>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </ScrollView>
 
                         <Grid HorizontalOptions="Center" Margin="0,12,0,0" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="18">
                             <HorizontalStackLayout Spacing="8">
@@ -142,8 +144,14 @@
                                      CornerRadius="0"
                                      BackgroundColor="#FFFFFF"
                                      Padding="20,12,20,16">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+            <Grid RowDefinitions="{OnIdiom Default=Auto, Phone=Auto,Auto}"
+                  ColumnDefinitions="{OnIdiom Default='*,Auto', Phone='*'}"
+                  RowSpacing="12"
+                  ColumnSpacing="12">
+                <VerticalStackLayout Grid.Row="0"
+                                     Grid.Column="0"
+                                     Spacing="2"
+                                     VerticalOptions="Center">
                     <Label x:Name="SeatsSummaryLabel"
                            Text="0 seats selected"
                            FontFamily="OpenSansSemibold"
@@ -156,7 +164,11 @@
                            FontSize="18"
                            TextColor="#3525CD" />
                 </VerticalStackLayout>
-                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                <HorizontalStackLayout Grid.Row="{OnIdiom Default=0, Phone=1}"
+                                       Grid.Column="{OnIdiom Default=1, Phone=0}"
+                                       Grid.ColumnSpan="{OnIdiom Default=1, Phone=1}"
+                                       Spacing="8"
+                                       VerticalOptions="Center">
                     <syncfusionButtons:SfButton Text="Cancel"
                                                  BackgroundColor="#3525CD"
                                                  TextColor="#FFFFFF"
