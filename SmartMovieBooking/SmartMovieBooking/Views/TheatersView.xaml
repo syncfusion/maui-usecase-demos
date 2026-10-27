@@ -65,6 +65,9 @@
                                             HeightRequest="78"
                                             WidthRequest="84"
                                             StrokeShape="RoundRectangle 14">
+                                        <Border.Behaviors>
+                                            <behaviors:HoverAnimationBehavior />
+                                        </Border.Behaviors>
                                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
                                             <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
                                                    FontFamily="OpenSansSemibold"
@@ -168,6 +171,9 @@
                                                         <syncfusionCards:SfCardView CornerRadius="14"
                                                                                     BackgroundColor="#F1F2F8"
                                                                                     Padding="12,8">
+                                                            <syncfusionCards:SfCardView.Behaviors>
+                                                                <behaviors:HoverAnimationBehavior />
+                                                            </syncfusionCards:SfCardView.Behaviors>
                                                             <HorizontalStackLayout>
                                                                 <VerticalStackLayout Spacing="2"
                                                                                      WidthRequest="80">
