@@ -142,8 +142,8 @@
                                      CornerRadius="0"
                                      BackgroundColor="#FFFFFF"
                                      Padding="20,12,20,16">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+            <VerticalStackLayout Spacing="12">
+                <VerticalStackLayout Spacing="2">
                     <Label x:Name="SeatsSummaryLabel"
                            Text="0 seats selected"
                            FontFamily="OpenSansSemibold"
@@ -156,27 +156,26 @@
                            FontSize="18"
                            TextColor="#3525CD" />
                 </VerticalStackLayout>
-                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <syncfusionButtons:SfButton Text="Cancel"
                                                  BackgroundColor="#3525CD"
                                                  TextColor="#FFFFFF"
                                                  CornerRadius="10"
                                                  FontFamily="OpenSansSemibold"
-                                                 WidthRequest="88"
                                                  HeightRequest="40"
                                                  Clicked="OnCancelClicked" />
-                    <syncfusionButtons:SfButton Text="Proceed to Pay"
+                    <syncfusionButtons:SfButton Grid.Column="1"
+                                                 Text="Proceed to Pay"
                                                  BackgroundColor="#3525CD"
                                                  TextColor="#FFFFFF"
                                                  CornerRadius="10"
                                                  FontFamily="OpenSansSemibold"
                                                  FontAttributes="Bold"
-                                                 WidthRequest="160"
                                                  HeightRequest="40"
                                                  IsEnabled="{Binding CanConfirm}"
                                                  Clicked="OnConfirmClicked" />
-                </HorizontalStackLayout>
-            </Grid>
+                </Grid>
+            </VerticalStackLayout>
         </syncfusionCards:SfCardView>
     </Grid>
 </ContentPage>
