@@ -55,7 +55,7 @@
                                                SelectionMode="Single"
                                                SelectionChanged="OnDateSelected">
                             <syncfusion:SfListView.ItemsLayout>
-                                <syncfusion:GridLayout SpanCount="10" />
+                                <syncfusion:GridLayout SpanCount="{OnIdiom Default='10', Phone='6'}" />
                             </syncfusion:SfListView.ItemsLayout>
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="sys:DateTime">
@@ -156,18 +156,20 @@
                                                    FontSize="10"
                                                    TextColor="#7A7B8C" />
 
-                                            <syncfusion:SfListView ItemsSource="{Binding Showtimes}"
-                                                                   ItemSpacing="8"
-                                                                   BackgroundColor="Transparent"
-                                                                   HeightRequest="104"
-                                                                   IsScrollingEnabled="False"
-                                                                   AutoFitMode="DynamicHeight"
-                                                                   SelectionMode="Single"
-                                                                   SelectionChanged="OnShowtimeSelected">
-                                                <syncfusion:SfListView.ItemsLayout>
-                                                    <syncfusion:GridLayout SpanCount="5" />
-                                                </syncfusion:SfListView.ItemsLayout>
-                                                <syncfusion:SfListView.ItemTemplate>
+                                            <ScrollView Orientation="{OnIdiom Default=Vertical, Phone=Horizontal}"
+                                                        HorizontalScrollBarVisibility="Never">
+                                                <syncfusion:SfListView ItemsSource="{Binding Showtimes}"
+                                                                       ItemSpacing="8"
+                                                                       BackgroundColor="Transparent"
+                                                                       HeightRequest="104"
+                                                                       IsScrollingEnabled="False"
+                                                                       AutoFitMode="DynamicHeight"
+                                                                       SelectionMode="Single"
+                                                                       SelectionChanged="OnShowtimeSelected">
+                                                    <syncfusion:SfListView.ItemsLayout>
+                                                        <syncfusion:GridLayout SpanCount="{OnIdiom Default='5', Phone='4'}" />
+                                                    </syncfusion:SfListView.ItemsLayout>
+                                                    <syncfusion:SfListView.ItemTemplate>
                                                     <DataTemplate x:DataType="models:Showtime">
                                                         <syncfusionCards:SfCardView CornerRadius="14"
                                                                                     BackgroundColor="#F1F2F8"
@@ -206,7 +208,8 @@
                                                         </syncfusionCards:SfCardView>
                                                     </DataTemplate>
                                                 </syncfusion:SfListView.ItemTemplate>
-                                            </syncfusion:SfListView>
+                                                </syncfusion:SfListView>
+                                            </ScrollView>
                                         </VerticalStackLayout>
                                     </syncfusionCards:SfCardView>
                                 </Grid>
