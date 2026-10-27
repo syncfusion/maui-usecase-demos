@@ -5,6 +5,7 @@
              xmlns:syncfusionTab="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:barcode="clr-namespace:Syncfusion.Maui.BarcodeGenerator;assembly=Syncfusion.Maui.BarcodeGenerator"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
@@ -86,18 +87,13 @@
                                                            VerticalTextAlignment="Center" />
                                                 </HorizontalStackLayout>-->
                                             </VerticalStackLayout>
-                                            <VerticalStackLayout Grid.Column="2" Spacing="6"
-                                            VerticalOptions="Center"
-                                                                 HorizontalOptions="End">
-                                                <Border BackgroundColor="#9DEAF6" StrokeShape="RoundRectangle 999" Padding="8,3">
-                                                <Label Text="CONFIRMED" FontFamily="OpenSansSemibold" FontSize="10" TextColor="#002A33" />
-                                              </Border>
-                                                <Label Text="{Binding BookingId}"
-                                                       FontFamily="OpenSansSemibold"
-                                                       Margin="12,0,0,0"
-                                                       FontSize="10"
-                                                       TextColor="#7A7B8C" />
-                                            </VerticalStackLayout>
+                                            <barcode:SfBarcodeGenerator Grid.Column="2"
+                                                                          Value="{Binding BookingId}"
+                                                                          BarcodeType="QRCode"
+                                                                          WidthRequest="100"
+                                                                          HeightRequest="100"
+                                                                          HorizontalOptions="End"
+                                                                          VerticalOptions="Center" />
                                         </Grid>
                                     </syncfusionCards:SfCardView>
                                 </DataTemplate>
