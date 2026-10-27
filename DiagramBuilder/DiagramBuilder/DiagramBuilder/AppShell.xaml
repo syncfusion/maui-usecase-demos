@@ -11,8 +11,8 @@
     Title="{x:Static constants:AppStrings.AppTitle}">
 
     <ShellContent
-        Title="{x:Static constants:AppStrings.AppTitle}"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="{x:Static constants:AppConstants.RouteMain}" />
+        Title="{x:Static constants:AppStrings.UntitledDocument}"
+        ContentTemplate="{DataTemplate views:DiagramDesignerPage}"
+        Route="{x:Static constants:AppConstants.RouteDesigner}" />
 
 </Shell>
