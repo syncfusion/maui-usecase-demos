@@ -22,7 +22,7 @@
               Grid.Row="{OnIdiom Default=0, Phone=0}"
               Grid.Column="{OnIdiom Default='1', Phone='0'}"
               RowDefinitions="Auto,*"
-              Padding="{OnIdiom Default='24', Phone='16'}"
+              Padding="{OnIdiom Default='24', Phone='12'}"
               RowSpacing="16">
             <VerticalStackLayout Grid.Row="0" Spacing="10">
                 <VerticalStackLayout Spacing="4">
@@ -46,13 +46,13 @@
                                 HorizontalScrollBarVisibility="Never">
                         <syncfusion:SfListView x:Name="DateList"                        
                                                ItemsSource="{Binding Dates}"
-                                               ItemSpacing="10"
+                                               ItemSpacing="{OnIdiom Default=10, Phone=8}"
                                                IsScrollingEnabled="False"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
                                                SelectionBackground="Transparent"
                                                HeightRequest="104"
-                                               SelectionMode="Single"
+                                               SelectionMode="{OnIdiom Default=Single, Phone=None}"
                                                SelectionChanged="OnDateSelected">
                             <syncfusion:SfListView.ItemsLayout>
                                 <syncfusion:GridLayout SpanCount="{OnIdiom Default='10', Phone='6'}" />
@@ -62,10 +62,13 @@
                                     <Border StrokeThickness="1"
                                             Stroke="#D7D8E6"
                                             BackgroundColor="#FFFFFF"
-                                            Padding="10,8"
+                                            Padding="{OnIdiom Default='10,8', Phone='8,6'}"
                                             HeightRequest="78"
                                             WidthRequest="84"
                                             StrokeShape="RoundRectangle 14">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnDateTapped" CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
                                         <Border.Behaviors>
                                             <behaviors:HoverAnimationBehavior />
                                         </Border.Behaviors>
@@ -100,7 +103,7 @@
 			<ScrollView Grid.Row="1">
                 <VerticalStackLayout Spacing="16">
                     <syncfusion:SfListView ItemsSource="{Binding Theaters}"
-                                           ItemSpacing="12"
+                                           ItemSpacing="{OnIdiom Default=12, Phone=10}"
                                            IsScrollingEnabled="False"
                                            AutoFitMode="DynamicHeight"
                                            BackgroundColor="Transparent"
@@ -110,7 +113,7 @@
                                 <Grid RowDefinitions="230">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                 BackgroundColor="#FFFFFF"
-                                                                Padding="20">
+                                                                Padding="{OnIdiom Default=20, Phone=14}">
                                         <VerticalStackLayout Spacing="14">
                                             <Grid ColumnDefinitions="Auto,*,Auto"
                                                   ColumnSpacing="12">
@@ -164,7 +167,7 @@
                                                                        HeightRequest="104"
                                                                        IsScrollingEnabled="False"
                                                                        AutoFitMode="DynamicHeight"
-                                                                       SelectionMode="Single"
+                                                                       SelectionMode="{OnIdiom Default=Single, Phone=None}"
                                                                        SelectionChanged="OnShowtimeSelected">
                                                     <syncfusion:SfListView.ItemsLayout>
                                                         <syncfusion:GridLayout SpanCount="{OnIdiom Default='5', Phone='4'}" />
@@ -173,7 +176,10 @@
                                                     <DataTemplate x:DataType="models:Showtime">
                                                         <syncfusionCards:SfCardView CornerRadius="14"
                                                                                     BackgroundColor="#F1F2F8"
-                                                                                    Padding="12,8">
+                                                                                    Padding="{OnIdiom Default='12,8', Phone='10,8'}">
+                                                            <syncfusionCards:SfCardView.GestureRecognizers>
+                                                                <TapGestureRecognizer Tapped="OnShowtimeTapped" CommandParameter="{Binding .}" />
+                                                            </syncfusionCards:SfCardView.GestureRecognizers>
                                                             <syncfusionCards:SfCardView.Behaviors>
                                                                 <behaviors:HoverAnimationBehavior />
                                                             </syncfusionCards:SfCardView.Behaviors>
