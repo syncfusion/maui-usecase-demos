@@ -31,9 +31,11 @@ public partial class DiagramKeyboardBehavior
 
     private void OnPlatformKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
     {
-        // KeyRoutedEventArgs.KeyStatus.IsControlKeyDown works on both the UWP-style
-        // net10.0-windows TFM and WinUI 3 — no dependency on KeyboardInput (App SDK only).
-        var ctrl = e.KeyStatus.IsControlKeyDown;
+        // Confirmed via compiler: MAUI on Windows binds WinUI 3, where
+        // KeyRoutedEventArgs.KeyStatus is Microsoft.UI.Input.CorePhysicalKeyStatus,
+        // whose property is IsControlPressed (UWP's CoreVirtualKeyStatus uses
+        // IsControlKeyDown — hence the earlier failures).
+        var ctrl = e.KeyStatus.IsControlPressed;
         var key = e.Key.ToString().ToLowerInvariant();
         Dispatch(ctrl, key);
     }
