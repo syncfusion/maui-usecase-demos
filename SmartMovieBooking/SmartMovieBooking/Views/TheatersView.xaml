@@ -50,7 +50,7 @@
                                            Orientation="Horizontal"
                                            ScrollBarVisibility="Never"
 										   SelectionBackground="Transparent"
-										   HeightRequest="104"
+										   HeightRequest="{OnIdiom Default=104, Phone=84}"
 										   SelectionMode="None">
 						<syncfusion:SfListView.ItemsLayout>
 							<syncfusion:GridLayout SpanCount="1" />
@@ -101,7 +101,8 @@
 
 			<ScrollView Grid.Row="1">
                 <VerticalStackLayout Spacing="16">
-					<syncfusion:SfListView ItemsSource="{Binding Theaters}"
+					<syncfusion:SfListView Grid.Row="1"
+											ItemsSource="{Binding Theaters}"
                                            ItemSpacing="{OnIdiom Default=12, Phone=10}"
                                            AutoFitMode="DynamicHeight"
 										   IsScrollingEnabled="False"

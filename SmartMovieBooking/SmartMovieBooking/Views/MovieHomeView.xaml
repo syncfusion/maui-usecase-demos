@@ -87,18 +87,19 @@
 							   Color="#3525CD" />
 		</VerticalStackLayout>
 
-			<ScrollView Grid.Row="1" Margin="0,24,0,16">
 			<!-- Movie cards grid using SfListView (2-column Syncfusion layout) -->
 			<syncfusion:SfListView x:Name="MoviesList"
+								   Grid.Row="1"
+								   Margin="0,24,0,16"
 								   ItemsSource="{Binding FilteredMovies}"
-									   ItemSpacing="{OnIdiom Phone='6', Default='12'}"
-									   AutoFitMode="DynamicHeight"
-								   IsScrollingEnabled="False"
+								   ItemSpacing="{OnIdiom Phone='6', Default='12'}"
+								   AutoFitMode="DynamicHeight"
+								   ScrollBarVisibility="Never"
 								   BackgroundColor="Transparent"
 								   SelectionMode="Single"
 								   SelectionChanged="OnMovieTapped">
 				<syncfusion:SfListView.ItemsLayout>
-						<syncfusion:GridLayout SpanCount="{OnIdiom Phone='1', Default='3'}" />
+					<syncfusion:GridLayout SpanCount="{OnIdiom Phone='1', Default='3'}" />
 				</syncfusion:SfListView.ItemsLayout>
 				<syncfusion:SfListView.ItemTemplate>
 					<DataTemplate>
@@ -106,7 +107,7 @@
 							<syncfusionCards:SfCardView CornerRadius="16"
 														BackgroundColor="#FFFFFF"
 														Padding="0"
-                                    behaviors:AnimateOnTap.IsEnabled="True">
+														behaviors:AnimateOnTap.IsEnabled="True">
 								<syncfusionCards:SfCardView.GestureRecognizers>
 									<TapGestureRecognizer Tapped="OnMovieCardTapped"
 														  CommandParameter="{Binding .}" />
@@ -204,7 +205,7 @@
 																	HorizontalOptions="Fill"
 																	CommandParameter="{Binding .}"
 																	behaviors:AnimateOnTap.IsEnabled="True"
-                                                 Clicked="OnBookNowClicked" />
+																	Clicked="OnBookNowClicked" />
 									</VerticalStackLayout>
 								</Grid>
 							</syncfusionCards:SfCardView>
@@ -230,7 +231,6 @@
 					</VerticalStackLayout>
 				</syncfusion:SfListView.EmptyView>
 			</syncfusion:SfListView>
-		</ScrollView>
 		</Grid>
 	</Grid>
 </ContentPage>
