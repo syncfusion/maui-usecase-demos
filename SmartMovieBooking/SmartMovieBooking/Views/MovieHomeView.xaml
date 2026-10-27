@@ -90,8 +90,8 @@
 			<!-- Movie cards grid using SfListView (2-column Syncfusion layout) -->
 			<syncfusion:SfListView x:Name="MoviesList"
 								   ItemsSource="{Binding FilteredMovies}"
-								   ItemSpacing="12"
-								   AutoFitMode="DynamicHeight"
+									   ItemSpacing="{OnIdiom Phone='6', Default='12'}"
+									   AutoFitMode="DynamicHeight"
 								   IsScrollingEnabled="False"
 								   BackgroundColor="Transparent"
 								   SelectionMode="Single"
