@@ -30,8 +30,8 @@ public partial class TheatersView : ContentPage
         if (e.AddedItems.FirstOrDefault() is DateTime d)
         {
             _vm.SelectedDate = d;
-            DateList.SelectedItem = null;
             await _vm.LoadAsync();
+            DateList.SelectedItem = d;
             MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
         }
     }

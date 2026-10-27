@@ -106,8 +106,7 @@
                                 <Grid RowDefinitions="230">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                 BackgroundColor="#FFFFFF"
-                                                                Padding="20"
-                                                                behaviors:AnimateOnTap.IsEnabled="True">
+                                                                Padding="20">
                                         <VerticalStackLayout Spacing="14">
                                             <Grid ColumnDefinitions="Auto,*,Auto"
                                                   ColumnSpacing="12">
@@ -168,8 +167,7 @@
                                                     <DataTemplate x:DataType="models:Showtime">
                                                         <syncfusionCards:SfCardView CornerRadius="14"
                                                                                     BackgroundColor="#F1F2F8"
-                                                                                    Padding="12,8"
-                                                                                    behaviors:AnimateOnTap.IsEnabled="True">
+                                                                                    Padding="12,8">
                                                             <HorizontalStackLayout>
                                                                 <VerticalStackLayout Spacing="2"
                                                                                      WidthRequest="80">
