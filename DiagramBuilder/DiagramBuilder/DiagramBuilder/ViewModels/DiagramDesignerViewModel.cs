@@ -142,8 +142,11 @@ public partial class DiagramDesignerViewModel : ObservableObject
     [RelayCommand]
     private async Task PrintDocumentAsync() => await Task.CompletedTask;
 
+    /// <summary>Raised when the export dialog should be shown (host page pushes it modally).</summary>
+    public event EventHandler? ExportDialogRequested;
+
     [RelayCommand]
-    private Task ShowExportDialogAsync() => Task.CompletedTask;
+    private void ShowExportDialog() => ExportDialogRequested?.Invoke(this, EventArgs.Empty);
 
     // ---------- Central dispatch table (spec.md §6–7) ----------
 
@@ -160,7 +163,7 @@ public partial class DiagramDesignerViewModel : ObservableObject
             case AppConstants.CmdOpen: await OpenDocumentCommand.ExecuteAsync(null); break;
             case AppConstants.CmdSave: await SaveDocumentCommand.ExecuteAsync(null); break;
             case AppConstants.CmdSaveAs: await SaveAsDocumentCommand.ExecuteAsync(null); break;
-            case AppConstants.CmdExport: await ShowExportDialogCommand.ExecuteAsync(null); break;
+            case AppConstants.CmdExport: ShowExportDialogCommand.Execute(null); break;
             case AppConstants.CmdPrint: await PrintDocumentCommand.ExecuteAsync(null); break;
 
             // EDIT (undo/redo handled by the behavior; clipboard ops are control-supported,
