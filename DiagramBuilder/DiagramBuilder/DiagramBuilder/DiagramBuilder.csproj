@@ -48,6 +48,21 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- Files whose bindings resolve against App-level resources (cross-dictionary
+		     StaticResource / converters) exceed what the SourceGen inflator can parse
+		     standalone; use classic runtime inflation for them instead
+		     (see MauiXamlInflator docs above). -->
+		<MauiXaml Update="Controls\StencilPanelControl.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Controls\PropertyPanelControl.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Controls\DiagramWorkspaceControl.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Controls\MenuBarControl.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Controls\ToolbarControl.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Templates\StencilItemTemplate.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Templates\TemplateCardTemplate.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Templates\PropertyEditorTemplates.xaml" Inflator="Runtime" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
@@ -78,6 +93,7 @@
 		<PackageReference Include="Syncfusion.Maui.Inputs" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Expander" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Toolkit" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Popup" Version="*" />
 	</ItemGroup>
 
 </Project>

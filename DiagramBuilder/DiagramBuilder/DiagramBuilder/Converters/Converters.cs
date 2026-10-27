@@ -67,27 +67,21 @@ public class EnumToDisplayConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is null)
+        if (value is null || parameter is not string map || map.Length == 0)
         {
-            return string.Empty;
+            return value?.ToString() ?? string.Empty;
         }
 
-        var name = value.ToString() ?? string.Empty;
-        if (parameter is not string map)
+        foreach (var pair in map.Split(';', StringSplitOptions.RemoveEmptyEntries))
         {
-            return name;
-        }
-
-        foreach (var pair in map.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-        {
-            var kv = pair.Split('=', 2);
-            if (kv.Length == 2 && kv[0] == name)
+            var idx = pair.IndexOf('=');
+            if (idx > 0 && pair[..idx].Equals(value.ToString(), StringComparison.OrdinalIgnoreCase))
             {
-                return kv[1];
+                return pair[(idx + 1)..];
             }
         }
 
-        return name;
+        return value.ToString() ?? string.Empty;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
@@ -95,19 +89,19 @@ public class EnumToDisplayConverter : IValueConverter
 }
 
 /// <summary>
-/// null → false, anything else → true; "invert" flips the result.
+/// Null → one value, non-null → another. Inverts when parameter contains "invert".
 /// </summary>
 public class NullToBoolConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var flag = value is not null;
+        var hasValue = value is not null && !(value is string s && s.Length == 0);
         if (parameter is string p && p.Contains("invert", StringComparison.OrdinalIgnoreCase))
         {
-            flag = !flag;
+            hasValue = !hasValue;
         }
 
-        return flag;
+        return hasValue;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
@@ -115,8 +109,8 @@ public class NullToBoolConverter : IValueConverter
 }
 
 /// <summary>
-/// Collection count → bool (count &gt; threshold, default 0); parameter = threshold;
-/// "invert" flips.
+/// True when the count exceeds an optional threshold parameter ("2" → > 2).
+/// Inverts on "invert".
 /// </summary>
 public class CountToBoolConverter : IValueConverter
 {
@@ -145,8 +139,11 @@ public class CountToBoolConverter : IValueConverter
 }
 
 /// <summary>
-/// Selection kind → Visibility: parameter "node" shows when exactly one node is
-/// selected; "any" shows when any selection exists; "none" shows when empty.
+/// Hides/show the toolbar group-6 / property panel based on the current selection
+/// kind and count. Parameter modes:
+///   "node"   — visible when exactly one node is selected
+///   "any"    — visible when anything is selected
+///   "none"   — visible when nothing is selected
 /// </summary>
 public class SelectionKindToVisibilityConverter : IValueConverter
 {
@@ -158,13 +155,26 @@ public class SelectionKindToVisibilityConverter : IValueConverter
             : 0;
         var visible = mode switch
         {
-            "any" => count > 0,
+            "node" => count == 1,
+            "any" => count >= 1,
             "none" => count == 0,
-            _ => count == 1, // "node": exactly one node selected
+            _ => count == 1,
         };
         return visible ? Visibility.Visible : Visibility.Collapsed;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
         throw new NotSupportedException();
+}
+
+/// <summary>
+/// Boolean inversion (used to flip a "show when empty" condition into "show when not empty").
+/// </summary>
+public class InvertBoolConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        value is bool b ? !b : true;
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        value is bool b ? !b : false;
 }
