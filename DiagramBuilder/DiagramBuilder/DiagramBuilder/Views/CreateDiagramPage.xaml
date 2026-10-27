@@ -19,7 +19,7 @@
                 Stroke="{DynamicResource PanelBorderBrush}"
                 StrokeThickness="1">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="4" />
+                <shapes:RoundRectangle CornerRadius="4" />
             </Border.StrokeShape>
 
             <Grid RowDefinitions="Auto,*">
@@ -87,7 +87,7 @@
                                     StrokeThickness="1"
                                     BackgroundColor="{DynamicResource CanvasBackground}">
                                 <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="0" />
+                                    <shapes:RoundRectangle CornerRadius="0" />
                                 </Border.StrokeShape>
                                 <Grid RowDefinitions="*,Auto"
                                       Padding="24,24,24,14">
@@ -156,7 +156,7 @@
                                                 StrokeThickness="1"
                                                 BackgroundColor="{DynamicResource CanvasBackground}">
                                             <Border.StrokeShape>
-                                                <RoundRectangle CornerRadius="0" />
+                                                <shapes:RoundRectangle CornerRadius="0" />
                                             </Border.StrokeShape>
                                             <Grid RowDefinitions="*,Auto"
                                                   Padding="18,18,18,12">
@@ -169,7 +169,7 @@
                                                             HorizontalOptions="Center"
                                                             VerticalOptions="Center">
                                                         <Border.StrokeShape>
-                                                            <RoundRectangle CornerRadius="0" />
+                                                            <shapes:RoundRectangle CornerRadius="0" />
                                                         </Border.StrokeShape>
                                                         <Grid RowDefinitions="Auto,Auto,Auto,Auto"
                                                               ColumnDefinitions="Auto,*,Auto"
