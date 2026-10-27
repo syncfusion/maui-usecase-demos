@@ -15,6 +15,7 @@ public static class StencilCatalog
         {
             Id = "stencil.flow",
             Title = AppStrings.StencilGroupFlowShapes,
+            IsExpanded = true,
             Items =
             {
                 Shape(ShapeType.Process, AppStrings.StencilProcess, "process"),
