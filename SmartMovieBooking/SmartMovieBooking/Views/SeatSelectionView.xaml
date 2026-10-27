@@ -145,7 +145,7 @@
                                      CornerRadius="0"
                                      BackgroundColor="#FFFFFF"
                                      Padding="20,12,20,16">
-            <Grid RowDefinitions="{OnIdiom Default=Auto, Phone=Auto,Auto}"
+            <Grid RowDefinitions="{OnIdiom Default=Auto, Phone='Auto,Auto'}"
                   ColumnDefinitions="{OnIdiom Default='*,Auto', Phone='*'}"
                   RowSpacing="12"
                   ColumnSpacing="12">

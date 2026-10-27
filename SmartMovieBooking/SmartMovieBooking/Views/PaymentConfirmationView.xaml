@@ -4,7 +4,7 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
-             xmlns:barcode="clr-namespace:Syncfusion.Maui.BarcodeGenerator;assembly=Syncfusion.Maui.BarcodeGenerator"
+             xmlns:barcode="clr-namespace:Syncfusion.Maui.Barcode;assembly=Syncfusion.Maui.Barcode"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              x:Class="SmartMovieBooking.Views.PaymentConfirmationView"
              x:DataType="vm:PaymentConfirmationViewModel"
@@ -90,13 +90,17 @@
                                        FontSize="12"
                                        TextColor="#49454F" />
                             </VerticalStackLayout>
-                            <barcode:SfBarcodeGenerator Grid.Column="2"
-                                                        Value="{Binding Text, Source={x:Reference BookingIdLabel}}"
-                                                        BarcodeType="Code128"
-                                                        WidthRequest="120"
-                                                        HeightRequest="120"
-                                                        HorizontalOptions="End" />
-                        </Grid>
+							<barcode:SfBarcodeGenerator Grid.Column="2"
+														Value="Barcode"
+														ShowText="False"
+														WidthRequest="120"
+														HeightRequest="120"
+														HorizontalOptions="End">
+								<barcode:SfBarcodeGenerator.Symbology>
+									<barcode:QRCode />
+								</barcode:SfBarcodeGenerator.Symbology>
+							</barcode:SfBarcodeGenerator>
+						</Grid>
                     </Grid>
                 </syncfusionCards:SfCardView>
             </VerticalStackLayout>
