@@ -21,9 +21,9 @@ public partial class PanelHeaderControl : ContentView
     public static readonly BindableProperty ToggleCommandProperty =
         BindableProperty.Create(nameof(ToggleCommand), typeof(ICommand), typeof(PanelHeaderControl));
 
-    public static readonly BindableProperty TrailingContentProperty =
-        BindableProperty.Create(nameof(TrailingContent), typeof(View), typeof(PanelHeaderControl),
-            propertyChanged: OnTrailingContentChanged);
+    public static readonly BindableProperty TrailingProperty =
+        BindableProperty.Create(nameof(Trailing), typeof(View), typeof(PanelHeaderControl),
+            propertyChanged: OnTrailingChanged);
 
     public string Title
     {
@@ -43,10 +43,10 @@ public partial class PanelHeaderControl : ContentView
         set => SetValue(ToggleCommandProperty, value);
     }
 
-    public new View? TrailingContent
+    public View? Trailing
     {
-        get => (View?)GetValue(TrailingContentProperty);
-        set => SetValue(TrailingContentProperty, value);
+        get => (View?)GetValue(TrailingProperty);
+        set => SetValue(TrailingProperty, value);
     }
 
     public PanelHeaderControl()
@@ -75,11 +75,11 @@ public partial class PanelHeaderControl : ContentView
         }
     }
 
-    private static void OnTrailingContentChanged(BindableObject bindable, object oldValue, object newValue)
+    private static void OnTrailingChanged(BindableObject bindable, object oldValue, object newValue)
     {
         if (bindable is PanelHeaderControl header)
         {
-            header.TrailingContent.Content = newValue as View;
+            header.TrailingHost.Content = newValue as View;
         }
     }
 }

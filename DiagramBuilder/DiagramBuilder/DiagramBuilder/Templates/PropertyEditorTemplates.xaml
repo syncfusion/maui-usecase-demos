@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  PropertyEditorTemplates: DataTemplates for one editable row in each of the
+  six PropertyPanel sections (DIMENSIONS / INSERT / BACKGROUND / FILL / BORDER / TEXT).
+
+  Each template is keyed by section name and rendered by PropertyEditorTemplateSelector.
+  Row label is resolved via AppStrings; the underlying PropertyModel carries the
+  live editable Value, Min, Max bounds.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+                    xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
+                    x:Class="DiagramBuilder.Templates.PropertyEditorTemplates">
+
+    <!-- Generic two-column row label (left) + editor (right) -->
+    <Style x:Key="PropertyRowGridStyle" TargetType="Grid">
+        <Setter Property="Padding" Value="0,4" />
+        <Setter Property="ColumnDefinitions" Value="120,*" />
+        <Setter Property="ColumnSpacing" Value="8" />
+    </Style>
+    <Style x:Key="PropertyRowLabelStyle" TargetType="Label">
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <!-- DIMENSIONS: Position X/Y, Width, Height, Rotation, Lock Aspect -->
+    <DataTemplate x:Key="DimensionsRowTemplate">
+        <Grid Style="{StaticResource PropertyRowGridStyle}">
+            <Label Style="{StaticResource PropertyRowLabelStyle}"
+                   Text="{Binding LabelKey}"
+                   Grid.Column="0" />
+            <inputs:SfNumericEntry Value="{Binding Value, Mode=TwoWay}"
+                                   Minimum="{Binding Min, FallbackValue=0}"
+                                   Maximum="{Binding Max, FallbackValue=100000}"
+                                   CustomFormat="{}{0:0.##}"
+                                   AllowNull="{Binding IsReadOnly}"
+                                   Grid.Column="1" />
+        </Grid>
+    </DataTemplate>
+
+    <!-- INSERT: Insert Link / Insert Image mock buttons -->
+    <DataTemplate x:Key="InsertRowTemplate">
+        <Grid Style="{StaticResource PropertyRowGridStyle}">
+            <Label Style="{StaticResource PropertyRowLabelStyle}"
+                   Text="{Binding LabelKey}"
+                   Grid.Column="0" />
+            <Button Text="{Binding LabelKey}"
+                    Style="{StaticResource PropertyEntryStyle}"
+                    Grid.Column="1"
+                    AutomationId="prop_insert" />
+        </Grid>
+    </DataTemplate>
+
+    <!-- BACKGROUND: Solid / Gradient chooser + color swatch -->
+    <DataTemplate x:Key="BackgroundRowTemplate">
+        <Grid Style="{StaticResource PropertyRowGridStyle}">
+            <Label Style="{StaticResource PropertyRowLabelStyle}"
+                   Text="{Binding LabelKey}"
+                   Grid.Column="0" />
+            <controls:ColorPickerButton ColorValue="{Binding Value, Mode=TwoWay}"
+                                        Grid.Column="1" />
+        </Grid>
+    </DataTemplate>
+
+    <!-- FILL: color swatch + opacity slider -->
+    <DataTemplate x:Key="FillRowTemplate">
+        <Grid Style="{StaticResource PropertyRowGridStyle}">
+            <Label Style="{StaticResource PropertyRowLabelStyle}"
+                   Text="{Binding LabelKey}"
+                   Grid.Column="0" />
+            <inputs:SfNumericEntry Value="{Binding Value, Mode=TwoWay}"
+                                   Minimum="0"
+                                   Maximum="100"
+                                   CustomFormat="{}{0:0} %"
+                                   Grid.Column="1" />
+        </Grid>
+    </DataTemplate>
+
+    <!-- BORDER: line style segmented + color + thickness + opacity -->
+    <DataTemplate x:Key="BorderRowTemplate">
+        <Grid Style="{StaticResource PropertyRowGridStyle}">
+            <Label Style="{StaticResource PropertyRowLabelStyle}"
+                   Text="{Binding LabelKey}"
+                   Grid.Column="0" />
+            <inputs:SfNumericEntry Value="{Binding Value, Mode=TwoWay}"
+                                   Minimum="{Binding Min, FallbackValue=0}"
+                                   Maximum="{Binding Max, FallbackValue=64}"
+                                   CustomFormat="{}{0:0.##}"
+                                   Grid.Column="1" />
+        </Grid>
+    </DataTemplate>
+
+    <!-- TEXT: content / font family / size / bold-italic-underline / text color / alignment -->
+    <DataTemplate x:Key="TextRowTemplate">
+        <Grid Style="{StaticResource PropertyRowGridStyle}">
+            <Label Style="{StaticResource PropertyRowLabelStyle}"
+                   Text="{Binding LabelKey}"
+                   Grid.Column="0" />
+            <Entry Text="{Binding Value, Mode=TwoWay}"
+                   Style="{StaticResource PropertyEntryStyle}"
+                   Grid.Column="1" />
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

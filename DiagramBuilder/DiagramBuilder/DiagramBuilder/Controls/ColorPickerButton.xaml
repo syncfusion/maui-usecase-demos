@@ -32,14 +32,4 @@
             <TapGestureRecognizer Tapped="OnSwatchTapped" />
         </Border.GestureRecognizers>
     </Border>
-
-    <ContentView.Flyout>
-        <Flyout x:Name="PickerFlyout">
-            <inputs:SfColorPicker x:Name="Picker"
-                                  ColorChanged="OnColorChanged"
-                                  ColorMode="Spectrum"
-                                  ShowAlphaSlider="True"
-                                  ShowInputArea="True" />
-        </Flyout>
-    </ContentView.Flyout>
 </ContentView>

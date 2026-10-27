@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  StencilItemTemplate: visual shape for one tile in the StencilPanel accordion.
+  Used by StencilPanelControl's CollectionView ItemsLayout (3 columns).
+  Pure XAML; bound to StencilItem (DisplayName, ShapeType, ConnectorKind).
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    x:Class="DiagramBuilder.Templates.StencilItemTemplate">
+
+    <DataTemplate x:Key="StencilItemTemplate">
+        <Grid Padding="4">
+            <Border Stroke="{DynamicResource PanelBorderBrush}"
+                    StrokeThickness="1"
+                    Padding="8,6"
+                    BackgroundColor="{DynamicResource CanvasBackground}">
+                <Border.StrokeShape>
+                    <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="6" />
+                </Border.StrokeShape>
+                <StackLayout Spacing="4">
+                    <BoxView HeightRequest="36"
+                             WidthRequest="36"
+                             HorizontalOptions="Center"
+                             BackgroundColor="{DynamicResource HoverBackground}" />
+                    <Label Text="{Binding DisplayName}"
+                           FontSize="11"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{DynamicResource TextPrimary}" />
+                </StackLayout>
+            </Border>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

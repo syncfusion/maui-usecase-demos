@@ -9,7 +9,6 @@
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="BackgroundColor" Value="Transparent" />
                 <Setter Property="Padding" Value="6,2" />
-                <Setter Property="CornerRadius" Value="4" />
             </Style>
             <Style x:Key="StatusChipTextStyle" TargetType="Label">
                 <Setter Property="FontFamily" Value="Segoe UI" />

@@ -32,7 +32,7 @@
                Style="{StaticResource PanelHeaderTitleStyle}"
                Grid.Column="1"
                LineBreakMode="TailTruncation" />
-        <ContentView x:Name="TrailingContent"
+        <ContentView x:Name="TrailingHost"
                      Grid.Column="2"
                      VerticalOptions="Center" />
     </Grid>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:diagram="clr-namespace:Syncfusion.Maui.Diagram;assembly=Syncfusion.Maui.Diagram"
+             xmlns:behaviors="clr-namespace:DiagramBuilder.Behaviors;assembly=DiagramBuilder"
+             xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
+             x:Class="DiagramBuilder.Controls.DiagramWorkspaceControl">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style x:Key="WorkspaceStatusStripStyle" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{DynamicResource PanelBackground}" />
+                <Setter Property="Stroke" Value="{DynamicResource PanelBorderBrush}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="HeightRequest" Value="26" />
+                <Setter Property="Padding" Value="12,4" />
+            </Style>
+            <Style x:Key="WorkspaceStatusTextStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Border Stroke="{DynamicResource PanelBorderBrush}"
+            StrokeThickness="1"
+            BackgroundColor="{DynamicResource CanvasBackground}">
+        <Grid RowDefinitions="*,Auto">
+
+            <!-- Canvas grid: SfDiagram and SymbolPalette MUST be direct Grid siblings
+                 (architecture.md §3.3 — sibling discovery walks immediate children only). -->
+            <Grid x:Name="DiagramGrid"
+                  Grid.Row="0"
+                  ColumnDefinitions="Auto,*"
+                  ColumnSpacing="0">
+
+                <!-- Shared SymbolPalette host (rendered if PaletteGroups is set) -->
+                <diagram:SymbolPalette x:Name="Palette"
+                                       Grid.Column="0"
+                                       VerticalOptions="Start"
+                                       Margin="8,8,0,8"
+                                       IsVisible="False" />
+
+                <diagram:SfDiagram x:Name="Diagram"
+                                   Grid.Column="1"
+                                   BackgroundColor="{DynamicResource CanvasBackground}">
+                    <diagram:SfDiagram.Behaviors>
+                        <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
+                    </diagram:SfDiagram.Behaviors>
+                </diagram:SfDiagram>
+            </Grid>
+
+            <!-- Status bar strip: selection summary left, zoom/grid/snap right -->
+            <Border Grid.Row="1"
+                    Style="{StaticResource WorkspaceStatusStripStyle}">
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="8">
+                    <Label Style="{StaticResource WorkspaceStatusTextStyle}"
+                           Grid.Column="0"
+                           Text="{Binding SelectionSummary}" />
+                    <controls:ZoomIndicatorControl Grid.Column="1"
+                                                    ZoomPercent="{Binding Zoom.CurrentZoomText, Mode=OneWay}"
+                                                    ShowGrid="{Binding Zoom.ShowGrid, Mode=OneWay}"
+                                                    SnapToGrid="{Binding Zoom.SnapToGrid, Mode=OneWay}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</ContentView>

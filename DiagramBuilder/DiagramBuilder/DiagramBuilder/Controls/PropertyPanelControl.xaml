@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
+             x:Class="DiagramBuilder.Controls.PropertyPanelControl">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style x:Key="PropertyEmptyTitleStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CharacterSpacing" Value="1" />
+                <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="PropertyEmptyBodyStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="Margin" Value="12,4" />
+            </Style>
+            <Style x:Key="PropertySectionHeaderStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CharacterSpacing" Value="1" />
+                <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+                <Setter Property="Margin" Value="12,8" />
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Border Stroke="{DynamicResource PanelBorderBrush}"
+            StrokeThickness="1"
+            BackgroundColor="{DynamicResource PanelBackground}">
+        <Border.StrokeShape>
+            <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="12" />
+        </Border.StrokeShape>
+
+        <Grid RowDefinitions="Auto,*">
+            <controls:PanelHeaderControl Grid.Row="0"
+                                         Title="{Binding Title}" />
+
+            <!-- Empty state -->
+            <VerticalStackLayout x:Name="EmptyState"
+                                 Grid.Row="1"
+                                 IsVisible="{Binding IsEmptyState}"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="6">
+                <Label Text="&#x1F4D0;"
+                       FontSize="32"
+                       HorizontalTextAlignment="Center" />
+                <Label Style="{StaticResource PropertyEmptyTitleStyle}"
+                       Text="{Binding EmptyStateText}" />
+            </VerticalStackLayout>
+
+            <!-- Six-section scroll list; per-section editors come from PropertyEditorTemplates -->
+            <ScrollView x:Name="SectionsScroll"
+                        Grid.Row="1"
+                        IsVisible="{Binding IsEmptyState, Converter={StaticResource InvertBoolConverter}}">
+                <VerticalStackLayout Spacing="8" Padding="0,8,0,8">
+                    <Label Style="{StaticResource PropertySectionHeaderStyle}"
+                           Text="DIMENSIONS" />
+                    <Label Style="{StaticResource PropertySectionHeaderStyle}"
+                           Text="INSERT" />
+                    <Label Style="{StaticResource PropertySectionHeaderStyle}"
+                           Text="BACKGROUND" />
+                    <Label Style="{StaticResource PropertySectionHeaderStyle}"
+                           Text="FILL" />
+                    <Label Style="{StaticResource PropertySectionHeaderStyle}"
+                           Text="BORDER" />
+                    <Label Style="{StaticResource PropertySectionHeaderStyle}"
+                           Text="TEXT" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Border>
+</ContentView>

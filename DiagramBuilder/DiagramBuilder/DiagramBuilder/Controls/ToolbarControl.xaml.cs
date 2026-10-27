@@ -108,7 +108,7 @@ public partial class ToolbarControl : ContentView
             return;
         }
 
-        var byGroup = ((IEnumerable)ItemsSource).Cast<ToolbarItem>()
+        var byGroup = ((IEnumerable)ItemsSource).Cast<Models.ToolbarItem>()
             .GroupBy(i => i.Group)
             .OrderBy(g => g.Key);
 
@@ -130,24 +130,14 @@ public partial class ToolbarControl : ContentView
         }
     }
 
-    private View BuildGroupItem(ToolbarItem item, int group)
+    private View BuildGroupItem(Models.ToolbarItem item, int group)
     {
-        // Color swatches wrap a ColorPickerButton in a host box.
+        // Color swatches: render as a tiny colored Border with a tap-to-open popup. The
+        // popup hosts an SfColorPicker and writes back through ToolCommand with a
+        // synthetic id (the property panel observes the same ids).
         if (item.Id is "tool.fill.color" or "tool.border.color")
         {
-            var host = new Border
-            {
-                Style = (Style)Resources["ToolbarGroupDividerStyle"],
-                Padding = new Thickness(0),
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 0 },
-                Stroke = Colors.Transparent,
-                WidthRequest = 36,
-                HeightRequest = 36,
-            };
-            // Placeholder — the actual picker button is added at parent layout time;
-            // see WireColorPicker below.
-            host.AutomationId = "toolbar_" + item.Id.Replace('.', '_');
-            return host;
+            return BuildColorSwatchButton(item);
         }
 
         if (item.Id is AppConstants.CmdZoomIn or AppConstants.CmdZoomOut or AppConstants.CmdFitToScreen)
@@ -178,7 +168,46 @@ public partial class ToolbarControl : ContentView
         return BuildIconButton(item);
     }
 
-    private Button BuildIconButton(ToolbarItem item)
+    private View BuildColorSwatchButton(Models.ToolbarItem item)
+    {
+        // 28 px colored square; tap opens a popup with an SfColorPicker. The chosen
+        // color resolves to the nearest theme key and is dispatched as a tool id
+        // (matches the toolbar spec's "color picker" semantics for group 6).
+        var fillColor = (Color)Application.Current!.Resources[item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary"];
+        var swatch = new Border
+        {
+            Stroke = (Color)Application.Current!.Resources["PanelBorderBrush"],
+            StrokeThickness = 1,
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 4 },
+            WidthRequest = 24,
+            HeightRequest = 24,
+            BackgroundColor = fillColor,
+            VerticalOptions = LayoutOptions.Center,
+            Margin = new Thickness(4, 0),
+            AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
+        };
+
+        var picker = new Syncfusion.Maui.Inputs.SfColorPicker
+        {
+            ColorMode = Syncfusion.Maui.Inputs.ColorPickerMode.Spectrum,
+            ShowAlphaSlider = false,
+        };
+        picker.ColorChanged += (_, _) => ToolCommand?.Execute(item.Id);
+
+        var popup = new Syncfusion.Maui.Popup.SfPopup
+        {
+            ContentTemplate = new DataTemplate(() => picker),
+            ShowHeader = false,
+            ShowFooter = false,
+            ShowCloseButton = false,
+        };
+        var tap = new TapGestureRecognizer();
+        tap.Tapped += (_, _) => popup.ShowRelativeToView(swatch, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
+        swatch.GestureRecognizers.Add(tap);
+        return swatch;
+    }
+
+    private Button BuildIconButton(Models.ToolbarItem item)
     {
         var btn = new Button
         {
@@ -195,7 +224,7 @@ public partial class ToolbarControl : ContentView
         return btn;
     }
 
-    private View BuildFlyoutButton(ToolbarItem item, string headerKey, IList<MenuCommandItem> subItems)
+    private View BuildFlyoutButton(Models.ToolbarItem item, string headerKey, IList<MenuCommandItem> subItems)
     {
         var popup = new Syncfusion.Maui.Popup.SfPopup
         {

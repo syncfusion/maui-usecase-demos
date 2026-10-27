@@ -1,4 +1,6 @@
 using System.Windows.Input;
+using Syncfusion.Maui.Inputs;
+using Syncfusion.Maui.Popup;
 
 namespace DiagramBuilder.Controls;
 
@@ -6,7 +8,7 @@ namespace DiagramBuilder.Controls;
 /// Color swatch + SfColorPicker popup (ui-spec.md §3 group-6 and §6 FILL/BORDER).
 /// Bindable <see cref="ColorValue"/> is a theme <c>ResourceKeys</c> string
 /// (resolved via <see cref="Services.ResourceLookup"/>); <see cref="ColorChangedCommand"/>
-/// fires with the new resource key string when the user picks a color.
+/// fires with the nearest theme key string when the user picks a color.
 /// </summary>
 public partial class ColorPickerButton : ContentView
 {
@@ -28,6 +30,8 @@ public partial class ColorPickerButton : ContentView
         get => (ICommand?)GetValue(ColorChangedCommandProperty);
         set => SetValue(ColorChangedCommandProperty, value);
     }
+
+    private SfPopup? _popup;
 
     public ColorPickerButton()
     {
@@ -51,18 +55,34 @@ public partial class ColorPickerButton : ContentView
 
     private void OnSwatchTapped(object? sender, TappedEventArgs e)
     {
-        FlyoutBase.SetContext(this, SwatchFrame);
-        PickerFlyout.ShowAttachedFlyout(SwatchFrame);
+        _popup ??= BuildPopup();
+        _popup.ShowRelativeToView(SwatchFrame, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
     }
 
-    private void OnColorChanged(object? sender, ColorChangedEventArgs e)
+    private SfPopup BuildPopup()
     {
-        // Map back to a theme key by nearest match; fall back to a hex key.
-        var newKey = FindNearestKey(e.NewData?.Value ?? Colors.White);
-        if (ColorChangedCommand?.CanExecute(newKey) == true)
+        var picker = new SfColorPicker
         {
-            ColorChangedCommand.Execute(newKey);
-        }
+            ColorMode = ColorPickerMode.Spectrum,
+            ShowAlphaSlider = true,
+            ShowInputArea = true,
+        };
+        picker.ColorChanged += (_, args) =>
+        {
+            var nearestKey = FindNearestKey(args.NewData?.Value ?? Colors.White);
+            if (ColorChangedCommand?.CanExecute(nearestKey) == true)
+            {
+                ColorChangedCommand.Execute(nearestKey);
+            }
+        };
+
+        return new SfPopup
+        {
+            ContentTemplate = new DataTemplate(() => picker),
+            ShowHeader = false,
+            ShowFooter = false,
+            ShowCloseButton = true,
+        };
     }
 
     private static string FindNearestKey(Color color)
