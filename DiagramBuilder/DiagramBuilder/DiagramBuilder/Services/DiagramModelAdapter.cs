@@ -155,6 +155,41 @@ public static class DiagramModelAdapter
         }
     }
 
+    /// <summary>
+    /// Maps a domain <see cref="StencilGroup"/> (with its <see cref="StencilItem"/>s) to a
+    /// Syncfusion palette <see cref="Palette"/> so the shared <c>SymbolPalette</c> can
+    /// offer drag-and-drop symbols (spec: shapes fed to the palette from the stencil catalog).
+    /// </summary>
+    public static Palette ToPalette(StencilGroup group)
+    {
+        var palette = new Palette
+        {
+            Id = group.Id,
+            Title = group.Title,
+            IsExpanded = true,
+        };
+
+        foreach (var item in group.Items)
+        {
+            if (item.ShapeType is { } shapeType)
+            {
+                palette.Symbols.Add(ToSymbolNode(item, ToShape(shapeType)));
+            }
+        }
+
+        return palette;
+    }
+
+    /// <summary>Palette symbol node for a stencil shape (fixed preview size, label below).</summary>
+    private static Node ToSymbolNode(StencilItem item, Shape shape) => new()
+    {
+        Id = item.Id,
+        Shape = shape,
+        Width = 64,
+        Height = 64,
+        Style = new ShapeStyle { Fill = ResourceLookup.Color(ResourceKeys.CanvasBackground) },
+    };
+
     private static Syncfusion.Maui.Diagram.HorizontalAlignment ToHorizontalAlignment(string value) => value switch
     {
         "Left" => HorizontalAlignment.Left,

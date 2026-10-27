@@ -58,6 +58,26 @@ public partial class ExportViewModel : ObservableObject
 
     public ExportFormat[] Formats { get; } = Enum.GetValues<ExportFormat>();
 
+    /// <summary>Selects an export format (parameter is the enum name, from a bound CommandParameter).</summary>
+    [RelayCommand]
+    private void SelectFormat(string? formatName)
+    {
+        if (Enum.TryParse<ExportFormat>(formatName, ignoreCase: true, out var parsed))
+        {
+            SelectedFormat = parsed;
+        }
+    }
+
+    /// <summary>Selects the export region label (Content / PageSettings).</summary>
+    [RelayCommand]
+    private void SelectRegion(string? region)
+    {
+        if (!string.IsNullOrEmpty(region) && RegionLabels.Contains(region))
+        {
+            Region = region;
+        }
+    }
+
     [RelayCommand]
     private async Task ExportAsync()
     {

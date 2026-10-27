@@ -37,6 +37,7 @@ namespace DiagramBuilder
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<CreateDiagramPage>();
             builder.Services.AddTransient<DiagramDesignerPage>();
+            builder.Services.AddTransient<Views.Dialogs.ExportDialog>();
 
 #if DEBUG
             builder.Logging.AddDebug();
