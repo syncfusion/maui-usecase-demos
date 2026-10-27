@@ -72,6 +72,14 @@
       those 8 xaml files use Inflator=Runtime (documented csproj mechanism).
       Build: 0 errors / 0 warnings; no hex colors or literal labels in Controls/Templates.
 
+## Task 8 — Pages & dialogs
+- [x] DiagramDesignerPage (5-row / 280-*/-320-column frame; all five controls hosted;
+      collapsible panels; keyboard behavior attached; status bar), CreateDiagramPage
+      (category + template cards), ExportDialog (SfPopup-based). Pages were already
+      registered in DI and AppShell routes already used AppConstants; new XAML files
+      also use Inflator=Runtime. Added VM Select commands the XAML chips need, and
+      DiagramModelAdapter.ToPalette for SymbolPalette feeding. Build: 0/0; greps clean.
+
 ## Task 7 — Verification
 - [ ] All ViewModels ≤ 500 lines (checked).
 - [ ] No TODO comments; no hardcoded user-visible strings in XAML (constants only).
