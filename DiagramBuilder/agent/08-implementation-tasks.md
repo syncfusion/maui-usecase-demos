@@ -49,10 +49,14 @@
 - [ ] Reusable: PanelHeaderControl, ColorPickerButton, ZoomIndicatorControl.
 
 ## Task 5 — Behaviors & converters
-- [ ] DiagramSurfaceBehavior (events → commands; VM commands → control methods).
-- [ ] DiagramKeyboardBehavior (Ctrl+C/V/X/Z/Y, Delete, Ctrl+A).
-- [ ] Converters: BoolToObject, ZoomToPercent, ColorToBrush, EnumToDisplay, NullToBool,
-      CountToBool, SelectionKindToVisibility.
+- [x] DiagramSurfaceBehavior (events → commands; VM commands → control methods).
+- [x] DiagramKeyboardBehavior (Ctrl+C/V/X/Z/Y, Delete, Ctrl+A) — **key events are not
+      surfaced by the MAUI layer in this package version** (verified by reflection probe:
+      no View.KeyPress/KeyEventArgs); implemented via platform hook partial
+      (Windows KeyDown in Platforms/Windows) with a no-op default so every TFM compiles.
+- [x] Converters: BoolToObject, ZoomToPercent, ColorToBrush, EnumToDisplay, NullToBool,
+      CountToBool, SelectionKindToVisibility (18 assertions, all passing; numeric
+      converters made IConvertible-tolerant to avoid boxed int/double binding traps).
 
 ## Task 6 — Theme & polish
 - [ ] Colors.xaml theme dictionary (exact spec palette), Styles.xaml.
