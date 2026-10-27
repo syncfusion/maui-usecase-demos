@@ -23,6 +23,7 @@ public static class AppStrings
     public const string CreateAction = "Create";
     public const string BlankSuffix = "Blank";
     public const string NodesCountFormat = "{0} shapes";
+    public const string BlankStarterText = "Double-click to rename";
 
     // Templates
     public const string TemplateBlankFlowChart = "Blank Flow Chart";
