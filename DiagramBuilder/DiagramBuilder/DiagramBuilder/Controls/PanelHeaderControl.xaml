@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DiagramBuilder.Controls.PanelHeaderControl">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style x:Key="PanelHeaderChevronStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="WidthRequest" Value="16" />
+            </Style>
+            <Style x:Key="PanelHeaderTitleStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CharacterSpacing" Value="1" />
+                <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <Grid Padding="12,8"
+          ColumnDefinitions="Auto,*,Auto"
+          ColumnSpacing="4"
+          BackgroundColor="{DynamicResource PanelBackground}">
+        <Label x:Name="Chevron"
+               Style="{StaticResource PanelHeaderChevronStyle}"
+               Grid.Column="0"
+               AutomationId="panel_chevron" />
+        <Label x:Name="TitleLabel"
+               Style="{StaticResource PanelHeaderTitleStyle}"
+               Grid.Column="1"
+               LineBreakMode="TailTruncation" />
+        <ContentView x:Name="TrailingContent"
+                     Grid.Column="2"
+                     VerticalOptions="Center" />
+    </Grid>
+</ContentView>

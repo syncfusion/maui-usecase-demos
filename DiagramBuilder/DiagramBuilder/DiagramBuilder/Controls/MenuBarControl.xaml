@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             x:Class="DiagramBuilder.Controls.MenuBarControl">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <!-- Root menu chip (FILE / EDIT / …) -->
+            <Style x:Key="MenuRootButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CharacterSpacing" Value="1" />
+                <Setter Property="Padding" Value="14,0" />
+                <Setter Property="HeightRequest" Value="40" />
+                <Setter Property="MinimumHeightRequest" Value="32" />
+                <Setter Property="MinimumWidthRequest" Value="48" />
+                <Setter Property="BorderWidth" Value="0" />
+                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            <!-- Flyout row: label left + shortcut right -->
+            <Style x:Key="MenuFlyoutRowStyle" TargetType="Grid">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="HeightRequest" Value="32" />
+                <Setter Property="ColumnDefinitions" Value="Auto,*,Auto" />
+                <Setter Property="ColumnSpacing" Value="8" />
+            </Style>
+            <Style x:Key="MenuFlyoutLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            <Style x:Key="MenuFlyoutShortcutStyle" TargetType="Label" BasedOn="{StaticResource MenuFlyoutLabelStyle}">
+                <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+                <Setter Property="FontSize" Value="11" />
+            </Style>
+            <Style x:Key="MenuFlyoutCheckGlyphStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="{DynamicResource SelectionBlue}" />
+                <Setter Property="WidthRequest" Value="16" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="MenuFlyoutSeparatorStyle" TargetType="BoxView">
+                <Setter Property="HeightRequest" Value="1" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource PanelBorderColor}" />
+                <Setter Property="Margin" Value="8,4" />
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <HorizontalStackLayout x:Name="RootsBar"
+                           Spacing="0"
+                           HeightRequest="40"
+                           BackgroundColor="{DynamicResource PanelBackground}">
+
+        <!-- Per-root flyouts are created dynamically in code-behind so each root
+             carries its own SfPopup host with the right RelativeView anchor. -->
+    </HorizontalStackLayout>
+</ContentView>

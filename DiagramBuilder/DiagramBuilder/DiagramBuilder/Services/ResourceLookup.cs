@@ -38,4 +38,7 @@ public static class ResourceLookup
             ? fallback
             : color;
     }
+
+    /// <summary>Read-only snapshot of every (key, color) the lookup knows about.</summary>
+    public static IReadOnlyDictionary<string, Color> PaletteSnapshot() => Palette;
 }
