@@ -50,6 +50,7 @@
                                                IsScrollingEnabled="False"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
+                                               SelectionBackground="Transparent"
                                                HeightRequest="104"
                                                SelectionMode="Single"
                                                SelectionChanged="OnDateSelected">

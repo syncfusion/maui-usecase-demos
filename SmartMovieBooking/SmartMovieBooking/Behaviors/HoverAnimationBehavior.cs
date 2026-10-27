@@ -38,7 +38,7 @@ public class HoverAnimationBehavior : Behavior<View>
 
         try
         {
-            await _host.ScaleToAsync(1.02, 90, Easing.CubicOut);
+            await _host.ScaleToAsync(1.06, 90, Easing.CubicOut);
         }
         catch
         {
