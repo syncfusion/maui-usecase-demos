@@ -106,7 +106,7 @@ public partial class MenuBarControl : ContentView
         }
         var border = new Border
         {
-            Stroke = (Color)Resources["PanelBorderColor"],
+            Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
             StrokeThickness = 1,
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
             BackgroundColor = (Color)Application.Current!.Resources["CanvasBackground"],

@@ -11,4 +11,10 @@ public partial class ExportDialog : ContentView
     {
         InitializeComponent();
     }
+
+    /// <summary>Navigates back (host modal pop relay — no business logic).</summary>
+    private async void OnCancelClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.Navigation.PopModalAsync();
+    }
 }
