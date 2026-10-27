@@ -22,7 +22,7 @@
               Grid.Row="{OnIdiom Default=0, Phone=0}"
               Grid.Column="{OnIdiom Default='1', Phone='0'}"
               RowDefinitions="Auto,*"
-              Padding="{OnIdiom Default='24', Phone='12'}"
+              Padding="{OnIdiom Default='24', Phone='12,12,12,84'}"
               RowSpacing="16">
             <VerticalStackLayout Grid.Row="0" Spacing="10">
                 <VerticalStackLayout Spacing="4">
@@ -41,7 +41,7 @@
 
 				<Border Stroke="#CAC7D0"
 						StrokeShape="RoundRectangle 18"
-						Padding="8">
+						Padding="12">
 					<ScrollView Orientation="Horizontal"
                                 HorizontalScrollBarVisibility="Never">
                         <syncfusion:SfListView x:Name="DateList"                        
