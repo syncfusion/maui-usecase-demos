@@ -151,52 +151,54 @@
                                                    FontSize="10"
                                                    TextColor="#7A7B8C" />
 
-                                            <ScrollView Orientation="Horizontal"
-                                                        HorizontalScrollBarVisibility="Never">
-                                                <HorizontalStackLayout Spacing="8"
-                                                                       BindableLayout.ItemsSource="{Binding Showtimes}">
-                                                    <BindableLayout.ItemTemplate>
-                                                        <DataTemplate x:DataType="models:Showtime">
-                                                            <syncfusionCards:SfCardView CornerRadius="14"
-                                                                                        BackgroundColor="#F1F2F8"
-                                                                                        Padding="12,8"
-                                                                                        WidthRequest="160">
-                                                                <syncfusionCards:SfCardView.GestureRecognizers>
-                                                                    <TapGestureRecognizer Tapped="OnShowtimeTapped" />
-                                                                </syncfusionCards:SfCardView.GestureRecognizers>
-                                                                <HorizontalStackLayout>
-                                                                    <VerticalStackLayout Spacing="2"
-                                                                                         WidthRequest="80">
-                                                                        <Label Text="{Binding StartTime}"
-                                                                               FontFamily="OpenSansSemibold"
-                                                                               FontAttributes="Bold"
-                                                                               FontSize="13"
-                                                                               TextColor="#1A1A2E" />
-                                                                        <Label Text="{Binding Format}"
-                                                                               FontFamily="OpenSansSemibold"
-                                                                               FontSize="9"
-                                                                               TextColor="#3525CD" />
-                                                                    </VerticalStackLayout>
-                                                                    <VerticalStackLayout Spacing="2"
-                                                                                         WidthRequest="80">
-                                                                        <Label Text="{Binding Price, StringFormat='${0:F2}'}"
-                                                                               HorizontalOptions="End"
-                                                                               FontFamily="OpenSansSemibold"
-                                                                               FontAttributes="Bold"
-                                                                               FontSize="13"
-                                                                               TextColor="#3525CD" />
-                                                                        <Label Text="{Binding Status, Converter={StaticResource ShowtimeStatusLabelConverter}}"
-                                                                               HorizontalOptions="End"
-                                                                               FontFamily="OpenSansSemibold"
-                                                                               FontSize="9"
-                                                                               TextColor="{Binding Status, Converter={StaticResource ShowtimeStatusColorConverter}}" />
-                                                                    </VerticalStackLayout>
-                                                                </HorizontalStackLayout>
-                                                            </syncfusionCards:SfCardView>
-                                                        </DataTemplate>
-                                                    </BindableLayout.ItemTemplate>
-                                                </HorizontalStackLayout>
-                                            </ScrollView>
+                                            <syncfusion:SfListView ItemsSource="{Binding Showtimes}"
+                                                                   ItemSpacing="8"
+                                                                   BackgroundColor="Transparent"
+                                                                   HeightRequest="104"
+                                                                   IsScrollingEnabled="False"
+                                                                   AutoFitMode="DynamicHeight"
+                                                                   SelectionMode="Single"
+                                                                   SelectionChanged="OnShowtimeSelected">
+                                                <syncfusion:SfListView.ItemsLayout>
+                                                    <syncfusion:GridLayout SpanCount="5" />
+                                                </syncfusion:SfListView.ItemsLayout>
+                                                <syncfusion:SfListView.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:Showtime">
+                                                        <syncfusionCards:SfCardView CornerRadius="14"
+                                                                                    BackgroundColor="#F1F2F8"
+                                                                                    Padding="12,8">
+                                                            <HorizontalStackLayout>
+                                                                <VerticalStackLayout Spacing="2"
+                                                                                     WidthRequest="80">
+                                                                    <Label Text="{Binding StartTime}"
+                                                                           FontFamily="OpenSansSemibold"
+                                                                           FontAttributes="Bold"
+                                                                           FontSize="13"
+                                                                           TextColor="#1A1A2E" />
+                                                                    <Label Text="{Binding Format}"
+                                                                           FontFamily="OpenSansSemibold"
+                                                                           FontSize="9"
+                                                                           TextColor="#3525CD" />
+                                                                </VerticalStackLayout>
+                                                                <VerticalStackLayout Spacing="2"
+                                                                                     WidthRequest="80">
+                                                                    <Label Text="{Binding Price, StringFormat='${0:F2}'}"
+                                                                           HorizontalOptions="End"
+                                                                           FontFamily="OpenSansSemibold"
+                                                                           FontAttributes="Bold"
+                                                                           FontSize="13"
+                                                                           TextColor="#3525CD" />
+                                                                    <Label Text="{Binding Status, Converter={StaticResource ShowtimeStatusLabelConverter}}"
+                                                                           HorizontalOptions="End"
+                                                                           FontFamily="OpenSansSemibold"
+                                                                           FontSize="9"
+                                                                           TextColor="{Binding Status, Converter={StaticResource ShowtimeStatusColorConverter}}" />
+                                                                </VerticalStackLayout>
+                                                            </HorizontalStackLayout>
+                                                        </syncfusionCards:SfCardView>
+                                                    </DataTemplate>
+                                                </syncfusion:SfListView.ItemTemplate>
+                                            </syncfusion:SfListView>
                                         </VerticalStackLayout>
                                     </syncfusionCards:SfCardView>
                                 </Grid>

@@ -25,25 +25,25 @@ public partial class TheatersView : ContentPage
         MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
     }
 
-    private async void OnDateTapped(object? sender, TappedEventArgs e)
+    private async void OnDateSelected(object? sender, ItemSelectionChangedEventArgs e)
     {
-        if (sender is not BindableObject bo || bo.BindingContext is not DateTime d)
-            return;
-
-        _vm.SelectedDate = d;
-        await _vm.LoadAsync();
-        MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
+        if (e.AddedItems.FirstOrDefault() is DateTime d)
+        {
+            _vm.SelectedDate = d;
+            DateList.SelectedItem = null;
+            await _vm.LoadAsync();
+            MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
+        }
     }
 
-    private async void OnShowtimeTapped(object? sender, TappedEventArgs e)
+    private async void OnShowtimeSelected(object? sender, ItemSelectionChangedEventArgs e)
     {
-        if (sender is not BindableObject bo || bo.BindingContext is not Showtime s)
-            return;
-
+        if (e.AddedItems.FirstOrDefault() is not Showtime s) return;
         _vm.SelectedShowtime = s;
         _session.SelectedShowtime = s;
         _session.SelectedDate = _vm.SelectedDate;
         _session.SelectedTheater = _vm.Theaters.FirstOrDefault(t => t.Showtimes.Contains(s));
+        if (sender is SfListView list) list.SelectedItem = null;
         await Shell.Current.GoToAsync("seat-selection");
     }
 }
