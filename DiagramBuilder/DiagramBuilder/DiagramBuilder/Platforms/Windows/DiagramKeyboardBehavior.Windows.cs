@@ -31,11 +31,9 @@ public partial class DiagramKeyboardBehavior
 
     private void OnPlatformKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
     {
-        var ctrl = Microsoft.UI.Input.KeyboardInput.GetModifierState() is not null
-            ? Microsoft.UI.Input.KeyboardInput.GetModifierState().HasFlag(
-                global::Windows.System.VirtualKeyModifiers.Control)
-            : false;
-
+        // KeyRoutedEventArgs.KeyStatus.IsControlKeyDown works on both the UWP-style
+        // net10.0-windows TFM and WinUI 3 — no dependency on KeyboardInput (App SDK only).
+        var ctrl = e.KeyStatus.IsControlKeyDown;
         var key = e.Key.ToString().ToLowerInvariant();
         Dispatch(ctrl, key);
     }
