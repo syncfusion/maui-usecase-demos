@@ -81,9 +81,21 @@
       DiagramModelAdapter.ToPalette for SymbolPalette feeding. Build: 0/0; greps clean.
 
 ## Task 7 — Verification
-- [ ] All ViewModels ≤ 500 lines (checked).
-- [ ] No TODO comments; no hardcoded user-visible strings in XAML (constants only).
-- [ ] Code-behind contains only control-event → command relays.
-- [ ] Build with `dotnet build -f net10.0-android` (Linux sandbox has only android TFM
+- [x] All ViewModels ≤ 500 lines (checked).
+- [x] No TODO comments; no hardcoded user-visible strings in XAML (constants only).
+      *(create-dialog hex literals replaced with theme keys in Colors.xaml /
+      ResourceKeys — ModalScrim, CategoryRailBackground, Thumbnail* — this pass)*
+- [x] Code-behind contains only control-event → command relays.
+- [x] Build with `dotnet build -f net10.0-android` (Linux sandbox has only android TFM
       available; Windows TFM is the primary runtime target but cannot compile on Linux).
 - [ ] Manual review against design-images (menus, toolbar, property panel, layout).
+
+## Task 9/10 status (this pass)
+- [x] Export dialog now shows (CmdExport → VM ExportDialogRequested event → modal host
+      page push); fixed `Behavior<View>`→`Behavior<Page>` AttachedType crash on
+      DiagramDesignerPage (the `'bindable not an instance of AssociatedType'`
+      TargetInvocationException).
+- [ ] Undo/redo/clipboard wiring into SfDiagram.CommandManager.
+- [ ] MindMap Levels Styles + Orientation Styles property sections.
+- [ ] OrgChart templates/spacing/import property sections.
+- [ ] Tab/Enter/F2/Esc/F8 shortcuts + shortcuts help overlay.
