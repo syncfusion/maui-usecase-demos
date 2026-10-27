@@ -63,6 +63,15 @@
 - [ ] DataTemplates for stencil tiles, property rows, template cards.
 - [ ] AutomationIds, tooltips, hover states, empty states, collapsible panels.
 
+## Task 7 — Controls & templates
+- [x] MenuBarControl, ToolbarControl, StencilPanelControl, DiagramWorkspaceControl,
+      PropertyPanelControl, ColorPickerButton, PanelHeaderControl, ZoomIndicatorControl
+      (Controls/), plus StencilItemTemplate / PropertyEditorTemplates /
+      TemplateCardTemplate (Templates/). Verified API names against reference
+      metadata; SourceGen inflator cannot parse App-level-resource bindings so
+      those 8 xaml files use Inflator=Runtime (documented csproj mechanism).
+      Build: 0 errors / 0 warnings; no hex colors or literal labels in Controls/Templates.
+
 ## Task 7 — Verification
 - [ ] All ViewModels ≤ 500 lines (checked).
 - [ ] No TODO comments; no hardcoded user-visible strings in XAML (constants only).
