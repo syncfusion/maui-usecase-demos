@@ -50,7 +50,7 @@ ObservableCollections, async methods, and events. MVVM purity is preserved with 
 
 ### 3.1 `DiagramSurfaceBehavior` (Behaviors/)
 - Attaches to an `SfDiagram`.
-- Subscribes to native events (`DiagramReady`, `SelectionChanged`, `PositionChanged`,
+- Subscribes to native events (`Created` (JS instance ready), `SelectionChanged`, `PositionChanged`,
   `SizeChanged`, `RotationChanged`, `CollectionChanged`, `AnnotationEdited`) and republishes
   them through bindable `ICommand` properties — the ViewModel never references the control.
 - Exposes VM→control relays (`FitToPageCommand`, `UndoCommand`, `RedoCommand`, zoom/state
@@ -109,7 +109,7 @@ All commands are `[RelayCommand]`; `CanExecute` derives from observable selectio
 - `DiagramService` holds the current `DiagramDocument` in memory with a dirty flag.
 - Save/Save As update the in-memory record and raise status messages.
 - Open shows a mock recent-document list (`RecentDocumentCatalog`).
-- `SfDiagram.GetDiagramState()` / `LoadDiagramState(json)` used for the round-trip snapshot.
+- `SfDiagram.SaveDiagram()` / `LoadDiagram(json)` used for the round-trip snapshot.
 
 ## 8. Responsiveness
 
@@ -120,9 +120,9 @@ toggled from the WINDOW menu or panel header chevrons.
 
 ## 9. Known control constraints honored (from diagram-control-specs.md)
 
-- Wait for `DiagramReady` (or rely on the startup snapshot) before populating templates.
+- Wait for `Created` (JS instance ready) (or rely on the startup snapshot) before populating templates.
 - `Node.IsSelected` is one-way; selection tracked via `SelectionChanged` events.
 - Annotation ids are control-managed; never hand-craft annotation ids.
-- `PrintAsync` reliability is Windows-best; Print command surfaces status feedback on other platforms.
+- `Print` reliability is Windows-best; Print command surfaces status feedback on other platforms.
 - `AddInfo` is client-only (never serialized to JS).
 - Bezier connector rendering follows control defaults; UI command is a routed placeholder.

@@ -299,17 +299,17 @@ it, mock status elsewhere).
 
 **Implementation requirements**
 1. Wire dispatch table in `DiagramDesignerViewModel`: FILE (New→create dialog, Open→mock
-   recents, Save/SaveAs→document store, Export→dialog, Print→`PrintAsync` w/ status),
-   EDIT (Undo/Redo→`UndoAsync/RedoAsync` + CanUndo/CanRedo state; Cut/Copy/Paste/Duplicate/
+   recents, Save/SaveAs→document store, Export→dialog, Print→`Print` w/ status),
+   EDIT (Undo/Redo→`Undo/Redo` + CanUndo/CanRedo state; Cut/Copy/Paste/Duplicate/
    Select All→dispatch w/ mock status where unsupported), VIEW (zoom commands, grid/snap
    toggles), ARRANGE (z-order/align/distribute/match-size/group — mock status where the
    control lacks a native API), WINDOW (panel toggles).
 2. Toolbar commands mirror the same dispatch table (no duplicate logic).
 3. Property panel edits flow through `IPropertyService` to live nodes (verify live canvas
    update via dirty-flush).
-4. Export dialog demo: PNG/JPEG/SVG call `ExportDiagramAsync` for a data URI preview; PDF
+4. Export dialog demo: PNG/JPEG/SVG call `ExportDiagram` for a data URI preview; PDF
    mock-only.
-5. Template load on `DiagramReady` (behavior gates population; startup snapshot also safe).
+5. Template load on `Created` (JS instance ready) (behavior gates population; startup snapshot also safe).
 
 **Impacted files** — `ViewModels/DiagramDesignerViewModel.cs` + child VMs,
 `Behaviors/DiagramSurfaceBehavior.cs`, `Services/PropertyService.cs`.

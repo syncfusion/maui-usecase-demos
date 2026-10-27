@@ -21,17 +21,17 @@
 | Rename | `ShapeAnnotation.Content` (dirty-flush auto-syncs) |
 | Connect | `Connector { SourceID, TargetID, Type = ConnectorSegmentType.Straight/Orthogonal }` (Bezier rendered via control defaults; UI command placeholder) |
 | Grid/snap | control page settings via init config / `ZoomViewModel` state |
-| Fit | `FitToPageAsync()` |
-| Undo/redo | `UndoAsync()/RedoAsync()/CanUndoAsync()/CanRedoAsync()` |
+| Fit | `FitToPage()` |
+| Undo/redo | `Undo()/Redo()/CanUndoAsync()/CanRedoAsync()` |
 | Z-order | command placeholders routed through `DiagramSurfaceBehavior` (EJ2 commands; mocked status when unsupported) |
-| Export | `ExportDiagramAsync(DiagramExportOptions)` → data URI (Png/Jpg/Svg); PDF = mock |
-| Print | `PrintAsync()` (Windows primary) |
+| Export | `ExportDiagram()` → data URI (Png/Jpg/Svg); PDF = mock |
+| Print | `Print()` (Windows primary) |
 | Org layout | `AutoLayout = new DiagramLayout { Type = OrganizationalChart, Orientation = TopToBottom }` |
-| Save/Open | `GetDiagramState()` / `LoadDiagramState(json)` round-trip |
+| Save/Open | `SaveDiagram()` / `LoadDiagram(json)` round-trip |
 
 ## Constraints respected
 - `SymbolPalette` must not be nested inside another layout child of the diagram's parent Grid.
-- Wait for `DiagramReady` (or rely on startup snapshot) before template population — behavior
+- Wait for `Created` (JS instance ready) (or rely on startup snapshot) before template population — behavior
   gates template load on the ready event.
 - `Node.IsSelected` is read-only from the control; selection state tracked by
   `ISelectionService` from `SelectionChanged` events.

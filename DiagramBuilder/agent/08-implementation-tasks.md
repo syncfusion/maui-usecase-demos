@@ -1,23 +1,29 @@
 # Diagram Builder — Implementation Tasks
 
 ## Task 1 — Foundation
-- [ ] Add NuGet packages: `CommunityToolkit.Mvvm`, `Syncfusion.Maui.Diagram`,
+- [x] Add NuGet packages: `CommunityToolkit.Mvvm`, `Syncfusion.Maui.Diagram`,
       `Syncfusion.Maui.Core`, `Syncfusion.Maui.Buttons`, `Syncfusion.Maui.Inputs`,
-      `Syncfusion.Maui.Expander`, `Syncfusion.Maui.Toolkit`, `Syncfusion.Maui.TextInputLayout`.
-- [ ] `MauiProgram`: `ConfigureSyncfusionCore()`, DI registrations (services + VMs + pages).
-- [ ] `App.xaml`: merge `Colors.xaml`, `Styles.xaml`.
-- [ ] `AppShell`: register routes `create-diagram` (modal), `designer`.
-- [ ] Constants: `AppConstants`, `AppStrings`, `ResourceKeys`. *(Files exist from a previous
-      partial pass — verify contents against spec.md/tasks.md Task 1 before completion.)*
+      `Syncfusion.Maui.Expander`, `Syncfusion.Maui.Toolkit` *(TextInputLayout not yet added —
+      pull it in with the property-panel work if `SfTextInputLayout` is used).*
+- [x] `MauiProgram`: `ConfigureSyncfusionCore()` (namespace `Syncfusion.Maui.Core.Hosting`),
+      DI registrations (services + VMs + pages).
+- [x] `App.xaml`: merge `Colors.xaml`, `Styles.xaml`.
+- [x] `AppShell`: routes registered; `create-diagram` is the startup ShellContent (direct,
+      no startup `GoToAsync` redirect — avoids the pending-navigation crash).
+- [x] Constants: `AppConstants`, `AppStrings`, `ResourceKeys` (verified; styles compile).
 
 ## Task 2 — Models & services
-- [ ] Domain models (DiagramDocument, DiagramItem, ShapeItem, ConnectorItem, DiagramTemplate,
+- [x] Domain models (DiagramDocument, DiagramItem, ShapeItem, ConnectorItem, DiagramTemplate,
       StencilGroup/Item, PropertyModel/Group, MenuCommandItem, ToolbarItem, ZoomLevel,
-      ExportFormat, enums).
-- [ ] Service interfaces + mock implementations (DiagramService, TemplateService,
-      MockExportService, PropertyService, SelectionService, DialogService).
-- [ ] `DiagramModelAdapter` (domain ↔ Syncfusion Node/Connector/Annotation mapping).
-- [ ] Template JSON payloads (3 predefined templates) + C# fallback seeds.
+      ExportFormat, enums). *(tasks.md Task 2 — complete.)*
+- [x] Service interfaces + mock implementations (DiagramService, TemplateService,
+      MockExportService, PropertyService, SelectionService, DialogService). *(tasks.md Task 3 —
+      complete; catalogs in Services/Catalogs.cs.)*
+- [x] `DiagramModelAdapter` (domain ↔ Syncfusion Node/Connector/Annotation mapping) — verified
+      against the shipped package 35.1.41, see `09-verified-diagram-api-notes.md`.
+- [ ] Template JSON payloads (3 predefined templates) + C# fallback seeds. *(C# fallback seeds
+      complete and verified; the JSON payload files under Resources/Raw/Templates are still
+      to be authored — tasks.md Task 4.)*
 
 ## Task 3 — ViewModels
 - [ ] MainViewModel (launch flow, status).
