@@ -82,13 +82,13 @@ Ctrl+C / Ctrl+X / Ctrl+V / Delete / Ctrl+Z / Ctrl+Y / Ctrl+A handled by
 
 ### F2.7 Zoom
 Zoom levels 50 %, 100 %, 150 %, 200 %, plus incremental in/out and Fit To Screen
-(`SfDiagram.FitToPageAsync`). Current zoom shown in ZoomIndicatorControl.
+(`SfDiagram.FitToPage`). Current zoom shown in ZoomIndicatorControl.
 
 ## F3. Export (`ExportDialog`)
 
 - Format chooser: PNG, JPEG, PDF, SVG. Region: Content / Page settings. File name field.
 - `MockExportService.ExportAsync` simulates processing and returns success status with the
-  would-be file name; PNG/JPEG/SVG additionally demo a real `ExportDiagramAsync` data URI when
+  would-be file name; PNG/JPEG/SVG additionally demo a real `ExportDiagram` data URI when
   the diagram is ready (displayed in dialog as confirmation). PDF is mock-only.
 
 ## F4. Acceptance criteria

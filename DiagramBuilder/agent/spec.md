@@ -51,7 +51,7 @@ Z-order (send to back/front, backward/forward), align (6 axes), distribute (H/V)
 Zoom in/out/fit, preset zoom chips (50/100/150/200 %), Show Grid and Snap To Grid toggles, panel show/hide toggles (WINDOW menu).
 
 ### J5 — Exporting
-FILE ▸ Export → Export dialog: format (PNG/JPEG/PDF/SVG), region (Content/Page), file name → mock export returns a success status; PNG/JPEG/SVG additionally demo a real `ExportDiagramAsync` data URI.
+FILE ▸ Export → Export dialog: format (PNG/JPEG/PDF/SVG), region (Content/Page), file name → mock export returns a success status; PNG/JPEG/SVG additionally demo a real `ExportDiagram` data URI.
 
 ## 4. Functional Requirements
 

@@ -83,7 +83,7 @@ Panel auto-shows when a node is selected (unless manually hidden via WINDOW).
 - Format chooser: PNG, JPEG, PDF, SVG; Region: Content / Page Settings; File name entry
   pre-filled from document title.
 - Mock export returns success status with would-be file name; PNG/JPEG/SVG demo a real
-  `ExportDiagramAsync` data URI when the diagram is ready. PDF is mock-only.
+  `ExportDiagram` data URI when the diagram is ready. PDF is mock-only.
 
 ## 8. Create Diagram dialog (`CreateDiagramPage`)
 

@@ -62,7 +62,7 @@ Run after each task (relevant subset) and fully after Task 10.
 
 ## 10. Syncfusion control usage
 - [ ] SfDiagram, SymbolPalette, SfAccordion, SfColorPicker, SfNumericEntry, SfPopup, SfButton, SfChipGroup, SfTextInputLayout used per `07-syncfusion-control-usage.md`.
-- [ ] Template population gated on `DiagramReady` (or relies on startup snapshot).
+- [ ] Template population gated on `Created` (JS instance ready) (or relies on startup snapshot).
 - [ ] `Node.IsSelected` never set programmatically; selection via `SelectionChanged` events.
 - [ ] Org chart template uses `AutoLayout` (`OrganizationalChart`, TopToBottom) where applicable.
 

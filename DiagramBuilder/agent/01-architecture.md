@@ -46,7 +46,7 @@ control, MVVM purity is preserved through two reusable components:
 
 1. **`DiagramSurfaceBehavior`** (`Behaviors/`)
    - Attaches to an `SfDiagram`.
-   - Subscribes to native events (`DiagramReady`, `SelectionChanged`, `PositionChanged`,
+   - Subscribes to native events (`Created` (JS instance ready), `SelectionChanged`, `PositionChanged`,
      `SizeChanged`, `RotationChanged`, `CollectionChanged`, `AnnotationEdited`).
    - Publishes them to the bound `DiagramDesignerViewModel` through `Command`/`ICommand`
      bindable properties — the ViewModel never touches the control.
