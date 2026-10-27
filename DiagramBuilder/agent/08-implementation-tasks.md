@@ -28,12 +28,14 @@
       to be authored — tasks.md Task 4.)*
 
 ## Task 3 — ViewModels
-- [ ] MainViewModel (launch flow, status).
-- [ ] CreateDiagramViewModel (categories, templates, create command).
+- [x] MainViewModel (launch flow, status).
+- [x] CreateDiagramViewModel (categories, templates, create command).
 - [ ] DiagramDesignerViewModel (orchestrator, command dispatch, document lifecycle) —
       delegates to child VMs to stay under 500 lines.
-- [ ] MenuBarViewModel, ToolbarViewModel, StencilViewModel, PropertyPanelViewModel,
-      ZoomViewModel, ArrangeViewModel, ExportViewModel.
+- [x] MenuBarViewModel, ToolbarViewModel, StencilViewModel, PropertyPanelViewModel,
+      ZoomViewModel, ArrangeViewModel, ExportViewModel. *(Dispatch table verified: 39 command
+      ids execute without exception; all VMs under 500 lines; a stack-overflow bug in the
+      export-dialog command was caught and fixed by the acceptance check.)*
 
 ## Task 4 — Views & controls
 - [ ] CreateDiagramPage (category + template cards, SfButton/Chips).
