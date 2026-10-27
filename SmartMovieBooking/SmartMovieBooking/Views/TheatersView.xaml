@@ -39,48 +39,55 @@
 				</VerticalStackLayout>
 
 				<Border Stroke="#CAC7D0"
-							StrokeShape="RoundRectangle 18"
-							Padding="10">
-						<ScrollView Orientation="Horizontal"
+						StrokeShape="RoundRectangle 18"
+						Padding="8">
+					<ScrollView Orientation="Horizontal"
                                 HorizontalScrollBarVisibility="Never">
-                            <HorizontalStackLayout Spacing="10"
-                                                   BindableLayout.ItemsSource="{Binding Dates}">
-                                <BindableLayout.ItemTemplate>
-                                    <DataTemplate x:DataType="sys:DateTime">
-                                        <Border StrokeThickness="1"
-                                                Stroke="#D7D8E6"
-                                                BackgroundColor="#FFFFFF"
-                                                Padding="10,8"
-                                                HeightRequest="78"
-                                                WidthRequest="92"
-                                                StrokeShape="RoundRectangle 14">
-                                            <Border.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="OnDateTapped" />
-                                            </Border.GestureRecognizers>
-                                            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
-                                                <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
-                                                       FontFamily="OpenSansSemibold"
-                                                       FontSize="9"
-                                                       TextColor="#49454F"
-                                                       HorizontalTextAlignment="Center" />
-                                                <Label Grid.Row="1"
-                                                       Text="{Binding ., StringFormat='{0:dd}'}"
-                                                       FontFamily="OpenSansSemibold"
-                                                       FontAttributes="Bold"
-                                                       FontSize="15"
-                                                       TextColor="#1A1A2E"
-                                                       HorizontalTextAlignment="Center" />
-                                                <Label Grid.Row="2"
-                                                       Text="{Binding ., StringFormat='{0:ddd MMM}'}"
-                                                       FontFamily="OpenSansSemibold"
-                                                       FontSize="9"
-                                                       TextColor="#49454F"
-                                                       HorizontalTextAlignment="Center" />
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </HorizontalStackLayout>
+                        <syncfusion:SfListView x:Name="DateList"                        
+                                               ItemsSource="{Binding Dates}"
+                                               ItemSpacing="10"
+                                               IsScrollingEnabled="False"
+                                               AutoFitMode="DynamicHeight"
+                                               BackgroundColor="Transparent"
+                                               HeightRequest="104"
+                                               SelectionMode="Single"
+                                               SelectionChanged="OnDateSelected">
+                            <syncfusion:SfListView.ItemsLayout>
+                                <syncfusion:GridLayout SpanCount="10" />
+                            </syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="sys:DateTime">
+                                    <Border StrokeThickness="1"
+                                            Stroke="#D7D8E6"
+                                            BackgroundColor="#FFFFFF"
+                                            Padding="10,8"
+                                            HeightRequest="78"
+                                            WidthRequest="84"
+                                            StrokeShape="RoundRectangle 14">
+                                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
+                                            <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="9"
+                                                   TextColor="#49454F"
+                                                   HorizontalTextAlignment="Center" />
+                                            <Label Grid.Row="1"
+                                                   Text="{Binding ., StringFormat='{0:dd}'}"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontAttributes="Bold"
+                                                   FontSize="15"
+                                                   TextColor="#1A1A2E"
+                                                   HorizontalTextAlignment="Center" />
+                                            <Label Grid.Row="2"
+                                                   Text="{Binding ., StringFormat='{0:ddd MMM}'}"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="9"
+                                                   TextColor="#49454F"
+                                                   HorizontalTextAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
                     </ScrollView>
                 </Border>
                 </VerticalStackLayout>
