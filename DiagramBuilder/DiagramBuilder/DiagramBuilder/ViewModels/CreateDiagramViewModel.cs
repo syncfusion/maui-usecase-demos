@@ -49,6 +49,20 @@ public partial class CreateDiagramViewModel : ObservableObject
 
     partial void OnSelectedCategoryChanged(DiagramCategory value) => _ = LoadTemplatesAsync(value);
 
+    /// <summary>Selects a category card (parameter is the enum name, from a bound CommandParameter).</summary>
+    [RelayCommand]
+    private void SelectCategory(string? categoryName)
+    {
+        if (string.IsNullOrEmpty(categoryName))
+        {
+            return;
+        }
+
+        SelectedCategory = Enum.TryParse<DiagramCategory>(categoryName, ignoreCase: true, out var parsed)
+            ? parsed
+            : SelectedCategory;
+    }
+
     /// <summary>Preloads templates; called on page appearing.</summary>
     public async Task InitializeAsync()
     {

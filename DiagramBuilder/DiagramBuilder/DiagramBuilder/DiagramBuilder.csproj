@@ -60,6 +60,9 @@
 		<MauiXaml Update="Templates\StencilItemTemplate.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Templates\TemplateCardTemplate.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Templates\PropertyEditorTemplates.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Views\DiagramDesignerPage.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Views\CreateDiagramPage.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Views\Dialogs\ExportDialog.xaml" Inflator="Runtime" />
 	</ItemGroup>
 
 	<ItemGroup>

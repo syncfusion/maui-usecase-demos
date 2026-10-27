@@ -1,23 +1,81 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DiagramBuilder.Views.CreateDiagramPage"
+             xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              Title="{Binding Title}"
              BackgroundColor="{DynamicResource WindowBackground}">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="12"
-            Spacing="8"
-            VerticalOptions="Start">
+    <!-- Create-diagram dialog per ui-spec.md §8:
+         three category cards; selecting one reveals its template cards
+         (TemplateCardTemplate) with a Create button. -->
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="16">
+
             <Label Text="{Binding Title}"
-                   FontSize="20"
-                   FontAttributes="Bold"
+                   FontSize="24" FontAttributes="Bold"
                    TextColor="{DynamicResource TextPrimary}" />
             <Label Text="{Binding Subtitle}"
                    FontSize="13"
                    TextColor="{DynamicResource TextSecondary}" />
+
+            <!-- Category cards -->
+            <HorizontalStackLayout Spacing="12">
+                <Button Text="{x:Static constants:AppStrings.CategoryFlowChart}"
+                        Command="{Binding SelectCategoryCommand}"
+                        CommandParameter="FlowChart"
+                        CornerRadius="12"
+                        Padding="20,12" />
+                <Button Text="{x:Static constants:AppStrings.CategoryMindMap}"
+                        Command="{Binding SelectCategoryCommand}"
+                        CommandParameter="MindMap"
+                        CornerRadius="12"
+                        Padding="20,12" />
+                <Button Text="{x:Static constants:AppStrings.CategoryOrganizationChart}"
+                        Command="{Binding SelectCategoryCommand}"
+                        CommandParameter="OrganizationChart"
+                        CornerRadius="12"
+                        Padding="20,12" />
+            </HorizontalStackLayout>
+
+            <!-- Template cards for the selected category -->
+            <CollectionView ItemsSource="{Binding Templates}"
+                            SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Stroke="{DynamicResource PanelBorderBrush}"
+                                StrokeThickness="1"
+                                Padding="16"
+                                BackgroundColor="{DynamicResource CanvasBackground}">
+                            <Border.StrokeShape>
+                                <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                  ColumnDefinitions="*,Auto"
+                                  ColumnSpacing="12"
+                                  RowSpacing="4">
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding Title}"
+                                       FontSize="16" FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}" />
+                                <Label Grid.Row="1" Grid.Column="0"
+                                       Text="{Binding Description}"
+                                       FontSize="12"
+                                       TextColor="{DynamicResource TextSecondary}" />
+                                <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                        Text="{x:Static constants:AppStrings.CreateAction}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentView}}, Path=BindingContext.CreateDiagramCommand}"
+                                        CommandParameter="{Binding .}"
+                                        VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>
