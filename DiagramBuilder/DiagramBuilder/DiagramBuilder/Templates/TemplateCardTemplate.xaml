@@ -16,7 +16,7 @@
                 Margin="6"
                 BackgroundColor="{DynamicResource CanvasBackground}">
             <Border.StrokeShape>
-                <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="12" />
+                <shapes:RoundRectangle CornerRadius="12" />
             </Border.StrokeShape>
             <Grid RowDefinitions="Auto,Auto,Auto,Auto"
                   ColumnDefinitions="72,*"
@@ -28,7 +28,7 @@
                         VerticalOptions="Start"
                         BackgroundColor="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}">
                     <Border.StrokeShape>
-                        <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="10" />
+                        <shapes:RoundRectangle CornerRadius="10" />
                     </Border.StrokeShape>
                 </Border>
                 <Label Grid.Row="0" Grid.Column="1"

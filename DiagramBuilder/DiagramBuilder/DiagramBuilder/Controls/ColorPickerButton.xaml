@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
              x:Class="DiagramBuilder.Controls.ColorPickerButton">
     <ContentView.Resources>
         <ResourceDictionary>
@@ -21,8 +22,10 @@
     </ContentView.Resources>
 
     <Border x:Name="SwatchFrame"
-            Style="{StaticResource ColorPickerSwatchStyle}"
-            StrokeShape="RoundRectangle 4">
+            Style="{StaticResource ColorPickerSwatchStyle}">
+        <Border.StrokeShape>
+            <shapes:RoundRectangle CornerRadius="4" />
+        </Border.StrokeShape>
         <Grid>
             <BoxView x:Name="SwatchFill"
                      Style="{StaticResource ColorPickerSwatchFillStyle}"

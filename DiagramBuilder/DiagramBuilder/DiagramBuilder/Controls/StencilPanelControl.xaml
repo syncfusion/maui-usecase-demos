@@ -33,7 +33,7 @@
             StrokeThickness="1"
             BackgroundColor="{DynamicResource PanelBackground}">
         <Border.StrokeShape>
-            <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="12" />
+            <shapes:RoundRectangle CornerRadius="12" />
         </Border.StrokeShape>
 
         <Grid RowDefinitions="Auto,Auto,*"
@@ -51,7 +51,7 @@
                     Margin="12,4,12,8"
                     Padding="8,0">
                 <Border.StrokeShape>
-                    <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="6" />
+                    <shapes:RoundRectangle CornerRadius="6" />
                 </Border.StrokeShape>
                 <Entry x:Name="SearchEntry"
                        Placeholder="{Binding SearchPlaceholder}"

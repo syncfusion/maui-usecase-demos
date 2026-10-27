@@ -14,7 +14,7 @@
             WidthRequest="420"
             BackgroundColor="{DynamicResource CanvasBackground}">
         <Border.StrokeShape>
-            <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="8" />
+            <shapes:RoundRectangle CornerRadius="8" />
         </Border.StrokeShape>
         <VerticalStackLayout Spacing="12">
 

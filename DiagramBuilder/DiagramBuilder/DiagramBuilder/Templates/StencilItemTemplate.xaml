@@ -6,6 +6,7 @@
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                   xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
                     x:Class="DiagramBuilder.Templates.StencilItemTemplate">
 
     <DataTemplate x:Key="StencilItemTemplate">
@@ -15,7 +16,7 @@
                     Padding="8,6"
                     BackgroundColor="{DynamicResource CanvasBackground}">
                 <Border.StrokeShape>
-                    <Microsoft.Maui.Controls.Shapes.RoundRectangle CornerRadius="6" />
+                    <shapes:RoundRectangle CornerRadius="6" />
                 </Border.StrokeShape>
                 <StackLayout Spacing="4">
                     <BoxView HeightRequest="36"
