@@ -11,7 +11,7 @@ namespace DiagramBuilder.Behaviors;
 /// other desktop TFMs follow the same pattern). Zero business logic —
 /// gesture → command relaying only.
 /// </summary>
-public partial class DiagramKeyboardBehavior : Behavior<View>
+public partial class DiagramKeyboardBehavior : Behavior<Page>
 {
     public static readonly BindableProperty ShortcutCommandProperty =
         BindableProperty.Create(nameof(ShortcutCommand), typeof(ICommand), typeof(DiagramKeyboardBehavior));
@@ -23,9 +23,9 @@ public partial class DiagramKeyboardBehavior : Behavior<View>
         set => SetValue(ShortcutCommandProperty, value);
     }
 
-    private View? _attached;
+    private Page? _attached;
 
-    protected override void OnAttachedTo(View bindable)
+    protected override void OnAttachedTo(Page bindable)
     {
         base.OnAttachedTo(bindable);
         _attached = bindable;
@@ -36,7 +36,7 @@ public partial class DiagramKeyboardBehavior : Behavior<View>
         }
     }
 
-    protected override void OnDetachingFrom(View bindable)
+    protected override void OnDetachingFrom(Page bindable)
     {
         bindable.HandlerChanged -= OnHandlerChanged;
         DetachPlatformHook();
@@ -47,9 +47,9 @@ public partial class DiagramKeyboardBehavior : Behavior<View>
     private void OnHandlerChanged(object? sender, EventArgs e)
     {
         DetachPlatformHook();
-        if (sender is View view && view.Handler is not null)
+        if (sender is Page page && page.Handler is not null)
         {
-            AttachPlatformHook(view);
+            AttachPlatformHook(page);
         }
     }
 
@@ -88,7 +88,7 @@ public partial class DiagramKeyboardBehavior : Behavior<View>
 
     // Platform hooks are defined in platform-specific partial files; the default
     // (non-desktop) implementation is a no-op so every TFM compiles.
-    partial void AttachPlatformHook(View view);
+    partial void AttachPlatformHook(Page page);
 
     partial void DetachPlatformHook();
 }

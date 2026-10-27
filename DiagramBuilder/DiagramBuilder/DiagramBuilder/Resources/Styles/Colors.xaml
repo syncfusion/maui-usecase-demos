@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
@@ -17,6 +17,15 @@
     <Color x:Key="TextSecondary">#5F6368</Color>
     <Color x:Key="HoverBackground">#EFEFEF</Color>
     <Color x:Key="ErrorColor">#D93025</Color>
+
+    <!-- Create-dialog chrome (thumbnail wireframe + modal scrim) -->
+    <Color x:Key="ModalScrim">#80000000</Color>
+    <Color x:Key="CategoryRailBackground">#E8E8E8</Color>
+    <Color x:Key="ThumbnailNodeFill">#FAFAFA</Color>
+    <Color x:Key="ThumbnailNodeStroke">#D4D4D4</Color>
+    <Color x:Key="ThumbnailWireColor">#BDBDBD</Color>
+    <Color x:Key="ThumbnailPlaceholderStroke">#E0E0E0</Color>
+    <Color x:Key="ThumbnailGridLine">#CFCFCF</Color>
 
     <!-- Category accents (Create Diagram cards) -->
     <Color x:Key="AccentFlow">#0D6EFD</Color>

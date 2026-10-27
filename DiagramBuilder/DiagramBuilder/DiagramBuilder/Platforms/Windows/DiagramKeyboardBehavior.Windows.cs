@@ -18,9 +18,9 @@ public partial class DiagramKeyboardBehavior
     private bool _controlPressed;
     private VirtualKey? _lastPressedKey;
 
-    partial void AttachPlatformHook(View view)
+    partial void AttachPlatformHook(Page page)
     {
-        if (view.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement element)
+        if (page.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement element)
         {
             _platformView = element;
             _platformView.KeyDown += OnPlatformKeyDown;

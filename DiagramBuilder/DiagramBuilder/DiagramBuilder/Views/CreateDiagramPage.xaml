@@ -9,7 +9,7 @@
              BackgroundColor="Transparent">
 
     <Grid>
-        <Grid BackgroundColor="#80000000" />
+        <Grid BackgroundColor="{DynamicResource ModalScrim}" />
 
         <Border HorizontalOptions="Center"
                 VerticalOptions="Center"
@@ -42,7 +42,7 @@
                 <Grid Grid.Row="1"
                       ColumnDefinitions="280,*">
                     <!-- left category rail -->
-                    <Border BackgroundColor="#E8E8E8"
+                    <Border BackgroundColor="{DynamicResource CategoryRailBackground}"
                             StrokeThickness="0"
                             Padding="0,16">
                         <CollectionView ItemsSource="{Binding Categories}"
@@ -99,34 +99,34 @@
                                           VerticalOptions="Center">
                                         <Border Grid.Row="0" Grid.Column="1"
                                                 WidthRequest="72" HeightRequest="42"
-                                                BackgroundColor="#FFFFFF"
-                                                Stroke="#DADADA"
+                                                BackgroundColor="{DynamicResource CanvasBackground}"
+                                                Stroke="{DynamicResource PanelBorderColor}"
                                                 StrokeThickness="1" />
                                         <Border Grid.Row="1" Grid.Column="0"
                                                 WidthRequest="72" HeightRequest="42"
-                                                BackgroundColor="#FFFFFF"
-                                                Stroke="#DADADA"
+                                                BackgroundColor="{DynamicResource CanvasBackground}"
+                                                Stroke="{DynamicResource PanelBorderColor}"
                                                 StrokeThickness="1" />
                                         <Border Grid.Row="1" Grid.Column="2"
                                                 WidthRequest="72" HeightRequest="42"
-                                                BackgroundColor="#FFFFFF"
-                                                Stroke="#DADADA"
+                                                BackgroundColor="{DynamicResource CanvasBackground}"
+                                                Stroke="{DynamicResource PanelBorderColor}"
                                                 StrokeThickness="1" />
                                         <BoxView Grid.Row="0" Grid.Column="1"
                                                  WidthRequest="2"
                                                  HeightRequest="18"
-                                                 Color="#CFCFCF"
+                                                 Color="{DynamicResource ThumbnailGridLine}"
                                                  TranslationY="42" />
                                         <BoxView Grid.Row="1" Grid.Column="0"
                                                  WidthRequest="28"
                                                  HeightRequest="2"
-                                                 Color="#CFCFCF"
+                                                 Color="{DynamicResource ThumbnailGridLine}"
                                                  TranslationX="72"
                                                  TranslationY="-21" />
                                         <BoxView Grid.Row="1" Grid.Column="2"
                                                  WidthRequest="28"
                                                  HeightRequest="2"
-                                                 Color="#CFCFCF"
+                                                 Color="{DynamicResource ThumbnailGridLine}"
                                                  TranslationX="-28"
                                                  TranslationY="-21" />
                                         <Label Grid.Row="2" Grid.ColumnSpan="3"
@@ -163,8 +163,8 @@
                                                 <Grid>
                                                     <Border WidthRequest="220"
                                                             HeightRequest="170"
-                                                            BackgroundColor="#FFFFFF"
-                                                            Stroke="#E0E0E0"
+                                                            BackgroundColor="{DynamicResource CanvasBackground}"
+                                                            Stroke="{DynamicResource ThumbnailPlaceholderStroke}"
                                                             StrokeThickness="1"
                                                             HorizontalOptions="Center"
                                                             VerticalOptions="Center">
@@ -178,41 +178,41 @@
                                                               Padding="20,22">
                                                             <Border Grid.Row="0" Grid.Column="1"
                                                                     WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="#FAFAFA"
-                                                                    Stroke="#D4D4D4"
+                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
                                                                     StrokeThickness="1" />
                                                             <Border Grid.Row="1" Grid.Column="0"
                                                                     WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="#FAFAFA"
-                                                                    Stroke="#D4D4D4"
+                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
                                                                     StrokeThickness="1" />
                                                             <Border Grid.Row="1" Grid.Column="2"
                                                                     WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="#FAFAFA"
-                                                                    Stroke="#D4D4D4"
+                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
                                                                     StrokeThickness="1" />
                                                             <Border Grid.Row="2" Grid.Column="1"
                                                                     WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="#FAFAFA"
-                                                                    Stroke="#D4D4D4"
+                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
                                                                     StrokeThickness="1" />
                                                             <BoxView Grid.Row="0" Grid.Column="1"
                                                                      WidthRequest="2" HeightRequest="14"
-                                                                     Color="#BDBDBD"
+                                                                     Color="{DynamicResource ThumbnailWireColor}"
                                                                      TranslationY="34" />
                                                             <BoxView Grid.Row="1" Grid.Column="0"
                                                                      WidthRequest="32" HeightRequest="2"
-                                                                     Color="#BDBDBD"
+                                                                     Color="{DynamicResource ThumbnailWireColor}"
                                                                      TranslationX="74"
                                                                      TranslationY="-17" />
                                                             <BoxView Grid.Row="1" Grid.Column="2"
                                                                      WidthRequest="32" HeightRequest="2"
-                                                                     Color="#BDBDBD"
+                                                                     Color="{DynamicResource ThumbnailWireColor}"
                                                                      TranslationX="-32"
                                                                      TranslationY="-17" />
                                                             <BoxView Grid.Row="2" Grid.Column="1"
                                                                      WidthRequest="2" HeightRequest="14"
-                                                                     Color="#BDBDBD"
+                                                                     Color="{DynamicResource ThumbnailWireColor}"
                                                                      TranslationY="34" />
                                                         </Grid>
                                                     </Border>

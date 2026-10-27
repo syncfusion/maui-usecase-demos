@@ -18,6 +18,13 @@ public static class ResourceKeys
     public const string AccentMindMap = "AccentMindMap";
     public const string AccentOrgChart = "AccentOrgChart";
     public const string ErrorColor = "ErrorColor";
+    public const string ModalScrim = "ModalScrim";
+    public const string CategoryRailBackground = "CategoryRailBackground";
+    public const string ThumbnailNodeFill = "ThumbnailNodeFill";
+    public const string ThumbnailNodeStroke = "ThumbnailNodeStroke";
+    public const string ThumbnailWireColor = "ThumbnailWireColor";
+    public const string ThumbnailPlaceholderStroke = "ThumbnailPlaceholderStroke";
+    public const string ThumbnailGridLine = "ThumbnailGridLine";
 
     public const string ToolbarIconButtonStyle = "ToolbarIconButtonStyle";
     public const string ToolbarIconActiveStyle = "ToolbarIconActiveStyle";
