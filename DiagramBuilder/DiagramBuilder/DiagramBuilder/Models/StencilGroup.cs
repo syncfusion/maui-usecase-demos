@@ -15,6 +15,12 @@ public class StencilGroup
 
     public bool IsConnectorGroup { get; set; }
 
+    /// <summary>Initial expansion state shown in the stencil panel accordion.</summary>
+    public bool IsExpanded { get; set; }
+
+    /// <summary>Human-readable item count for the group header.</summary>
+    public string ItemCountText => Items.Count == 0 ? string.Empty : Items.Count.ToString();
+
     public ObservableCollection<StencilItem> Items { get; } = [];
 }
 

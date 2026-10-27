@@ -43,6 +43,7 @@ public partial class StencilViewModel : ObservableObject
                     Title = g.Title,
                     IconKey = g.IconKey,
                     IsConnectorGroup = g.IsConnectorGroup,
+                    IsExpanded = g.IsExpanded,
                 };
                 foreach (var item in g.Items.Where(Matches))
                 {
