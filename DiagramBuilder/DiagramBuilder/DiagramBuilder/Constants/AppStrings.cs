@@ -182,6 +182,10 @@ public static class AppStrings
 
     // Export
     public const string ExportDialogTitle = "Export Diagram";
+    public const string ExportFormatPng = "PNG";
+    public const string ExportFormatJpeg = "JPEG";
+    public const string ExportFormatPdf = "PDF";
+    public const string ExportFormatSvg = "SVG";
     public const string ExportFormatLabel = "Format";
     public const string ExportFileNameLabel = "File name";
     public const string ExportRegionLabel = "Region";
@@ -198,6 +202,7 @@ public static class AppStrings
     public const string StatusExportedFormat = "{0} exported.";
     public const string StatusSelectionFormat = "{0} selected";
     public const string StatusNothingSelected = "Nothing selected";
+    public const string StatusCommandExecuted = "{0} executed.";
     public const string SaveNotAvailableTitle = "Save Diagram";
     public const string SaveNotAvailableMessage = "Diagrams are kept in memory for this demo session.";
     public const string OpenNotAvailableTitle = "Open Diagram";
