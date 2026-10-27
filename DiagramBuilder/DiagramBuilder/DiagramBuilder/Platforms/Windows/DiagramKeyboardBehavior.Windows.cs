@@ -1,43 +1,73 @@
 #if WINDOWS
-using Microsoft.Maui.Handlers;
+using Windows.System;
 
 namespace DiagramBuilder.Behaviors;
 
 /// <summary>
-/// Windows implementation of the keyboard hook: subscribes to the WinUI root
-/// content's <see cref="Microsoft.UI.Xaml.UIElement.KeyDown"/> events.
+/// Windows implementation of the keyboard hook. Verified against the
+/// WindowsAppSDK 1.6 / Windows SDK 19041 reference metadata:
+/// <c>KeyRoutedEventArgs.Key</c> is a <c>Windows.System.VirtualKey</c>, and
+/// <c>KeyStatus</c> is a <c>Windows.UI.Core.CorePhysicalKeyStatus</c> that exposes
+/// NO modifier state (only RepeatCount, ScanCode, IsExtendedKey, IsMenuKeyDown,
+/// WasKeyDown, IsKeyReleased). The Control key is therefore tracked explicitly
+/// via KeyDown/KeyUp, and key auto-repeat is suppressed.
 /// </summary>
 public partial class DiagramKeyboardBehavior
 {
-    private Microsoft.UI.Xaml.Controls.Panel? _rootPanel;
+    private Microsoft.UI.Xaml.UIElement? _platformView;
+    private bool _controlPressed;
+    private VirtualKey? _lastPressedKey;
 
     partial void AttachPlatformHook(View view)
     {
-        if (view.Handler?.PlatformView is Microsoft.UI.Xaml.Controls.Panel panel)
+        if (view.Handler?.PlatformView is Microsoft.UI.Xaml.UIElement element)
         {
-            _rootPanel = panel;
-            panel.KeyDown += OnPlatformKeyDown;
+            _platformView = element;
+            _platformView.KeyDown += OnPlatformKeyDown;
+            _platformView.KeyUp += OnPlatformKeyUp;
         }
     }
 
     partial void DetachPlatformHook()
     {
-        if (_rootPanel is not null)
+        if (_platformView is not null)
         {
-            _rootPanel.KeyDown -= OnPlatformKeyDown;
-            _rootPanel = null;
+            _platformView.KeyDown -= OnPlatformKeyDown;
+            _platformView.KeyUp -= OnPlatformKeyUp;
+            _platformView = null;
         }
+        _controlPressed = false;
+        _lastPressedKey = null;
     }
 
     private void OnPlatformKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
     {
-        // Confirmed via compiler: MAUI on Windows binds WinUI 3, where
-        // KeyRoutedEventArgs.KeyStatus is Microsoft.UI.Input.CorePhysicalKeyStatus,
-        // whose property is IsControlPressed (UWP's CoreVirtualKeyStatus uses
-        // IsControlKeyDown — hence the earlier failures).
-        var ctrl = e.KeyStatus.IsControlPressed;
+        if (e.Key is VirtualKey.LeftControl or VirtualKey.RightControl)
+        {
+            _controlPressed = true;
+            return;
+        }
+
+        if (e.Key == _lastPressedKey)
+        {
+            return; // ignore key auto-repeat
+        }
+        _lastPressedKey = e.Key;
+
         var key = e.Key.ToString().ToLowerInvariant();
-        Dispatch(ctrl, key);
+        Dispatch(_controlPressed, key);
+    }
+
+    private void OnPlatformKeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+    {
+        if (e.Key is VirtualKey.LeftControl or VirtualKey.RightControl)
+        {
+            _controlPressed = false;
+        }
+        if (e.Key == _lastPressedKey)
+        {
+            _lastPressedKey = null;
+        }
     }
 }
 #endif
