@@ -176,7 +176,7 @@ public partial class ToolbarControl : ContentView
         var fillColor = (Color)Application.Current!.Resources[item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary"];
         var swatch = new Border
         {
-            Stroke = (Color)Application.Current!.Resources["PanelBorderBrush"],
+            Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
             StrokeThickness = 1,
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 4 },
             WidthRequest = 24,
@@ -287,7 +287,7 @@ public partial class ToolbarControl : ContentView
 
         return new Border
         {
-            Stroke = (Color)Application.Current!.Resources["PanelBorderBrush"],
+            Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
             StrokeThickness = 1,
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
             Content = stack,
