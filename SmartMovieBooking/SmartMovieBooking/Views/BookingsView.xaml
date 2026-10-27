@@ -44,8 +44,7 @@
                                 <DataTemplate x:DataType="models:Booking">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                  BackgroundColor="#FFFFFF"
-                                                                 Padding="16"
-                                                                 behaviors:AnimateOnTap.IsEnabled="True">
+                                                                 Padding="16">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
                                             <Border Grid.Column="0"
                                                     WidthRequest="64" HeightRequest="80"
