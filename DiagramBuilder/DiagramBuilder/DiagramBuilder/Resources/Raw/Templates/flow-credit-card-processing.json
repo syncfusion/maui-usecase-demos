@@ -1,0 +1,192 @@
+{
+  "id": "flow-credit-card-processing",
+  "category": "FlowChart",
+  "title": "Credit Card Processing",
+  "description": "End-to-end card payment approval flow.",
+  "nodes": [
+    {
+      "id": "start",
+      "text": "Start",
+      "shapeType": "Terminator",
+      "x": 360,
+      "y": 60,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "enter-card",
+      "text": "Enter Card Details",
+      "shapeType": "Process",
+      "x": 350,
+      "y": 160,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "validate",
+      "text": "Valid?",
+      "shapeType": "Decision",
+      "x": 355,
+      "y": 260,
+      "width": 150,
+      "height": 80,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "declined",
+      "text": "Card Declined",
+      "shapeType": "Process",
+      "x": 620,
+      "y": 275,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "ErrorColor"
+    },
+    {
+      "id": "notify",
+      "text": "Notify Customer",
+      "shapeType": "Process",
+      "x": 620,
+      "y": 375,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "process-payment",
+      "text": "Process Payment",
+      "shapeType": "Process",
+      "x": 350,
+      "y": 380,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "store",
+      "text": "Store Transaction",
+      "shapeType": "Document",
+      "x": 345,
+      "y": 480,
+      "width": 170,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "receipt",
+      "text": "Send Receipt",
+      "shapeType": "Process",
+      "x": 350,
+      "y": 580,
+      "width": 160,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "end",
+      "text": "End",
+      "shapeType": "Terminator",
+      "x": 360,
+      "y": 680,
+      "width": 140,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "check-balance",
+      "text": "Check Balance",
+      "shapeType": "Process",
+      "x": 120,
+      "y": 380,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    },
+    {
+      "id": "update-balance",
+      "text": "Update Balance",
+      "shapeType": "Process",
+      "x": 120,
+      "y": 480,
+      "width": 150,
+      "height": 50,
+      "fillColorKey": "AccentFlow"
+    }
+  ],
+  "connectors": [
+    {
+      "id": "c1",
+      "sourceId": "start",
+      "targetId": "enter-card",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c2",
+      "sourceId": "enter-card",
+      "targetId": "validate",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c3",
+      "sourceId": "validate",
+      "targetId": "declined",
+      "text": "No",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c4",
+      "sourceId": "declined",
+      "targetId": "notify",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c5",
+      "sourceId": "validate",
+      "targetId": "process-payment",
+      "text": "Yes",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c6",
+      "sourceId": "process-payment",
+      "targetId": "check-balance",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c7",
+      "sourceId": "check-balance",
+      "targetId": "update-balance",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c8",
+      "sourceId": "update-balance",
+      "targetId": "store",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c9",
+      "sourceId": "store",
+      "targetId": "receipt",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    },
+    {
+      "id": "c10",
+      "sourceId": "receipt",
+      "targetId": "end",
+      "kind": "Orthogonal",
+      "strokeColorKey": "PanelBorderColor"
+    }
+  ]
+}
