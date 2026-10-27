@@ -8,7 +8,6 @@ namespace DiagramBuilder
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(AppConstants.RouteDesigner, typeof(DiagramDesignerPage));
             Routing.RegisterRoute(AppConstants.RouteCreateDiagram, typeof(CreateDiagramPage));
         }
     }
