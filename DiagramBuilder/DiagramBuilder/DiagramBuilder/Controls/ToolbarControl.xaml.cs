@@ -212,7 +212,7 @@ public partial class ToolbarControl : ContentView
         var btn = new Button
         {
             Text = GlyphFor(item.Id),
-            Style = (Style)Resources["ToolbarIconButtonStyle"],
+            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
         };
         // Tooltip via the accessibility layer (MAUI has no ToolTip attached property
@@ -220,7 +220,7 @@ public partial class ToolbarControl : ContentView
         AutomationProperties.SetHelpText(btn, item.TooltipKey);
         if (item.IsChecked)
         {
-            btn.Style = (Style)Resources["ToolbarIconActiveStyle"];
+            btn.Style = (Style)Application.Current!.Resources["ToolbarIconActiveStyle"];
         }
         btn.Clicked += (_, _) => ToolCommand?.Execute(item.Id);
         return btn;
@@ -239,7 +239,7 @@ public partial class ToolbarControl : ContentView
         var btn = new Button
         {
             Text = GlyphFor(item.Id),
-            Style = (Style)Resources["ToolbarIconButtonStyle"],
+            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
         };
         // Tooltip via the accessibility layer (MAUI has no ToolTip attached property

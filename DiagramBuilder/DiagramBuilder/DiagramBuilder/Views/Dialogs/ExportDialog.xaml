@@ -76,6 +76,9 @@
                 <Button Text="{x:Static constants:AppStrings.OkAction}"
                         Command="{Binding ResetCommand}"
                         IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}" />
+                <Button Text="{x:Static constants:AppStrings.ExportCancel}"
+                        Clicked="OnCancelClicked"
+                        IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}" />
             </HorizontalStackLayout>
 
         </VerticalStackLayout>

@@ -54,7 +54,7 @@ public partial class PropertyPanelControl : ContentView
             var section = (PropertyGroup)i;
             var header = new Label
             {
-                Style = (Style)Resources["PropertySectionHeaderStyle"],
+                Style = (Style)Application.Current!.Resources["PropertySectionHeaderStyle"],
                 Text = vm.SectionTitles[i],
                 AutomationId = "property_section_" + section.ToString().ToLowerInvariant(),
             };
@@ -84,7 +84,7 @@ public partial class PropertyPanelControl : ContentView
         var label = new Label
         {
             Text = model.LabelKey,
-            Style = (Style)Resources["PropertyRowLabelStyle"],
+            Style = (Style)Application.Current!.Resources["PropertyRowLabelStyle"],
             VerticalOptions = LayoutOptions.Center,
         };
         grid.Add(label);
