@@ -46,4 +46,5 @@ public partial class TheatersView : ContentPage
         if (sender is SfListView list) list.SelectedItem = null;
         await Shell.Current.GoToAsync("seat-selection");
     }
+}
 

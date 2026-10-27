@@ -18,7 +18,9 @@
         <controls:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}" ActiveTab="Bookings" />
 
         <ScrollView Grid.Row="{OnIdiom Default=0, Phone=0}" Grid.Column="{OnIdiom Default='1', Phone='0'}">
-        <VerticalStackLayout MaximumWidthRequest="1200" Padding="24" Spacing="16">
+			<VerticalStackLayout MaximumWidthRequest="1200"
+								 Padding="{OnIdiom Default='24', Phone='6'}"
+								 Spacing="16">
             <VerticalStackLayout Spacing="4">
                 <Label Text="Your Bookings" FontFamily="OpenSansSemibold" FontSize="28"
                        FontAttributes="Bold" TextColor="#1A1A2E" />
