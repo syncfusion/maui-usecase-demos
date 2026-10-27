@@ -22,7 +22,7 @@
               Grid.Row="{OnIdiom Default=0, Phone=0}"
               Grid.Column="{OnIdiom Default='1', Phone='0'}"
               RowDefinitions="Auto,*"
-              Padding="{OnIdiom Default='24', Phone='12,12,12,84'}"
+              Padding="{OnIdiom Default='24', Phone='12'}"
               RowSpacing="16">
             <VerticalStackLayout Grid.Row="0" Spacing="10">
                 <VerticalStackLayout Spacing="4">
@@ -42,74 +42,75 @@
 				<Border Stroke="#CAC7D0"
 						StrokeShape="RoundRectangle 18"
 						Padding="12">
-					<ScrollView Orientation="Horizontal"
-                                HorizontalScrollBarVisibility="Never">
-                        <syncfusion:SfListView x:Name="DateList"                        
-                                               ItemsSource="{Binding Dates}"
-                                               ItemSpacing="{OnIdiom Default=10, Phone=8}"
-                                               IsScrollingEnabled="False"
-                                               AutoFitMode="DynamicHeight"
-                                               BackgroundColor="Transparent"
-                                               SelectionBackground="Transparent"
-                                               HeightRequest="104"
-                                               SelectionMode="None">
-                            <syncfusion:SfListView.ItemsLayout>
-                                <syncfusion:GridLayout SpanCount="{OnIdiom Default='10', Phone='6'}" />
-                            </syncfusion:SfListView.ItemsLayout>
-                            <syncfusion:SfListView.ItemTemplate>
-                                <DataTemplate x:DataType="sys:DateTime">
-                                    <Border StrokeThickness="1"
-                                            Stroke="#D7D8E6"
-                                            BackgroundColor="#FFFFFF"
-                                            Padding="{OnIdiom Default='10,8', Phone='8,6'}"
-                                            HeightRequest="78"
-                                            WidthRequest="84"
-                                            StrokeShape="RoundRectangle 14">
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnDateTapped" CommandParameter="{Binding .}" />
-                                        </Border.GestureRecognizers>
-                                        <Border.Behaviors>
-                                            <behaviors:HoverAnimationBehavior />
-                                        </Border.Behaviors>
-                                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="0">
-                                            <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
-                                                   FontFamily="OpenSansSemibold"
-                                                   FontSize="9"
-                                                   TextColor="#49454F"
-                                                   HorizontalTextAlignment="Center" />
-                                            <Label Grid.Row="1"
-                                                   Text="{Binding ., StringFormat='{0:dd}'}"
-                                                   FontFamily="OpenSansSemibold"
-                                                   FontAttributes="Bold"
-                                                   FontSize="15"
-                                                   TextColor="#1A1A2E"
-                                                   HorizontalTextAlignment="Center" />
-                                            <Label Grid.Row="2"
-                                                   Text="{Binding ., StringFormat='{0:ddd MMM}'}"
-                                                   FontFamily="OpenSansSemibold"
-                                                   FontSize="9"
-                                                   TextColor="#49454F"
-                                                   HorizontalTextAlignment="Center" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </syncfusion:SfListView.ItemTemplate>
-                        </syncfusion:SfListView>
-                    </ScrollView>
-                </Border>
+					<syncfusion:SfListView x:Name="DateList"
+										   ItemsSource="{Binding Dates}"
+										   ItemSpacing="{OnIdiom Default=10, Phone=2}"
+										   AutoFitMode="DynamicHeight"
+										   BackgroundColor="Transparent"
+                                           Orientation="Horizontal"
+                                           ScrollBarVisibility="Never"
+										   SelectionBackground="Transparent"
+										   HeightRequest="104"
+										   SelectionMode="None">
+						<syncfusion:SfListView.ItemsLayout>
+							<syncfusion:GridLayout SpanCount="1" />
+						</syncfusion:SfListView.ItemsLayout>
+						<syncfusion:SfListView.ItemTemplate>
+							<DataTemplate x:DataType="sys:DateTime">
+								<Border StrokeThickness="1"
+										Stroke="#D7D8E6"
+										BackgroundColor="#FFFFFF"
+										Padding="{OnIdiom Default='10,8', Phone='8,6'}"
+										HeightRequest="78"
+										WidthRequest="84"
+										StrokeShape="RoundRectangle 14">
+									<Border.GestureRecognizers>
+										<TapGestureRecognizer Tapped="OnDateTapped"
+															  CommandParameter="{Binding .}" />
+									</Border.GestureRecognizers>
+									<Border.Behaviors>
+										<behaviors:HoverAnimationBehavior />
+									</Border.Behaviors>
+									<Grid RowDefinitions="Auto,Auto,Auto"
+										  RowSpacing="0">
+										<Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
+											   FontFamily="OpenSansSemibold"
+											   FontSize="9"
+											   TextColor="#49454F"
+											   HorizontalTextAlignment="Center" />
+										<Label Grid.Row="1"
+											   Text="{Binding ., StringFormat='{0:dd}'}"
+											   FontFamily="OpenSansSemibold"
+											   FontAttributes="Bold"
+											   FontSize="15"
+											   TextColor="#1A1A2E"
+											   HorizontalTextAlignment="Center" />
+										<Label Grid.Row="2"
+											   Text="{Binding ., StringFormat='{0:ddd MMM}'}"
+											   FontFamily="OpenSansSemibold"
+											   FontSize="9"
+											   TextColor="#49454F"
+											   HorizontalTextAlignment="Center" />
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</syncfusion:SfListView.ItemTemplate>
+					</syncfusion:SfListView>
+				</Border>
                 </VerticalStackLayout>
 
 			<ScrollView Grid.Row="1">
                 <VerticalStackLayout Spacing="16">
-                    <syncfusion:SfListView ItemsSource="{Binding Theaters}"
+					<syncfusion:SfListView ItemsSource="{Binding Theaters}"
                                            ItemSpacing="{OnIdiom Default=12, Phone=10}"
-                                           IsScrollingEnabled="False"
                                            AutoFitMode="DynamicHeight"
+										   IsScrollingEnabled="False"
+										   ScrollBarVisibility="Never"
                                            BackgroundColor="Transparent"
                                            SelectionMode="None">
                         <syncfusion:SfListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Theater">
-                                <Grid RowDefinitions="230">
+								<Grid RowDefinitions="{OnIdiom Default=230, Phone=185}">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                 BackgroundColor="#FFFFFF"
                                                                 Padding="{OnIdiom Default=20, Phone=14}">
@@ -158,63 +159,62 @@
                                                    FontSize="10"
                                                    TextColor="#7A7B8C" />
 
-                                            <ScrollView Orientation="{OnIdiom Default=Vertical, Phone=Horizontal}"
-                                                        HorizontalScrollBarVisibility="Never">
-                                                <syncfusion:SfListView ItemsSource="{Binding Showtimes}"
-                                                                       ItemSpacing="8"
-                                                                       BackgroundColor="Transparent"
-                                                                       HeightRequest="104"
-                                                                       IsScrollingEnabled="False"
-                                                                       AutoFitMode="DynamicHeight"
-                                                                       SelectionMode="None">
-                                                    <syncfusion:SfListView.ItemsLayout>
-                                                        <syncfusion:GridLayout SpanCount="{OnIdiom Default='5', Phone='4'}" />
-                                                    </syncfusion:SfListView.ItemsLayout>
-                                                    <syncfusion:SfListView.ItemTemplate>
-                                                    <DataTemplate x:DataType="models:Showtime">
-                                                        <syncfusionCards:SfCardView CornerRadius="14"
-                                                                                    BackgroundColor="#F1F2F8"
-                                                                                    Padding="{OnIdiom Default='12,8', Phone='10,8'}">
-                                                            <syncfusionCards:SfCardView.GestureRecognizers>
-                                                                <TapGestureRecognizer Tapped="OnShowtimeTapped" CommandParameter="{Binding .}" />
-                                                            </syncfusionCards:SfCardView.GestureRecognizers>
-                                                            <syncfusionCards:SfCardView.Behaviors>
-                                                                <behaviors:HoverAnimationBehavior />
-                                                            </syncfusionCards:SfCardView.Behaviors>
-                                                            <HorizontalStackLayout>
-                                                                <VerticalStackLayout Spacing="2"
-                                                                                     WidthRequest="80">
-                                                                    <Label Text="{Binding StartTime}"
-                                                                           FontFamily="OpenSansSemibold"
-                                                                           FontAttributes="Bold"
-                                                                           FontSize="13"
-                                                                           TextColor="#1A1A2E" />
-                                                                    <Label Text="{Binding Format}"
-                                                                           FontFamily="OpenSansSemibold"
-                                                                           FontSize="9"
-                                                                           TextColor="#3525CD" />
-                                                                </VerticalStackLayout>
-                                                                <VerticalStackLayout Spacing="2"
-                                                                                     WidthRequest="80">
-                                                                    <Label Text="{Binding Price, StringFormat='${0:F2}'}"
-                                                                           HorizontalOptions="End"
-                                                                           FontFamily="OpenSansSemibold"
-                                                                           FontAttributes="Bold"
-                                                                           FontSize="13"
-                                                                           TextColor="#3525CD" />
-                                                                    <Label Text="{Binding Status, Converter={StaticResource ShowtimeStatusLabelConverter}}"
-                                                                           HorizontalOptions="End"
-                                                                           FontFamily="OpenSansSemibold"
-                                                                           FontSize="9"
-                                                                           TextColor="{Binding Status, Converter={StaticResource ShowtimeStatusColorConverter}}" />
-                                                                </VerticalStackLayout>
-                                                            </HorizontalStackLayout>
-                                                        </syncfusionCards:SfCardView>
-                                                    </DataTemplate>
-                                                </syncfusion:SfListView.ItemTemplate>
-                                                </syncfusion:SfListView>
-                                            </ScrollView>
-                                        </VerticalStackLayout>
+											<syncfusion:SfListView ItemsSource="{Binding Showtimes}"
+																   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
+																   BackgroundColor="Transparent"
+																   Orientation="Horizontal"
+																   HeightRequest="{OnIdiom Default='76', Phone='62'}"
+																   ScrollBarVisibility="Never"
+																   AutoFitMode="DynamicHeight"
+																   SelectionMode="None">
+												<syncfusion:SfListView.ItemsLayout>
+													<syncfusion:GridLayout SpanCount="1" />
+												</syncfusion:SfListView.ItemsLayout>
+												<syncfusion:SfListView.ItemTemplate>
+													<DataTemplate x:DataType="models:Showtime">
+														<syncfusionCards:SfCardView CornerRadius="14"
+																					BackgroundColor="#F1F2F8"
+																					Padding="{OnIdiom Default='12,8', Phone='10,8'}">
+															<syncfusionCards:SfCardView.GestureRecognizers>
+																<TapGestureRecognizer Tapped="OnShowtimeTapped"
+																					  CommandParameter="{Binding .}" />
+															</syncfusionCards:SfCardView.GestureRecognizers>
+															<syncfusionCards:SfCardView.Behaviors>
+																<behaviors:HoverAnimationBehavior />
+															</syncfusionCards:SfCardView.Behaviors>
+															<HorizontalStackLayout>
+																<VerticalStackLayout Spacing="2"
+																					 WidthRequest="80">
+																	<Label Text="{Binding StartTime}"
+																		   FontFamily="OpenSansSemibold"
+																		   FontAttributes="Bold"
+																		   FontSize="13"
+																		   TextColor="#1A1A2E" />
+																	<Label Text="{Binding Format}"
+																		   FontFamily="OpenSansSemibold"
+																		   FontSize="9"
+																		   TextColor="#3525CD" />
+																</VerticalStackLayout>
+																<VerticalStackLayout Spacing="2"
+																					 WidthRequest="80">
+																	<Label Text="{Binding Price, StringFormat='${0:F2}'}"
+																		   HorizontalOptions="End"
+																		   FontFamily="OpenSansSemibold"
+																		   FontAttributes="Bold"
+																		   FontSize="13"
+																		   TextColor="#3525CD" />
+																	<Label Text="{Binding Status, Converter={StaticResource ShowtimeStatusLabelConverter}}"
+																		   HorizontalOptions="End"
+																		   FontFamily="OpenSansSemibold"
+																		   FontSize="9"
+																		   TextColor="{Binding Status, Converter={StaticResource ShowtimeStatusColorConverter}}" />
+																</VerticalStackLayout>
+															</HorizontalStackLayout>
+														</syncfusionCards:SfCardView>
+													</DataTemplate>
+												</syncfusion:SfListView.ItemTemplate>
+											</syncfusion:SfListView>
+										</VerticalStackLayout>
                                     </syncfusionCards:SfCardView>
                                 </Grid>
                             </DataTemplate>
