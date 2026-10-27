@@ -1,7 +1,6 @@
 using SmartMovieBooking.Models;
 using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
-using Syncfusion.Maui.ListView;
 
 namespace SmartMovieBooking.Views;
 
@@ -25,26 +24,23 @@ public partial class TheatersView : ContentPage
         MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
     }
 
-    private async void OnDateSelected(object? sender, ItemSelectionChangedEventArgs e)
+    private async void OnDateTapped(object? sender, TappedEventArgs e)
     {
-        if (e.AddedItems.FirstOrDefault() is DateTime d)
-        {
-            _vm.SelectedDate = d;
-            await _vm.LoadAsync();
-            DateList.SelectedItem = d;
-            MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
-        }
+        if (sender is not BindableObject bindable || bindable.BindingContext is not DateTime d) return;
+
+        _vm.SelectedDate = d;
+        await _vm.LoadAsync();
+        MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
     }
 
-    private async void OnShowtimeSelected(object? sender, ItemSelectionChangedEventArgs e)
+    private async void OnShowtimeTapped(object? sender, TappedEventArgs e)
     {
-        if (e.AddedItems.FirstOrDefault() is not Showtime s) return;
+        if (sender is not BindableObject bindable || bindable.BindingContext is not Showtime s) return;
+
         _vm.SelectedShowtime = s;
         _session.SelectedShowtime = s;
         _session.SelectedDate = _vm.SelectedDate;
         _session.SelectedTheater = _vm.Theaters.FirstOrDefault(t => t.Showtimes.Contains(s));
-        if (sender is SfListView list) list.SelectedItem = null;
         await Shell.Current.GoToAsync("seat-selection");
     }
 }
-
