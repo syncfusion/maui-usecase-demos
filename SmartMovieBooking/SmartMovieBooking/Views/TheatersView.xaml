@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
+             xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SmartMovieBooking.Views.TheatersView"
              x:DataType="vm:TheatersViewModel"
@@ -105,7 +106,8 @@
                                 <Grid RowDefinitions="230">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                 BackgroundColor="#FFFFFF"
-                                                                Padding="20">
+                                                                Padding="20"
+                                                                behaviors:AnimateOnTap.IsEnabled="True">
                                         <VerticalStackLayout Spacing="14">
                                             <Grid ColumnDefinitions="Auto,*,Auto"
                                                   ColumnSpacing="12">
@@ -166,7 +168,8 @@
                                                     <DataTemplate x:DataType="models:Showtime">
                                                         <syncfusionCards:SfCardView CornerRadius="14"
                                                                                     BackgroundColor="#F1F2F8"
-                                                                                    Padding="12,8">
+                                                                                    Padding="12,8"
+                                                                                    behaviors:AnimateOnTap.IsEnabled="True">
                                                             <HorizontalStackLayout>
                                                                 <VerticalStackLayout Spacing="2"
                                                                                      WidthRequest="80">

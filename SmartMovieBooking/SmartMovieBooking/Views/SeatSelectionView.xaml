@@ -5,6 +5,7 @@
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
              x:Class="SmartMovieBooking.Views.SeatSelectionView"
              x:DataType="vm:SeatSelectionViewModel"
              Title="Select Seats">
@@ -176,6 +177,7 @@
                                                  FontFamily="OpenSansSemibold"
                                                  WidthRequest="88"
                                                  HeightRequest="40"
+                                                 behaviors:AnimateOnTap.IsEnabled="True"
                                                  Clicked="OnCancelClicked" />
                     <syncfusionButtons:SfButton Text="Proceed to Pay"
                                                  BackgroundColor="#3525CD"
@@ -185,6 +187,7 @@
                                                  FontAttributes="Bold"
                                                  WidthRequest="160"
                                                  HeightRequest="40"
+                                                 behaviors:AnimateOnTap.IsEnabled="True"
                                                  IsEnabled="{Binding CanConfirm}"
                                                  Clicked="OnConfirmClicked" />
                 </HorizontalStackLayout>

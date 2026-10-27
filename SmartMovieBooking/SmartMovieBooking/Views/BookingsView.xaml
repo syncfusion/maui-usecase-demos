@@ -8,6 +8,7 @@
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
+             xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SmartMovieBooking.Views.BookingsView"
              x:DataType="vm:BookingsViewModel"
@@ -43,7 +44,8 @@
                                 <DataTemplate x:DataType="models:Booking">
                                     <syncfusionCards:SfCardView CornerRadius="16"
                                                                  BackgroundColor="#FFFFFF"
-                                                                 Padding="16">
+                                                                 Padding="16"
+                                                                 behaviors:AnimateOnTap.IsEnabled="True">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
                                             <Border Grid.Column="0"
                                                     WidthRequest="64" HeightRequest="80"
