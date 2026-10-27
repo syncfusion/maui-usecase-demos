@@ -1,10 +1,15 @@
-﻿namespace DiagramBuilder
+using DiagramBuilder.Constants;
+using DiagramBuilder.Views;
+
+namespace DiagramBuilder
 {
     public partial class AppShell : Shell
     {
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(AppConstants.RouteDesigner, typeof(DiagramDesignerPage));
+            Routing.RegisterRoute(AppConstants.RouteCreateDiagram, typeof(CreateDiagramPage));
         }
     }
 }

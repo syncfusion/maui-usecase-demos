@@ -5,99 +5,233 @@
              xmlns:models="clr-namespace:DiagramBuilder.Models"
              x:Class="DiagramBuilder.Views.CreateDiagramPage"
              Title="{Binding Title}"
-             BackgroundColor="#00000000">
+             BackgroundColor="Transparent">
 
-    <Grid Padding="32"
-          BackgroundColor="#80000000">
+    <Grid>
+        <Grid BackgroundColor="#80000000" />
+
         <Border HorizontalOptions="Center"
                 VerticalOptions="Center"
-                WidthRequest="920"
-                HeightRequest="590"
+                WidthRequest="970"
+                HeightRequest="640"
                 BackgroundColor="{DynamicResource WindowBackground}"
                 Stroke="{DynamicResource PanelBorderBrush}"
                 StrokeThickness="1">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="4" />
             </Border.StrokeShape>
+
             <Grid RowDefinitions="Auto,*">
-                <Grid Padding="24,18,18,12"
+                <Grid Padding="24,18,20,12"
                       ColumnDefinitions="*,Auto">
                     <Label Text="{Binding Title}"
-                           FontSize="24"
+                           FontSize="28"
                            TextColor="{DynamicResource TextPrimary}" />
                     <Button Grid.Column="1"
-                            Text="X"
-                            WidthRequest="36"
-                            HeightRequest="36"
+                            Text="x"
+                            WidthRequest="28"
+                            HeightRequest="28"
                             Padding="0"
                             BackgroundColor="Transparent"
                             TextColor="{DynamicResource TextPrimary}"
+                            FontSize="18"
                             Clicked="OnCloseClicked" />
                 </Grid>
 
-                <Grid Grid.Row="1" ColumnDefinitions="220,*">
-                    <Border BackgroundColor="{DynamicResource CanvasBackground}"
-                            Stroke="{DynamicResource PanelBorderBrush}"
-                            StrokeThickness="0,1,1,0">
-                        <ScrollView>
-                            <VerticalStackLayout Spacing="8" Padding="0,0,0,0">
-                                <CollectionView ItemsSource="{Binding Categories}" SelectionMode="None">
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border HeightRequest="36"
-                                                    Padding="22,0"
-                                                    BackgroundColor="Transparent">
-                                                <Label Text="{Binding .}"
-                                                       VerticalOptions="Center"
-                                                       TextColor="{DynamicResource TextPrimary}" />
-                                                <Border.GestureRecognizers>
-                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCategoryCommand}"
-                                                                          CommandParameter="{Binding .}" />
-                                                </Border.GestureRecognizers>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </VerticalStackLayout>
-                        </ScrollView>
-                    </Border>
-
-                    <Grid Grid.Column="1" Padding="16,14" RowDefinitions="Auto,*" RowSpacing="14">
-                        <CollectionView ItemsSource="{Binding Templates}"
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="280,*">
+                    <!-- left category rail -->
+                    <Border BackgroundColor="#E8E8E8"
+                            StrokeThickness="0"
+                            Padding="0,16">
+                        <CollectionView ItemsSource="{Binding Categories}"
                                         SelectionMode="None">
-                            <CollectionView.ItemsLayout>
-                                <GridItemsLayout Orientation="Vertical"
-                                                 Span="2"
-                                                 HorizontalItemSpacing="16"
-                                                 VerticalItemSpacing="10" />
-                            </CollectionView.ItemsLayout>
                             <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="models:DiagramTemplate">
-                                    <VerticalStackLayout WidthRequest="214" Spacing="10">
-                                        <Border HeightRequest="202"
-                                                BackgroundColor="{DynamicResource CanvasBackground}"
-                                                Stroke="{DynamicResource PanelBorderBrush}"
-                                                StrokeThickness="1">
-                                            <Border.StrokeShape>
-                                                <RoundRectangle CornerRadius="0" />
-                                            </Border.StrokeShape>
-                                            <Grid>
-                                                <Label Text="+"
-                                                       FontSize="64"
-                                                       TextColor="{DynamicResource TextSecondary}"
-                                                       HorizontalOptions="Center"
-                                                       VerticalOptions="Center" />
-                                            </Grid>
-                                        </Border>
-                                        <Label Text="{Binding Title}"
-                                               FontSize="16"
-                                               HorizontalTextAlignment="Center"
-                                               TextColor="{DynamicResource TextPrimary}" />
-                                    </VerticalStackLayout>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,8"
+                                            HeightRequest="50"
+                                            Padding="18,0"
+                                            BackgroundColor="Transparent">
+                                        <Grid ColumnDefinitions="3,*"
+                                              VerticalOptions="Center">
+                                            <BoxView WidthRequest="3"
+                                                     BackgroundColor="Transparent" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding .}"
+                                                   FontSize="17"
+                                                   TextColor="{DynamicResource TextPrimary}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCategoryCommand}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+
+                                    </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-                    </Grid>
+                    </Border>
+
+                    <!-- right template panel -->
+                    <ScrollView Grid.Column="1">
+                        <VerticalStackLayout Padding="56,24,56,24" Spacing="28">
+                            <Label Text="Empty Diagram"
+                                   FontSize="14"
+                                   TextColor="{DynamicResource TextSecondary}" />
+
+                            <Border WidthRequest="280"
+                                    HeightRequest="250"
+                                    Stroke="{DynamicResource PanelBorderBrush}"
+                                    StrokeThickness="1"
+                                    BackgroundColor="{DynamicResource CanvasBackground}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Grid RowDefinitions="*,Auto"
+                                      Padding="24,24,24,14">
+                                    <Grid RowDefinitions="Auto,Auto,Auto"
+                                          ColumnDefinitions="*,*,*"
+                                          ColumnSpacing="10"
+                                          RowSpacing="18"
+                                          HorizontalOptions="Center"
+                                          VerticalOptions="Center">
+                                        <Border Grid.Row="0" Grid.Column="1"
+                                                WidthRequest="72" HeightRequest="42"
+                                                BackgroundColor="#FFFFFF"
+                                                Stroke="#DADADA"
+                                                StrokeThickness="1" />
+                                        <Border Grid.Row="1" Grid.Column="0"
+                                                WidthRequest="72" HeightRequest="42"
+                                                BackgroundColor="#FFFFFF"
+                                                Stroke="#DADADA"
+                                                StrokeThickness="1" />
+                                        <Border Grid.Row="1" Grid.Column="2"
+                                                WidthRequest="72" HeightRequest="42"
+                                                BackgroundColor="#FFFFFF"
+                                                Stroke="#DADADA"
+                                                StrokeThickness="1" />
+                                        <BoxView Grid.Row="0" Grid.Column="1"
+                                                 WidthRequest="2"
+                                                 HeightRequest="18"
+                                                 Color="#CFCFCF"
+                                                 TranslationY="42" />
+                                        <BoxView Grid.Row="1" Grid.Column="0"
+                                                 WidthRequest="28"
+                                                 HeightRequest="2"
+                                                 Color="#CFCFCF"
+                                                 TranslationX="72"
+                                                 TranslationY="-21" />
+                                        <BoxView Grid.Row="1" Grid.Column="2"
+                                                 WidthRequest="28"
+                                                 HeightRequest="2"
+                                                 Color="#CFCFCF"
+                                                 TranslationX="-28"
+                                                 TranslationY="-21" />
+                                        <Label Grid.Row="2" Grid.ColumnSpan="3"
+                                               Text=""
+                                               HeightRequest="20" />
+                                    </Grid>
+                                    <Label Grid.Row="1"
+                                           Text="Empty Diagram"
+                                           HorizontalOptions="Center"
+                                           TextColor="{DynamicResource TextPrimary}"
+                                           FontSize="17" />
+                                </Grid>
+                            </Border>
+
+                            <Label Text="Predefined Template"
+                                   FontSize="14"
+                                   TextColor="{DynamicResource TextSecondary}" />
+
+                            <CollectionView ItemsSource="{Binding PredefinedTemplates}"
+                                            SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:DiagramTemplate">
+                                        <Border Margin="0,0,0,8"
+                                                WidthRequest="280"
+                                                HeightRequest="260"
+                                                Stroke="{DynamicResource PanelBorderBrush}"
+                                                StrokeThickness="1"
+                                                BackgroundColor="{DynamicResource CanvasBackground}">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="0" />
+                                            </Border.StrokeShape>
+                                            <Grid RowDefinitions="*,Auto"
+                                                  Padding="18,18,18,12">
+                                                <Grid>
+                                                    <Border WidthRequest="220"
+                                                            HeightRequest="170"
+                                                            BackgroundColor="#FFFFFF"
+                                                            Stroke="#E0E0E0"
+                                                            StrokeThickness="1"
+                                                            HorizontalOptions="Center"
+                                                            VerticalOptions="Center">
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="0" />
+                                                        </Border.StrokeShape>
+                                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                                                              ColumnDefinitions="Auto,*,Auto"
+                                                              RowSpacing="10"
+                                                              ColumnSpacing="12"
+                                                              Padding="20,22">
+                                                            <Border Grid.Row="0" Grid.Column="1"
+                                                                    WidthRequest="74" HeightRequest="34"
+                                                                    BackgroundColor="#FAFAFA"
+                                                                    Stroke="#D4D4D4"
+                                                                    StrokeThickness="1" />
+                                                            <Border Grid.Row="1" Grid.Column="0"
+                                                                    WidthRequest="74" HeightRequest="34"
+                                                                    BackgroundColor="#FAFAFA"
+                                                                    Stroke="#D4D4D4"
+                                                                    StrokeThickness="1" />
+                                                            <Border Grid.Row="1" Grid.Column="2"
+                                                                    WidthRequest="74" HeightRequest="34"
+                                                                    BackgroundColor="#FAFAFA"
+                                                                    Stroke="#D4D4D4"
+                                                                    StrokeThickness="1" />
+                                                            <Border Grid.Row="2" Grid.Column="1"
+                                                                    WidthRequest="74" HeightRequest="34"
+                                                                    BackgroundColor="#FAFAFA"
+                                                                    Stroke="#D4D4D4"
+                                                                    StrokeThickness="1" />
+                                                            <BoxView Grid.Row="0" Grid.Column="1"
+                                                                     WidthRequest="2" HeightRequest="14"
+                                                                     Color="#BDBDBD"
+                                                                     TranslationY="34" />
+                                                            <BoxView Grid.Row="1" Grid.Column="0"
+                                                                     WidthRequest="32" HeightRequest="2"
+                                                                     Color="#BDBDBD"
+                                                                     TranslationX="74"
+                                                                     TranslationY="-17" />
+                                                            <BoxView Grid.Row="1" Grid.Column="2"
+                                                                     WidthRequest="32" HeightRequest="2"
+                                                                     Color="#BDBDBD"
+                                                                     TranslationX="-32"
+                                                                     TranslationY="-17" />
+                                                            <BoxView Grid.Row="2" Grid.Column="1"
+                                                                     WidthRequest="2" HeightRequest="14"
+                                                                     Color="#BDBDBD"
+                                                                     TranslationY="34" />
+                                                        </Grid>
+                                                    </Border>
+                                                </Grid>
+                                                <Label Grid.Row="1"
+                                                       Text="{Binding Title}"
+                                                       FontSize="16"
+                                                       HorizontalTextAlignment="Center"
+                                                       TextColor="{DynamicResource TextPrimary}" />
+                                                <Grid.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CreateDiagramCommand}"
+                                                                          CommandParameter="{Binding .}" />
+                                                </Grid.GestureRecognizers>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </ScrollView>
                 </Grid>
             </Grid>
         </Border>

@@ -27,5 +27,5 @@ public partial class MainViewModel : ObservableObject
 
     /// <summary>Navigates to the create-diagram dialog.</summary>
     [RelayCommand]
-    private async Task Start() => await Shell.Current.GoToAsync($"//{AppConstants.RouteCreateDiagram}");
+    private async Task Start() => await Shell.Current.GoToAsync(AppConstants.RouteCreateDiagram);
 }

@@ -47,7 +47,21 @@ public partial class CreateDiagramViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<DiagramTemplate> templates = [];
 
-    partial void OnSelectedCategoryChanged(DiagramCategory value) => _ = LoadTemplatesAsync(value);
+    public string SelectedCategoryName => SelectedCategory.ToString();
+
+    public DiagramTemplate? EmptyDiagramTemplate => Templates.FirstOrDefault(t => t.Category == SelectedCategory && t.IsBlank);
+
+    public IReadOnlyList<DiagramTemplate> PredefinedTemplates => Templates
+        .Where(t => t.Category == SelectedCategory && !t.IsBlank)
+        .ToList();
+
+    partial void OnSelectedCategoryChanged(DiagramCategory value)
+    {
+        OnPropertyChanged(nameof(SelectedCategoryName));
+        OnPropertyChanged(nameof(EmptyDiagramTemplate));
+        OnPropertyChanged(nameof(PredefinedTemplates));
+        _ = LoadTemplatesAsync(value);
+    }
 
     /// <summary>Selects a category card (parameter is the enum name, from a bound CommandParameter).</summary>
     [RelayCommand]
@@ -75,6 +89,8 @@ public partial class CreateDiagramViewModel : ObservableObject
         var all = await _templateService.GetAllAsync();
         var forCategory = all.Where(t => t.Category == category).ToList();
         Templates = forCategory;
+        OnPropertyChanged(nameof(EmptyDiagramTemplate));
+        OnPropertyChanged(nameof(PredefinedTemplates));
     }
 
     /// <summary>Creates the document from the template and navigates to the designer.</summary>
@@ -87,6 +103,6 @@ public partial class CreateDiagramViewModel : ObservableObject
         }
 
         await _diagramService.CreateDocumentAsync(template);
-        await Shell.Current.GoToAsync($"//{AppConstants.RouteDesigner}");
+        await Shell.Current.GoToAsync(AppConstants.RouteDesigner);
     }
 }
