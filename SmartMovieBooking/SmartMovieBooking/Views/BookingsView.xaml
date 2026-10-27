@@ -5,7 +5,7 @@
              xmlns:syncfusionTab="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
-             xmlns:barcode="clr-namespace:Syncfusion.Maui.BarcodeGenerator;assembly=Syncfusion.Maui.BarcodeGenerator"
+             xmlns:barcode="clr-namespace:Syncfusion.Maui.Barcode;assembly=Syncfusion.Maui.Barcode"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
@@ -87,14 +87,17 @@
                                                            VerticalTextAlignment="Center" />
                                                 </HorizontalStackLayout>-->
                                             </VerticalStackLayout>
-                                            <barcode:SfBarcodeGenerator Grid.Column="2"
-                                                                          Value="{Binding BookingId}"
-                                                                          BarcodeType="QRCode"
-                                                                          WidthRequest="100"
-                                                                          HeightRequest="100"
-                                                                          HorizontalOptions="End"
-                                                                          VerticalOptions="Center" />
-                                        </Grid>
+												<barcode:SfBarcodeGenerator Grid.Column="2"
+																			Value="Barcode"
+																			ShowText="False"
+																			WidthRequest="100"
+																			HeightRequest="100"
+																			HorizontalOptions="End">
+													<barcode:SfBarcodeGenerator.Symbology>
+														<barcode:QRCode />
+													</barcode:SfBarcodeGenerator.Symbology>
+												</barcode:SfBarcodeGenerator>
+											</Grid>
                                     </syncfusionCards:SfCardView>
                                 </DataTemplate>
                             </syncfusion:SfListView.ItemTemplate>
