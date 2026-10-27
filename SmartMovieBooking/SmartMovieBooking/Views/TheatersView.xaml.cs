@@ -1,4 +1,5 @@
 using SmartMovieBooking.Models;
+using SmartMovieBooking.Behaviors;
 using SmartMovieBooking.Services;
 using SmartMovieBooking.ViewModels;
 using Syncfusion.Maui.ListView;
@@ -30,8 +31,9 @@ public partial class TheatersView : ContentPage
         if (e.AddedItems.FirstOrDefault() is DateTime d)
         {
             _vm.SelectedDate = d;
-            await _vm.LoadAsync();
             DateList.SelectedItem = d;
+            await TapAnimationHelper.AnimateTapEffectAsync(DateList);
+            await _vm.LoadAsync();
             MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
         }
     }
@@ -43,6 +45,8 @@ public partial class TheatersView : ContentPage
         _session.SelectedShowtime = s;
         _session.SelectedDate = _vm.SelectedDate;
         _session.SelectedTheater = _vm.Theaters.FirstOrDefault(t => t.Showtimes.Contains(s));
+        if (sender is VisualElement element)
+            await TapAnimationHelper.AnimateTapEffectAsync(element);
         if (sender is SfListView list) list.SelectedItem = null;
         await Shell.Current.GoToAsync("seat-selection");
     }
