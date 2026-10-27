@@ -5,10 +5,10 @@ using DiagramBuilder.Models;
 namespace DiagramBuilder.Controls;
 
 /// <summary>
-/// Horizontal menu bar. Binds to <see cref="MenuBarViewModel.Roots"/>; each root
+/// Horizontal menu bar. Binds to the menu roots (ItemsSource); each root
 /// gets a button + SfPopup flyout rendered from its <see cref="MenuCommandItem.Children"/>
 /// tree. Item taps execute the bound <see cref="MenuCommand"/>. Checkable items show
-/// a check glyph and reflect <see cref="MenuBarViewModel.IsChecked(string)"/>.
+/// a check glyph and reflect the VM check-state delegate (IsChecked).
 /// Zero business logic — only binds and dispatches by id.
 /// </summary>
 public partial class MenuBarControl : ContentView

@@ -69,7 +69,7 @@ public partial class ColorPickerButton : ContentView
         };
         picker.ColorChanged += (_, args) =>
         {
-            var nearestKey = FindNearestKey(args.NewData?.Value ?? Colors.White);
+            var nearestKey = FindNearestKey(args.NewColor ?? Colors.White);
             if (ColorChangedCommand?.CanExecute(nearestKey) == true)
             {
                 ColorChangedCommand.Execute(nearestKey);

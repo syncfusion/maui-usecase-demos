@@ -95,10 +95,10 @@ public partial class DiagramWorkspaceControl : ContentView
     {
         if (bindable is DiagramWorkspaceControl ws)
         {
-            if (newValue is IEnumerable groups && groups.Cast<object>().Any())
+            if (newValue is IEnumerable groups && groups.OfType<Palette>().Any())
             {
                 ws.Palette.Palettes.Clear();
-                foreach (var palette in groups)
+                foreach (var palette in groups.OfType<Palette>())
                 {
                     ws.Palette.Palettes.Add(palette);
                 }

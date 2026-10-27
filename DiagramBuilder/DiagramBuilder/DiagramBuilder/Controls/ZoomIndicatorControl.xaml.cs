@@ -43,8 +43,8 @@ public partial class ZoomIndicatorControl : ContentView
     {
         InitializeComponent();
         ZoomLabel.Text = ZoomPercent;
-        GridLabel.Text = AppStrings.StatusGridOn;
-        SnapLabel.Text = AppStrings.StatusSnapOn;
+        GridLabel.Text = AppStrings.GridOnLabel;
+        SnapLabel.Text = AppStrings.SnapOnLabel;
     }
 
     private static void OnZoomPercentChanged(BindableObject bindable, object oldValue, object newValue)
@@ -67,7 +67,7 @@ public partial class ZoomIndicatorControl : ContentView
     {
         if (bindable is ZoomIndicatorControl ctrl && newValue is bool on)
         {
-            ctrl.SnapLabel.Text = on ? AppStrings.StatusSnapOn : AppStrings.StatusSnapOff;
+            ctrl.SnapLabel.Text = on ? AppStrings.SnapOnLabel : AppStrings.SnapOffLabel;
         }
     }
 }

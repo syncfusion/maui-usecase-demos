@@ -12,7 +12,7 @@ public class BoolToObjectConverter : IValueConverter
 
     public object? FalseValue { get; set; }
 
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var flag = value is true;
         if (parameter is string p && p.Contains("invert", StringComparison.OrdinalIgnoreCase))

@@ -6,7 +6,7 @@ using DiagramBuilder.Models;
 namespace DiagramBuilder.Controls;
 
 /// <summary>
-/// Toolbar (ui-spec.md §3). Binds to <see cref="ToolbarViewModel.Items"/>; renders
+/// Toolbar (ui-spec.md §3). Binds to the toolbar items (ItemsSource); renders
 /// 8 groups with separators, flyouts for shapes/connectors, zoom chips, color
 /// swatches (group 6), and hides group 6 unless <see cref="HasSingleSelection"/>.
 /// Code-behind dispatches tool ids via <see cref="ToolCommand"/>; the flyouts
@@ -214,8 +214,10 @@ public partial class ToolbarControl : ContentView
             Text = GlyphFor(item.Id),
             Style = (Style)Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
-            ToolTipProperties = new ToolTipProperties { Text = item.TooltipKey },
         };
+        // Tooltip via the accessibility layer (MAUI has no ToolTip attached property
+        // on Button; HelpText is the supported surface).
+        AutomationProperties.SetHelpText(btn, item.TooltipKey);
         if (item.IsChecked)
         {
             btn.Style = (Style)Resources["ToolbarIconActiveStyle"];
@@ -239,8 +241,10 @@ public partial class ToolbarControl : ContentView
             Text = GlyphFor(item.Id),
             Style = (Style)Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
-            ToolTipProperties = new ToolTipProperties { Text = item.TooltipKey },
         };
+        // Tooltip via the accessibility layer (MAUI has no ToolTip attached property
+        // on Button; HelpText is the supported surface).
+        AutomationProperties.SetHelpText(btn, item.TooltipKey);
         btn.Clicked += (_, _) => popup.ShowRelativeToView(btn, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
         return btn;
     }
