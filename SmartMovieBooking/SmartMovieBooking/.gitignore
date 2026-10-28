@@ -1,0 +1,18 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+
+# IDE folders
+.vs/
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MAUI specific
+*.binlog
+*.userprefs

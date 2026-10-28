@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Views"
+             xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             x:Class="SmartMovieBooking.Views.TheatersView"
+             x:DataType="vm:TheatersViewModel"
+             Title="Theaters">
+
+    <Grid RowDefinitions="{OnIdiom Default='*,Auto', Phone='*,72'}"
+          ColumnDefinitions="{OnIdiom Default='200,*', Phone='*'}">
+        <controls:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}"
+                             ActiveTab="Theaters" />
+
+        <Grid MaximumWidthRequest="1200"
+              Grid.Row="{OnIdiom Default=0, Phone=0}"
+              Grid.Column="{OnIdiom Default='1', Phone='0'}"
+              RowDefinitions="Auto,*"
+              Padding="{OnIdiom Default='24', Phone='12'}"
+              RowSpacing="16">
+            <VerticalStackLayout Grid.Row="0" Spacing="10">
+                <VerticalStackLayout Spacing="4">
+					<Label x:Name="MovieLabel"
+						   Text=""
+						   FontFamily="OpenSansSemibold"
+						   FontSize="28"
+						   FontAttributes="Bold"
+						   TextColor="#1A1A2E" />
+					<Label Text="Select Theater"
+						   FontFamily="OpenSansSemibold"
+						   FontSize="18"
+						   FontAttributes="Bold"
+						   TextColor="#1A1A2E" />
+				</VerticalStackLayout>
+
+				<Border Stroke="#CAC7D0"
+						StrokeShape="RoundRectangle 18"
+						Padding="12">
+					<syncfusion:SfListView x:Name="DateList"
+										   ItemsSource="{Binding Dates}"
+										   ItemSpacing="{OnIdiom Default=10, Phone=2}"
+										   AutoFitMode="DynamicHeight"
+										   BackgroundColor="Transparent"
+                                           Orientation="Horizontal"
+                                           ScrollBarVisibility="Never"
+										   SelectionBackground="Transparent"
+										   HeightRequest="{OnIdiom Default=104, Phone=74}"
+										   SelectionMode="None">
+						<syncfusion:SfListView.ItemsLayout>
+							<syncfusion:GridLayout SpanCount="1" />
+						</syncfusion:SfListView.ItemsLayout>
+						<syncfusion:SfListView.ItemTemplate>
+							<DataTemplate x:DataType="sys:DateTime">
+								<Border StrokeThickness="1"
+										Stroke="#D7D8E6"
+										BackgroundColor="#FFFFFF"
+										Padding="{OnIdiom Default='10,8', Phone='8,6'}"
+										HeightRequest="68"
+										WidthRequest="84"
+										StrokeShape="RoundRectangle 14">
+									<Border.GestureRecognizers>
+										<TapGestureRecognizer Tapped="OnDateTapped"
+															  CommandParameter="{Binding .}" />
+									</Border.GestureRecognizers>
+									<Border.Behaviors>
+										<behaviors:HoverAnimationBehavior />
+									</Border.Behaviors>
+									<Grid RowDefinitions="Auto,Auto,Auto"
+										  RowSpacing="0">
+										<Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
+											   FontFamily="OpenSansSemibold"
+											   FontSize="9"
+											   TextColor="#49454F"
+											   HorizontalTextAlignment="Center" />
+										<Label Grid.Row="1"
+											   Text="{Binding ., StringFormat='{0:dd}'}"
+											   FontFamily="OpenSansSemibold"
+											   FontAttributes="Bold"
+											   FontSize="15"
+											   TextColor="#1A1A2E"
+											   HorizontalTextAlignment="Center" />
+										<Label Grid.Row="2"
+											   Text="{Binding ., StringFormat='{0:ddd MMM}'}"
+											   FontFamily="OpenSansSemibold"
+											   FontSize="9"
+											   TextColor="#49454F"
+											   HorizontalTextAlignment="Center" />
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</syncfusion:SfListView.ItemTemplate>
+					</syncfusion:SfListView>
+				</Border>
+                </VerticalStackLayout>
+
+			<ScrollView Grid.Row="1">
+                <VerticalStackLayout Spacing="16">
+					<syncfusion:SfListView Grid.Row="1"
+											ItemsSource="{Binding Theaters}"
+                                           ItemSpacing="{OnIdiom Default=12, Phone=10}"
+                                           AutoFitMode="DynamicHeight"
+										   IsScrollingEnabled="False"
+										   ScrollBarVisibility="Never"
+                                           BackgroundColor="Transparent"
+                                           SelectionMode="None">
+                        <syncfusion:SfListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Theater">
+								<Grid RowDefinitions="{OnIdiom Default=230, Phone=185}">
+                                    <syncfusionCards:SfCardView CornerRadius="16"
+                                                                BackgroundColor="#FFFFFF"
+                                                                Padding="{OnIdiom Default=20, Phone=14}">
+                                        <VerticalStackLayout Spacing="14">
+                                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                                  ColumnSpacing="12">
+                                                <Border Grid.Column="0"
+                                                        WidthRequest="48"
+                                                        HeightRequest="48"
+                                                        StrokeShape="RoundRectangle 12"
+                                                        BackgroundColor="#F1F2F8">
+                                                    <Label Text="{Binding Icon, FallbackValue='🎬'}"
+                                                           FontSize="22"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center" />
+                                                </Border>
+                                                <VerticalStackLayout Grid.Column="1"
+                                                                     Spacing="2"
+                                                                     VerticalOptions="Center">
+                                                    <Label Text="{Binding Name}"
+                                                           FontFamily="OpenSansSemibold"
+                                                           FontAttributes="Bold"
+                                                           FontSize="15"
+                                                           TextColor="#1A1A2E" />
+                                                    <Label Text="{Binding Location}"
+                                                           FontSize="11"
+                                                           TextColor="#49454F" />
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="2"
+                                                                     HorizontalOptions="End">
+                                                    <Label Text="{Binding PriceFrom, StringFormat='From {0}'}"
+                                                           FontFamily="OpenSansSemibold"
+                                                           FontAttributes="Bold"
+                                                           FontSize="13"
+                                                           TextColor="#3525CD"
+                                                           HorizontalTextAlignment="End" />
+                                                    <Label Text="{Binding AvailableSeats, StringFormat='{0} seats'}"
+                                                           FontSize="10"
+                                                           TextColor="#7A7B8C"
+                                                           HorizontalTextAlignment="End" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+
+                                            <Label Text="SELECT SCREENING TIME"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="10"
+                                                   TextColor="#7A7B8C" />
+
+											<syncfusion:SfListView ItemsSource="{Binding Showtimes}"
+																   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
+																   BackgroundColor="Transparent"
+																   Orientation="Horizontal"
+																   HeightRequest="{OnIdiom Default='76', Phone='62'}"
+																   ScrollBarVisibility="Never"
+																   AutoFitMode="DynamicHeight"
+																   SelectionMode="None">
+												<syncfusion:SfListView.ItemsLayout>
+													<syncfusion:GridLayout SpanCount="1" />
+												</syncfusion:SfListView.ItemsLayout>
+												<syncfusion:SfListView.ItemTemplate>
+													<DataTemplate x:DataType="models:Showtime">
+														<syncfusionCards:SfCardView CornerRadius="14"
+																					BackgroundColor="#F1F2F8"
+																					Padding="{OnIdiom Default='12,8', Phone='10,8'}">
+															<syncfusionCards:SfCardView.GestureRecognizers>
+																<TapGestureRecognizer Tapped="OnShowtimeTapped"
+																					  CommandParameter="{Binding .}" />
+															</syncfusionCards:SfCardView.GestureRecognizers>
+															<syncfusionCards:SfCardView.Behaviors>
+																<behaviors:HoverAnimationBehavior />
+															</syncfusionCards:SfCardView.Behaviors>
+															<HorizontalStackLayout>
+																<VerticalStackLayout Spacing="2"
+																					 WidthRequest="80">
+																	<Label Text="{Binding StartTime}"
+																		   FontFamily="OpenSansSemibold"
+																		   FontAttributes="Bold"
+																		   FontSize="13"
+																		   TextColor="#1A1A2E" />
+																	<Label Text="{Binding Format}"
+																		   FontFamily="OpenSansSemibold"
+																		   FontSize="9"
+																		   TextColor="#3525CD" />
+																</VerticalStackLayout>
+																<VerticalStackLayout Spacing="2"
+																					 WidthRequest="80">
+																	<Label Text="{Binding Price, StringFormat='${0:F2}'}"
+																		   HorizontalOptions="End"
+																		   FontFamily="OpenSansSemibold"
+																		   FontAttributes="Bold"
+																		   FontSize="13"
+																		   TextColor="#3525CD" />
+																	<Label Text="{Binding Status, Converter={StaticResource ShowtimeStatusLabelConverter}}"
+																		   HorizontalOptions="End"
+																		   FontFamily="OpenSansSemibold"
+																		   FontSize="9"
+																		   TextColor="{Binding Status, Converter={StaticResource ShowtimeStatusColorConverter}}" />
+																</VerticalStackLayout>
+															</HorizontalStackLayout>
+														</syncfusionCards:SfCardView>
+													</DataTemplate>
+												</syncfusion:SfListView.ItemTemplate>
+											</syncfusion:SfListView>
+										</VerticalStackLayout>
+                                    </syncfusionCards:SfCardView>
+                                </Grid>
+                            </DataTemplate>
+                        </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>

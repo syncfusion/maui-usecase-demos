@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:syncfusionTab="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:barcode="clr-namespace:Syncfusion.Maui.Barcode;assembly=Syncfusion.Maui.Barcode"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Views"
+             xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             x:Class="SmartMovieBooking.Views.BookingsView"
+             x:DataType="vm:BookingsViewModel"
+             Title="Bookings">
+    <Grid RowDefinitions="{OnIdiom Default='*,Auto', Phone='*,72'}" ColumnDefinitions="{OnIdiom Default='200,*', Phone='*'}">
+        <controls:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}" ActiveTab="Bookings" />
+
+        <ScrollView Grid.Row="{OnIdiom Default=0, Phone=0}" Grid.Column="{OnIdiom Default='1', Phone='0'}">
+			<VerticalStackLayout MaximumWidthRequest="1200"
+								 Padding="{OnIdiom Default='24', Phone='6'}"
+								 Spacing="16">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Your Bookings" FontFamily="OpenSansSemibold" FontSize="28"
+                       FontAttributes="Bold" TextColor="#1A1A2E" />
+                <Label Text="Past shows and upcoming reservations"
+                       FontSize="13" TextColor="#49454F" />
+            </VerticalStackLayout>
+
+            <!-- SfTabView: Upcoming / History -->
+            <syncfusionTab:SfTabView x:Name="BookingsTabView"
+                                       BackgroundColor="Transparent"
+                                       TabBarHeight="44"
+                                       TabHeaderPadding="0,4"
+                                       TabBarPlacement="Top"
+                                       >
+                <syncfusionTab:SfTabItem Header="UPCOMING">
+                    <syncfusionTab:SfTabItem.Content>
+						<syncfusion:SfListView x:Name="UpcomingList"
+											   ItemsSource="{Binding Bookings}"
+											   IsScrollingEnabled="False"
+											   AutoFitMode="DynamicHeight"
+											   ItemSpacing="12"
+											   BackgroundColor="Transparent">
+							<syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Booking">
+                                    <syncfusionCards:SfCardView CornerRadius="16"
+                                                                 BackgroundColor="#FFFFFF"
+                                                                 Padding="16">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                            <Border Grid.Column="0"
+                                                    WidthRequest="64" HeightRequest="80"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    BackgroundColor="#F1F2F8">
+                                                <Label Text="🎬" FontSize="28"
+                                                       HorizontalTextAlignment="Center"
+                                                       VerticalTextAlignment="Center" />
+                                            </Border>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                                <Label Text="{Binding Movie.Title, FallbackValue='Movie'}"
+                                                       FontFamily="OpenSansSemibold"
+                                                       FontAttributes="Bold"
+                                                       FontSize="14"
+                                                       TextColor="#1A1A2E" />
+													<HorizontalStackLayout Spacing="6">
+														<Label Text="{Binding Theater.Name, FallbackValue='Theater'}"
+															   FontFamily="OpenSansSemibold"
+															   FontAttributes="Bold"
+															   FontSize="11"
+															   TextColor="#1A1A2E" />
+														<Label Text="{Binding Total, StringFormat='${0:F2}'}"
+															   FontFamily="OpenSansSemibold"
+															   FontSize="11"
+															   TextColor="#3525CD"
+															   VerticalTextAlignment="Center" />
+													</HorizontalStackLayout>
+													<!--<HorizontalStackLayout Spacing="6">
+                                                    <Label Text="💺" FontSize="11"
+                                                           VerticalTextAlignment="Center" />
+                                                    <Label Text="{Binding SeatCount, StringFormat='{0} seats'}"
+                                                           FontSize="11" TextColor="#49454F"
+                                                           VerticalTextAlignment="Center" />
+                                                    <Label Text="·" FontSize="11" TextColor="#49454F" />
+                                                    <Label Text="{Binding Total, StringFormat='${0:F2}'}"
+                                                           FontFamily="OpenSansSemibold"
+                                                           FontSize="11" TextColor="#3525CD"
+                                                           VerticalTextAlignment="Center" />
+                                                </HorizontalStackLayout>-->
+                                            </VerticalStackLayout>
+												<barcode:SfBarcodeGenerator Grid.Column="2"
+																			Value="Barcode"
+																			ShowText="False"
+																			WidthRequest="100"
+																			HeightRequest="100"
+																			HorizontalOptions="End">
+													<barcode:SfBarcodeGenerator.Symbology>
+														<barcode:QRCode />
+													</barcode:SfBarcodeGenerator.Symbology>
+												</barcode:SfBarcodeGenerator>
+											</Grid>
+                                    </syncfusionCards:SfCardView>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                            <syncfusion:SfListView.EmptyView>
+                                <VerticalStackLayout Padding="40" Spacing="8" HorizontalOptions="Center">
+                                    <Label Text="🎟️" FontSize="48" HorizontalTextAlignment="Center" />
+                                    <Label Text="No upcoming bookings"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="14"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#1A1A2E" />
+                                    <Label Text="Book your first show from Movies!"
+                                           FontSize="11"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#49454F" />
+                                </VerticalStackLayout>
+                            </syncfusion:SfListView.EmptyView>
+                        </syncfusion:SfListView>
+                    </syncfusionTab:SfTabItem.Content>
+                </syncfusionTab:SfTabItem>
+                <syncfusionTab:SfTabItem Header="HISTORY">
+                    <syncfusionTab:SfTabItem.Content>
+                        <VerticalStackLayout Padding="20" Spacing="8" HorizontalOptions="Center">
+                            <Label Text="🎬" FontSize="48" HorizontalTextAlignment="Center" />
+                            <Label Text="No past bookings yet"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="14"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="#1A1A2E" />
+                        </VerticalStackLayout>
+                    </syncfusionTab:SfTabItem.Content>
+                </syncfusionTab:SfTabItem>
+            </syncfusionTab:SfTabView>
+        </VerticalStackLayout>
+            </ScrollView>
+    </Grid>
+</ContentPage>
