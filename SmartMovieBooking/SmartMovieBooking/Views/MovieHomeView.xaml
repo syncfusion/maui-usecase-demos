@@ -81,7 +81,7 @@
                                            ChoiceMode="Single"
                                            ChipCornerRadius="18"
                                            VerticalOptions="Center"
-                                           ChipPadding="{OnIdiom Default='10,8', Phone='8,6'}"
+                                           ChipPadding="{OnIdiom Default='4', Phone='4'}"
                                            SelectedChipBackground="#4A3DE0"
                                            ChipTextColor="{AppThemeBinding Light=#4B4F63, Dark=#FFFFFF}"
                                            SelectedChipTextColor="#FFFFFF"
