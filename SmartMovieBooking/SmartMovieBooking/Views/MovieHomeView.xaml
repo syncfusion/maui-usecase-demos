@@ -173,7 +173,7 @@
                                             <VerticalStackLayout Spacing="14"
                                                                  VerticalOptions="Center">
                                                 <HorizontalStackLayout Spacing="8">
-                                                    <Border Background="#7C4DFF"
+                                                    <Border Background="#5663D6"
                                                             StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 999"
                                                             Padding="12,5">
@@ -182,7 +182,7 @@
                                                                FontSize="10"
                                                                TextColor="White" />
                                                     </Border>
-                                                    <Border Background="#FFFFFF22"
+                                                    <Border Background="#2B356B"
                                                             StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 999"
                                                             Padding="12,5">
@@ -195,7 +195,7 @@
 
                                                 <VerticalStackLayout Spacing="6">
                                                     <Label Text="{Binding Title}"
-                                                           FontFamily="OpenSansSemibold"
+                                                         FontFamily="OpenSansSemibold"
                                                            FontSize="28"
                                                            FontAttributes="Bold"
                                                            LineBreakMode="TailTruncation"
@@ -205,7 +205,7 @@
                                                            FontSize="14"
                                                            LineBreakMode="TailTruncation"
                                                            MaxLines="2"
-                                                           TextColor="#E4E7FF" />
+                                                           TextColor="#DCE4FF" />
                                                 </VerticalStackLayout>
 
                                                 <HorizontalStackLayout Spacing="10">
@@ -216,7 +216,7 @@
                                                         <Label Text="{Binding Rating, StringFormat='★ {0}'}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="12"
-                                                               TextColor="#FFE29A" />
+                                                               TextColor="#9ED0FF" />
                                                     </Border>
                                                     <Border Background="#FFFFFF1F"
                                                             StrokeThickness="0"
@@ -242,7 +242,7 @@
                                                        FontSize="13"
                                                        MaxLines="3"
                                                        LineBreakMode="TailTruncation"
-                                                       TextColor="#D9DCF4" />
+                                                         TextColor="#D9DCF4" />
 
                                                 <HorizontalStackLayout Spacing="10">
                                                     <syncfusionButtons:SfButton Text="Book Now"
@@ -351,16 +351,16 @@
                                                 </Grid.Background>
                                                 <VerticalStackLayout Padding="14" Spacing="8">
                                                     <HorizontalStackLayout>
-                                                        <Border Background="#FFFFFF20"
+                                                        <Border Background="#3E4CA6"
                                                                 StrokeThickness="0"
                                                                 StrokeShape="RoundRectangle 999"
                                                                 Padding="10,4">
                                                             <Label Text="NOW SHOWING"
                                                                    FontFamily="OpenSansSemibold"
                                                                    FontSize="9"
-                                                                   TextColor="#EEF0FF" />
+                                                                   TextColor="#F4F6FF" />
                                                         </Border>
-                                                        <Border Background="#FFFFFF20"
+                                                        <Border Background="#29346F"
                                                                 StrokeThickness="0"
                                                                 StrokeShape="RoundRectangle 999"
                                                                 Padding="10,4"
@@ -368,7 +368,7 @@
                                                             <Label Text="{Binding Rating, StringFormat='★ {0}'}"
                                                                    FontFamily="OpenSansSemibold"
                                                                    FontSize="9"
-                                                                   TextColor="#F2D77B" />
+                                                                   TextColor="#9ED0FF" />
                                                         </Border>
                                                     </HorizontalStackLayout>
 
@@ -395,13 +395,13 @@
                                                     <Label Text="{Binding PrimaryGenre}"
                                                            FontFamily="OpenSansSemibold"
                                                            FontSize="12"
-                                                           TextColor="#5B5D73" />
+                                                           TextColor="#6A7090" />
                                                     <Label Text="·"
-                                                           TextColor="#5B5D73" />
+                                                           TextColor="#6A7090" />
                                                     <Label Text="{Binding Duration}"
                                                            FontFamily="OpenSansSemibold"
                                                            FontSize="12"
-                                                           TextColor="#5B5D73" />
+                                                           TextColor="#6A7090" />
                                                 </HorizontalStackLayout>
                                                 <syncfusionButtons:SfButton Text="Book Tickets"
                                                                             Background="#5B4BE3"
@@ -427,7 +427,7 @@
                                 <HorizontalStackLayout Spacing="8">
                                     <BoxView WidthRequest="8"
                                              CornerRadius="4"
-                                             Color="#7C4DFF"
+                                             Color="#5663D6"
                                              VerticalOptions="Center" />
                                     <Label Text="Coming Soon"
                                            FontFamily="OpenSansSemibold"
@@ -470,14 +470,14 @@
                                                     <VerticalStackLayout HorizontalOptions="Center"
                                                                          VerticalOptions="Center"
                                                                          Spacing="10">
-                                                        <Label Text="🎞"
+                                                        <Label Text="🎬"
                                                                FontSize="52"
                                                                HorizontalTextAlignment="Center"
-                                                               TextColor="White" />
+                                                               TextColor="#EAF0FF" />
                                                         <Label Text="{Binding ReleaseDate, StringFormat='Releases {0}'}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="11"
-                                                               TextColor="White"
+                                                               TextColor="#D5DDFB"
                                                                HorizontalTextAlignment="Center" />
                                                     </VerticalStackLayout>
                                                 </Grid>
