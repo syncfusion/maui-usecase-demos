@@ -31,6 +31,13 @@ public partial class ColorPickerButton : ContentView
         set => SetValue(ColorChangedCommandProperty, value);
     }
 
+    /// <summary>
+    /// CLR event raised with the new color key when the user picks a color.
+    /// Used by code-behind callers; <see cref="ColorChangedCommand"/> is the
+    /// MVVM-friendly equivalent for XAML binding.
+    /// </summary>
+    public event EventHandler<string>? ColorChanged;
+
     private SfPopup? _popup;
 
     public ColorPickerButton()
@@ -70,6 +77,9 @@ public partial class ColorPickerButton : ContentView
         picker.ColorChanged += (_, args) =>
         {
             var nearestKey = FindNearestKey(args.NewColor ?? Colors.White);
+            // 1) Surface the event for code-behind subscribers.
+            ColorChanged?.Invoke(this, nearestKey);
+            // 2) Surface the command for MVVM XAML bindings.
             if (ColorChangedCommand?.CanExecute(nearestKey) == true)
             {
                 ColorChangedCommand.Execute(nearestKey);

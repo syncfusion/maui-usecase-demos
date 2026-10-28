@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using DiagramBuilder.Models;
 using DiagramBuilder.Behaviors;
+using DiagramBuilder.Services;
 using Syncfusion.Maui.Diagram;
 
 namespace DiagramBuilder.Controls;

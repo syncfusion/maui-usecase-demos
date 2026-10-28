@@ -48,7 +48,8 @@
 
         <!-- Row 3: content — 3 columns (stencil / canvas / properties) -->
         <!-- Stencil (left, 280 px, collapsible) -->
-        <controls:StencilPanelControl Grid.Row="3" Grid.Column="0"
+        <controls:StencilPanelControl x:Name="StencilPanel"
+                                      Grid.Row="3" Grid.Column="0"
                                       WidthRequest="280"
                                       IsVisible="{Binding ShowStencil}" />
 
@@ -58,14 +59,15 @@
                                            PaletteGroups="{Binding Stencil.PaletteGroups}" />
 
         <!-- Properties (right, 320 px, collapsible) -->
-        <controls:PropertyPanelControl Grid.Row="3" Grid.Column="2"
+        <controls:PropertyPanelControl x:Name="PropertyPanel"
+                                       Grid.Row="3" Grid.Column="2"
                                        WidthRequest="320"
                                        IsVisible="{Binding ShowProperties}" />
 
         <!-- Row 4: status bar -->
         <Border Grid.Row="4" Grid.ColumnSpan="3"
                 Stroke="{DynamicResource PanelBorderBrush}"
-                StrokeThickness="1,1,1,0"
+                StrokeThickness="1"
                 BackgroundColor="{DynamicResource PanelBackground}"
                 HeightRequest="26">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Padding="12,4">
