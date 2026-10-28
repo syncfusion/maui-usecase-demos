@@ -21,8 +21,6 @@ public partial class MovieHomeView : ContentPage
     private async Task LoadAsync()
     {
         await _vm.LoadAsync();
-        LoadingSpinner.IsRunning = false;
-        LoadingSpinner.IsVisible = false;
     }
 
     private void CategoryChipGroup_ChipClicked(object sender, EventArgs e)
@@ -45,9 +43,14 @@ public partial class MovieHomeView : ContentPage
         NavigateToTheatersFor(movie);
     }
 
-    // Called from the "Book Now" SfButton inside each card. The SfButton's
-    // BindingContext is the Movie (inherited from the SfCardView parent).
+    // Called from action buttons inside each card. The button BindingContext is the Movie.
     private void OnBookNowClicked(object? sender, EventArgs e)
+    {
+        if (sender is BindableObject bo && bo.BindingContext is Movie movie)
+            NavigateToTheatersFor(movie);
+    }
+
+    private void OnPreviewClicked(object? sender, EventArgs e)
     {
         if (sender is BindableObject bo && bo.BindingContext is Movie movie)
             NavigateToTheatersFor(movie);

@@ -22,6 +22,9 @@ public partial class HomeViewModel : ObservableObject
 
     public ObservableCollection<Movie> Movies { get; } = new();
     public ObservableCollection<Movie> FilteredMovies { get; } = new();
+    public ObservableCollection<Movie> FeaturedMovies { get; } = new();
+    public ObservableCollection<Movie> PopularMovies { get; } = new();
+    public ObservableCollection<Movie> ComingSoonMovies { get; } = new();
     public ObservableCollection<string> Genres { get; }
 
     [ObservableProperty] private string _searchText = string.Empty;
@@ -35,11 +38,15 @@ public partial class HomeViewModel : ObservableObject
         {
             var list = await _movies.GetAllAsync();
             Movies.Clear();
-            FilteredMovies.Clear();
-            foreach (var m in list) { Movies.Add(m); FilteredMovies.Add(m); }
+            foreach (var m in list)
+                Movies.Add(m);
+
             ApplyFilters();
         }
-        finally { IsLoading = false; }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     partial void OnSearchTextChanged(string value) => ApplyFilters();
@@ -56,23 +63,60 @@ public partial class HomeViewModel : ObservableObject
         _session.SelectedShowtime = null;
         _session.SelectedDate = DateTime.Today;
         _session.SelectedSeats.Clear();
-        // Navigation to Theaters happens in code-behind via Shell route
         Shell.Current.GoToAsync("theaters");
     }
 
     private void ApplyFilters()
     {
-        FilteredMovies.Clear();
-        IEnumerable<Movie> q = Movies;
+        IEnumerable<Movie> query = Movies;
+
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
-            var s = SearchText.Trim();
-            q = q.Where(m =>
-                m.Title.Contains(s, StringComparison.OrdinalIgnoreCase) ||
-                m.PrimaryGenre.Contains(s, StringComparison.OrdinalIgnoreCase));
+            var search = SearchText.Trim();
+            query = query.Where(m =>
+                m.Title.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                m.PrimaryGenre.Contains(search, StringComparison.OrdinalIgnoreCase));
         }
+
         if (!string.IsNullOrWhiteSpace(SelectedGenre) && SelectedGenre != "All Genres")
-            q = q.Where(m => m.Genres.Contains(SelectedGenre, StringComparer.OrdinalIgnoreCase));
-        foreach (var m in q) FilteredMovies.Add(m);
+            query = query.Where(m => m.Genres.Contains(SelectedGenre, StringComparer.OrdinalIgnoreCase));
+
+        var filtered = query.ToList();
+
+        ReplaceItems(FilteredMovies, filtered);
+        ReplaceItems(FeaturedMovies, filtered.Where(m => m.IsNowShowing)
+            .OrderByDescending(GetRating)
+            .ThenBy(m => m.Title)
+            .Take(4));
+        ReplaceItems(PopularMovies, filtered.Where(m => m.IsNowShowing)
+            .OrderByDescending(GetRating)
+            .ThenBy(m => m.Title)
+            .Take(6));
+        ReplaceItems(ComingSoonMovies, filtered.Where(m => !m.IsNowShowing)
+            .OrderBy(m => ParseReleaseRank(m.ReleaseDate))
+            .ThenBy(m => m.Title)
+            .Take(6));
+    }
+
+    private static void ReplaceItems(ObservableCollection<Movie> target, IEnumerable<Movie> items)
+    {
+        target.Clear();
+        foreach (var item in items)
+            target.Add(item);
+    }
+
+    private static decimal GetRating(Movie movie)
+        => decimal.TryParse(movie.Rating, out var rating) ? rating : 0m;
+
+    private static int ParseReleaseRank(string releaseDate)
+    {
+        if (string.IsNullOrWhiteSpace(releaseDate))
+            return int.MaxValue;
+
+        var parts = releaseDate.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length < 2 || !int.TryParse(parts[1], out var day))
+            return int.MaxValue;
+
+        return day;
     }
 }
