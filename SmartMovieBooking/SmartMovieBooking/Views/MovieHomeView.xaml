@@ -495,7 +495,7 @@
                                                                 StrokeShape="RoundRectangle 12"
                                                                 Padding="10,6"
                                                                 HorizontalOptions="Start">
-                                                            <Label Text="{Binding Rating, StringFormat='★ {0}'}"
+                                                            <Label Text="{Binding ReleaseDate, StringFormat='RELEASE ON {0}'}"
                                                                    FontFamily="OpenSansSemibold"
                                                                    FontSize="12"
                                                                    TextColor="White" />
