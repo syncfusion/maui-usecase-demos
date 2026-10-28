@@ -428,7 +428,8 @@
                                                         Stroke="#38406F"
                                                         StrokeThickness="1"
                                                         StrokeShape="RoundRectangle 18">
-                                                    <Grid>
+                                                    <Grid RowDefinitions="Auto,*,Auto"
+                                                          Padding="12">
                                                         <Grid.Background>
                                                             <LinearGradientBrush StartPoint="0,0"
                                                                                  EndPoint="1,1">
@@ -437,19 +438,54 @@
                                                                 <GradientStop Color="#0C1220" Offset="1" />
                                                             </LinearGradientBrush>
                                                         </Grid.Background>
-                                                        <VerticalStackLayout HorizontalOptions="Center"
-                                                                             VerticalOptions="Center"
-                                                                             Spacing="10">
-                                                            <Label Text="🎬"
-                                                                   FontSize="52"
-                                                                   HorizontalTextAlignment="Center"
-                                                                   TextColor="#EAF0FF" />
-                                                            <Label Text="{Binding ReleaseDate, StringFormat='Releases {0}'}"
+                                                        <HorizontalStackLayout Grid.Row="0"
+                                                                               Spacing="8"
+                                                                               HorizontalOptions="Center">
+                                                            <Border Background="#5A63D7"
+                                                                    StrokeThickness="0"
+                                                                    StrokeShape="RoundRectangle 999"
+                                                                    Padding="12,6">
+                                                                <Label Text="FEATURED"
+                                                                       FontFamily="OpenSansSemibold"
+                                                                       FontSize="10"
+                                                                       TextColor="White" />
+                                                            </Border>
+                                                            <Border Background="#2A3266"
+                                                                    StrokeThickness="0"
+                                                                    StrokeShape="RoundRectangle 999"
+                                                                    Padding="12,6">
+                                                                <Label Text="{Binding Format}"
+                                                                       FontFamily="OpenSansSemibold"
+                                                                       FontSize="10"
+                                                                       TextColor="#EDEFFF" />
+                                                            </Border>
+                                                            <Border Background="#39457B"
+                                                                    StrokeThickness="0"
+                                                                    StrokeShape="RoundRectangle 999"
+                                                                    Padding="12,6">
+                                                                <Label Text="{Binding PrimaryGenre}"
+                                                                       FontFamily="OpenSansSemibold"
+                                                                       FontSize="10"
+                                                                       TextColor="#EDEFFF" />
+                                                            </Border>
+                                                        </HorizontalStackLayout>
+                                                        <Label Grid.Row="1"
+                                                               Text="🎬"
+                                                               FontSize="58"
+                                                               HorizontalTextAlignment="Center"
+                                                               VerticalTextAlignment="Center"
+                                                               TextColor="#EAF0FF" />
+                                                        <Border Grid.Row="2"
+                                                                Background="#6C72A1"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 12"
+                                                                Padding="10,6"
+                                                                HorizontalOptions="Start">
+                                                            <Label Text="{Binding Rating, StringFormat='★ {0}'}"
                                                                    FontFamily="OpenSansSemibold"
-                                                                   FontSize="11"
-                                                                   TextColor="#D5DDFB"
-                                                                   HorizontalTextAlignment="Center" />
-                                                        </VerticalStackLayout>
+                                                                   FontSize="12"
+                                                                   TextColor="White" />
+                                                        </Border>
                                                     </Grid>
                                                 </Border>
 
