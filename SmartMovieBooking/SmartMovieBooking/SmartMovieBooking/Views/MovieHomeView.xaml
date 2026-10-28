@@ -4,8 +4,8 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
-             xmlns:syncfusionCarousel="clr-namespace:Syncfusion.Maui.Carousel;assembly=Syncfusion.Maui.Carousel"
-             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+			 xmlns:rotator="clr-namespace:Syncfusion.Maui.Rotator;assembly=Syncfusion.Maui.Rotator"
+			 xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:chips="clr-namespace:Syncfusion.Maui.Toolkit.Chips;assembly=Syncfusion.Maui.Toolkit"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              xmlns:models="clr-namespace:SmartMovieBooking.Models"
@@ -100,12 +100,10 @@
                             </VerticalStackLayout>
                         </Grid>
 
-                        <syncfusionCarousel:SfCarousel ItemsSource="{Binding FeaturedMovies}"
-                                                       ItemWidth="560"
-                                                       ItemHeight="330"
+						<rotator:SfRotator ItemsSource="{Binding FeaturedMovies}"
                                                        HorizontalOptions="Fill"
                                                        VerticalOptions="Fill">
-                            <syncfusionCarousel:SfCarousel.ItemTemplate>
+                            <rotator:SfRotator.ItemTemplate>
                                 <DataTemplate x:DataType="models:Movie">
 									<Border Margin="0,0,12,0"
 											Stroke="#E9EBF5"
@@ -259,8 +257,8 @@
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
-                            </syncfusionCarousel:SfCarousel.ItemTemplate>
-                        </syncfusionCarousel:SfCarousel>
+                            </rotator:SfRotator.ItemTemplate>
+                        </rotator:SfRotator>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="12">
