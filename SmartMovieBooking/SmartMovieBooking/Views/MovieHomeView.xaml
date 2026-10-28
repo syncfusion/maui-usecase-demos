@@ -191,6 +191,15 @@
                                                                FontSize="10"
                                                                TextColor="#EDEFFF" />
                                                     </Border>
+                                                    <Border Background="#39457B"
+                                                            StrokeThickness="0"
+                                                            StrokeShape="RoundRectangle 999"
+                                                            Padding="12,5">
+                                                        <Label Text="{Binding PrimaryGenre}"
+                                                               FontFamily="OpenSansSemibold"
+                                                               FontSize="10"
+                                                               TextColor="#EDEFFF" />
+                                                    </Border>
                                                 </HorizontalStackLayout>
 
                                                 <VerticalStackLayout Spacing="6">

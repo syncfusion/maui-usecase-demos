@@ -69,30 +69,6 @@ public static class AppSeed
         {
             new()
             {
-                Id = "nebula-horizon",
-                Title = "Chronicles of Nebula: Horizon",
-                Tagline = "Across the void, beyond time.",
-                Synopsis = "An interstellar crew discovers a signal from the edge of the universe — and the past they tried to leave behind.",
-                PrimaryGenre = "Sci-Fi",
-                Genres = new() { "Sci-Fi", "Adventure", "Drama" },
-                Languages = new() { "English", "Hindi", "Tamil" },
-                Format = "IMAX 3D",
-                Rating = "9.2",
-                Duration = "2h 45m",
-                ReleaseDate = "Oct 24",
-                Certificate = "UA",
-                PriceRange = "$18.50 - $26.50",
-                IsNowShowing = true,
-                Description = "A breathtaking sci-fi epic that takes audiences on a journey through space and time.",
-                Cast = new()
-                {
-                    new() { Name = "Marcus Chen", Character = "Capt. Aris Vey", AvatarUrl = "" },
-                    new() { Name = "Elena Rodriguez", Character = "Dr. Lira Osei", AvatarUrl = "" },
-                    new() { Name = "Takeshi Yamamoto", Character = "Cmdr. Hiro Tanaka", AvatarUrl = "" }
-                }
-            },
-            new()
-            {
                 Id = "midnight-protocol",
                 Title = "Midnight Protocol",
                 Tagline = "Trust no one. Remember everything.",
