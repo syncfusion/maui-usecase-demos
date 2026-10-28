@@ -29,6 +29,7 @@
               Padding="{OnIdiom Default='24', Phone='12,12,12,0'}">
 
             <ScrollView Grid.Row="0"
+            VerticalScrollBarVisibility="Never"
                         VerticalOptions="Fill"
                         HorizontalOptions="Fill">
                 <VerticalStackLayout Spacing="24">
@@ -224,9 +225,7 @@
                                                                                 HeightRequest="44"
                                                                                 FontFamily="OpenSansSemibold"
                                                                                 FontSize="13"
-                                                                                CommandParameter="{Binding .}"
-                                                                                behaviors:AnimateOnTap.IsEnabled="True"
-                                                                                Clicked="OnPreviewClicked" />
+                                                                                behaviors:AnimateOnTap.IsEnabled="True" />
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
 
@@ -289,7 +288,7 @@
 											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
 											   BackgroundColor="Transparent"
 											   Orientation="Horizontal"
-											   HeightRequest="400"
+											   HeightRequest="390"
 											   ScrollBarVisibility="Never"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None">
@@ -417,7 +416,7 @@
 											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
 											   BackgroundColor="Transparent"
 											   Orientation="Horizontal"
-											   HeightRequest="400"
+											   HeightRequest="390"
 											   ScrollBarVisibility="Never"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None">
