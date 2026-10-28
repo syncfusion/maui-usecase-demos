@@ -209,8 +209,8 @@
                                                 </VerticalStackLayout>
 
                                                 <HorizontalStackLayout Spacing="10">
-                                                    <Border Background="#FFFFFF1F"
-                                                            StrokeThickness="0"
+													<Border Background="#6A7090"
+															StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 12"
                                                             Padding="10,6">
                                                         <Label Text="{Binding Rating, StringFormat='★ {0}'}"
@@ -218,8 +218,8 @@
                                                                FontSize="12"
                                                                TextColor="#9ED0FF" />
                                                     </Border>
-                                                    <Border Background="#FFFFFF1F"
-                                                            StrokeThickness="0"
+													<Border Background="#6A7090"
+															StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 12"
                                                             Padding="10,6">
                                                         <Label Text="{Binding Duration}"
@@ -227,8 +227,8 @@
                                                                FontSize="12"
                                                                TextColor="White" />
                                                     </Border>
-                                                    <Border Background="#FFFFFF1F"
-                                                            StrokeThickness="0"
+													<Border Background="#6A7090"
+															StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 12"
                                                             Padding="10,6">
                                                         <Label Text="{Binding Certificate}"
@@ -256,8 +256,8 @@
                                                                                 behaviors:AnimateOnTap.IsEnabled="True"
                                                                                 Clicked="OnBookNowClicked" />
                                                     <syncfusionButtons:SfButton Text="Trailer"
-                                                                                Background="#FFFFFF26"
-                                                                                TextColor="White"
+																				Background="#6A7090"
+																				TextColor="White"
                                                                                 CornerRadius="16"
                                                                                 HeightRequest="44"
                                                                                 FontFamily="OpenSansSemibold"
