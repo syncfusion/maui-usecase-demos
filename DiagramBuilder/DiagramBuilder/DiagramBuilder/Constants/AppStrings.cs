@@ -180,6 +180,19 @@ public static class AppStrings
     public const string PropertyHorizontalAlign = "Horizontal Alignment";
     public const string PropertyVerticalAlign = "Vertical Alignment";
 
+    // Border segment keys (used by PropertyPanelControl segmented control).
+    public const string PropertyBorderSolid = "Solid";
+    public const string PropertyBorderDashed = "Dashed";
+    public const string PropertyBorderDotted = "Dotted";
+
+    // Text alignment segment keys.
+    public const string PropertyAlignLeft = "Left";
+    public const string PropertyAlignCenter = "Center";
+    public const string PropertyAlignRight = "Right";
+    public const string PropertyAlignTop = "Top";
+    public const string PropertyAlignMiddle = "Middle";
+    public const string PropertyAlignBottom = "Bottom";
+
     // Export
     public const string ExportDialogTitle = "Export Diagram";
     public const string ExportFormatPng = "PNG";
@@ -200,6 +213,7 @@ public static class AppStrings
     public const string StatusReady = "Ready";
     public const string StatusSavedFormat = "{0} saved.";
     public const string StatusExportedFormat = "{0} exported.";
+    public const string StatusOpenedFormat = "{0} opened.";
     public const string StatusSelectionFormat = "{0} selected";
     public const string StatusNothingSelected = "Nothing selected";
     public const string StatusCommandExecuted = "{0} executed.";

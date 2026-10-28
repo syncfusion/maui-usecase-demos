@@ -4,16 +4,18 @@
              xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
              xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:models="clr-namespace:DiagramBuilder.Models"
+             xmlns:conv="clr-namespace:DiagramBuilder.Converters"
              x:Class="DiagramBuilder.Views.CreateDiagramPage"
              Title="{Binding Title}"
              BackgroundColor="Transparent">
 
     <Grid>
+        <!-- Modal scrim -->
         <Grid BackgroundColor="{DynamicResource ModalScrim}" />
 
         <Border HorizontalOptions="Center"
                 VerticalOptions="Center"
-                WidthRequest="970"
+                WidthRequest="980"
                 HeightRequest="640"
                 BackgroundColor="{DynamicResource WindowBackground}"
                 Stroke="{DynamicResource PanelBorderBrush}"
@@ -23,43 +25,54 @@
             </Border.StrokeShape>
 
             <Grid RowDefinitions="Auto,*">
+                <!-- Header row -->
                 <Grid Padding="24,18,20,12"
                       ColumnDefinitions="*,Auto">
-                    <Label Text="{Binding Title}"
-                           FontSize="28"
-                           TextColor="{DynamicResource TextPrimary}" />
+                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                        <Label Text="{Binding Title}"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}" />
+                        <Label Text="{Binding Subtitle}"
+                               FontSize="12"
+                               TextColor="{DynamicResource TextSecondary}" />
+                    </VerticalStackLayout>
                     <Button Grid.Column="1"
-                            Text="x"
-                            WidthRequest="28"
-                            HeightRequest="28"
+                            Text="&#x2715;"
+                            WidthRequest="32"
+                            HeightRequest="32"
                             Padding="0"
                             BackgroundColor="Transparent"
-                            TextColor="{DynamicResource TextPrimary}"
-                            FontSize="18"
+                            TextColor="{DynamicResource TextSecondary}"
+                            FontSize="14"
+                            AutomationId="create_close"
                             Clicked="OnCloseClicked" />
                 </Grid>
 
+                <!-- Body: category rail + template list -->
                 <Grid Grid.Row="1"
-                      ColumnDefinitions="280,*">
-                    <!-- left category rail -->
+                      ColumnDefinitions="240,*">
+                    <!-- Left category rail -->
                     <Border BackgroundColor="{DynamicResource CategoryRailBackground}"
                             StrokeThickness="0"
-                            Padding="0,16">
+                            Padding="0,12">
                         <CollectionView ItemsSource="{Binding Categories}"
                                         SelectionMode="None">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Margin="0,0,0,8"
-                                            HeightRequest="50"
-                                            Padding="18,0"
+                                    <Border Margin="0,2,0,2"
+                                            Padding="18,12,18,12"
                                             BackgroundColor="Transparent">
                                         <Grid ColumnDefinitions="3,*"
                                               VerticalOptions="Center">
-                                            <BoxView WidthRequest="3"
-                                                     BackgroundColor="Transparent" />
+                                            <BoxView x:Name="AccentBar"
+                                                     WidthRequest="3"
+                                                     HeightRequest="20"
+                                                     Color="{Binding Converter={StaticResource CategoryAccentConverter}}"
+                                                     VerticalOptions="Center" />
                                             <Label Grid.Column="1"
                                                    Text="{Binding .}"
-                                                   FontSize="17"
+                                                   FontSize="15"
                                                    TextColor="{DynamicResource TextPrimary}"
                                                    VerticalOptions="Center" />
                                         </Grid>
@@ -67,170 +80,153 @@
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCategoryCommand}"
                                                                   CommandParameter="{Binding .}" />
                                         </Border.GestureRecognizers>
-
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
                     </Border>
 
-                    <!-- right template panel -->
+                    <!-- Right template panel -->
                     <ScrollView Grid.Column="1">
-                        <VerticalStackLayout Padding="56,24,56,24" Spacing="28">
-                            <Label Text="Empty Diagram"
-                                   FontSize="14"
-                                   TextColor="{DynamicResource TextSecondary}" />
+                        <VerticalStackLayout Padding="40,20,40,20" Spacing="20">
 
-                            <Border WidthRequest="280"
-                                    HeightRequest="250"
-                                    Stroke="{DynamicResource PanelBorderBrush}"
-                                    StrokeThickness="1"
-                                    BackgroundColor="{DynamicResource CanvasBackground}">
-                                <Border.StrokeShape>
-                                    <shapes:RoundRectangle CornerRadius="0" />
-                                </Border.StrokeShape>
-                                <Grid RowDefinitions="*,Auto"
-                                      Padding="24,24,24,14">
-                                    <Grid RowDefinitions="Auto,Auto,Auto"
-                                          ColumnDefinitions="*,*,*"
-                                          ColumnSpacing="10"
-                                          RowSpacing="18"
-                                          HorizontalOptions="Center"
-                                          VerticalOptions="Center">
-                                        <Border Grid.Row="0" Grid.Column="1"
-                                                WidthRequest="72" HeightRequest="42"
-                                                BackgroundColor="{DynamicResource CanvasBackground}"
-                                                Stroke="{DynamicResource PanelBorderColor}"
-                                                StrokeThickness="1" />
-                                        <Border Grid.Row="1" Grid.Column="0"
-                                                WidthRequest="72" HeightRequest="42"
-                                                BackgroundColor="{DynamicResource CanvasBackground}"
-                                                Stroke="{DynamicResource PanelBorderColor}"
-                                                StrokeThickness="1" />
-                                        <Border Grid.Row="1" Grid.Column="2"
-                                                WidthRequest="72" HeightRequest="42"
-                                                BackgroundColor="{DynamicResource CanvasBackground}"
-                                                Stroke="{DynamicResource PanelBorderColor}"
-                                                StrokeThickness="1" />
-                                        <BoxView Grid.Row="0" Grid.Column="1"
-                                                 WidthRequest="2"
-                                                 HeightRequest="18"
-                                                 Color="{DynamicResource ThumbnailGridLine}"
-                                                 TranslationY="42" />
-                                        <BoxView Grid.Row="1" Grid.Column="0"
-                                                 WidthRequest="28"
-                                                 HeightRequest="2"
-                                                 Color="{DynamicResource ThumbnailGridLine}"
-                                                 TranslationX="72"
-                                                 TranslationY="-21" />
-                                        <BoxView Grid.Row="1" Grid.Column="2"
-                                                 WidthRequest="28"
-                                                 HeightRequest="2"
-                                                 Color="{DynamicResource ThumbnailGridLine}"
-                                                 TranslationX="-28"
-                                                 TranslationY="-21" />
-                                        <Label Grid.Row="2" Grid.ColumnSpan="3"
-                                               Text=""
-                                               HeightRequest="20" />
+                            <!-- Blank section -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Blank"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       CharacterSpacing="1"
+                                       TextColor="{DynamicResource TextSecondary}" />
+                                <Border Stroke="{DynamicResource PanelBorderBrush}"
+                                        StrokeThickness="1"
+                                        Padding="0"
+                                        BackgroundColor="{DynamicResource CanvasBackground}"
+                                        WidthRequest="640"
+                                        HeightRequest="170">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="6" />
+                                    </Border.StrokeShape>
+                                    <Grid ColumnDefinitions="*,Auto" Padding="20,20,20,20">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                                            <Label Text="{Binding EmptyDiagramTemplate.Title, FallbackValue=Blank Diagram}"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource TextPrimary}" />
+                                            <Label Text="{Binding EmptyDiagramTemplate.Description, FallbackValue=Start with an empty canvas.}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource TextSecondary}"
+                                                   LineBreakMode="WordWrap" />
+                                        </VerticalStackLayout>
+                                        <Button Grid.Column="1"
+                                                Text="{x:Static constants:AppStrings.CreateAction}"
+                                                WidthRequest="100"
+                                                HeightRequest="36"
+                                                VerticalOptions="Center"
+                                                BackgroundColor="{Binding EmptyDiagramTemplate.AccentColorKey, Converter={StaticResource ColorToBrushConverter}}"
+                                                TextColor="White"
+                                                AutomationId="create_blank"
+                                                Command="{Binding CreateDiagramCommand}"
+                                                CommandParameter="{Binding EmptyDiagramTemplate}" />
                                     </Grid>
-                                    <Label Grid.Row="1"
-                                           Text="Empty Diagram"
-                                           HorizontalOptions="Center"
-                                           TextColor="{DynamicResource TextPrimary}"
-                                           FontSize="17" />
-                                </Grid>
-                            </Border>
+                                </Border>
+                            </VerticalStackLayout>
 
-                            <Label Text="Predefined Template"
-                                   FontSize="14"
-                                   TextColor="{DynamicResource TextSecondary}" />
-
-                            <CollectionView ItemsSource="{Binding PredefinedTemplates}"
-                                            SelectionMode="None">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:DiagramTemplate">
-                                        <Border Margin="0,0,0,8"
-                                                WidthRequest="280"
-                                                HeightRequest="260"
-                                                Stroke="{DynamicResource PanelBorderBrush}"
-                                                StrokeThickness="1"
-                                                BackgroundColor="{DynamicResource CanvasBackground}">
-                                            <Border.StrokeShape>
-                                                <shapes:RoundRectangle CornerRadius="0" />
-                                            </Border.StrokeShape>
-                                            <Grid RowDefinitions="*,Auto"
-                                                  Padding="18,18,18,12">
-                                                <Grid>
-                                                    <Border WidthRequest="220"
-                                                            HeightRequest="170"
-                                                            BackgroundColor="{DynamicResource CanvasBackground}"
-                                                            Stroke="{DynamicResource ThumbnailPlaceholderStroke}"
-                                                            StrokeThickness="1"
-                                                            HorizontalOptions="Center"
-                                                            VerticalOptions="Center">
-                                                        <Border.StrokeShape>
-                                                            <shapes:RoundRectangle CornerRadius="0" />
-                                                        </Border.StrokeShape>
-                                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto"
-                                                              ColumnDefinitions="Auto,*,Auto"
-                                                              RowSpacing="10"
-                                                              ColumnSpacing="12"
-                                                              Padding="20,22">
-                                                            <Border Grid.Row="0" Grid.Column="1"
-                                                                    WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
-                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
-                                                                    StrokeThickness="1" />
-                                                            <Border Grid.Row="1" Grid.Column="0"
-                                                                    WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
-                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
-                                                                    StrokeThickness="1" />
-                                                            <Border Grid.Row="1" Grid.Column="2"
-                                                                    WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
-                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
-                                                                    StrokeThickness="1" />
-                                                            <Border Grid.Row="2" Grid.Column="1"
-                                                                    WidthRequest="74" HeightRequest="34"
-                                                                    BackgroundColor="{DynamicResource ThumbnailNodeFill}"
-                                                                    Stroke="{DynamicResource ThumbnailNodeStroke}"
-                                                                    StrokeThickness="1" />
-                                                            <BoxView Grid.Row="0" Grid.Column="1"
-                                                                     WidthRequest="2" HeightRequest="14"
-                                                                     Color="{DynamicResource ThumbnailWireColor}"
-                                                                     TranslationY="34" />
-                                                            <BoxView Grid.Row="1" Grid.Column="0"
-                                                                     WidthRequest="32" HeightRequest="2"
-                                                                     Color="{DynamicResource ThumbnailWireColor}"
-                                                                     TranslationX="74"
-                                                                     TranslationY="-17" />
-                                                            <BoxView Grid.Row="1" Grid.Column="2"
-                                                                     WidthRequest="32" HeightRequest="2"
-                                                                     Color="{DynamicResource ThumbnailWireColor}"
-                                                                     TranslationX="-32"
-                                                                     TranslationY="-17" />
-                                                            <BoxView Grid.Row="2" Grid.Column="1"
-                                                                     WidthRequest="2" HeightRequest="14"
-                                                                     Color="{DynamicResource ThumbnailWireColor}"
-                                                                     TranslationY="34" />
+                            <!-- Predefined section -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Predefined Templates"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       CharacterSpacing="1"
+                                       TextColor="{DynamicResource TextSecondary}" />
+                                <CollectionView ItemsSource="{Binding PredefinedTemplates}"
+                                                SelectionMode="None">
+                                    <CollectionView.ItemsLayout>
+                                        <LinearItemsLayout ItemSpacing="12"
+                                                            Orientation="Vertical" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:DiagramTemplate">
+                                            <Border Stroke="{DynamicResource PanelBorderBrush}"
+                                                    StrokeThickness="1"
+                                                    Padding="0"
+                                                    BackgroundColor="{DynamicResource CanvasBackground}"
+                                                    HeightRequest="160"
+                                                    WidthRequest="640">
+                                                <Border.StrokeShape>
+                                                    <shapes:RoundRectangle CornerRadius="6" />
+                                                </Border.StrokeShape>
+                                                <Grid ColumnDefinitions="160,*,Auto" Padding="0,0,0,0">
+                                                    <!-- Thumbnail area (left, accent color stripe) -->
+                                                    <Grid Grid.Column="0">
+                                                        <BoxView Color="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}" />
+                                                        <Grid HorizontalOptions="Center" VerticalOptions="Center"
+                                                              WidthRequest="110" HeightRequest="110">
+                                                            <Border BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="White"
+                                                                    StrokeThickness="2"
+                                                                    WidthRequest="50" HeightRequest="30"
+                                                                    HorizontalOptions="Center"
+                                                                    VerticalOptions="Center"
+                                                                    TranslationY="-30" />
+                                                            <BoxView Color="White"
+                                                                     WidthRequest="2" HeightRequest="20"
+                                                                     HorizontalOptions="Center"
+                                                                     VerticalOptions="Center"
+                                                                     TranslationY="-10" />
+                                                            <Border BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="White"
+                                                                    StrokeThickness="2"
+                                                                    WidthRequest="44" HeightRequest="30"
+                                                                    HorizontalOptions="Start"
+                                                                    VerticalOptions="Center"
+                                                                    TranslationX="-12"
+                                                                    TranslationY="20" />
+                                                            <Border BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="White"
+                                                                    StrokeThickness="2"
+                                                                    WidthRequest="44" HeightRequest="30"
+                                                                    HorizontalOptions="End"
+                                                                    VerticalOptions="Center"
+                                                                    TranslationX="12"
+                                                                    TranslationY="20" />
                                                         </Grid>
-                                                    </Border>
+                                                    </Grid>
+
+                                                    <!-- Text content -->
+                                                    <VerticalStackLayout Grid.Column="1" Padding="20,16,12,16" Spacing="6" VerticalOptions="Center">
+                                                        <Label Text="{Binding Title}"
+                                                               FontSize="15"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{DynamicResource TextPrimary}" />
+                                                        <Label Text="{Binding Description}"
+                                                               FontSize="12"
+                                                               TextColor="{DynamicResource TextSecondary}"
+                                                               LineBreakMode="WordWrap"
+                                                               MaxLines="2" />
+                                                        <Label Text="{Binding Nodes.Count, StringFormat='{0} shapes'}"
+                                                               FontSize="11"
+                                                               TextColor="{DynamicResource TextSecondary}" />
+                                                    </VerticalStackLayout>
+
+                                                    <!-- Create button -->
+                                                    <Button Grid.Column="2"
+                                                            Text="{x:Static constants:AppStrings.CreateAction}"
+                                                            WidthRequest="100"
+                                                            HeightRequest="36"
+                                                            Margin="0,0,20,0"
+                                                            VerticalOptions="Center"
+                                                            BackgroundColor="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}"
+                                                            TextColor="White"
+                                                            AutomationId="create_predefined"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CreateDiagramCommand}"
+                                                            CommandParameter="{Binding .}" />
                                                 </Grid>
-                                                <Label Grid.Row="1"
-                                                       Text="{Binding Title}"
-                                                       FontSize="16"
-                                                       HorizontalTextAlignment="Center"
-                                                       TextColor="{DynamicResource TextPrimary}" />
-                                                <Grid.GestureRecognizers>
-                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CreateDiagramCommand}"
-                                                                          CommandParameter="{Binding .}" />
-                                                </Grid.GestureRecognizers>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+
                         </VerticalStackLayout>
                     </ScrollView>
                 </Grid>

@@ -50,8 +50,7 @@
 	<ItemGroup>
 		<!-- Files whose bindings resolve against App-level resources (cross-dictionary
 		     StaticResource / converters) exceed what the SourceGen inflator can parse
-		     standalone; use classic runtime inflation for them instead
-		     (see MauiXamlInflator docs above). -->
+		     standalone; use classic runtime inflation for them instead. -->
 		<MauiXaml Update="Controls\StencilPanelControl.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Controls\PropertyPanelControl.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Controls\DiagramWorkspaceControl.xaml" Inflator="Runtime" />

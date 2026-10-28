@@ -178,3 +178,25 @@ public class InvertBoolConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
         value is bool b ? !b : false;
 }
+
+/// <summary>
+/// Maps a category display name (the items in <see cref="Constants.AppStrings"/>) to its
+/// accent color so the left rail can show a colored bar per category.
+/// </summary>
+public class CategoryAccentConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var key = value switch
+        {
+            Constants.AppStrings.CategoryFlowChart => Constants.ResourceKeys.AccentFlow,
+            Constants.AppStrings.CategoryMindMap => Constants.ResourceKeys.AccentMindMap,
+            Constants.AppStrings.CategoryOrganizationChart => Constants.ResourceKeys.AccentOrgChart,
+            _ => Constants.ResourceKeys.PrimaryColor,
+        };
+        return Services.ResourceLookup.Color(key, Colors.White);
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}

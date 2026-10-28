@@ -18,6 +18,7 @@
             <converters:ZoomToPercentConverter x:Key="ZoomToPercentConverter" />
             <converters:SelectionKindToVisibilityConverter x:Key="SelectionKindToVisibilityConverter" />
             <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
+            <converters:CategoryAccentConverter x:Key="CategoryAccentConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

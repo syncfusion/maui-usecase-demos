@@ -54,7 +54,8 @@
 
         <!-- Canvas (center, fill) -->
         <controls:DiagramWorkspaceControl x:Name="Workspace"
-                                           Grid.Row="3" Grid.Column="1" />
+                                           Grid.Row="3" Grid.Column="1"
+                                           PaletteGroups="{Binding Stencil.PaletteGroups}" />
 
         <!-- Properties (right, 320 px, collapsible) -->
         <controls:PropertyPanelControl Grid.Row="3" Grid.Column="2"

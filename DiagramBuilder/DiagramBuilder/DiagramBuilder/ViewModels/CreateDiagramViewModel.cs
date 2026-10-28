@@ -47,6 +47,10 @@ public partial class CreateDiagramViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<DiagramTemplate> templates = [];
 
+    /// <summary>Set to true when the page should pop (raised after a successful create).</summary>
+    [ObservableProperty]
+    private bool closeRequested;
+
     public string SelectedCategoryName => SelectedCategory.ToString();
 
     public DiagramTemplate? EmptyDiagramTemplate => Templates.FirstOrDefault(t => t.Category == SelectedCategory && t.IsBlank);
@@ -103,6 +107,6 @@ public partial class CreateDiagramViewModel : ObservableObject
         }
 
         await _diagramService.CreateDocumentAsync(template);
-        await Shell.Current.GoToAsync(AppConstants.RouteDesigner);
+        CloseRequested = true;
     }
 }
