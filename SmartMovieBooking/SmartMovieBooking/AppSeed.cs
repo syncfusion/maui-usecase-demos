@@ -220,6 +220,58 @@ public static class AppSeed
                 PriceRange = "$16.00 - $22.00",
                 IsNowShowing = false
             }
+            ,
+            new()
+            {
+                Id = "moonlit-archive",
+                Title = "Moonlit Archive",
+                Tagline = "Some secrets only surface at night.",
+                Synopsis = "A night librarian discovers a hidden archive of letters that predict tomorrow.",
+                PrimaryGenre = "Mystery",
+                Genres = new() { "Mystery", "Drama", "Fantasy" },
+                Languages = new() { "English" },
+                Format = "Standard 2D",
+                Rating = "8.1",
+                Duration = "2h 03m",
+                ReleaseDate = "Dec 5",
+                Certificate = "UA",
+                PriceRange = "$14.00 - $18.00",
+                IsNowShowing = false
+            },
+            new()
+            {
+                Id = "afterglow-run",
+                Title = "Afterglow Run",
+                Tagline = "Every chase has a reason.",
+                Synopsis = "A courier races across a neon city to deliver a message that could change everything.",
+                PrimaryGenre = "Action",
+                Genres = new() { "Action", "Thriller", "Sci-Fi" },
+                Languages = new() { "English", "Japanese" },
+                Format = "IMAX",
+                Rating = "7.9",
+                Duration = "1h 51m",
+                ReleaseDate = "Dec 12",
+                Certificate = "A",
+                PriceRange = "$15.00 - $20.00",
+                IsNowShowing = false
+            },
+            new()
+            {
+                Id = "tidebreakers",
+                Title = "Tidebreakers",
+                Tagline = "The ocean remembers who was there.",
+                Synopsis = "A coastal town faces a storm that reveals a buried ship and an impossible crew.",
+                PrimaryGenre = "Adventure",
+                Genres = new() { "Adventure", "Drama", "Mystery" },
+                Languages = new() { "English", "French" },
+                Format = "Dolby Cinema",
+                Rating = "8.0",
+                Duration = "2h 07m",
+                ReleaseDate = "Dec 19",
+                Certificate = "UA",
+                PriceRange = "$16.00 - $21.00",
+                IsNowShowing = false
+            }
         };
     }
 
