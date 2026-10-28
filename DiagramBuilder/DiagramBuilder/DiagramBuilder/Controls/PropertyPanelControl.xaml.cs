@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using DiagramBuilder.Constants;
 using DiagramBuilder.Models;
 using DiagramBuilder.ViewModels;
 
@@ -200,12 +201,10 @@ public partial class PropertyPanelControl : ContentView
             ColorValue = model.Value as string ?? string.Empty,
             AutomationId = "property_" + model.Key,
         };
-        picker.ColorChanged += (_, _) =>
+        picker.ColorChanged += (_, key) =>
         {
-            if (model.Value is string s)
-            {
-                // Color is updated in-place on the model so Apply passes it through.
-            }
+            // Picker has updated its own ColorValue; mirror into the model so Apply sees it.
+            model.Value = key;
             if (vm.ApplyCommand.CanExecute(model))
             {
                 vm.ApplyCommand.Execute(model);
@@ -254,12 +253,10 @@ public partial class PropertyPanelControl : ContentView
 
         if (editor is ColorPickerButton picker)
         {
-            picker.ColorChanged += (_, args) =>
+            picker.ColorChanged += (_, key) =>
             {
-                if (args is not null && args is not TappedEventArgs)
-                {
-                    // Picker already updates ColorValue; reflect into model.
-                }
+                // Picker already updates its own ColorValue; mirror into the model so Apply sees it.
+                model.Value = key;
                 if (vm.ApplyCommand.CanExecute(model))
                 {
                     vm.ApplyCommand.Execute(model);
@@ -476,8 +473,9 @@ public partial class PropertyPanelControl : ContentView
 
     private static View BuildSegmented(string[] options, string selected, string automationId)
     {
+        // Wrap each segment in a Border so we can apply Stroke / StrokeThickness
+        // (Button doesn't expose those — only BorderColor / BorderWidth).
         var stack = new HorizontalStackLayout { Spacing = 0 };
-        var first = true;
         foreach (var opt in options)
         {
             var btn = new Button
@@ -493,11 +491,10 @@ public partial class PropertyPanelControl : ContentView
                 TextColor = opt == selected
                     ? Colors.White
                     : (Color)Application.Current!.Resources["TextPrimary"],
-                Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
-                StrokeThickness = 1,
+                BorderColor = (Color)Application.Current!.Resources["PanelBorderColor"],
+                BorderWidth = 1,
                 AutomationId = automationId + "_" + opt,
             };
-            first = false;
             stack.Children.Add(btn);
         }
         return stack;

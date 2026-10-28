@@ -45,9 +45,12 @@ public partial class DiagramDesignerPage : ContentPage
                 viewModel.ApplySelection(sp.NodeIds, sp.ConnectorIds);
             }
         });
-        Workspace.GeometryChangedCommand = viewModel.OnGeometryChangedCommand;
-        Workspace.AnnotationEditedCommand = viewModel.OnAnnotationEditedCommand;
-        Workspace.CollectionChangedCommand = viewModel.OnCollectionChangedCommand;
+        // CommunityToolkit.Mvvm strips the leading "On" when generating [RelayCommand] names,
+        // so OnGeometryChanged / OnAnnotationEdited / OnCollectionChanged produce commands
+        // named GeometryChangedCommand / AnnotationEditedCommand / CollectionChangedCommand.
+        Workspace.GeometryChangedCommand = viewModel.GeometryChangedCommand;
+        Workspace.AnnotationEditedCommand = viewModel.AnnotationEditedCommand;
+        Workspace.CollectionChangedCommand = viewModel.CollectionChangedCommand;
 
         // Wire panel-header chevrons to the show/hide relay commands.
         StencilPanel.Header.ToggleCommand = new Command(() => viewModel.ShowStencil = !viewModel.ShowStencil);
