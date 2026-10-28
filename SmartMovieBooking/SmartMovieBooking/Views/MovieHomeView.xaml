@@ -112,6 +112,14 @@
                                             StrokeThickness="1"
                                             StrokeShape="RoundRectangle 28"
                                             Background="White">
+                                        <Border.Behaviors>
+                                            <behaviors:HoverAnimationBehavior />
+                                            <behaviors:TapAnimationBehavior />
+                                        </Border.Behaviors>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnMovieCardTapped"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
                                         <Grid ColumnDefinitions="1.2*,0.8*"
                                               Padding="22"
                                               BackgroundColor="#1A2352">
@@ -431,6 +439,14 @@
                                                 StrokeShape="RoundRectangle 22"
                                                 Background="White"
                                                 Padding="10">
+                                            <Border.Behaviors>
+                                                <behaviors:HoverAnimationBehavior />
+                                                <behaviors:TapAnimationBehavior />
+                                            </Border.Behaviors>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnMovieCardTapped"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Border.GestureRecognizers>
                                             <VerticalStackLayout Spacing="10">
                                                 <Border HeightRequest="250"
                                                         Stroke="#38406F"
