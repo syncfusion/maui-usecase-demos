@@ -329,100 +329,92 @@
                             </VerticalStackLayout>
                         </Grid>
 
-						<syncfusion:SfListView ItemsSource="{Binding PopularMovies}"
-											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
-											   BackgroundColor="Transparent"
-											   Orientation="Horizontal"
-											   HeightRequest="{OnIdiom Default='240', Phone='62'}"
-											   ScrollBarVisibility="Never"
-											   AutoFitMode="DynamicHeight"
-											   SelectionMode="None">
-							<syncfusion:SfListView.ItemsLayout>
-								<syncfusion:GridLayout SpanCount="1" />
-							</syncfusion:SfListView.ItemsLayout>
-							<syncfusion:SfListView.ItemTemplate>
+                        <syncfusion:SfListView ItemsSource="{Binding PopularMovies}"
+                                               ItemSpacing="16"
+                                               BackgroundColor="Transparent"
+                                               Orientation="Horizontal"
+                                               HeightRequest="280"
+                                               ScrollBarVisibility="Never"
+                                               AutoFitMode="DynamicHeight"
+                                               SelectionMode="None">
+                            <syncfusion:SfListView.ItemsLayout>
+                                <syncfusion:GridLayout SpanCount="1" />
+                            </syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Movie">
-                                    <Border WidthRequest="220"
-                                            Stroke="#ECECF4"
-                                            StrokeThickness="1"
-                                            StrokeShape="RoundRectangle 24"
-                                            Background="White"
-                                            Padding="0">
-                                        <VerticalStackLayout Spacing="0">
-                                            <Grid HeightRequest="260">
-                                                <Grid.Background>
-                                                    <LinearGradientBrush StartPoint="0,0"
-                                                                         EndPoint="1,1">
-                                                        <GradientStop Color="#10182F" Offset="0" />
-                                                        <GradientStop Color="#2A335B" Offset="1" />
-                                                    </LinearGradientBrush>
-                                                </Grid.Background>
-                                                <VerticalStackLayout Padding="14" Spacing="8">
-                                                    <HorizontalStackLayout>
-                                                        <Border Background="#3E4CA6"
-                                                                StrokeThickness="0"
-                                                                StrokeShape="RoundRectangle 999"
-                                                                Padding="10,4">
-                                                            <Label Text="NOW SHOWING"
-                                                                   FontFamily="OpenSansSemibold"
-                                                                   FontSize="9"
-                                                                   TextColor="#F4F6FF" />
-                                                        </Border>
-                                                        <Border Background="#29346F"
-                                                                StrokeThickness="0"
-                                                                StrokeShape="RoundRectangle 999"
-                                                                Padding="10,4"
-                                                                HorizontalOptions="EndAndExpand">
-                                                            <Label Text="{Binding Rating, StringFormat='★ {0}'}"
-                                                                   FontFamily="OpenSansSemibold"
-                                                                   FontSize="9"
-                                                                   TextColor="#9ED0FF" />
-                                                        </Border>
-                                                    </HorizontalStackLayout>
+                                    <Border WidthRequest="270"
+                                            HeightRequest="278"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 30">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0"
+                                                                 EndPoint="1,1">
+                                                <GradientStop Color="#1A2044" Offset="0" />
+                                                <GradientStop Color="#263061" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <Grid Padding="18"
+                                              RowDefinitions="Auto,Auto,*"
+                                              RowSpacing="12">
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Border Background="#4954BE"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        Padding="12,6">
+                                                    <Label Text="NOW SHOWING"
+                                                           FontFamily="OpenSansSemibold"
+                                                           FontSize="10"
+                                                           TextColor="White" />
+                                                </Border>
+                                                <Border Background="#33448F"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        Padding="12,6">
+                                                    <Label Text="{Binding Rating, StringFormat='★ {0}'}"
+                                                           FontFamily="OpenSansSemibold"
+                                                           FontSize="10"
+                                                           TextColor="#A8C8FF" />
+                                                </Border>
+                                            </HorizontalStackLayout>
 
-                                                    <VerticalStackLayout VerticalOptions="EndAndExpand" Spacing="8">
-                                                        <Label Text="{Binding Title}"
-                                                               FontFamily="OpenSansSemibold"
-                                                               FontSize="18"
-                                                               FontAttributes="Bold"
-                                                               LineBreakMode="TailTruncation"
-                                                               MaxLines="2"
-                                                               TextColor="White" />
-                                                        <Label Text="{Binding Tagline}"
-                                                               FontSize="12"
-                                                               LineBreakMode="TailTruncation"
-                                                               MaxLines="2"
-                                                               TextColor="#D9DCF4" />
-                                                    </VerticalStackLayout>
-                                                </VerticalStackLayout>
-                                            </Grid>
+                                            <VerticalStackLayout Grid.Row="1" Spacing="10">
+                                                <Label Text="{Binding Title}"
+                                                       FontFamily="OpenSansSemibold"
+                                                       FontSize="22"
+                                                       FontAttributes="Bold"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="2"
+                                                       TextColor="White" />
+                                                <Label Text="{Binding Tagline}"
+                                                       FontSize="14"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="3"
+                                                       TextColor="#DEE5FF" />
+                                            </VerticalStackLayout>
 
-                                            <VerticalStackLayout Padding="14"
-                                                                 Spacing="8">
-                                                <HorizontalStackLayout Spacing="8">
+                                            <HorizontalStackLayout Grid.Row="2"
+                                                                   VerticalOptions="End"
+                                                                   Spacing="10">
+                                                <Border Background="#FFFFFF14"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        Padding="10,6">
                                                     <Label Text="{Binding PrimaryGenre}"
                                                            FontFamily="OpenSansSemibold"
-                                                           FontSize="12"
-                                                           TextColor="#6A7090" />
-                                                    <Label Text="·"
-                                                           TextColor="#6A7090" />
+                                                           FontSize="11"
+                                                           TextColor="#E9ECFF" />
+                                                </Border>
+                                                <Border Background="#FFFFFF14"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        Padding="10,6">
                                                     <Label Text="{Binding Duration}"
                                                            FontFamily="OpenSansSemibold"
-                                                           FontSize="12"
-                                                           TextColor="#6A7090" />
-                                                </HorizontalStackLayout>
-                                                <syncfusionButtons:SfButton Text="Book Tickets"
-                                                                            Background="#5B4BE3"
-                                                                            TextColor="White"
-                                                                            CornerRadius="16"
-                                                                            HeightRequest="42"
-                                                                            FontFamily="OpenSansSemibold"
-                                                                            FontSize="13"
-                                                                            CommandParameter="{Binding .}"
-                                                                            behaviors:AnimateOnTap.IsEnabled="True"
-                                                                            Clicked="OnBookNowClicked" />
-                                            </VerticalStackLayout>
-                                        </VerticalStackLayout>
+                                                           FontSize="11"
+                                                           TextColor="#E9ECFF" />
+                                                </Border>
+                                            </HorizontalStackLayout>
+                                        </Grid>
                                     </Border>
                                 </DataTemplate>
                             </syncfusion:SfListView.ItemTemplate>
@@ -432,97 +424,82 @@
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <VerticalStackLayout Spacing="4">
-                                <HorizontalStackLayout Spacing="8">
-                                    <BoxView WidthRequest="8"
-                                             CornerRadius="4"
-                                             Color="#5663D6"
-                                             VerticalOptions="Center" />
-                                    <Label Text="Coming Soon"
-                                           FontFamily="OpenSansSemibold"
-                                           FontSize="22"
-                                           FontAttributes="Bold"
-                                           TextColor="#17182B" />
-                                </HorizontalStackLayout>
+                                <Label Text="Coming Soon"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="22"
+                                       FontAttributes="Bold"
+                                       TextColor="#1A1D33" />
                                 <Label Text="Upcoming premieres and next-month releases"
                                        FontSize="13"
                                        TextColor="#5C5F76" />
                             </VerticalStackLayout>
                         </Grid>
 
-						<syncfusion:SfListView ItemsSource="{Binding ComingSoonMovies}"
-                                                   SelectionMode="None"
-                                                   Orientation="Horizontal"
-                                                   ItemSpacing="14"
-                                                   ScrollBarVisibility="Never"
-                                                   HeightRequest="370">
-                                <syncfusion:SfListView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:Movie">
-                                        <Border WidthRequest="190"
-                                                Stroke="#ECECF4"
-                                                StrokeThickness="1"
-                                                StrokeShape="RoundRectangle 22"
-                                                Background="White"
-                                                Padding="10">
-                                            <VerticalStackLayout Spacing="10">
-                                                <Border HeightRequest="250"
-                                                        Stroke="#38406F"
-                                                        StrokeThickness="1"
-                                                        StrokeShape="RoundRectangle 18">
-                                                    <Grid>
-                                                        <Grid.Background>
-                                                            <LinearGradientBrush StartPoint="0,0"
-                                                                                 EndPoint="1,1">
-                                                                <GradientStop Color="#142C45" Offset="0" />
-                                                                <GradientStop Color="#203B58" Offset="0.55" />
-                                                                <GradientStop Color="#0C1220" Offset="1" />
-                                                            </LinearGradientBrush>
-                                                        </Grid.Background>
-                                                        <VerticalStackLayout HorizontalOptions="Center"
-                                                                             VerticalOptions="Center"
-                                                                             Spacing="10">
-                                                            <Label Text="🎬"
-                                                                   FontSize="52"
-                                                                   HorizontalTextAlignment="Center"
-                                                                   TextColor="#EAF0FF" />
-                                                            <Label Text="{Binding ReleaseDate, StringFormat='Releases {0}'}"
+                        <syncfusion:SfListView ItemsSource="{Binding ComingSoonMovies}"
+                                               SelectionMode="None"
+                                               Orientation="Horizontal"
+                                               ItemSpacing="14"
+                                               ScrollBarVisibility="Never"
+                                               HeightRequest="330">
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Movie">
+                                    <Border WidthRequest="180"
+                                            Stroke="#E7EAF2"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 22"
+                                            Background="White"
+                                            Padding="10">
+                                        <VerticalStackLayout Spacing="10">
+                                            <Border HeightRequest="240"
+                                                    StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 18">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0"
+                                                                         EndPoint="1,1">
+                                                        <GradientStop Color="#1A2948" Offset="0" />
+                                                        <GradientStop Color="#203A5A" Offset="1" />
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Grid Padding="16">
+                                                    <VerticalStackLayout VerticalOptions="End"
+                                                                         Spacing="8">
+                                                        <Border Background="#FFFFFF14"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 999"
+                                                                Padding="10,5"
+                                                                HorizontalOptions="Start">
+                                                            <Label Text="COMING SOON"
                                                                    FontFamily="OpenSansSemibold"
-                                                                   FontSize="11"
-                                                                   TextColor="#D5DDFB"
-                                                                   HorizontalTextAlignment="Center" />
-                                                        </VerticalStackLayout>
-                                                    </Grid>
-                                                </Border>
+                                                                   FontSize="9"
+                                                                   TextColor="White" />
+                                                        </Border>
+                                                        <Label Text="{Binding ReleaseDate, StringFormat='Releases {0}'}"
+                                                               FontFamily="OpenSansSemibold"
+                                                               FontSize="11"
+                                                               TextColor="#DDE6FF" />
+                                                    </VerticalStackLayout>
+                                                </Grid>
+                                            </Border>
 
-                                                <VerticalStackLayout Spacing="6">
-                                                    <Label Text="{Binding Title}"
-                                                           FontFamily="OpenSansSemibold"
-                                                           FontSize="14"
-                                                           FontAttributes="Bold"
-                                                           LineBreakMode="TailTruncation"
-                                                           MaxLines="2"
-                                                           TextColor="#17182B" />
-                                                    <Label Text="{Binding Tagline}"
-                                                           FontSize="11"
-                                                           LineBreakMode="TailTruncation"
-                                                           MaxLines="2"
-                                                           TextColor="#5B5D73" />
-                                                </VerticalStackLayout>
-
-                                                <HorizontalStackLayout Spacing="6">
-                                                    <Label Text="{Binding PrimaryGenre}"
-                                                           FontSize="11"
-                                                           TextColor="#5B5D73" />
-                                                    <Label Text="·"
-                                                           TextColor="#5B5D73" />
-                                                    <Label Text="{Binding Duration}"
-                                                           FontSize="11"
-                                                           TextColor="#5B5D73" />
-                                                </HorizontalStackLayout>
+                                            <VerticalStackLayout Spacing="4">
+                                                <Label Text="{Binding Title}"
+                                                       FontFamily="OpenSansSemibold"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="2"
+                                                       TextColor="#1A1D33" />
+                                                <Label Text="{Binding Tagline}"
+                                                       FontSize="11"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="2"
+                                                       TextColor="#5B5D73" />
                                             </VerticalStackLayout>
-                                        </Border>
-                                    </DataTemplate>
-                                </syncfusion:SfListView.ItemTemplate>
-                            </syncfusion:SfListView>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </ScrollView>
