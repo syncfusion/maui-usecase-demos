@@ -316,7 +316,8 @@
                                                     Stroke="#38406F"
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 18">
-                                                <Grid>
+                                                <Grid RowDefinitions="Auto,*,Auto"
+                                                      Padding="16">
                                                     <Grid.Background>
                                                         <LinearGradientBrush StartPoint="0,0"
                                                                              EndPoint="1,1">
@@ -324,15 +325,35 @@
                                                             <GradientStop Color="#203A5A" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Grid.Background>
-                                                    <VerticalStackLayout Padding="16"
+                                                    <HorizontalStackLayout Spacing="8">
+                                                        <Border Background="#4F59CF"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 999"
+                                                                Padding="10,5">
+                                                            <Label Text="NOW SHOWING"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   FontSize="9"
+                                                                   TextColor="#F5F7FF" />
+                                                        </Border>
+                                                        <Border Background="#33447C"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 999"
+                                                                Padding="10,5"
+                                                                HorizontalOptions="EndAndExpand">
+                                                            <Label Text="{Binding Rating, StringFormat='★ {0}'}"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   FontSize="9"
+                                                                   TextColor="#B9D5FF" />
+                                                        </Border>
+                                                    </HorizontalStackLayout>
+                                                    <VerticalStackLayout Grid.Row="1"
                                                                          VerticalOptions="Center"
                                                                          HorizontalOptions="Center"
                                                                          Spacing="10">
-                                                        <Label Text="{Binding Rating, StringFormat='★ {0}'}"
-                                                               FontFamily="OpenSansSemibold"
-                                                               FontSize="14"
-                                                               TextColor="#B9D5FF"
-                                                               HorizontalTextAlignment="Center" />
+                                                        <Label Text="🎬"
+                                                               FontSize="52"
+                                                               HorizontalTextAlignment="Center"
+                                                               TextColor="#EAF0FF" />
                                                         <Label Text="{Binding Title}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="14"
@@ -342,6 +363,28 @@
                                                                HorizontalTextAlignment="Center"
                                                                TextColor="#F6F7FC" />
                                                     </VerticalStackLayout>
+                                                    <HorizontalStackLayout Grid.Row="2"
+                                                                           Spacing="8"
+                                                                           HorizontalOptions="Center">
+                                                        <Border Background="#FFFFFF14"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 12"
+                                                                Padding="10,6">
+                                                            <Label Text="{Binding PrimaryGenre}"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   FontSize="11"
+                                                                   TextColor="#E9ECFF" />
+                                                        </Border>
+                                                        <Border Background="#FFFFFF14"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 12"
+                                                                Padding="10,6">
+                                                            <Label Text="{Binding Duration}"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   FontSize="11"
+                                                                   TextColor="#E9ECFF" />
+                                                        </Border>
+                                                    </HorizontalStackLayout>
                                                 </Grid>
                                             </Border>
 
