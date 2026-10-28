@@ -333,11 +333,6 @@
                                                                FontSize="14"
                                                                TextColor="#B9D5FF"
                                                                HorizontalTextAlignment="Center" />
-                                                        <Label Text="{Binding ReleaseDate, StringFormat='Releases {0}'}"
-                                                               FontFamily="OpenSansSemibold"
-                                                               FontSize="12"
-                                                               TextColor="#E9ECFF"
-                                                               HorizontalTextAlignment="Center" />
                                                         <Label Text="{Binding Title}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="14"
