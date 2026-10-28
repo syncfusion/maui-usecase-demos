@@ -2,7 +2,6 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
-             xmlns:expander="clr-namespace:Syncfusion.Maui.Accordion;assembly=Syncfusion.Maui.Expander"
              xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
              x:Class="DiagramBuilder.Controls.StencilPanelControl">
     <ContentView.Resources>

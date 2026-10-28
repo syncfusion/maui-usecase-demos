@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using DiagramBuilder.Models;
 using DiagramBuilder.ViewModels;
-using Syncfusion.Maui.Accordion;
-using Syncfusion.Maui.Inputs;
+using Microsoft.Maui.Layouts;
+using Syncfusion.Maui.Expander;
 
 namespace DiagramBuilder.Controls;
 
@@ -157,11 +157,25 @@ public partial class StencilPanelControl : ContentView
     {
         if (isConnectorGroup)
         {
-            return BuildConnectorPreview(item.ConnectorKind);
+            // ConnectorKind is nullable on the model; a connector tile always has one.
+            return item.ConnectorKind is { } kind
+                ? BuildConnectorPreview(kind)
+                : BuildFallbackPreview();
         }
 
-        return BuildShapePreview(item.ShapeType);
+        // ShapeType is nullable on the model; a shape tile always has one.
+        return item.ShapeType is { } shapeType
+            ? BuildShapePreview(shapeType)
+            : BuildFallbackPreview();
     }
+
+    private static View BuildFallbackPreview() => new Microsoft.Maui.Controls.Shapes.Rectangle
+    {
+        WidthRequest = 36,
+        HeightRequest = 20,
+        Stroke = new SolidColorBrush(Colors.Gray),
+        StrokeThickness = 1.5,
+    };
 
     private View BuildShapePreview(ShapeType type)
     {
@@ -209,14 +223,14 @@ public partial class StencilPanelControl : ContentView
             },
             ShapeType.Document => new Microsoft.Maui.Controls.Shapes.Path
             {
-                Data = Microsoft.Maui.Controls.Shapes.PathGeometryConverter.FromString("M2,2 L34,2 L46,14 L46,30 L2,30 Z M34,2 L34,14 L46,14"),
+                Data = ParsePathData("M2,2 L34,2 L46,14 L46,30 L2,30 Z M34,2 L34,14 L46,14"),
                 Fill = new SolidColorBrush(fillColor),
                 Stroke = new SolidColorBrush(strokeColor),
                 StrokeThickness = 1.5,
             },
             ShapeType.DataPreparation => new Microsoft.Maui.Controls.Shapes.Path
             {
-                Data = Microsoft.Maui.Controls.Shapes.PathGeometryConverter.FromString("M2,2 L46,2 L40,30 L8,30 Z"),
+                Data = ParsePathData("M2,2 L46,2 L40,30 L8,30 Z"),
                 Fill = new SolidColorBrush(fillColor),
                 Stroke = new SolidColorBrush(strokeColor),
                 StrokeThickness = 1.5,
@@ -256,19 +270,17 @@ public partial class StencilPanelControl : ContentView
             },
             ConnectorKind.Orthogonal => new Microsoft.Maui.Controls.Shapes.Path
             {
-                Data = Microsoft.Maui.Controls.Shapes.PathGeometryConverter.FromString("M2,4 L24,4 L24,32 L46,32"),
+                Data = ParsePathData("M2,4 L24,4 L24,32 L46,32"),
                 Stroke = new SolidColorBrush(strokeColor),
                 StrokeThickness = 2,
-                Fill = null,
                 HeightRequest = 36,
                 WidthRequest = 48,
             },
             ConnectorKind.Bezier => new Microsoft.Maui.Controls.Shapes.Path
             {
-                Data = Microsoft.Maui.Controls.Shapes.PathGeometryConverter.FromString("M2,30 C12,4 36,4 46,30"),
+                Data = ParsePathData("M2,30 C12,4 36,4 46,30"),
                 Stroke = new SolidColorBrush(strokeColor),
                 StrokeThickness = 2,
-                Fill = null,
                 HeightRequest = 36,
                 WidthRequest = 48,
             },
@@ -300,5 +312,24 @@ public partial class StencilPanelControl : ContentView
                                           double.Parse(coords[1], System.Globalization.CultureInfo.InvariantCulture)));
         }
         return polygon;
+    }
+
+    /// <summary>
+    /// Parses an SVG-style path data string (e.g. "M2,2 L34,2 Z") into a
+    /// <see cref="Microsoft.Maui.Controls.Shapes.Geometry"/> suitable for
+    /// <see cref="Microsoft.Maui.Controls.Shapes.Path.Data"/>.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="Microsoft.Maui.Controls.Shapes.PathGeometryConverter"/> exposes no static
+    /// <c>FromString</c> helper — the string must go through
+    /// <see cref="Microsoft.Maui.Controls.Shapes.PathFigureCollectionConverter.ParseStringToPathFigureCollection"/>
+    /// (or an instance <c>ConvertFrom</c> call). See maui-shapes-api-reference.md §8.
+    /// </remarks>
+    private static Microsoft.Maui.Controls.Shapes.Geometry ParsePathData(string pathData)
+    {
+        var figures = new Microsoft.Maui.Controls.Shapes.PathFigureCollection();
+        Microsoft.Maui.Controls.Shapes.PathFigureCollectionConverter
+            .ParseStringToPathFigureCollection(figures, pathData);
+        return new Microsoft.Maui.Controls.Shapes.PathGeometry { Figures = figures };
     }
 }
