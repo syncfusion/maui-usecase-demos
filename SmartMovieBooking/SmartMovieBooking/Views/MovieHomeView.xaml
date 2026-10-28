@@ -274,14 +274,8 @@
                                                     StrokeThickness="0"
                                                     StrokeShape="RoundRectangle 24"
                                                     Background="#FFFFFF1A">
-                                                <Grid>
-                                                    <LinearGradientBrush StartPoint="0,0"
-                                                                         EndPoint="1,1">
-                                                        <GradientStop Color="#6B63FF" Offset="0" />
-                                                        <GradientStop Color="#E24FFB" Offset="0.5" />
-                                                        <GradientStop Color="#081029" Offset="1" />
-                                                    </LinearGradientBrush>
-                                                    <VerticalStackLayout HorizontalOptions="Center"
+												<Grid>
+													<VerticalStackLayout HorizontalOptions="Center"
                                                                          VerticalOptions="Center"
                                                                          Spacing="10">
                                                         <Label Text="🎬"
@@ -325,14 +319,12 @@
                             </VerticalStackLayout>
                         </Grid>
 
-                        <syncfusion:SfListView ItemsSource="{Binding PopularMovies}"
-                                               SelectionMode="None"
-                                               ScrollBarVisibility="Never">
-                            <syncfusion:SfListView.ItemsLayout>
-                                <syncfusion:LinearLayout Orientation="Horizontal"
-                                                         ItemSpacing="14" />
-                            </syncfusion:SfListView.ItemsLayout>
-                            <syncfusion:SfListView.ItemTemplate>
+						<syncfusion:SfListView ItemsSource="{Binding PopularMovies}"
+											   SelectionMode="None"
+											   Orientation="Horizontal"
+											   ItemSpacing="14"
+											   ScrollBarVisibility="Never">
+							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Movie">
                                     <Border WidthRequest="220"
                                             Stroke="#ECECF4"
@@ -441,14 +433,12 @@
                             </VerticalStackLayout>
                         </Grid>
 
-                        <syncfusion:SfListView ItemsSource="{Binding ComingSoonMovies}"
-                                               SelectionMode="None"
-                                               ScrollBarVisibility="Never">
-                            <syncfusion:SfListView.ItemsLayout>
-                                <syncfusion:LinearLayout Orientation="Horizontal"
-                                                         ItemSpacing="14" />
-                            </syncfusion:SfListView.ItemsLayout>
-                            <syncfusion:SfListView.ItemTemplate>
+						<syncfusion:SfListView ItemsSource="{Binding ComingSoonMovies}"
+											   SelectionMode="None"
+											   Orientation="Horizontal"
+											   ItemSpacing="14"
+											   ScrollBarVisibility="Never">
+							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Movie">
                                     <Border WidthRequest="190"
                                             Stroke="#ECECF4"

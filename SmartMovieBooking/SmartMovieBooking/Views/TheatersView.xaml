@@ -50,7 +50,7 @@
                                            Orientation="Horizontal"
                                            ScrollBarVisibility="Never"
 										   SelectionBackground="Transparent"
-										   HeightRequest="{OnIdiom Default=104, Phone=84}"
+										   HeightRequest="{OnIdiom Default=104, Phone=74}"
 										   SelectionMode="None">
 						<syncfusion:SfListView.ItemsLayout>
 							<syncfusion:GridLayout SpanCount="1" />
@@ -61,7 +61,7 @@
 										Stroke="#D7D8E6"
 										BackgroundColor="#FFFFFF"
 										Padding="{OnIdiom Default='10,8', Phone='8,6'}"
-										HeightRequest="78"
+										HeightRequest="68"
 										WidthRequest="84"
 										StrokeShape="RoundRectangle 14">
 									<Border.GestureRecognizers>
