@@ -25,10 +25,12 @@
         <Grid Grid.Row="{OnIdiom Default=0, Phone=0}"
               Grid.Column="{OnIdiom Default='1', Phone='0'}"
               MaximumWidthRequest="1200"
-              RowDefinitions="Auto,*"
+              RowDefinitions="*"
               Padding="{OnIdiom Default='24', Phone='12,12,12,0'}">
 
-            <ScrollView Grid.Row="0">
+            <ScrollView Grid.Row="0"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="Fill">
                 <VerticalStackLayout Spacing="24">
                     <Grid RowDefinitions="Auto,Auto,Auto"
                           ColumnDefinitions="*,Auto"
@@ -80,8 +82,8 @@
                                            ChipCornerRadius="18"
                                            VerticalOptions="Center"
                                            ChipPadding="{OnIdiom Default='10,8', Phone='8,6'}"
-                                           SelectedChipBackground="#5B4BE3"
-                                           ChipTextColor="{AppThemeBinding Light=#313032, Dark=#FFFFFF}"
+                                           SelectedChipBackground="#4A3DE0"
+                                           ChipTextColor="{AppThemeBinding Light=#4B4F63, Dark=#FFFFFF}"
                                            SelectedChipTextColor="#FFFFFF"
                                            ChipStrokeThickness="1"
                                            ChipTextSize="13"
@@ -164,7 +166,7 @@
                                                                      EndPoint="1,1">
                                                     <GradientStop Color="#1E264F" Offset="0" />
                                                     <GradientStop Color="#2B2F6C" Offset="0.55" />
-                                                    <GradientStop Color="#0E1026" Offset="1" />
+                                                    <GradientStop Color="#12162B" Offset="1" />
                                                 </LinearGradientBrush>
                                             </Grid.Background>
 
@@ -187,7 +189,7 @@
                                                         <Label Text="{Binding Format}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="10"
-                                                               TextColor="White" />
+                                                               TextColor="#EDEFFF" />
                                                     </Border>
                                                 </HorizontalStackLayout>
 
@@ -343,16 +345,16 @@
                                                 </Grid.Background>
                                                 <VerticalStackLayout Padding="14" Spacing="8">
                                                     <HorizontalStackLayout>
-                                                        <Border Background="#FFFFFF2A"
+                                                        <Border Background="#FFFFFF20"
                                                                 StrokeThickness="0"
                                                                 StrokeShape="RoundRectangle 999"
                                                                 Padding="10,4">
                                                             <Label Text="NOW SHOWING"
                                                                    FontFamily="OpenSansSemibold"
                                                                    FontSize="9"
-                                                                   TextColor="White" />
+                                                                   TextColor="#EEF0FF" />
                                                         </Border>
-                                                        <Border Background="#FFFFFF2A"
+                                                        <Border Background="#FFFFFF20"
                                                                 StrokeThickness="0"
                                                                 StrokeShape="RoundRectangle 999"
                                                                 Padding="10,4"
@@ -360,7 +362,7 @@
                                                             <Label Text="{Binding Rating, StringFormat='★ {0}'}"
                                                                    FontFamily="OpenSansSemibold"
                                                                    FontSize="9"
-                                                                   TextColor="#FFE29A" />
+                                                                   TextColor="#F2D77B" />
                                                         </Border>
                                                     </HorizontalStackLayout>
 
@@ -454,9 +456,9 @@
                                                     <Grid.Background>
                                                         <LinearGradientBrush StartPoint="0,0"
                                                                              EndPoint="1,1">
-                                                            <GradientStop Color="#0C2536" Offset="0" />
-                                                            <GradientStop Color="#3C6E71" Offset="0.55" />
-                                                            <GradientStop Color="#0B0F1F" Offset="1" />
+                                                            <GradientStop Color="#142C45" Offset="0" />
+                                                            <GradientStop Color="#203B58" Offset="0.55" />
+                                                            <GradientStop Color="#0C1220" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Grid.Background>
                                                     <VerticalStackLayout HorizontalOptions="Center"
