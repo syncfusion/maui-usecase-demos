@@ -36,12 +36,15 @@
                                    Grid.Column="1"
                                    BackgroundColor="{DynamicResource CanvasBackground}">
                     <diagram:SfDiagram.Behaviors>
-                        <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior"
-                                                          ReadyCommand="{Binding ReadyCommand, Source={x:Reference Workspace}}"
-                                                          SelectionChangedCommand="{Binding SelectionChangedCommand, Source={x:Reference Workspace}}"
-                                                          GeometryChangedCommand="{Binding GeometryChangedCommand, Source={x:Reference Workspace}}"
-                                                          AnnotationEditedCommand="{Binding AnnotationEditedCommand, Source={x:Reference Workspace}}"
-                                                          CollectionChangedCommand="{Binding CollectionChangedCommand, Source={x:Reference Workspace}}" />
+                        <!-- DiagramSurfaceBehavior exposes bindable Command properties.
+                             They cannot be bound from XAML via {x:Reference Workspace}
+                             because 'Workspace' is the x:Name in the parent page, not in
+                             this file's scope (which only contains DiagramGrid, Palette,
+                             Diagram and SurfaceBehavior). Instead, DiagramWorkspaceControl
+                             exposes matching BindableProperties (ReadyCommand etc.) with
+                             property-changed callbacks that propagate the value into the
+                             behavior — see DiagramWorkspaceControl.xaml.cs. -->
+                        <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
                     </diagram:SfDiagram.Behaviors>
                 </diagram:SfDiagram>
             </Grid>

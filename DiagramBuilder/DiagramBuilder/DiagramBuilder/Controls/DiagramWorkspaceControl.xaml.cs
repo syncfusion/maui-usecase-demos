@@ -18,37 +18,63 @@ namespace DiagramBuilder.Controls;
 public partial class DiagramWorkspaceControl : ContentView
 {
     /// <summary>Raised once when the SfDiagram control reports its JS instance is ready.</summary>
-    public System.Windows.Input.ICommand ReadyCommand { get; set; } = new Command(() => { });
+    public static readonly BindableProperty ReadyCommandProperty =
+        BindableProperty.Create(nameof(ReadyCommand), typeof(System.Windows.Input.ICommand),
+            typeof(DiagramWorkspaceControl), null, propertyChanged: OnReadyCommandChanged);
+
+    public System.Windows.Input.ICommand? ReadyCommand
+    {
+        get => (System.Windows.Input.ICommand?)GetValue(ReadyCommandProperty);
+        set => SetValue(ReadyCommandProperty, value);
+    }
 
     /// <summary>Raised when the user changes the canvas selection.</summary>
-    public System.Windows.Input.ICommand SelectionChangedCommand { get; set; } = new Command(() => { });
+    public static readonly BindableProperty SelectionChangedCommandProperty =
+        BindableProperty.Create(nameof(SelectionChangedCommand), typeof(System.Windows.Input.ICommand),
+            typeof(DiagramWorkspaceControl), null, propertyChanged: OnSelectionChangedCommandChanged);
+
+    public System.Windows.Input.ICommand? SelectionChangedCommand
+    {
+        get => (System.Windows.Input.ICommand?)GetValue(SelectionChangedCommandProperty);
+        set => SetValue(SelectionChangedCommandProperty, value);
+    }
 
     /// <summary>Raised when a node's position, size or rotation changes (drags, resizes).</summary>
-    public System.Windows.Input.ICommand GeometryChangedCommand { get; set; } = new Command(() => { });
+    public static readonly BindableProperty GeometryChangedCommandProperty =
+        BindableProperty.Create(nameof(GeometryChangedCommand), typeof(System.Windows.Input.ICommand),
+            typeof(DiagramWorkspaceControl), null, propertyChanged: OnGeometryChangedCommandChanged);
+
+    public System.Windows.Input.ICommand? GeometryChangedCommand
+    {
+        get => (System.Windows.Input.ICommand?)GetValue(GeometryChangedCommandProperty);
+        set => SetValue(GeometryChangedCommandProperty, value);
+    }
 
     /// <summary>Raised when a label edit completes (double-click annotation commit).</summary>
-    public System.Windows.Input.ICommand AnnotationEditedCommand { get; set; } = new Command(() => { });
+    public static readonly BindableProperty AnnotationEditedCommandProperty =
+        BindableProperty.Create(nameof(AnnotationEditedCommand), typeof(System.Windows.Input.ICommand),
+            typeof(DiagramWorkspaceControl), null, propertyChanged: OnAnnotationEditedCommandChanged);
+
+    public System.Windows.Input.ICommand? AnnotationEditedCommand
+    {
+        get => (System.Windows.Input.ICommand?)GetValue(AnnotationEditedCommandProperty);
+        set => SetValue(AnnotationEditedCommandProperty, value);
+    }
 
     /// <summary>Raised when nodes or connectors are added or removed.</summary>
-    public System.Windows.Input.ICommand CollectionChangedCommand { get; set; } = new Command(() => { });
+    public static readonly BindableProperty CollectionChangedCommandProperty =
+        BindableProperty.Create(nameof(CollectionChangedCommand), typeof(System.Windows.Input.ICommand),
+            typeof(DiagramWorkspaceControl), null, propertyChanged: OnCollectionChangedCommandChanged);
+
+    public System.Windows.Input.ICommand? CollectionChangedCommand
+    {
+        get => (System.Windows.Input.ICommand?)GetValue(CollectionChangedCommandProperty);
+        set => SetValue(CollectionChangedCommandProperty, value);
+    }
+
     public static readonly BindableProperty PaletteGroupsProperty =
         BindableProperty.Create(nameof(PaletteGroups), typeof(IEnumerable), typeof(DiagramWorkspaceControl),
             propertyChanged: OnPaletteGroupsChanged);
-
-    public static readonly BindableProperty SurfaceBehaviorReadyCommandProperty =
-        BindableProperty.Create(nameof(SurfaceBehaviorReadyCommand), typeof(System.Windows.Input.ICommand), typeof(DiagramWorkspaceControl));
-
-    public static readonly BindableProperty SurfaceBehaviorSelectionChangedCommandProperty =
-        BindableProperty.Create(nameof(SurfaceBehaviorSelectionChangedCommand), typeof(System.Windows.Input.ICommand), typeof(DiagramWorkspaceControl));
-
-    public static readonly BindableProperty SurfaceBehaviorGeometryChangedCommandProperty =
-        BindableProperty.Create(nameof(SurfaceBehaviorGeometryChangedCommand), typeof(System.Windows.Input.ICommand), typeof(DiagramWorkspaceControl));
-
-    public static readonly BindableProperty SurfaceBehaviorAnnotationEditedCommandProperty =
-        BindableProperty.Create(nameof(SurfaceBehaviorAnnotationEditedCommand), typeof(System.Windows.Input.ICommand), typeof(DiagramWorkspaceControl));
-
-    public static readonly BindableProperty SurfaceBehaviorCollectionChangedCommandProperty =
-        BindableProperty.Create(nameof(SurfaceBehaviorCollectionChangedCommand), typeof(System.Windows.Input.ICommand), typeof(DiagramWorkspaceControl));
 
     public static readonly BindableProperty SurfaceBehaviorZoomFactorProperty =
         BindableProperty.Create(nameof(SurfaceBehaviorZoomFactor), typeof(double), typeof(DiagramWorkspaceControl), 1.0d);
@@ -57,36 +83,6 @@ public partial class DiagramWorkspaceControl : ContentView
     {
         get => (IEnumerable?)GetValue(PaletteGroupsProperty);
         set => SetValue(PaletteGroupsProperty, value);
-    }
-
-    public System.Windows.Input.ICommand? SurfaceBehaviorReadyCommand
-    {
-        get => (System.Windows.Input.ICommand?)GetValue(SurfaceBehaviorReadyCommandProperty);
-        set => SetValue(SurfaceBehaviorReadyCommandProperty, value);
-    }
-
-    public System.Windows.Input.ICommand? SurfaceBehaviorSelectionChangedCommand
-    {
-        get => (System.Windows.Input.ICommand?)GetValue(SurfaceBehaviorSelectionChangedCommandProperty);
-        set => SetValue(SurfaceBehaviorSelectionChangedCommandProperty, value);
-    }
-
-    public System.Windows.Input.ICommand? SurfaceBehaviorGeometryChangedCommand
-    {
-        get => (System.Windows.Input.ICommand?)GetValue(SurfaceBehaviorGeometryChangedCommandProperty);
-        set => SetValue(SurfaceBehaviorGeometryChangedCommandProperty, value);
-    }
-
-    public System.Windows.Input.ICommand? SurfaceBehaviorAnnotationEditedCommand
-    {
-        get => (System.Windows.Input.ICommand?)GetValue(SurfaceBehaviorAnnotationEditedCommandProperty);
-        set => SetValue(SurfaceBehaviorAnnotationEditedCommandProperty, value);
-    }
-
-    public System.Windows.Input.ICommand? SurfaceBehaviorCollectionChangedCommand
-    {
-        get => (System.Windows.Input.ICommand?)GetValue(SurfaceBehaviorCollectionChangedCommandProperty);
-        set => SetValue(SurfaceBehaviorCollectionChangedCommandProperty, value);
     }
 
     public double SurfaceBehaviorZoomFactor
@@ -104,6 +100,46 @@ public partial class DiagramWorkspaceControl : ContentView
     public DiagramWorkspaceControl()
     {
         InitializeComponent();
+    }
+
+    private static void OnReadyCommandChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is DiagramWorkspaceControl ws && ws.SurfaceBehavior is { } sb)
+        {
+            sb.ReadyCommand = (System.Windows.Input.ICommand?)newValue;
+        }
+    }
+
+    private static void OnSelectionChangedCommandChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is DiagramWorkspaceControl ws && ws.SurfaceBehavior is { } sb)
+        {
+            sb.SelectionChangedCommand = (System.Windows.Input.ICommand?)newValue;
+        }
+    }
+
+    private static void OnGeometryChangedCommandChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is DiagramWorkspaceControl ws && ws.SurfaceBehavior is { } sb)
+        {
+            sb.GeometryChangedCommand = (System.Windows.Input.ICommand?)newValue;
+        }
+    }
+
+    private static void OnAnnotationEditedCommandChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is DiagramWorkspaceControl ws && ws.SurfaceBehavior is { } sb)
+        {
+            sb.AnnotationEditedCommand = (System.Windows.Input.ICommand?)newValue;
+        }
+    }
+
+    private static void OnCollectionChangedCommandChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is DiagramWorkspaceControl ws && ws.SurfaceBehavior is { } sb)
+        {
+            sb.CollectionChangedCommand = (System.Windows.Input.ICommand?)newValue;
+        }
     }
 
     private static void OnPaletteGroupsChanged(BindableObject bindable, object oldValue, object newValue)
