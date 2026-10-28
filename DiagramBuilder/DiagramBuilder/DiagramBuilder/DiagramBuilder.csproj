@@ -87,8 +87,8 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="*" />
 		<!-- Syncfusion controls: Diagram (SfDiagram + SymbolPalette), Core (ConfigureSyncfusionCore),
-		     Buttons (SfButton + SfChip/SfChipGroup), Inputs (SfNumericEntry + SfColorPicker +
-		     SfTextInputLayout), Expander (SfAccordion), Toolkit (SfPopup). -->
+		     Buttons (SfButton + SfChip/SfChipGroup), Inputs (SfNumericEntry + SfColorPicker),
+		     Expander (SfExpander), Toolkit + Popup (SfPopup). -->
 		<PackageReference Include="Syncfusion.Maui.Diagram" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Core" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Buttons" Version="*" />
