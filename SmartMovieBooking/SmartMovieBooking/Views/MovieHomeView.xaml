@@ -254,7 +254,7 @@
                                                                FontSize="60"
                                                                HorizontalTextAlignment="Center"
                                                                TextColor="#F0F3FF" />
-                                                        <Label Text="{Binding ReleaseDate}"
+                                                        <Label Text="{Binding ReleaseDate, StringFormat='RELEASE ON {0}'}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="14"
                                                                HorizontalTextAlignment="Center"
@@ -323,19 +323,43 @@
                                                             <GradientStop Color="#203A5A" Offset="1" />
                                                         </LinearGradientBrush>
                                                     </Grid.Background>
+                                                    <HorizontalStackLayout Spacing="8">
+                                                        <Border Background="#4F59CF"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 999"
+                                                                Padding="10,5">
+                                                            <Label Text="NOW SHOWING"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   FontSize="9"
+                                                                   TextColor="#F5F7FF" />
+                                                        </Border>
+                                                        <Border Background="#33447C"
+                                                                StrokeThickness="0"
+                                                                StrokeShape="RoundRectangle 999"
+                                                                Padding="10,5"
+                                                                HorizontalOptions="EndAndExpand">
+                                                            <Label Text="{Binding Rating, StringFormat='★ {0}'}"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   FontSize="9"
+                                                                   TextColor="#B9D5FF" />
+                                                        </Border>
+                                                    </HorizontalStackLayout>
                                                     <VerticalStackLayout Grid.Row="1"
                                                                          VerticalOptions="Center"
                                                                          HorizontalOptions="Center"
-                                                                         Spacing="12">
+                                                                         Spacing="10">
                                                         <Label Text="🎬"
                                                                FontSize="52"
                                                                HorizontalTextAlignment="Center"
                                                                TextColor="#EAF0FF" />
-                                                        <Label Text="{Binding ReleaseDate, StringFormat='RELEASE ON {0}'}"
+                                                        <Label Text="{Binding Title}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="14"
-                                                               TextColor="#F6F7FC"
-                                                               HorizontalTextAlignment="Center" />
+                                                               FontAttributes="Bold"
+                                                               LineBreakMode="TailTruncation"
+                                                               MaxLines="3"
+                                                               HorizontalTextAlignment="Center"
+                                                               TextColor="#F6F7FC" />
                                                     </VerticalStackLayout>
 												</Grid>
                                             </Border>
