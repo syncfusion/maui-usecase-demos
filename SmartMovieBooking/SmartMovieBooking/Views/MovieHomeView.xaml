@@ -322,10 +322,16 @@
                         </Grid>
 
 						<syncfusion:SfListView ItemsSource="{Binding PopularMovies}"
-											   SelectionMode="None"
+											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
+											   BackgroundColor="Transparent"
 											   Orientation="Horizontal"
-											   ItemSpacing="14"
-											   ScrollBarVisibility="Never">
+											   HeightRequest="{OnIdiom Default='240', Phone='62'}"
+											   ScrollBarVisibility="Never"
+											   AutoFitMode="DynamicHeight"
+											   SelectionMode="None">
+							<syncfusion:SfListView.ItemsLayout>
+								<syncfusion:GridLayout SpanCount="1" />
+							</syncfusion:SfListView.ItemsLayout>
 							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Movie">
                                     <Border WidthRequest="220"
