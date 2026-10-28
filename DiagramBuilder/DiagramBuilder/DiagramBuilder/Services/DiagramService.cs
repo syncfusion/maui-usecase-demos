@@ -20,6 +20,8 @@ public class DiagramService : IDiagramService
 
     public event EventHandler<string>? StatusChanged;
 
+    public event EventHandler<DiagramDocument>? DocumentLoaded;
+
     public async Task<DiagramDocument> CreateDocumentAsync(DiagramTemplate template)
     {
         await _gate.WaitAsync();
@@ -62,6 +64,7 @@ public class DiagramService : IDiagramService
             }
 
             CurrentDocument = doc;
+            DocumentLoaded?.Invoke(this, doc);
             return doc;
         }
         finally

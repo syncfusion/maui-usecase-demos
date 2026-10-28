@@ -29,12 +29,10 @@ namespace DiagramBuilder
             builder.Services.AddSingleton<IDialogService, DialogService>();
 
             // ViewModels
-            builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddSingleton<CreateDiagramViewModel>();
             builder.Services.AddSingleton<DiagramDesignerViewModel>();
 
             // Pages
-            builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<CreateDiagramPage>();
             builder.Services.AddTransient<DiagramDesignerPage>();
             builder.Services.AddTransient<Views.Dialogs.ExportDialog>();

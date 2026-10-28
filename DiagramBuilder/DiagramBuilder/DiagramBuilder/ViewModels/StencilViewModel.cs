@@ -11,6 +11,16 @@ namespace DiagramBuilder.ViewModels;
 /// </summary>
 public partial class StencilViewModel : ObservableObject
 {
+    public StencilViewModel()
+    {
+        // Eagerly materialize the symbol-palette groups once so the diagram's
+        // SymbolPalette has data to host (architecture.md §3.3 requires SfDiagram
+        // and SymbolPalette as direct Grid siblings in DiagramWorkspaceControl).
+        foreach (var palette in AllGroups.Select(Services.DiagramModelAdapter.ToPalette))
+        {
+            PaletteGroups.Add(palette);
+        }
+    }
     [ObservableProperty]
     private string filterText = string.Empty;
 
@@ -22,6 +32,13 @@ public partial class StencilViewModel : ObservableObject
     public HashSet<string> ExpandedGroupIds { get; } = ["stencil.flow"];
 
     public IReadOnlyList<StencilGroup> AllGroups { get; } = StencilCatalog.All.ToList();
+
+    /// <summary>
+    /// Backing collection for the diagram SymbolPalette. Updated only when the
+    /// host page first initializes; changes are pushed through the bindable
+    /// property on the workspace control.
+    /// </summary>
+    public System.Collections.ObjectModel.ObservableCollection<object> PaletteGroups { get; } = [];
 
     /// <summary>Groups filtered by the current search text.</summary>
     public IEnumerable<StencilGroup> VisibleGroups

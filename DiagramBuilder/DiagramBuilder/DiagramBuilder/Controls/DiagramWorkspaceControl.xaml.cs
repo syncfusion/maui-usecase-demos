@@ -16,6 +16,20 @@ namespace DiagramBuilder.Controls;
 /// </summary>
 public partial class DiagramWorkspaceControl : ContentView
 {
+    /// <summary>Raised once when the SfDiagram control reports its JS instance is ready.</summary>
+    public System.Windows.Input.ICommand ReadyCommand { get; set; } = new Command(() => { });
+
+    /// <summary>Raised when the user changes the canvas selection.</summary>
+    public System.Windows.Input.ICommand SelectionChangedCommand { get; set; } = new Command(() => { });
+
+    /// <summary>Raised when a node's position, size or rotation changes (drags, resizes).</summary>
+    public System.Windows.Input.ICommand GeometryChangedCommand { get; set; } = new Command(() => { });
+
+    /// <summary>Raised when a label edit completes (double-click annotation commit).</summary>
+    public System.Windows.Input.ICommand AnnotationEditedCommand { get; set; } = new Command(() => { });
+
+    /// <summary>Raised when nodes or connectors are added or removed.</summary>
+    public System.Windows.Input.ICommand CollectionChangedCommand { get; set; } = new Command(() => { });
     public static readonly BindableProperty PaletteGroupsProperty =
         BindableProperty.Create(nameof(PaletteGroups), typeof(IEnumerable), typeof(DiagramWorkspaceControl),
             propertyChanged: OnPaletteGroupsChanged);
@@ -110,4 +124,42 @@ public partial class DiagramWorkspaceControl : ContentView
             }
         }
     }
+
+    /// <summary>
+    /// Loads a domain template's nodes and connectors into the live SfDiagram.
+    /// Tracking for the property panel happens via <see cref="DiagramModelAdapter"/>.
+    /// </summary>
+    public void LoadTemplate(Models.DiagramDocument document)
+    {
+        Diagram.Nodes.Clear();
+        Diagram.Connectors.Clear();
+
+        var createdNodes = new List<object>();
+        var createdConnectors = new List<object>();
+
+        foreach (var shape in document.Items.OfType<Models.ShapeItem>())
+        {
+            var node = DiagramModelAdapter.ToNode(shape);
+            createdNodes.Add(node);
+            Diagram.Nodes.Add(node);
+        }
+
+        foreach (var connector in document.Connectors)
+        {
+            var c = DiagramModelAdapter.ToConnector(connector);
+            createdConnectors.Add(c);
+            Diagram.Connectors.Add(c);
+        }
+
+        // Inform any registered property service of the new live nodes/connectors
+        // so the property panel can read live state for the selected element.
+        TemplateLoaded?.Invoke(this, new TemplateLoadPayload(createdNodes, createdConnectors));
+
+        // After loading, fit to page so all content is visible. The call is fire-and-forget.
+        _ = Diagram.FitToPage();
+    }
+
+    public event EventHandler<TemplateLoadPayload>? TemplateLoaded;
+
+    public sealed record TemplateLoadPayload(IReadOnlyList<object> Nodes, IReadOnlyList<object> Connectors);
 }

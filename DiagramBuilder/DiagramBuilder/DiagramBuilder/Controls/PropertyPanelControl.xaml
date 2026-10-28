@@ -26,7 +26,8 @@
             StrokeThickness="1"
             BackgroundColor="{DynamicResource PanelBackground}">
         <Grid RowDefinitions="Auto,*">
-            <controls:PanelHeaderControl Grid.Row="0"
+            <controls:PanelHeaderControl x:Name="_header"
+                                         Grid.Row="0"
                                          Title="{Binding Title}" />
 
             <!-- Empty state (centered) -->

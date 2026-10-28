@@ -60,6 +60,8 @@ public partial class DiagramDesignerViewModel : ObservableObject
             OnPropertyChanged(nameof(SelectionSummary));
             Toolbar.RaiseSelectionChanged();
             PropertyPanel.Refresh(SelectedNodeId);
+            // Mirror the selection summary into the status strip (single status bar).
+            Status = Selection.SelectionSummary;
         };
 
         SyncTitle();
@@ -241,4 +243,10 @@ public partial class DiagramDesignerViewModel : ObservableObject
     {
         DocumentTitle = _diagramService.CurrentDocument?.Title ?? AppStrings.UntitledDocument;
     }
+
+    /// <summary>Used by the host page after DocumentLoaded to sync the title bar.</summary>
+    public void SetDocumentTitle(string title) => DocumentTitle = title;
+
+    /// <summary>Used by the host page to push a one-off status message into the status bar.</summary>
+    public void SetStatus(string message) => Status = message;
 }

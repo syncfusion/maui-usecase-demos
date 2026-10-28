@@ -52,7 +52,7 @@ public partial class PanelHeaderControl : ContentView
     public PanelHeaderControl()
     {
         InitializeComponent();
-        Chevron.Text = "\u203A"; // › chevron
+        Chevron.Text = "\u25B8"; // ▸ chevron
         Chevron.GestureRecognizers.Add(new TapGestureRecognizer
         {
             Command = new Command(() => ToggleCommand?.Execute(null)),
@@ -71,7 +71,7 @@ public partial class PanelHeaderControl : ContentView
     {
         if (bindable is PanelHeaderControl header && newValue is bool collapsed)
         {
-            header.Chevron.Text = collapsed ? "\u2039" : "\u203A"; // ‹ / ›
+            header.Chevron.Text = collapsed ? "\u25C2" : "\u25B8"; // ◂ / ▸
         }
     }
 

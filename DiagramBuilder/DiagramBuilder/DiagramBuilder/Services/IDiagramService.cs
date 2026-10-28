@@ -14,6 +14,9 @@ public interface IDiagramService
     /// <summary>Raised with a status message (e.g. after save).</summary>
     event EventHandler<string>? StatusChanged;
 
+    /// <summary>Raised after <see cref="CreateDocumentAsync"/> completes so the designer can load it.</summary>
+    event EventHandler<DiagramDocument>? DocumentLoaded;
+
     Task<DiagramDocument> CreateDocumentAsync(DiagramTemplate template);
 
     Task SaveAsync();

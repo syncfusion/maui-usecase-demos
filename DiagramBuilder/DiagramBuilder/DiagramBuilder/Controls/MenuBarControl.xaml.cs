@@ -9,6 +9,7 @@ namespace DiagramBuilder.Controls;
 /// gets a button + SfPopup flyout rendered from its <see cref="MenuCommandItem.Children"/>
 /// tree. Item taps execute the bound <see cref="MenuCommand"/>. Checkable items show
 /// a check glyph and reflect the VM check-state delegate (IsChecked).
+/// Submenu items are rendered inline as indented rows under their parent header.
 /// Zero business logic — only binds and dispatches by id.
 /// </summary>
 public partial class MenuBarControl : ContentView
@@ -78,6 +79,7 @@ public partial class MenuBarControl : ContentView
         {
             Text = root.TextKey,
             Style = (Style)Resources["MenuRootButtonStyle"],
+            AutomationId = "menu_root_" + root.Id,
         };
 
         var popup = new Syncfusion.Maui.Popup.SfPopup
@@ -89,7 +91,6 @@ public partial class MenuBarControl : ContentView
             StaysOpen = false,
             OverlayMode = Syncfusion.Maui.Popup.PopupOverlayMode.Transparent,
         };
-        // The popup will be anchored to the button at click time.
         button.Clicked += (_, _) =>
         {
             popup.ShowRelativeToView(button, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
@@ -100,10 +101,7 @@ public partial class MenuBarControl : ContentView
     private View BuildFlyoutContent(MenuCommandItem root)
     {
         var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(4) };
-        foreach (var child in root.Children)
-        {
-            stack.Children.Add(BuildRow(child, isTopLevel: true));
-        }
+        AppendRows(stack, root.Children, indent: 0, isTopLevel: true);
         var border = new Border
         {
             Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
@@ -115,14 +113,36 @@ public partial class MenuBarControl : ContentView
         return border;
     }
 
-    private View BuildRow(MenuCommandItem item, bool isTopLevel)
+    private void AppendRows(VerticalStackLayout stack, IList<MenuCommandItem> items, int indent, bool isTopLevel)
+    {
+        foreach (var child in items)
+        {
+            // Hide submenu parents at top level — their children are rendered inline.
+            if (child.Children.Count > 0)
+            {
+                // Render submenu header (non-clickable, just a label).
+                stack.Children.Add(BuildSubmenuHeaderRow(child, indent));
+                AppendRows(stack, child.Children.ToList(), indent + 1, isTopLevel: false);
+            }
+            else
+            {
+                stack.Children.Add(BuildLeafRow(child, indent));
+            }
+        }
+    }
+
+    private View BuildLeafRow(MenuCommandItem item, int indent)
     {
         if (item.IsSeparator)
         {
             return new BoxView { Style = (Style)Resources["MenuFlyoutSeparatorStyle"] };
         }
 
-        var grid = new Grid { Style = (Style)Resources["MenuFlyoutRowStyle"] };
+        var grid = new Grid
+        {
+            Style = (Style)Resources["MenuFlyoutRowStyle"],
+            Padding = new Thickness(8 + (indent * 16), 0, 8, 0),
+        };
         var checkGlyph = new Label
         {
             Text = (item.IsCheckable && IsCheckedSafe(item.Id)) ? "\u2713" : string.Empty,
@@ -145,22 +165,46 @@ public partial class MenuBarControl : ContentView
         Grid.SetColumn(label, 1);
         Grid.SetColumn(shortcut, 2);
 
-        // Submenus open a nested popup (we render children inline as indented rows
-        // here to keep the control cross-TFM compilable; full cascading menu is a
-        // follow-up when SfPopup child-popup support is validated).
-        if (item.Children.Count > 0 && !isTopLevel)
-        {
-            // No-op: submenus surface at the top level only via MenuCatalog for now.
-        }
-
         var tap = new TapGestureRecognizer
         {
-            Command = new Command(() =>
-            {
-                MenuCommand?.Execute(item.Id);
-            }),
+            Command = new Command(() => MenuCommand?.Execute(item.Id)),
         };
         grid.GestureRecognizers.Add(tap);
+        return grid;
+    }
+
+    private View BuildSubmenuHeaderRow(MenuCommandItem item, int indent)
+    {
+        var grid = new Grid
+        {
+            Padding = new Thickness(8 + (indent * 16), 4, 8, 4),
+            ColumnDefinitions = new ColumnDefinitionCollection(new[]
+            {
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = GridLength.Auto },
+            }),
+        };
+        var label = new Label
+        {
+            Text = item.TextKey,
+            FontSize = 11,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+            VerticalTextAlignment = TextAlignment.Center,
+            VerticalOptions = LayoutOptions.Center,
+        };
+        var chevron = new Label
+        {
+            Text = "\u25B8", // ▸
+            FontSize = 11,
+            TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+            VerticalTextAlignment = TextAlignment.Center,
+            VerticalOptions = LayoutOptions.Center,
+        };
+        grid.Children.Add(label);
+        grid.Children.Add(chevron);
+        Grid.SetColumn(label, 0);
+        Grid.SetColumn(chevron, 1);
         return grid;
     }
 

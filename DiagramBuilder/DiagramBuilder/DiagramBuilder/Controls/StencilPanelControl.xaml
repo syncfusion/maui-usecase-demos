@@ -40,7 +40,7 @@
               RowSpacing="0">
 
             <!-- Panel header with collapse chevron -->
-            <controls:PanelHeaderControl x:Name="Header"
+            <controls:PanelHeaderControl x:Name="_header"
                                          Grid.Row="0"
                                          Title="{Binding Title}" />
 
@@ -58,62 +58,10 @@
                        Style="{StaticResource StencilSearchEntryStyle}" />
             </Border>
 
-            <!-- Accordion of categories: one SfExpander per StencilGroup.
-                 (SfAccordion has no ItemsSource — its Items collection takes
-                 AccordionItem views only, so groups are bound via a DataTemplate.) -->
+            <!-- Accordion of categories: one SfExpander per StencilGroup. -->
             <ScrollView Grid.Row="2"
                         VerticalScrollBarVisibility="Never">
-                <CollectionView ItemsSource="{Binding VisibleGroups}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <expander:SfExpander IsExpanded="{Binding IsExpanded, Mode=TwoWay}">
-                                <expander:SfExpander.Header>
-                                    <Grid Padding="12,10"
-                                          ColumnDefinitions="*,Auto">
-                                        <Label Grid.Column="0"
-                                               Text="{Binding Title}"
-                                               Style="{StaticResource StencilGroupHeaderStyle}" />
-                                        <Label Grid.Column="1"
-                                               Text="{Binding ItemCountText}"
-                                               Style="{StaticResource StencilGroupHeaderStyle}"
-                                               TextColor="{DynamicResource TextSecondary}" />
-                                    </Grid>
-                                </expander:SfExpander.Header>
-                                <expander:SfExpander.Content>
-                                    <CollectionView ItemsSource="{Binding Items}">
-                                        <CollectionView.ItemsLayout>
-                                            <LinearItemsLayout ItemSpacing="4"
-                                                                Orientation="Vertical" />
-                                        </CollectionView.ItemsLayout>
-                                        <CollectionView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Stroke="{DynamicResource PanelBorderBrush}"
-                                                        StrokeThickness="1"
-                                                        Padding="8,6"
-                                                        Margin="8,4"
-                                                        BackgroundColor="{DynamicResource CanvasBackground}">
-                                                    <Border.StrokeShape>
-                                                        <shapes:RoundRectangle CornerRadius="6" />
-                                                    </Border.StrokeShape>
-                                                    <StackLayout Spacing="4">
-                                                        <BoxView HeightRequest="36"
-                                                                 WidthRequest="36"
-                                                                 HorizontalOptions="Center"
-                                                                 BackgroundColor="{DynamicResource HoverBackground}" />
-                                                        <Label Text="{Binding DisplayName}"
-                                                               FontSize="11"
-                                                               HorizontalTextAlignment="Center"
-                                                               TextColor="{DynamicResource TextPrimary}" />
-                                                    </StackLayout>
-                                                </Border>
-                                            </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                    </CollectionView>
-                                </expander:SfExpander.Content>
-                            </expander:SfExpander>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                <VerticalStackLayout x:Name="GroupsHost" Spacing="4" />
             </ScrollView>
         </Grid>
     </Border>
