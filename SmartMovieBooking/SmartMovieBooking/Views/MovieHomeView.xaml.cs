@@ -56,14 +56,6 @@ public partial class MovieHomeView : ContentPage
             NavigateToTheatersFor(movie);
     }
 
-    // Called from SfListView's SelectionChanged when the user clicks a row.
-    private void OnMovieTapped(object? sender, Syncfusion.Maui.ListView.ItemSelectionChangedEventArgs e)
-    {
-        if (e.AddedItems.FirstOrDefault() is not Movie movie) return;
-        MoviesList.SelectedItem = null;
-        NavigateToTheatersFor(movie);
-    }
-
     private void NavigateToTheatersFor(Movie movie)
     {
         _session.SelectedMovie = movie;
