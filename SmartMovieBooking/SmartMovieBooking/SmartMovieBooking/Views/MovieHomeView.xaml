@@ -206,7 +206,7 @@
                                                          TextColor="#D9DCF4" />
 
                                                 <HorizontalStackLayout Spacing="10">
-                                                    <syncfusionButtons:SfButton Text="Book Now"
+													<Button Text="Book Now"                                                    
                                                                                 Background="#5B4BE3"
                                                                                 TextColor="White"
                                                                                 CornerRadius="16"
@@ -216,7 +216,7 @@
                                                                                 CommandParameter="{Binding .}"
                                                                                 behaviors:AnimateOnTap.IsEnabled="True"
                                                                                 Clicked="OnBookNowClicked" />
-                                                    <syncfusionButtons:SfButton Text="Trailer"
+													<Button Text="Trailer"
 																				Background="#6A7090"
 																				TextColor="White"
                                                                                 CornerRadius="16"
