@@ -331,7 +331,7 @@
                                                                FontSize="52"
                                                                HorizontalTextAlignment="Center"
                                                                TextColor="#EAF0FF" />
-                                                        <Label Text="{Binding ReleaseDate}"
+                                                        <Label Text="{Binding ReleaseDate, StringFormat='RELEASE ON {0}'}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="14"
                                                                TextColor="#F6F7FC"
