@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
+             x:Class="SmartMovieBooking.Views.SeatSelectionView"
+             x:DataType="vm:SeatSelectionViewModel"
+             Title="Select Seats">
+    <Grid MaximumWidthRequest="1200"
+          Padding="20"
+          RowSpacing="16"
+          RowDefinitions="Auto,*,Auto"
+          BackgroundColor="#F8F9FF">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label x:Name="ScreenTitleLabel"
+                   Text="Select Seats"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="#1A1A2E" />
+            <Label x:Name="TheaterLabel"
+                   Text=""
+                   FontSize="13"
+                   TextColor="#49454F" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="16">
+                <syncfusionCards:SfCardView CornerRadius="16"
+                                            BackgroundColor="#1A1A2E"
+                                            Padding="18,16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="SCREEN"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="10"
+                               CharacterSpacing="2"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#C7C8D8" />
+                        <Border HeightRequest="6"
+                                WidthRequest="210"
+                                HorizontalOptions="Center"
+                                BackgroundColor="#3525CD"
+                                StrokeShape="RoundRectangle 8" />
+                        <Label Text="{Binding ShowtimeLabel}"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="14"
+                               HorizontalTextAlignment="Center"
+                               TextColor="#FFFFFF" />
+                    </VerticalStackLayout>
+                </syncfusionCards:SfCardView>
+
+                <syncfusionCards:SfCardView CornerRadius="18"
+                                            HeightRequest="460"
+                                            BackgroundColor="#FFFFFF"
+                                            Padding="18">
+                    <VerticalStackLayout Spacing="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Choose your seats"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="#1A1A2E" />
+                            <Label Text="Tap available seats to select"
+                                   FontSize="12"
+                                   TextColor="#7A7B8C" />
+                        </VerticalStackLayout>
+
+                        <ScrollView Orientation="{OnIdiom Default=Vertical, Phone=Horizontal}">
+                            <VerticalStackLayout Spacing="10"
+                                                 BindableLayout.ItemsSource="{Binding SeatRows}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SeatRowViewModel">
+                                        <HorizontalStackLayout Spacing="18" HorizontalOptions="Center">
+                                            <Label Text="{Binding RowLabel}"
+                                                   VerticalTextAlignment="Center"
+                                                   HorizontalTextAlignment="End"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="12"
+                                                   Margin="0,0,2,0"
+                                                   TextColor="#7A7B8C" />
+                                            <HorizontalStackLayout Grid.Column="1"
+                                                                   Spacing="6"
+                                                                   HorizontalOptions="Center">
+                                                <BindableLayout.ItemsSource>
+                                                    <Binding Path="Seats" />
+                                                </BindableLayout.ItemsSource>
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:Seat">
+                                                        <Border StrokeThickness="1"
+                                                                Stroke="{Binding State, Converter={StaticResource SeatColorConverter}}"
+                                                                BackgroundColor="{Binding State, Converter={StaticResource SeatColorConverter}}"
+                                                                WidthRequest="28"
+                                                                HeightRequest="28"
+                                                                StrokeShape="RoundRectangle 8">
+                                                            <Border.GestureRecognizers>
+                                                                <TapGestureRecognizer Tapped="OnSeatTapped" />
+                                                            </Border.GestureRecognizers>
+                                                            <Label Text="{Binding Column}"
+                                                                   FontSize="10"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   HorizontalTextAlignment="Center"
+                                                                   VerticalTextAlignment="Center"
+                                                                   TextColor="{Binding State, Converter={StaticResource SeatTextColorConverter}}" />
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </HorizontalStackLayout>
+                                        </HorizontalStackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <Grid HorizontalOptions="Center" Margin="0,12,0,0" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="18">
+                            <HorizontalStackLayout Spacing="8">
+                                <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#E5E6F1" StrokeShape="RoundRectangle 5" />
+                                <Label Text="Available" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                                <Border WidthRequest="18" HeightRequest="18" BackgroundColor="#1E88E5" StrokeShape="RoundRectangle 5" />
+                                <Label Text="Selected" FontSize="12" TextColor="#49454F" VerticalTextAlignment="Center" />
+                            </HorizontalStackLayout>
+							<HorizontalStackLayout Grid.Column="2"
+												   Spacing="8">
+								<Border WidthRequest="18"
+										HeightRequest="18"
+										BackgroundColor="#9CA3AF"
+										StrokeShape="RoundRectangle 5" />
+								<Label Text="Occupied"
+									   FontSize="12"
+									   TextColor="#49454F"
+									   VerticalTextAlignment="Center" />
+							</HorizontalStackLayout>
+						</Grid>
+                    </VerticalStackLayout>
+                </syncfusionCards:SfCardView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <syncfusionCards:SfCardView Grid.Row="2"
+                                     CornerRadius="0"
+                                     BackgroundColor="#FFFFFF"
+                                     Padding="20,12,20,16">
+            <Grid RowDefinitions="{OnIdiom Default=Auto, Phone='Auto,Auto'}"
+                  ColumnDefinitions="{OnIdiom Default='*,Auto', Phone='*'}"
+                  RowSpacing="12"
+                  ColumnSpacing="12">
+                <VerticalStackLayout Grid.Row="0"
+                                     Grid.Column="0"
+                                     Spacing="2"
+                                     VerticalOptions="Center">
+                    <Label x:Name="SeatsSummaryLabel"
+                           Text="0 seats selected"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="13"
+                           TextColor="#1A1A2E" />
+                    <Label x:Name="TotalLabel"
+                           Text="$0.00"
+                           FontFamily="OpenSansSemibold"
+                           FontAttributes="Bold"
+                           FontSize="18"
+                           TextColor="#3525CD" />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Grid.Row="{OnIdiom Default=0, Phone=1}"
+                                       Grid.Column="{OnIdiom Default=1, Phone=0}"
+                                       Grid.ColumnSpan="{OnIdiom Default=1, Phone=1}"
+                                       Spacing="8"
+                                       VerticalOptions="Center">
+                    <syncfusionButtons:SfButton Text="Cancel"
+                                                 BackgroundColor="#3525CD"
+                                                 TextColor="#FFFFFF"
+                                                 CornerRadius="10"
+                                                 FontFamily="OpenSansSemibold"
+                                                 WidthRequest="88"
+                                                 HeightRequest="40"
+                                                 behaviors:AnimateOnTap.IsEnabled="True"
+                                                 Clicked="OnCancelClicked" />
+                    <syncfusionButtons:SfButton Text="Proceed to Pay"
+                                                 BackgroundColor="#3525CD"
+                                                 TextColor="#FFFFFF"
+                                                 CornerRadius="10"
+                                                 FontFamily="OpenSansSemibold"
+                                                 FontAttributes="Bold"
+                                                 WidthRequest="160"
+                                                 HeightRequest="40"
+                                                 behaviors:AnimateOnTap.IsEnabled="True"
+                                                 IsEnabled="{Binding CanConfirm}"
+                                                 Clicked="OnConfirmClicked" />
+                </HorizontalStackLayout>
+            </Grid>
+        </syncfusionCards:SfCardView>
+    </Grid>
+</ContentPage>
