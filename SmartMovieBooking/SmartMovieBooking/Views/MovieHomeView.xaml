@@ -254,11 +254,9 @@
                                                                FontSize="60"
                                                                HorizontalTextAlignment="Center"
                                                                TextColor="#F0F3FF" />
-                                                        <Label Text="{Binding Title}"
+                                                        <Label Text="{Binding ReleaseDate}"
                                                                FontFamily="OpenSansSemibold"
                                                                FontSize="14"
-                                                               LineBreakMode="TailTruncation"
-                                                               MaxLines="3"
                                                                HorizontalTextAlignment="Center"
                                                                TextColor="#F0F3FF" />
                                                     </VerticalStackLayout>
