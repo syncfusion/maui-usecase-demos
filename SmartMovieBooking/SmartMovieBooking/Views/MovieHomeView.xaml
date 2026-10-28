@@ -296,7 +296,7 @@
 											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
 											   BackgroundColor="Transparent"
 											   Orientation="Horizontal"
-											   HeightRequest="380"
+											   HeightRequest="400"
 											   ScrollBarVisibility="Never"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None">
@@ -305,7 +305,7 @@
 							</syncfusion:SfListView.ItemsLayout>
 							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Movie">
-                                    <Border WidthRequest="190"
+                                    <Border WidthRequest="220"
                                             Stroke="#ECECF4"
                                             StrokeThickness="1"
                                             StrokeShape="RoundRectangle 22"
@@ -346,46 +346,24 @@
                                                                    TextColor="#B9D5FF" />
                                                         </Border>
                                                     </HorizontalStackLayout>
-                                                    <VerticalStackLayout Grid.Row="1"
-                                                                         VerticalOptions="Center"
-                                                                         HorizontalOptions="Center"
-                                                                         Spacing="10">
-                                                        <Label Text="🎬"
-                                                               FontSize="52"
-                                                               HorizontalTextAlignment="Center"
-                                                               TextColor="#EAF0FF" />
-                                                        <Label Text="{Binding Title}"
-                                                               FontFamily="OpenSansSemibold"
-                                                               FontSize="14"
-                                                               FontAttributes="Bold"
-                                                               LineBreakMode="TailTruncation"
-                                                               MaxLines="3"
-                                                               HorizontalTextAlignment="Center"
-                                                               TextColor="#F6F7FC" />
-                                                    </VerticalStackLayout>
-                                                    <HorizontalStackLayout Grid.Row="2"
-                                                                           Spacing="8"
-                                                                           HorizontalOptions="Center">
-                                                        <Border Background="#FFFFFF14"
-                                                                StrokeThickness="0"
-                                                                StrokeShape="RoundRectangle 12"
-                                                                Padding="10,6">
-                                                            <Label Text="{Binding PrimaryGenre}"
-                                                                   FontFamily="OpenSansSemibold"
-                                                                   FontSize="11"
-                                                                   TextColor="#E9ECFF" />
-                                                        </Border>
-                                                        <Border Background="#FFFFFF14"
-                                                                StrokeThickness="0"
-                                                                StrokeShape="RoundRectangle 12"
-                                                                Padding="10,6">
-                                                            <Label Text="{Binding Duration}"
-                                                                   FontFamily="OpenSansSemibold"
-                                                                   FontSize="11"
-                                                                   TextColor="#E9ECFF" />
-                                                        </Border>
-                                                    </HorizontalStackLayout>
-                                                </Grid>
+													<VerticalStackLayout Grid.Row="1"
+																		 VerticalOptions="Center"
+																		 HorizontalOptions="Center"
+																		 Spacing="10">
+														<Label Text="🎬"
+															   FontSize="52"
+															   HorizontalTextAlignment="Center"
+															   TextColor="#EAF0FF" />
+														<Label Text="{Binding Title}"
+															   FontFamily="OpenSansSemibold"
+															   FontSize="14"
+															   FontAttributes="Bold"
+															   LineBreakMode="TailTruncation"
+															   MaxLines="3"
+															   HorizontalTextAlignment="Center"
+															   TextColor="#F6F7FC" />
+													</VerticalStackLayout>
+												</Grid>
                                             </Border>
 
                                             <VerticalStackLayout Spacing="4">
@@ -446,7 +424,7 @@
 											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
 											   BackgroundColor="Transparent"
 											   Orientation="Horizontal"
-											   HeightRequest="380"
+											   HeightRequest="400"
 											   ScrollBarVisibility="Never"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None">
@@ -455,7 +433,7 @@
 							</syncfusion:SfListView.ItemsLayout>
 							<syncfusion:SfListView.ItemTemplate>
                                     <DataTemplate x:DataType="models:Movie">
-                                        <Border WidthRequest="190"
+                                        <Border WidthRequest="220"
                                                 Stroke="#ECECF4"
                                                 StrokeThickness="1"
                                                 StrokeShape="RoundRectangle 22"
