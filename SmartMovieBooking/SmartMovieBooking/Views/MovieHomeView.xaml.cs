@@ -23,15 +23,15 @@ public partial class MovieHomeView : ContentPage
         await _vm.LoadAsync();
     }
 
-    private void CategoryChipGroup_ChipClicked(object sender, EventArgs e)
-    {
-        var selected = categoryChipGroup.SelectedItem;
+    //private void CategoryChipGroup_ChipClicked(object sender, EventArgs e)
+    //{
+    //    var selected = categoryChipGroup.SelectedItem;
 
-        if (selected == null)
-            return;
+    //    if (selected == null)
+    //        return;
 
-        _vm.SelectedGenre = selected.ToString() ?? "All Genres";
-    }
+    //    _vm.SelectedGenre = selected.ToString() ?? "All Genres";
+    //}
 
     private void OnSearchChanged(object? sender, TextChangedEventArgs e)
         => _vm.SearchText = e.NewTextValue ?? string.Empty;
