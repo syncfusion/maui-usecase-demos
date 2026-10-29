@@ -39,7 +39,7 @@
 						<VerticalStackLayout Grid.Row="0"
 											 Grid.ColumnSpan="2"
 											 Spacing="4">
-							<Label Text="Discover Movies"
+							<Label Text="Discover Movies"                            
 								   FontFamily="OpenSansSemibold"
 								   FontSize="30"
 								   FontAttributes="Bold"
@@ -49,6 +49,7 @@
 								   TextColor="#5C5F76" />
 						</VerticalStackLayout>
 						<Border Grid.Column="1"
+								IsVisible="{OnIdiom Default=True, Phone=False}"
 								Background="#FFFFFF"
 								Stroke="#ECECF4"
 								StrokeThickness="1"
@@ -110,7 +111,7 @@
 											StrokeThickness="1"
 											StrokeShape="RoundRectangle 28"
 											Background="White">
-										<Grid ColumnDefinitions="1.2*,0.8*"
+										<Grid ColumnDefinitions="{OnIdiom Default='1.2*,0.8*', Phone='1.2*'}"
                                               Padding="22"
                                               BackgroundColor="#1A2352">
                                             <Grid.Background>
@@ -122,8 +123,8 @@
                                                 </LinearGradientBrush>
                                             </Grid.Background>
 
-                                            <VerticalStackLayout Spacing="14"
-                                                                 VerticalOptions="Center">
+											<VerticalStackLayout Spacing="{OnIdiom Default=14, Phone=6}"
+																 VerticalOptions="Center">
                                                 <HorizontalStackLayout Spacing="8">
                                                     <Border Background="#5663D6"
                                                             StrokeThickness="0"
@@ -228,7 +229,8 @@
                                             </VerticalStackLayout>
 
                                             <Border Grid.Column="1"
-                                                    HorizontalOptions="End"
+													IsVisible="{OnIdiom Default=True, Phone=False}"
+													HorizontalOptions="End"
                                                     VerticalOptions="Center"
                                                     WidthRequest="175"
                                                     HeightRequest="256"
@@ -286,7 +288,7 @@
 											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
 											   BackgroundColor="Transparent"
 											   Orientation="Horizontal"
-											   HeightRequest="390"
+											   HeightRequest="{OnIdiom Default='390', Phone='360'}"
 											   ScrollBarVisibility="Never"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None">
@@ -422,7 +424,7 @@
 											   ItemSpacing="{OnIdiom Default='8', Phone='4'}"
 											   BackgroundColor="Transparent"
 											   Orientation="Horizontal"
-											   HeightRequest="390"
+											   HeightRequest="{OnIdiom Default='390', Phone='360'}"
 											   ScrollBarVisibility="Never"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None">
