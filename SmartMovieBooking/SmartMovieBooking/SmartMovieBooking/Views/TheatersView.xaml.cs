@@ -21,6 +21,7 @@ public partial class TheatersView : ContentPage
     {
         base.OnAppearing();
         await _vm.LoadAsync();
+        MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
     }
 
     private async void OnDateTapped(object? sender, TappedEventArgs e)
@@ -29,6 +30,7 @@ public partial class TheatersView : ContentPage
 
         _vm.SelectedDate = d;
         await _vm.LoadAsync();
+        MovieLabel.Text = _vm.MovieTitle ?? "Choose a theater and showtime";
     }
 
     private async void OnShowtimeTapped(object? sender, TappedEventArgs e)

@@ -92,19 +92,6 @@ public sealed class EnumToBoolConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
-public sealed class DateEqualsConverter : IValueConverter
-{
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        if (value is not DateTime date || parameter is not DateTime selected)
-            return false;
-        return date.Date == selected.Date;
-    }
-
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new NotSupportedException();
-}
-
 public sealed class DateLabelConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
