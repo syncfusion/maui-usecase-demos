@@ -146,44 +146,6 @@
                         </Grid>
                     </Border>
 
-                    <Border HeightRequest="280"
-                            StrokeThickness="0"
-                            StrokeShape="RoundRectangle 28"
-                            BackgroundColor="#12162B"
-                            IsClippedToBounds="True">
-                        <Grid>
-                            <Image Source="moviehome.png"
-                                   Aspect="AspectFill"
-                                   Opacity="0.95" />
-                            <Border Background="#161C3D"
-                                    Opacity="0.35" />
-                            <VerticalStackLayout Padding="28"
-                                                 VerticalOptions="End"
-                                                 Spacing="10">
-                                <Border Background="#FFFFFF1A"
-                                        StrokeThickness="0"
-                                        StrokeShape="RoundRectangle 999"
-                                        Padding="12,6"
-                                        HorizontalOptions="Start">
-                                    <Label Text="NOW SHOWING"
-                                           FontFamily="OpenSansSemibold"
-                                           FontSize="10"
-                                           CharacterSpacing="1.6"
-                                           TextColor="White" />
-                                </Border>
-                                <Label Text="Experience the next big release"
-                                       FontFamily="OpenSansSemibold"
-                                       FontSize="30"
-                                       FontAttributes="Bold"
-                                       TextColor="White" />
-                                <Label Text="Book seats faster with a cinematic hero section at the top of the home page."
-                                       FontSize="13"
-                                       TextColor="#E4E8FF"
-                                       MaxLines="2" />
-                            </VerticalStackLayout>
-                        </Grid>
-                    </Border>
-
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                             <VerticalStackLayout Spacing="4">
