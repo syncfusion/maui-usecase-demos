@@ -9,13 +9,7 @@
              x:Class="SmartMovieBooking.Views.SeatSelectionView"
              x:DataType="vm:SeatSelectionViewModel"
              Title="Select Seats">
-    <Grid MaximumWidthRequest="1200">
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#F8F9FF" Offset="0" />
-                <GradientStop Color="#EEF1FF" Offset="1" />
-            </LinearGradientBrush>
-        </Grid.Background>
+    <Grid MaximumWidthRequest="1200"
           Padding="20"
           RowSpacing="16"
           RowDefinitions="Auto,*,Auto"

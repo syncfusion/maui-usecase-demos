@@ -9,12 +9,6 @@
              x:DataType="vm:AiCopilotViewModel"
              Title="AI Copilot">
     <Grid Padding="20" RowSpacing="14" RowDefinitions="Auto,*,Auto" BackgroundColor="#FFFFFF">
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#F8F9FF" Offset="0" />
-                <GradientStop Color="#EEF1FF" Offset="1" />
-            </LinearGradientBrush>
-        </Grid.Background>
 
         <!-- Header -->
         <VerticalStackLayout Grid.Row="0" Spacing="4">
