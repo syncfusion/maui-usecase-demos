@@ -209,6 +209,8 @@
                        ShowFooter="False"
                        ShowCloseButton="False"
                        CanBeDismissedByTappingOutsideOfPopup="False"
+                       WidthRequest="560"
+                       HeightRequest="580"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        StaysOpen="False">
@@ -217,8 +219,8 @@
             </popup:SfPopup.PopupStyle>
             <popup:SfPopup.ContentTemplate>
                 <DataTemplate>
-                    <Border WidthRequest="720"
-                            MaximumWidthRequest="720"
+                    <Border WidthRequest="560"
+                            HeightRequest="580"
                             Stroke="#DCE3F5"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 28"
