@@ -28,6 +28,8 @@
                        FontSize="13" TextColor="#49454F" />
             </VerticalStackLayout>
 
+            <syncfusionCards:SfCardView CornerRadius="18" BackgroundColor="#FFFFFF" Padding="8">
+
             <!-- SfTabView: Upcoming / History -->
             <syncfusionTab:SfTabView x:Name="BookingsTabView"
                                        BackgroundColor="Transparent"
@@ -45,7 +47,7 @@
 											   BackgroundColor="Transparent">
 							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Booking">
-                                    <syncfusionCards:SfCardView CornerRadius="16"
+                                    <syncfusionCards:SfCardView CornerRadius="18"
                                                                  BackgroundColor="#FFFFFF"
                                                                  Padding="16">
                                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
@@ -132,6 +134,7 @@
                     </syncfusionTab:SfTabItem.Content>
                 </syncfusionTab:SfTabItem>
             </syncfusionTab:SfTabView>
+            </syncfusionCards:SfCardView>
         </VerticalStackLayout>
             </ScrollView>
     </Grid>

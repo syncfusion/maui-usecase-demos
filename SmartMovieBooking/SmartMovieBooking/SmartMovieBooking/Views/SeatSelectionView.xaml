@@ -14,8 +14,16 @@
           RowSpacing="16"
           RowDefinitions="Auto,*,Auto"
           BackgroundColor="#F8F9FF">
+        <Border Background="{StaticResource AppGradientBrush}"
+                Opacity="0.18"
+                StrokeThickness="0"
+                InputTransparent="True" />
 
-        <VerticalStackLayout Grid.Row="0" Spacing="4">
+        <syncfusionCards:SfCardView Grid.Row="0"
+                                    CornerRadius="18"
+                                    BackgroundColor="#FFFFFF"
+                                    Padding="18,16">
+            <VerticalStackLayout Spacing="4">
             <Label x:Name="ScreenTitleLabel"
                    Text="Select Seats"
                    FontFamily="OpenSansSemibold"
@@ -27,6 +35,7 @@
                    FontSize="13"
                    TextColor="#49454F" />
         </VerticalStackLayout>
+        </syncfusionCards:SfCardView>
 
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="16">
@@ -53,7 +62,7 @@
                     </VerticalStackLayout>
                 </syncfusionCards:SfCardView>
 
-                <syncfusionCards:SfCardView CornerRadius="18"
+                <syncfusionCards:SfCardView CornerRadius="22"
                                             HeightRequest="460"
                                             BackgroundColor="#FFFFFF"
                                             Padding="18">
@@ -142,9 +151,10 @@
         </ScrollView>
 
         <syncfusionCards:SfCardView Grid.Row="2"
-                                     CornerRadius="0"
+                                     CornerRadius="20"
                                      BackgroundColor="#FFFFFF"
-                                     Padding="20,12,20,16">
+                                     Padding="20,14,20,16"
+                                     Margin="0,4,0,0">
             <Grid RowDefinitions="{OnIdiom Default=Auto, Phone='Auto,Auto'}"
                   ColumnDefinitions="{OnIdiom Default='*,Auto', Phone='*'}"
                   RowSpacing="12"
