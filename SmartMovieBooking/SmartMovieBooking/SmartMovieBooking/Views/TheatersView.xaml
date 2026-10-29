@@ -28,8 +28,58 @@
                 <Border.Shadow>
                     <Shadow Brush="#1A235218" Offset="0,8" Radius="20" Opacity="0.16" />
                 </Border.Shadow>
-                <VerticalStackLayout Spacing="10">
-                <VerticalStackLayout Spacing="4">
+                <VerticalStackLayout Spacing="12">
+                    <Border Background="#F7F9FF"
+                            Stroke="#E3E8FF"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 22"
+                            Padding="16">
+                        <Grid ColumnDefinitions="84,*,Auto" ColumnSpacing="16">
+                            <Border WidthRequest="84"
+                                    HeightRequest="120"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 18"
+                                    BackgroundColor="#1A1A2E">
+                                <Image Source="{Binding MoviePosterUrl}"
+                                       Aspect="AspectFill" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                <Label Text="{Binding MovieTitle, FallbackValue='Choose a movie'}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="26"
+                                       FontAttributes="Bold"
+                                       TextColor="#111827" />
+                                <Label Text="{Binding MovieTagline}"
+                                       FontSize="13"
+                                       TextColor="#4B5563"
+                                       LineBreakMode="WordWrap" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Border Background="#EEF2FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="10,6">
+                                        <Label Text="{Binding MovieCertificateText, FallbackValue='UA'}" FontSize="10" TextColor="#4338CA" />
+                                    </Border>
+                                    <Border Background="#EEF2FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="10,6">
+                                        <Label Text="{Binding MovieDurationText, FallbackValue='2h 30m'}" FontSize="10" TextColor="#4338CA" />
+                                    </Border>
+                                    <Border Background="#EEF2FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="10,6">
+                                        <Label Text="{Binding MovieGenresText}" FontSize="10" TextColor="#4338CA" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center" HorizontalOptions="End">
+                                <Label Text="{Binding MovieRatingText}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="#3525CD"
+                                       HorizontalTextAlignment="End" />
+                                <Label Text="Rating"
+                                       FontSize="11"
+                                       TextColor="#7A7B8C"
+                                       HorizontalTextAlignment="End" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                    <VerticalStackLayout Spacing="4">
 					<Label x:Name="MovieLabel"
 						   Text=""
 						   FontFamily="OpenSansSemibold"
