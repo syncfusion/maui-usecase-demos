@@ -21,12 +21,6 @@ public partial class PaymentConfirmationView : ContentPage
         base.OnAppearing();
         _vm.PopulateFromSession();
         await _vm.ProcessAsync();
-        MovieTitleLabel.Text = _vm.MovieTitle;
-        TheaterLabel.Text = _vm.TheaterName;
-        ShowtimeLabel.Text = _vm.ShowtimeLabel;
-        SeatsLabel.Text = $"Seats: {_vm.SeatsDisplay}";
-        BookingIdLabel.Text = _vm.BookingId;
-        TotalLabel.Text = _vm.FormattedTotal;
     }
 
     private async void OnDoneClicked(object? sender, EventArgs e)
