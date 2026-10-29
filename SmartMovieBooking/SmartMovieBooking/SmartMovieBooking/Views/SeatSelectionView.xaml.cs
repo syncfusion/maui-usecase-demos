@@ -39,6 +39,6 @@ public partial class SeatSelectionView : ContentPage
     private async void OnCancelClicked(object? sender, EventArgs e)
         => await Shell.Current.GoToAsync("//theaters");
 
-    private void OnConfirmClicked(object? sender, EventArgs e)
-        => ConfirmationOverlay.IsVisible = true;
+    private async void OnConfirmClicked(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("payment-confirmation");
 }
