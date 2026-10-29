@@ -209,13 +209,17 @@
                        ShowFooter="False"
                        ShowCloseButton="False"
                        CanBeDismissedByTappingOutsideOfPopup="False"
-                       WidthRequest="720"
-                       HeightRequest="640"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center">
+                       VerticalOptions="Center"
+                       StaysOpen="False">
+            <popup:SfPopup.PopupStyle>
+                <popup:PopupStyle OutsideBackground="#CC0B1020" />
+            </popup:SfPopup.PopupStyle>
             <popup:SfPopup.ContentTemplate>
                 <DataTemplate>
-                    <Border Stroke="#DCE3F5"
+                    <Border WidthRequest="720"
+                            MaximumWidthRequest="720"
+                            Stroke="#DCE3F5"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 28"
                             Background="#F7F9FF"
@@ -226,6 +230,7 @@
                                     Radius="30"
                                     Opacity="0.24" />
                         </Border.Shadow>
+
                         <VerticalStackLayout Spacing="20">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                 <VerticalStackLayout Spacing="8">
