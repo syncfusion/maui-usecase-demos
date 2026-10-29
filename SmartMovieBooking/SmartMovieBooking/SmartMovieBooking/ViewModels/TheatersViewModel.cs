@@ -30,6 +30,18 @@ public partial class TheatersViewModel : ObservableObject
     [ObservableProperty] private Showtime? _selectedShowtime;
     [ObservableProperty] private string _movieTitle = string.Empty;
 
+    [ObservableProperty] private string _moviePosterUrl = string.Empty;
+    [ObservableProperty] private string _movieBannerUrl = string.Empty;
+    [ObservableProperty] private string _movieTagline = string.Empty;
+    [ObservableProperty] private string _movieSynopsis = string.Empty;
+    [ObservableProperty] private string _movieRatingText = string.Empty;
+    [ObservableProperty] private string _movieDurationText = string.Empty;
+    [ObservableProperty] private string _movieCertificateText = string.Empty;
+    [ObservableProperty] private string _movieFormatText = string.Empty;
+    [ObservableProperty] private string _movieGenresText = string.Empty;
+    [ObservableProperty] private string _movieReleaseText = string.Empty;
+    [ObservableProperty] private string _moviePriceRangeText = string.Empty;
+
     private void BuildDateStrip()
     {
         Dates.Clear();
@@ -44,7 +56,21 @@ public partial class TheatersViewModel : ObservableObject
         try
         {
             if (_session.SelectedMovie is not null)
-                MovieTitle = _session.SelectedMovie.Title;
+            {
+                var movie = _session.SelectedMovie;
+                MovieTitle = movie.Title;
+                MoviePosterUrl = movie.PosterUrl;
+                MovieBannerUrl = movie.BannerUrl;
+                MovieTagline = movie.Tagline;
+                MovieSynopsis = movie.Synopsis;
+                MovieRatingText = movie.Rating;
+                MovieDurationText = movie.Duration;
+                MovieCertificateText = movie.Certificate;
+                MovieFormatText = movie.Format;
+                MovieGenresText = movie.Genres.Count > 0 ? string.Join(" • ", movie.Genres) : movie.PrimaryGenre;
+                MovieReleaseText = movie.ReleaseDate;
+                MoviePriceRangeText = movie.PriceRange;
+            }
 
             var movieId = _session.SelectedMovie?.Id;
             if (string.IsNullOrEmpty(movieId)) { Theaters.Clear(); return; }
