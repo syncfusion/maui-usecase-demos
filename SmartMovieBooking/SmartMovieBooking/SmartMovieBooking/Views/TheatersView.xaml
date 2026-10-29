@@ -24,22 +24,28 @@
               RowDefinitions="Auto,*"
               Padding="{OnIdiom Default='24', Phone='12'}"
               RowSpacing="16">
-            <VerticalStackLayout Grid.Row="0" Spacing="10">
-                <VerticalStackLayout Spacing="4">
-					<Label x:Name="MovieLabel"
-						   Text=""
-						   FontFamily="OpenSansSemibold"
-						   FontSize="28"
-						   FontAttributes="Bold"
-						   TextColor="#1A1A2E" />
-					<Label Text="Select Theater"
-						   FontFamily="OpenSansSemibold"
-						   FontSize="18"
-						   FontAttributes="Bold"
-						   TextColor="#1A1A2E" />
-				</VerticalStackLayout>
+            <Border Grid.Row="0" Background="#FFFFFF" Stroke="#E6EAF9" StrokeThickness="1" StrokeShape="RoundRectangle 26" Padding="18">
+                <Border.Shadow>
+                    <Shadow Brush="#1A235218" Offset="0,8" BlurRadius="20" Opacity="0.16" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="10">
+                    <VerticalStackLayout Spacing="4">
+						<Label x:Name="MovieLabel"
+							   Text=""
+							   FontFamily="OpenSansSemibold"
+							   FontSize="28"
+							   FontAttributes="Bold"
+							   TextColor="#1A1A2E" />
+						<Label Text="Select Theater"
+							   FontFamily="OpenSansSemibold"
+							   FontSize="18"
+							   FontAttributes="Bold"
+							   TextColor="#1A1A2E" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
 
-				<Border Stroke="#CAC7D0"
+					<Border Stroke="#E3E8FF"
 						StrokeShape="RoundRectangle 18"
 						Padding="12">
 					<syncfusion:SfListView x:Name="DateList"
@@ -58,7 +64,7 @@
 						<syncfusion:SfListView.ItemTemplate>
 							<DataTemplate x:DataType="sys:DateTime">
 								<Border StrokeThickness="1"
-										Stroke="#D7D8E6"
+										Stroke="#DDE3F7"
 										BackgroundColor="#FFFFFF"
 										Padding="{OnIdiom Default='10,8', Phone='8,6'}"
 										HeightRequest="68"
@@ -97,9 +103,7 @@
 						</syncfusion:SfListView.ItemTemplate>
 					</syncfusion:SfListView>
 				</Border>
-                </VerticalStackLayout>
-
-			<ScrollView Grid.Row="1">
+				<ScrollView Grid.Row="1">
                 <VerticalStackLayout Spacing="16">
 					<syncfusion:SfListView Grid.Row="1"
 											ItemsSource="{Binding Theaters}"
@@ -216,8 +220,8 @@
 												</syncfusion:SfListView.ItemTemplate>
 											</syncfusion:SfListView>
 										</VerticalStackLayout>
-                                    </syncfusionCards:SfCardView>
-                                </Grid>
+                                </syncfusionCards:SfCardView>
+                            </Grid>
                             </DataTemplate>
                         </syncfusion:SfListView.ItemTemplate>
                     </syncfusion:SfListView>

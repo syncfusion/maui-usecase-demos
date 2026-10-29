@@ -15,10 +15,20 @@
              x:DataType="vm:BookingsViewModel"
              Title="Bookings">
     <Grid RowDefinitions="{OnIdiom Default='*,Auto', Phone='*,72'}" ColumnDefinitions="{OnIdiom Default='200,*', Phone='*'}">
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#F8F9FF" Offset="0" />
+                <GradientStop Color="#EEF1FF" Offset="1" />
+            </LinearGradientBrush>
+        </Grid.Background>
         <controls:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}" ActiveTab="Bookings" />
 
         <ScrollView Grid.Row="{OnIdiom Default=0, Phone=0}" Grid.Column="{OnIdiom Default='1', Phone='0'}">
-			<VerticalStackLayout MaximumWidthRequest="1200"
+			<Border MaximumWidthRequest="1200" Background="#FFFFFF" Stroke="#E6EAF9" StrokeThickness="1" StrokeShape="RoundRectangle 26" Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="#1A235218" Offset="0,8" BlurRadius="20" Opacity="0.16" />
+                </Border.Shadow>
+                <VerticalStackLayout MaximumWidthRequest="1200"
 								 Padding="{OnIdiom Default='24', Phone='6'}"
 								 Spacing="16">
             <VerticalStackLayout Spacing="4">
@@ -52,7 +62,7 @@
                                             <Border Grid.Column="0"
                                                     WidthRequest="64" HeightRequest="80"
                                                     StrokeShape="RoundRectangle 12"
-                                                    BackgroundColor="#F1F2F8">
+                                                    BackgroundColor="#F4F5FE">
                                                 <Label Text="🎬" FontSize="28"
                                                        HorizontalTextAlignment="Center"
                                                        VerticalTextAlignment="Center" />
@@ -132,7 +142,8 @@
                     </syncfusionTab:SfTabItem.Content>
                 </syncfusionTab:SfTabItem>
             </syncfusionTab:SfTabView>
-        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Border>
             </ScrollView>
     </Grid>
 </ContentPage>
