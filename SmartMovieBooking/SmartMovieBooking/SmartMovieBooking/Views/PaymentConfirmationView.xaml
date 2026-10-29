@@ -1,145 +1,189 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
              xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:barcode="clr-namespace:Syncfusion.Maui.Barcode;assembly=Syncfusion.Maui.Barcode"
              xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
              x:Class="SmartMovieBooking.Views.PaymentConfirmationView"
              x:DataType="vm:PaymentConfirmationViewModel"
-             Title="Booking Confirmed">
-    <Grid MaximumWidthRequest="1200"
-          Padding="24"
-          RowSpacing="16"
-          RowDefinitions="*,Auto"
-          BackgroundColor="#F8F9FF">
-        <Border Background="{StaticResource AppGradientBrush}"
-                Opacity="0.16"
-                StrokeThickness="0"
-                InputTransparent="True" />
-        <ScrollView Grid.Row="0">
-            <VerticalStackLayout Spacing="20"
-                                 VerticalOptions="Center"
-                                 Padding="0,12">
-                <Grid HeightRequest="100" HorizontalOptions="Center">
-                    <Ellipse Fill="#9DEAF6" WidthRequest="100" HeightRequest="100" />
-                    <Label Text="✓" FontSize="50" FontFamily="OpenSansSemibold"
-                           FontAttributes="Bold"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           TextColor="#002A33" />
-                </Grid>
+             Title="Booking Confirmed"
+             BackgroundColor="#0B1020">
+    <Grid>
+        <Border Background="#0B1020" />
 
-                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                    <Label Text="Booking Confirmed!"
-                           FontFamily="OpenSansSemibold" FontSize="24"
-                           FontAttributes="Bold"
-                           HorizontalTextAlignment="Center"
-                           TextColor="#1A1A2E" />
-                    <Label Text="Your tickets have been booked successfully."
-                           FontSize="14"
-                           HorizontalTextAlignment="Center"
-                           TextColor="#49454F" />
-                </VerticalStackLayout>
+        <popup:SfPopup x:Name="ConfirmationPopup"
+                       IsOpen="True"
+                       ShowCloseButton="False"
+                       ShowFooter="False"
+                       ShowHeader="False"
+                       ShowOverlay="True"
+                       AutoSizeMode="Both"
+                       PlacementMode="Center"
+                       BackgroundColor="Transparent">
+            <popup:SfPopup.ContentTemplate>
+                <DataTemplate>
+                    <Border WidthRequest="720"
+                            MaximumWidthRequest="720"
+                            Stroke="#DCE3F5"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 28"
+                            Background="#F7F9FF"
+                            Padding="24">
+                        <Border.Shadow>
+                            <Shadow Brush="#1A235220"
+                                    Offset="0,14"
+                                    BlurRadius="30"
+                                    Opacity="0.24" />
+                        </Border.Shadow>
 
-                <syncfusionCards:SfCardView CornerRadius="22"
-                                             BackgroundColor="#F1F2F8"
-                                             Padding="20"
-                                             HorizontalOptions="Center"
-                                             MaximumWidthRequest="560">
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <VerticalStackLayout Grid.Column="0">
-                            <Label Text="BOOKING ID"
-                                   FontFamily="OpenSansSemibold" FontSize="10"
-                                   TextColor="#7A7B8C" />
-                            <Label x:Name="BookingIdLabel" Text="BK-000000"
-                                   FontFamily="OpenSansSemibold" FontAttributes="Bold"
-                                   FontSize="16"
-                                   TextColor="#1A1A2E" />
+                        <VerticalStackLayout Spacing="20">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <VerticalStackLayout Spacing="8">
+                                    <Border Background="#EEF3FF"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 999"
+                                            Padding="12,6"
+                                            HorizontalOptions="Start">
+                                        <Label Text="PAYMENT COMPLETE"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="10"
+                                               CharacterSpacing="1.6"
+                                               TextColor="#4A3DE0" />
+                                    </Border>
+
+                                    <Label Text="Booking Confirmed!"
+                                           FontFamily="OpenSansSemibold"
+                                           FontAttributes="Bold"
+                                           FontSize="28"
+                                           TextColor="#17182B" />
+                                    <Label Text="Your tickets have been booked successfully."
+                                           FontSize="14"
+                                           TextColor="#5C5F76" />
+                                </VerticalStackLayout>
+
+                                <Grid HeightRequest="96"
+                                      WidthRequest="96"
+                                      HorizontalOptions="End"
+                                      VerticalOptions="Start">
+                                    <Ellipse Fill="#9DEAF6"
+                                             WidthRequest="96"
+                                             HeightRequest="96" />
+                                    <Label Text="✓"
+                                           FontSize="48"
+                                           FontFamily="OpenSansSemibold"
+                                           FontAttributes="Bold"
+                                           TextColor="#062A33"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                </Grid>
+                            </Grid>
+
+                            <syncfusionCards:SfCardView CornerRadius="24"
+                                                        BackgroundColor="#FFFFFF"
+                                                        Padding="18">
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Label Text="BOOKING ID"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="10"
+                                               TextColor="#7A7B8C" />
+                                        <Label x:Name="BookingIdLabel"
+                                               Text="BK-000000"
+                                               FontFamily="OpenSansSemibold"
+                                               FontAttributes="Bold"
+                                               FontSize="18"
+                                               TextColor="#1A1A2E" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                        <Label Text="TOTAL PAID"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="10"
+                                               TextColor="#7A7B8C" />
+                                        <Label x:Name="TotalLabel"
+                                               Text="$0.00"
+                                               FontFamily="OpenSansSemibold"
+                                               FontAttributes="Bold"
+                                               FontSize="18"
+                                               TextColor="#3525CD" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </syncfusionCards:SfCardView>
+
+                            <syncfusionCards:SfCardView CornerRadius="24"
+                                                        BackgroundColor="#FFFFFF"
+                                                        Padding="18">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="10">
+                                    <Label Text="TICKET DETAILS"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="10"
+                                           TextColor="#7A7B8C" />
+
+                                    <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="16">
+                                        <VerticalStackLayout Spacing="8">
+                                            <Label x:Name="MovieTitleLabel"
+                                                   Text=""
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontAttributes="Bold"
+                                                   FontSize="16"
+                                                   TextColor="#1A1A2E" />
+                                            <Label x:Name="TheaterLabel"
+                                                   Text=""
+                                                   FontSize="12"
+                                                   TextColor="#49454F" />
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                            <Label x:Name="ShowtimeLabel"
+                                                   Text=""
+                                                   FontSize="12"
+                                                   TextColor="#49454F" />
+                                            <Label x:Name="SeatsLabel"
+                                                   Text=""
+                                                   FontSize="12"
+                                                   TextColor="#49454F" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+
+                                    <barcode:SfBarcodeGenerator Grid.Column="1"
+                                                                Grid.RowSpan="2"
+                                                                Value="Barcode"
+                                                                ShowText="False"
+                                                                WidthRequest="96"
+                                                                HeightRequest="96"
+                                                                HorizontalOptions="End">
+                                        <barcode:SfBarcodeGenerator.Symbology>
+                                            <barcode:QRCode />
+                                        </barcode:SfBarcodeGenerator.Symbology>
+                                    </barcode:SfBarcodeGenerator>
+                                </Grid>
+                            </syncfusionCards:SfCardView>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <syncfusionButtons:SfButton Text="Back to Home"
+                                                             BackgroundColor="#3525CD"
+                                                             TextColor="#FFFFFF"
+                                                             CornerRadius="14"
+                                                             FontFamily="OpenSansSemibold"
+                                                             HeightRequest="48"
+                                                             Clicked="OnDoneClicked" />
+                                <syncfusionButtons:SfButton Grid.Column="1"
+                                                             Text="View My Bookings"
+                                                             BackgroundColor="#FFFFFF"
+                                                             TextColor="#3525CD"
+                                                             Stroke="#D7DDF1"
+                                                             StrokeThickness="1"
+                                                             CornerRadius="14"
+                                                             FontFamily="OpenSansSemibold"
+                                                             FontAttributes="Bold"
+                                                             HeightRequest="48"
+                                                             Clicked="OnViewBookingsClicked" />
+                            </Grid>
                         </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="1">
-                            <Label Text="TOTAL PAID"
-                                   FontFamily="OpenSansSemibold" FontSize="10"
-                                   TextColor="#7A7B8C" />
-                            <Label x:Name="TotalLabel" Text="$0.00"
-                                   FontFamily="OpenSansSemibold" FontAttributes="Bold"
-                                   FontSize="16"
-                                   TextColor="#3525CD" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </syncfusionCards:SfCardView>
-
-                <syncfusionCards:SfCardView CornerRadius="22"
-                                             BackgroundColor="#FFFFFF"
-                                             Padding="16"
-                                             HorizontalOptions="Center"
-                                             MaximumWidthRequest="560">
-                    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto">
-                        <Label Text="TICKET DETAILS"
-                               FontFamily="OpenSansSemibold"
-                               FontSize="10"
-                               TextColor="#7A7B8C" />
-                        <Grid Padding="0,12,0,12" Grid.Row="1" Grid.Column="0" ColumnDefinitions="*,*" ColumnSpacing="16">
-                            <VerticalStackLayout VerticalOptions="Center" Spacing="8">
-                                <Label x:Name="MovieTitleLabel"
-                                       Text=""
-                                       FontFamily="OpenSansSemibold"
-                                       FontAttributes="Bold"
-                                       FontSize="15"
-                                       TextColor="#1A1A2E" />
-                                <Label x:Name="TheaterLabel"
-                                       Text=""
-                                       FontSize="12"
-                                       TextColor="#49454F" />
-                            </VerticalStackLayout>
-							<VerticalStackLayout Grid.Column="1"
-												 VerticalOptions="Center"
-												 Spacing="8">
-								<Label x:Name="ShowtimeLabel"
-									   Text=""
-									   FontSize="12"
-									   TextColor="#49454F" />
-								<Label x:Name="SeatsLabel"
-									   Text=""
-									   FontSize="12"
-									   TextColor="#49454F" />
-							</VerticalStackLayout>
-						</Grid>
-						<barcode:SfBarcodeGenerator Grid.Column="1"
-                        Grid.RowSpan="2"
-													Value="Barcode"
-													ShowText="False"
-													WidthRequest="100"
-													HeightRequest="100"
-													HorizontalOptions="End">
-							<barcode:SfBarcodeGenerator.Symbology>
-								<barcode:QRCode />
-							</barcode:SfBarcodeGenerator.Symbology>
-						</barcode:SfBarcodeGenerator>
-					</Grid>
-                </syncfusionCards:SfCardView>
-            </VerticalStackLayout>
-        </ScrollView>
-
-        <HorizontalStackLayout HorizontalOptions="End" Grid.Row="1" Spacing="10" Margin="0,4,0,0">
-            <syncfusionButtons:SfButton Text="Back to Home"
-                                         BackgroundColor="#3525CD"
-                                         TextColor="#FFFFFF"
-                                         CornerRadius="10"
-                                         FontFamily="OpenSansSemibold"
-                                         HeightRequest="44"
-                                         Clicked="OnDoneClicked"
-                                         HorizontalOptions="Fill" />
-            <syncfusionButtons:SfButton Text="View My Bookings"
-                                         BackgroundColor="#3525CD"
-                                         TextColor="#FFFFFF"
-                                         CornerRadius="10"
-                                         FontFamily="OpenSansSemibold"
-                                         FontAttributes="Bold"
-                                         HeightRequest="44"
-                                         Clicked="OnViewBookingsClicked"
-                                         HorizontalOptions="Fill" />
-        </HorizontalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </popup:SfPopup.ContentTemplate>
+        </popup:SfPopup>
     </Grid>
 </ContentPage>
