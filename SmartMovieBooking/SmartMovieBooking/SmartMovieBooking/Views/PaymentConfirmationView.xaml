@@ -22,8 +22,7 @@
                        AutoSizeMode="Both"
                        PlacementMode="Center"
                        BackgroundColor="Transparent">
-            <popup:SfPopup.ContentTemplate>
-                <DataTemplate>
+            <popup:SfPopup.Content>
                     <Border WidthRequest="720"
                             MaximumWidthRequest="720"
                             Stroke="#DCE3F5"
@@ -34,7 +33,7 @@
                         <Border.Shadow>
                             <Shadow Brush="#1A235220"
                                     Offset="0,14"
-                                    BlurRadius="30"
+                                    Radius="30"
                                     Opacity="0.24" />
                         </Border.Shadow>
 
@@ -182,8 +181,7 @@
                             </Grid>
                         </VerticalStackLayout>
                     </Border>
-                </DataTemplate>
-            </popup:SfPopup.ContentTemplate>
+            </popup:SfPopup.Content>
         </popup:SfPopup>
     </Grid>
 </ContentPage>
