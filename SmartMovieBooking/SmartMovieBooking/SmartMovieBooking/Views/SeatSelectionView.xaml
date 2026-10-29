@@ -204,7 +204,7 @@
 
 
         <Grid x:Name="ConfirmationOverlay"
-              IsVisible="False"
+              IsVisible="{Binding IsConfirmationVisible}"
               BackgroundColor="#CC0B1020">
             <Border HorizontalOptions="Center"
                     VerticalOptions="Center"
@@ -339,6 +339,27 @@
                             </barcode:SfBarcodeGenerator>
                         </Grid>
                     </syncfusionCards:SfCardView>
+
+                    <HorizontalStackLayout HorizontalOptions="End"
+                                           Spacing="10"
+                                           Margin="0,4,0,0">
+                        <syncfusionButtons:SfButton Text="Back to Home"
+                                                   BackgroundColor="#3525CD"
+                                                   TextColor="#FFFFFF"
+                                                   CornerRadius="10"
+                                                   FontFamily="OpenSansSemibold"
+                                                   HeightRequest="44"
+                                                   Clicked="OnDoneClicked"
+                                                   HorizontalOptions="Fill" />
+                        <syncfusionButtons:SfButton Text="View Bookings"
+                                                   BackgroundColor="#EEF1FF"
+                                                   TextColor="#1A1A2E"
+                                                   CornerRadius="10"
+                                                   FontFamily="OpenSansSemibold"
+                                                   HeightRequest="44"
+                                                   Clicked="OnViewBookingsClicked"
+                                                   HorizontalOptions="Fill" />
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Border>
         </Grid>

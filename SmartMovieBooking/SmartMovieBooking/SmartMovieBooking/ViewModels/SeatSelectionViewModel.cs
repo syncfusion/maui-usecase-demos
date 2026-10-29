@@ -10,11 +10,13 @@ public partial class SeatSelectionViewModel : ObservableObject
 {
     private readonly BookingSession _session;
     private readonly ISeatLayoutFactory _seatLayoutFactory;
+    private readonly IBookingRepository _repo;
 
-    public SeatSelectionViewModel(BookingSession session, ISeatLayoutFactory seatLayoutFactory)
+    public SeatSelectionViewModel(BookingSession session, ISeatLayoutFactory seatLayoutFactory, IBookingRepository repo)
     {
         _session = session;
         _seatLayoutFactory = seatLayoutFactory;
+        _repo = repo;
         SeatRows = new ObservableCollection<SeatRowViewModel>();
     }
 
@@ -25,6 +27,11 @@ public partial class SeatSelectionViewModel : ObservableObject
     [ObservableProperty] private decimal _convenienceFee;
     [ObservableProperty] private decimal _total;
     [ObservableProperty] private bool _canConfirm;
+    [ObservableProperty] private bool _isProcessing;
+    [ObservableProperty] private bool _isConfirmationVisible;
+    [ObservableProperty] private string _bookingId = "BK-PENDING";
+    [ObservableProperty] private string _movieTitle = string.Empty;
+    [ObservableProperty] private string _seatsDisplay = string.Empty;
 
     public ObservableCollection<SeatRowViewModel> SeatRows { get; }
     public ObservableCollection<Seat> SelectedSeats { get; } = new();
@@ -43,6 +50,7 @@ public partial class SeatSelectionViewModel : ObservableObject
     {
         if (_session.SelectedShowtime is null) return Task.CompletedTask;
 
+        MovieTitle = _session.SelectedMovie?.Title ?? string.Empty;
         TheaterName = _session.SelectedTheater?.Name ?? string.Empty;
         ShowtimeLabel = $"{_session.SelectedDate:ddd, MMM d} · {_session.SelectedShowtime.StartTime}";
         ScreenTitle = $"{TheaterName} Seats";
@@ -96,6 +104,50 @@ public partial class SeatSelectionViewModel : ObservableObject
         OnPropertyChanged(nameof(FormattedConvenienceFee));
         OnPropertyChanged(nameof(FormattedTotal));
     }
+
+    [RelayCommand]
+    public async Task ConfirmAsync()
+    {
+        if (SelectedSeats.Count == 0)
+            return;
+
+        IsProcessing = true;
+        try
+        {
+            await Task.Delay(1500);
+
+            BookingId = $"BK-{Random.Shared.Next(100000, 999999)}";
+            SeatsDisplay = string.Join(", ", SelectedSeats.OrderBy(s => s.Id).Select(s => s.Id));
+
+            var booking = new Booking
+            {
+                BookingId = BookingId,
+                CreatedAt = DateTime.Now,
+                Movie = _session.SelectedMovie,
+                Theater = _session.SelectedTheater,
+                Showtime = _session.SelectedShowtime,
+                Subtotal = _session.Subtotal,
+                ConvenienceFee = _session.ConvenienceFee,
+                Total = _session.Total,
+                PaymentMethod = "Card",
+                Status = "Confirmed"
+            };
+
+            foreach (var s in _session.SelectedSeats)
+                booking.Seats.Add(s);
+
+            _repo.Add(booking);
+            _session.Reset();
+            IsConfirmationVisible = true;
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+
+    [RelayCommand]
+    public void CloseConfirmation() => IsConfirmationVisible = false;
 
     [RelayCommand]
     public void Confirm() => Confirmed?.Invoke(this, EventArgs.Empty);

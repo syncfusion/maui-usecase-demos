@@ -40,5 +40,14 @@ public partial class SeatSelectionView : ContentPage
         => await Shell.Current.GoToAsync("//theaters");
 
     private async void OnConfirmClicked(object? sender, EventArgs e)
-        => await Shell.Current.GoToAsync("payment-confirmation");
+    {
+        await _vm.ConfirmAsync();
+        UpdatePricing();
+    }
+
+    private async void OnDoneClicked(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//home");
+
+    private async void OnViewBookingsClicked(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//bookings");
 }
