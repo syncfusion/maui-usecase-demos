@@ -21,7 +21,7 @@
         <Grid MaximumWidthRequest="1200"
               Grid.Row="{OnIdiom Default=0, Phone=0}"
               Grid.Column="{OnIdiom Default='1', Phone='0'}"
-              RowDefinitions="Auto,*"
+              RowDefinitions="Auto,Auto,*"
               Padding="{OnIdiom Default='24', Phone='12'}"
               RowSpacing="16">
             <Border Grid.Row="0"
@@ -161,7 +161,59 @@
                     </VerticalStackLayout>
                 </Grid>
             </Border>
-			<ScrollView Grid.Row="1">
+
+            <Border Grid.Row="1"
+                    Background="#FFFFFF"
+                    Stroke="#E6EAF9"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 22"
+                    Padding="10,12">
+                <syncfusion:SfListView x:Name="DateList"
+                                       ItemsSource="{Binding Dates}"
+                                       Orientation="Horizontal"
+                                       ItemSpacing="10"
+                                       AutoFitMode="DynamicHeight"
+                                       BackgroundColor="Transparent"
+                                       ScrollBarVisibility="Never"
+                                       SelectionMode="Single"
+                                       SelectionBackground="#3525CD"
+                                       HeightRequest="86">
+                    <syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:GridLayout SpanCount="1" />
+                    </syncfusion:SfListView.ItemsLayout>
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="sys:DateTime">
+                            <Border StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="10,8"
+                                    BackgroundColor="#FFFFFF">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnDateTapped"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="0" HorizontalOptions="Center">
+                                    <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
+                                           FontSize="9"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#49454F" />
+                                    <Label Text="{Binding ., StringFormat='{0:dd}'}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontAttributes="Bold"
+                                           FontSize="15"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#1A1A2E" />
+                                    <Label Text="{Binding ., StringFormat='{0:ddd MMM}'}"
+                                           FontSize="9"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#49454F" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+            </Border>
+
+            <ScrollView Grid.Row="2">
                 <VerticalStackLayout Spacing="16">
 					<syncfusion:SfListView Grid.Row="1"
 											ItemsSource="{Binding Theaters}"
