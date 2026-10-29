@@ -33,52 +33,118 @@
                         VerticalOptions="Fill"
                         HorizontalOptions="Fill">
                 <VerticalStackLayout Spacing="24">
-                    <Grid ColumnDefinitions="*,Auto"
-                          ColumnSpacing="16"
-                          RowSpacing="14">
-						<VerticalStackLayout Grid.Row="0"
-											 Grid.ColumnSpan="2"
-											 Spacing="4">
-							<Label Text="Discover Movies"                            
-								   FontFamily="OpenSansSemibold"
-								   FontSize="30"
-								   FontAttributes="Bold"
-								   TextColor="#17182B" />
-							<Label Text="Browse featured titles, what’s now showing, and what’s coming next."
-								   FontSize="13"
-								   TextColor="#5C5F76" />
-						</VerticalStackLayout>
-						<Border Grid.Column="1"
-								IsVisible="{OnIdiom Default=True, Phone=False}"
-								Background="#FFFFFF"
-								Stroke="#ECECF4"
-								StrokeThickness="1"
-								StrokeShape="RoundRectangle 18"
-								Padding="12,10"
-								VerticalOptions="Center">
-							<HorizontalStackLayout Spacing="10"
-												   VerticalOptions="Center">
-								<Border Background="#EEF0FF"
-										StrokeThickness="0"
-										StrokeShape="RoundRectangle 14"
-										Padding="8">
-									<Label Text="📍"
-										   FontSize="18"
-										   VerticalTextAlignment="Center"
-										   HorizontalTextAlignment="Center" />
-								</Border>
-								<VerticalStackLayout Spacing="0">
-									<Label Text="New York, NY"
-										   FontFamily="OpenSansSemibold"
-										   FontSize="13"
-										   TextColor="#17182B" />
-									<Label Text="10 movies in catalog"
-										   FontSize="11"
-										   TextColor="#5C5F76" />
-								</VerticalStackLayout>
-							</HorizontalStackLayout>
-						</Border>
-					</Grid>
+                    <Border Stroke="#E6EAF9"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 28"
+                            Background="#FFFFFF"
+                            Padding="20">
+                        <Border.Shadow>
+                            <Shadow Brush="#1A235220"
+                                    Offset="0,10"
+                                    BlurRadius="24"
+                                    Opacity="0.18" />
+                        </Border.Shadow>
+                        <Grid ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto,Auto"
+                              ColumnSpacing="16"
+                              RowSpacing="14">
+                            <VerticalStackLayout Grid.Column="0"
+                                                 Spacing="10">
+                                <Border Background="#EEF1FF"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 999"
+                                        Padding="12,6"
+                                        HorizontalOptions="Start">
+                                    <Label Text="SMART BOOKING EXPERIENCE"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="10"
+                                           CharacterSpacing="1.6"
+                                           TextColor="#4A3DE0" />
+                                </Border>
+                                <Label Text="Discover Movies"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="30"
+                                       FontAttributes="Bold"
+                                       TextColor="#17182B" />
+                                <Label Text="Browse featured titles, what’s now showing, and what’s coming next in a cleaner, more cinematic layout."
+                                       FontSize="13"
+                                       LineBreakMode="WordWrap"
+                                       TextColor="#5C5F76" />
+                                <HorizontalStackLayout Spacing="10">
+                                    <Border Background="#F4F5FE"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 999"
+                                            Padding="12,8">
+                                        <Label Text="10 Movies"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="12"
+                                               TextColor="#334155" />
+                                    </Border>
+                                    <Border Background="#F4F5FE"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 999"
+                                            Padding="12,8">
+                                        <Label Text="Premium Screens"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="12"
+                                               TextColor="#334155" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1"
+                                    IsVisible="{OnIdiom Default=True, Phone=False}"
+                                    Background="#F3F6FF"
+                                    Stroke="#E3E8FF"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 22"
+                                    Padding="14,12"
+                                    VerticalOptions="Center">
+                                <VerticalStackLayout Spacing="10"
+                                                     VerticalOptions="Center">
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Border Background="#EEF0FF"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 14"
+                                                Padding="8">
+                                            <Label Text="📍"
+                                                   FontSize="18"
+                                                   VerticalTextAlignment="Center"
+                                                   HorizontalTextAlignment="Center" />
+                                        </Border>
+                                        <VerticalStackLayout Spacing="0">
+                                            <Label Text="New York, NY"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="13"
+                                                   TextColor="#17182B" />
+                                            <Label Text="10 movies in catalog"
+                                                   FontSize="11"
+                                                   TextColor="#5C5F76" />
+                                        </VerticalStackLayout>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Border Background="#4A3DE0"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 999"
+                                                Padding="10,5">
+                                            <Label Text="Tonight"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="10"
+                                                   TextColor="White" />
+                                        </Border>
+                                        <Border Background="#E8ECFF"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 999"
+                                                Padding="10,5">
+                                            <Label Text="4K Dolby"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="10"
+                                                   TextColor="#4A3DE0" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </Border>
 
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -298,11 +364,17 @@
 							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Movie">
                                     <Border WidthRequest="220"
-                                            Stroke="#ECECF4"
+                                            Stroke="#DDE3F7"
                                             StrokeThickness="1"
-                                            StrokeShape="RoundRectangle 22"
+                                            StrokeShape="RoundRectangle 24"
                                             Background="White"
                                             Padding="10">
+                                        <Border.Shadow>
+                                            <Shadow Brush="#1A235218"
+                                                    Offset="0,8"
+                                                    BlurRadius="18"
+                                                    Opacity="0.16" />
+                                        </Border.Shadow>
 										<Border.Behaviors>
 											<behaviors:HoverAnimationBehavior />
 											<behaviors:TapAnimationBehavior />
@@ -313,9 +385,15 @@
 										</Border.GestureRecognizers>
 										<VerticalStackLayout Spacing="10">
                                             <Border HeightRequest="250"
-                                                    Stroke="#38406F"
+                                                    Stroke="#223260"
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 18">
+                                                <Border.Shadow>
+                                                    <Shadow Brush="#10172B40"
+                                                            Offset="0,8"
+                                                            BlurRadius="18"
+                                                            Opacity="0.22" />
+                                                </Border.Shadow>
                                                 <Grid RowDefinitions="Auto,*,Auto"
                                                       Padding="16">
                                                     <Grid.Background>
