@@ -149,8 +149,7 @@
                     <Border HeightRequest="280"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 28"
-                            BackgroundColor="#12162B"
-                            IsClippedToBounds="True">
+                            BackgroundColor="#12162B">
                         <Grid>
                             <Image Source="moviehome.png"
                                    Aspect="AspectFill"
