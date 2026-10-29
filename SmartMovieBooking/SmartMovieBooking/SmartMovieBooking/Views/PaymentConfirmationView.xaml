@@ -10,9 +10,18 @@
              x:DataType="vm:PaymentConfirmationViewModel"
              Title="Booking Confirmed">
     <Grid MaximumWidthRequest="1200"
-          Padding="24" RowSpacing="16" RowDefinitions="*,Auto">
+          Padding="24"
+          RowSpacing="16"
+          RowDefinitions="*,Auto"
+          BackgroundColor="#F8F9FF">
+        <Border Background="{StaticResource AppGradientBrush}"
+                Opacity="0.16"
+                StrokeThickness="0"
+                InputTransparent="True" />
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Spacing="20" VerticalOptions="Center">
+            <VerticalStackLayout Spacing="20"
+                                 VerticalOptions="Center"
+                                 Padding="0,12">
                 <Grid HeightRequest="100" HorizontalOptions="Center">
                     <Ellipse Fill="#9DEAF6" WidthRequest="100" HeightRequest="100" />
                     <Label Text="✓" FontSize="50" FontFamily="OpenSansSemibold"
@@ -34,9 +43,11 @@
                            TextColor="#49454F" />
                 </VerticalStackLayout>
 
-                <syncfusionCards:SfCardView CornerRadius="16"
+                <syncfusionCards:SfCardView CornerRadius="22"
                                              BackgroundColor="#F1F2F8"
-                                             Padding="20">
+                                             Padding="20"
+                                             HorizontalOptions="Center"
+                                             MaximumWidthRequest="560">
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <VerticalStackLayout Grid.Column="0">
                             <Label Text="BOOKING ID"
@@ -59,9 +70,11 @@
                     </Grid>
                 </syncfusionCards:SfCardView>
 
-                <syncfusionCards:SfCardView CornerRadius="16"
+                <syncfusionCards:SfCardView CornerRadius="22"
                                              BackgroundColor="#FFFFFF"
-                                             Padding="16">
+                                             Padding="16"
+                                             HorizontalOptions="Center"
+                                             MaximumWidthRequest="560">
                     <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,Auto">
                         <Label Text="TICKET DETAILS"
                                FontFamily="OpenSansSemibold"
@@ -109,7 +122,7 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <HorizontalStackLayout HorizontalOptions="End" Grid.Row="1" Spacing="10">
+        <HorizontalStackLayout HorizontalOptions="End" Grid.Row="1" Spacing="10" Margin="0,4,0,0">
             <syncfusionButtons:SfButton Text="Back to Home"
                                          BackgroundColor="#3525CD"
                                          TextColor="#FFFFFF"
