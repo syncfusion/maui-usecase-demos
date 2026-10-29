@@ -40,5 +40,5 @@ public partial class SeatSelectionView : ContentPage
         => await Shell.Current.GoToAsync("//theaters");
 
     private void OnConfirmClicked(object? sender, EventArgs e)
-        => ConfirmationPopup.IsOpen = true;
+        => ConfirmationOverlay.IsVisible = true;
 }
