@@ -43,9 +43,6 @@ public partial class SeatSelectionViewModel : ObservableObject
         ? "0 seats selected"
         : $"{SelectedSeats.Count} seat{(SelectedSeats.Count == 1 ? string.Empty : "s")} selected";
 
-    public event EventHandler? Confirmed;
-    public event EventHandler? Cancelled;
-
     public Task InitializeAsync()
     {
         if (_session.SelectedShowtime is null) return Task.CompletedTask;
@@ -149,11 +146,6 @@ public partial class SeatSelectionViewModel : ObservableObject
     [RelayCommand]
     public void CloseConfirmation() => IsConfirmationVisible = false;
 
-    [RelayCommand]
-    public void Confirm() => Confirmed?.Invoke(this, EventArgs.Empty);
-
-    [RelayCommand]
-    public void Cancel() => Cancelled?.Invoke(this, EventArgs.Empty);
 }
 
 public sealed class SeatRowViewModel
