@@ -9,7 +9,7 @@
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
              xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             x:Class="SmartMovieBooking.Views.TheatersView"
+             x:Class="SmartMovieBooking.Views.TheatersView" x:Name="Root"
              x:DataType="vm:TheatersViewModel"
              Title="Theaters">
 
@@ -21,90 +21,199 @@
         <Grid MaximumWidthRequest="1200"
               Grid.Row="{OnIdiom Default=0, Phone=0}"
               Grid.Column="{OnIdiom Default='1', Phone='0'}"
-              RowDefinitions="Auto,*"
+              RowDefinitions="Auto,Auto,*"
               Padding="{OnIdiom Default='24', Phone='12'}"
               RowSpacing="16">
-            <Border Grid.Row="0" Background="#FFFFFF" Stroke="#E6EAF9" StrokeThickness="1" StrokeShape="RoundRectangle 26" Padding="18">
+            <Border Grid.Row="0"
+                    Background="#FFFFFF"
+                    Stroke="#E6EAF9"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 28"
+                    Padding="20">
                 <Border.Shadow>
-                    <Shadow Brush="#1A235218" Offset="0,8" Radius="20" Opacity="0.16" />
+                    <Shadow Brush="#1A235218"
+                            Offset="0,10"
+                            Radius="24"
+                            Opacity="0.16" />
                 </Border.Shadow>
-                <VerticalStackLayout Spacing="10">
-                <VerticalStackLayout Spacing="4">
-					<Label x:Name="MovieLabel"
-						   Text=""
-						   FontFamily="OpenSansSemibold"
-						   FontSize="28"
-						   FontAttributes="Bold"
-						   TextColor="#1A1A2E" />
-					<Label Text="Select Theater"
-						   FontFamily="OpenSansSemibold"
-						   FontSize="18"
-						   FontAttributes="Bold"
-						   TextColor="#1A1A2E" />
-				</VerticalStackLayout>
 
-				<Border Stroke="#CAC7D0"
-						StrokeShape="RoundRectangle 18"
-						Padding="12">
-					<syncfusion:SfListView x:Name="DateList"
-										   ItemsSource="{Binding Dates}"
-										   ItemSpacing="{OnIdiom Default=10, Phone=2}"
-										   AutoFitMode="DynamicHeight"
-										   BackgroundColor="Transparent"
-                                           Orientation="Horizontal"
-                                           ScrollBarVisibility="Never"
-										   SelectionBackground="Transparent"
-										   HeightRequest="{OnIdiom Default=104, Phone=74}"
-										   SelectionMode="None">
-						<syncfusion:SfListView.ItemsLayout>
-							<syncfusion:GridLayout SpanCount="1" />
-						</syncfusion:SfListView.ItemsLayout>
-						<syncfusion:SfListView.ItemTemplate>
-							<DataTemplate x:DataType="sys:DateTime">
-								<Border StrokeThickness="1"
-										Stroke="#D7D8E6"
-										BackgroundColor="#FFFFFF"
-										Padding="{OnIdiom Default='10,8', Phone='8,6'}"
-										HeightRequest="68"
-										WidthRequest="84"
-										StrokeShape="RoundRectangle 14">
-									<Border.GestureRecognizers>
-										<TapGestureRecognizer Tapped="OnDateTapped"
-															  CommandParameter="{Binding .}" />
-									</Border.GestureRecognizers>
-									<Border.Behaviors>
-										<behaviors:HoverAnimationBehavior />
-									</Border.Behaviors>
-									<Grid RowDefinitions="Auto,Auto,Auto"
-										  RowSpacing="0">
-										<Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
-											   FontFamily="OpenSansSemibold"
-											   FontSize="9"
-											   TextColor="#49454F"
-											   HorizontalTextAlignment="Center" />
-										<Label Grid.Row="1"
-											   Text="{Binding ., StringFormat='{0:dd}'}"
-											   FontFamily="OpenSansSemibold"
-											   FontAttributes="Bold"
-											   FontSize="15"
-											   TextColor="#1A1A2E"
-											   HorizontalTextAlignment="Center" />
-										<Label Grid.Row="2"
-											   Text="{Binding ., StringFormat='{0:ddd MMM}'}"
-											   FontFamily="OpenSansSemibold"
-											   FontSize="9"
-											   TextColor="#49454F"
-											   HorizontalTextAlignment="Center" />
-									</Grid>
-								</Border>
-							</DataTemplate>
-						</syncfusion:SfListView.ItemTemplate>
-					</syncfusion:SfListView>
-				</Border>
-                </VerticalStackLayout>
+                <Grid ColumnDefinitions="180,*,Auto" ColumnSpacing="20">
+                    <Border WidthRequest="180"
+                            HeightRequest="248"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 24"
+                            BackgroundColor="#1A1A2E">
+                        <Grid>
+                            <Image Source="{Binding MovieBannerUrl}"
+                                   Aspect="AspectFill"
+                                   Opacity="0.78" />
+                            <Border Background="#401A1A2E"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 24" />
+                            <VerticalStackLayout Padding="14"
+                                                 VerticalOptions="Fill"
+                                                 Spacing="8">
+                                <Border Background="#FFFFFF1A"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 999"
+                                        Padding="10,5"
+                                        HorizontalOptions="Start">
+                                    <Label Text="{Binding MovieCertificateText, FallbackValue='PG-13'}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="10"
+                                           TextColor="#FFFFFF" />
+                                </Border>
+                                <Label Text="{Binding MovieFormatText, FallbackValue='Dolby Cinema'}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="11"
+                                       TextColor="#E8EAFB" />
+                                <Label Text="{Binding MovieRatingText, FallbackValue='4.9'}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontAttributes="Bold"
+                                       FontSize="24"
+                                       TextColor="#FFFFFF" />
+                                <Label Text="Featured Movie"
+                                       FontSize="11"
+                                       TextColor="#D7DAF3" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <VerticalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Border Background="#EEF2FF"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 999"
+                                Padding="12,6"
+                                HorizontalOptions="Start">
+                            <Label Text="NOW SHOWING"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="10"
+                                   CharacterSpacing="1.4"
+                                   TextColor="#4338CA" />
+                        </Border>
+                        <Label Text="{Binding MovieTitle, FallbackValue='Choose a movie'}"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="34"
+                               FontAttributes="Bold"
+                               LineBreakMode="WordWrap"
+                               TextColor="#111827" />
+                        <Label Text="{Binding MovieTagline}"
+                               FontSize="14"
+                               LineBreakMode="WordWrap"
+                               TextColor="#4B5563" />
+                        <HorizontalStackLayout Spacing="8">
+                            <Border Background="#F4F7FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="12,7">
+                                <Label Text="{Binding MovieReleaseText, FallbackValue='Release'}" FontSize="11" TextColor="#4C51BF" />
+                            </Border>
+                            <Border Background="#F4F7FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="12,7">
+                                <Label Text="{Binding MovieDurationText, FallbackValue='2h 48m'}" FontSize="11" TextColor="#4C51BF" />
+                            </Border>
+                            <Border Background="#F4F7FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="12,7">
+                                <Label Text="{Binding MoviePriceRangeText, FallbackValue='From $18.50'}" FontSize="11" TextColor="#4C51BF" />
+                            </Border>
+                        </HorizontalStackLayout>
+                        <Label Text="{Binding MovieSynopsis}"
+                               FontSize="13"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="3"
+                               TextColor="#6B7280" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="2"
+                                         Spacing="12"
+                                         VerticalOptions="Center">
+                        <Border Background="#F8FAFF"
+                                Stroke="#DCE3F5"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="14"
+                                HorizontalOptions="End">
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="End">
+                                <Label Text="CHANGE MOVIE"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="10"
+                                       CharacterSpacing="1.4"
+                                       TextColor="#6B7280"
+                                       HorizontalTextAlignment="End" />
+                                <Label Text="Currently browsing"
+                                       FontSize="12"
+                                       TextColor="#111827"
+                                       HorizontalTextAlignment="End" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Background="#3525CD"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="14"
+                                HorizontalOptions="End">
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="End">
+                                <Label Text="14 theaters showing today"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="11"
+                                       TextColor="#FFFFFF"
+                                       HorizontalTextAlignment="End" />
+                                <Label Text="Select a theater to continue"
+                                       FontSize="12"
+                                       TextColor="#E9E7FF"
+                                       HorizontalTextAlignment="End" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
             </Border>
 
-			<ScrollView Grid.Row="1">
+            <Border Grid.Row="1"
+                    Background="#FFFFFF"
+                    Stroke="#E6EAF9"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 22"
+                    Padding="10,12">
+                <syncfusion:SfListView x:Name="DateList"
+                                       ItemsSource="{Binding Dates}"
+                                       Orientation="Horizontal"
+                                       ItemSpacing="10"
+                                       AutoFitMode="DynamicHeight"
+                                       BackgroundColor="Transparent"
+                                       ScrollBarVisibility="Never"
+                                       SelectionMode="Single"
+                                       SelectionBackground="#3525CD"
+                                       HeightRequest="86">
+                    <syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:GridLayout SpanCount="1" />
+                    </syncfusion:SfListView.ItemsLayout>
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="sys:DateTime">
+                            <Border StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="10,8"
+                                    BackgroundColor="#FFFFFF">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnDateTapped"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="0" HorizontalOptions="Center">
+                                    <Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
+                                           FontSize="9"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#49454F" />
+                                    <Label Text="{Binding ., StringFormat='{0:dd}'}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontAttributes="Bold"
+                                           FontSize="15"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#1A1A2E" />
+                                    <Label Text="{Binding ., StringFormat='{0:ddd MMM}'}"
+                                           FontSize="9"
+                                           HorizontalTextAlignment="Center"
+                                           TextColor="#49454F" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+            </Border>
+
+            <ScrollView Grid.Row="2">
                 <VerticalStackLayout Spacing="16">
 					<syncfusion:SfListView Grid.Row="1"
 											ItemsSource="{Binding Theaters}"
