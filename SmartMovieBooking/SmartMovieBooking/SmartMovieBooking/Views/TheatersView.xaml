@@ -9,7 +9,7 @@
              xmlns:controls="clr-namespace:SmartMovieBooking.Views"
              xmlns:behaviors="clr-namespace:SmartMovieBooking.Behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             x:Class="SmartMovieBooking.Views.TheatersView"
+             x:Class="SmartMovieBooking.Views.TheatersView" x:Name="Root"
              x:DataType="vm:TheatersViewModel"
              Title="Theaters">
 
