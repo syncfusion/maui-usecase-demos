@@ -26,7 +26,7 @@
               RowSpacing="16">
             <Border Grid.Row="0" Background="#FFFFFF" Stroke="#E6EAF9" StrokeThickness="1" StrokeShape="RoundRectangle 26" Padding="18">
                 <Border.Shadow>
-                    <Shadow Brush="#1A235218" Offset="0,8" BlurRadius="20" Opacity="0.16" />
+                    <Shadow Brush="#1A235218" Offset="0,8" Radius="20" Opacity="0.16" />
                 </Border.Shadow>
                 <VerticalStackLayout Spacing="10">
                 <VerticalStackLayout Spacing="4">

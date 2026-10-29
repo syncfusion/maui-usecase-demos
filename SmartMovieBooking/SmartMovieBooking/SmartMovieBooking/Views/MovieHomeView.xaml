@@ -41,7 +41,7 @@
                         <Border.Shadow>
                             <Shadow Brush="#1A235220"
                                     Offset="0,10"
-                                    BlurRadius="24"
+                                    Radius="24"
                                     Opacity="0.18" />
                         </Border.Shadow>
                         <Grid ColumnDefinitions="*,Auto"
@@ -372,7 +372,7 @@
                                         <Border.Shadow>
                                             <Shadow Brush="#1A235218"
                                                     Offset="0,8"
-                                                    BlurRadius="18"
+                                                    Radius="18"
                                                     Opacity="0.16" />
                                         </Border.Shadow>
 										<Border.Behaviors>
@@ -391,7 +391,7 @@
                                                 <Border.Shadow>
                                                     <Shadow Brush="#10172B40"
                                                             Offset="0,8"
-                                                            BlurRadius="18"
+                                                            Radius="18"
                                                             Opacity="0.22" />
                                                 </Border.Shadow>
                                                 <Grid RowDefinitions="Auto,*,Auto"
