@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.Settings.ViewModels"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.Settings.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.PresentationMode="ModalNotAnimated"
+             BackgroundColor="#80000000">
+    <Grid Padding="24" HorizontalOptions="Center" VerticalOptions="Center">
+        <Border WidthRequest="{OnIdiom Phone=320, Default=420}"
+                Padding="24"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+            <VerticalStackLayout Spacing="20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Settings"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           VerticalOptions="Center" />
+                    <buttons:SfButton Grid.Column="1"
+                                      Text="Close"
+                                      Style="{StaticResource TextButtonStyle}"
+                                      Command="{Binding CloseCommand}"
+                                      SemanticProperties.Description="Close settings" />
+                </Grid>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Theme"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
+                    <Picker ItemsSource="{Binding ThemeOptions}"
+                            SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
+                            Title="Choose a theme" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.CustomLists.ViewModels"
+             xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.CustomLists.Views.RenameListDialogPage"
+             x:DataType="vm:RenameListDialogViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.PresentationMode="ModalNotAnimated"
+             BackgroundColor="#80000000">
+
+    <Grid Padding="32"
+          VerticalOptions="Center"
+          HorizontalOptions="Center">
+
+        <Border MaximumWidthRequest="420"
+                WidthRequest="{OnIdiom Phone=300, Default=400}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="24">
+            <Border.Shadow>
+                <Shadow Brush="#33000000"
+                        Radius="8"
+                        Offset="0,4"
+                        Opacity="0.20" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="16">
+
+                <!-- Dialog title (matches renamelist.png) -->
+                <Label Text="{Binding DialogTitle}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
+
+                <!-- Pre-populated list-name input -->
+                <syncfusionCore:SfTextInputLayout Hint="List name"
+                                                  ContainerType="None"
+                                                  ShowHint="True"
+                                                  ReserveSpaceForAssistiveLabels="False"
+                                                  InputViewPadding="0">
+                    <Entry Text="{Binding ListName, Mode=TwoWay}"
+                           Placeholder="List name"
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextTertiaryColor}, Dark={StaticResource TextTertiaryDarkColor}}"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource InputPillBackgroundColor}, Dark={StaticResource InputPillBackgroundDarkColor}}"
+                           MinimumHeightRequest="44" />
+                </syncfusionCore:SfTextInputLayout>
+
+                <!-- Inline validation message -->
+                <Label Text="{Binding ErrorMessage}"
+                       FontSize="12"
+                       TextColor="{StaticResource ErrorColor}"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource NotNullToBoolConverter}}" />
+
+                <!-- Action buttons -->
+                <Grid ColumnDefinitions="*,Auto,Auto"
+                      ColumnSpacing="12"
+                      HorizontalOptions="End"
+                      Margin="0,8,0,0">
+                    <buttons:SfButton Grid.Column="1"
+                            Text="Cancel"
+                            Style="{StaticResource TextButtonStyle}"
+                            Command="{Binding CancelCommand}"
+                            MinimumWidthRequest="96" />
+                    <buttons:SfButton Grid.Column="2"
+                            Text="{Binding PrimaryButtonText}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding SaveCommand}"
+                            MinimumWidthRequest="96" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>
