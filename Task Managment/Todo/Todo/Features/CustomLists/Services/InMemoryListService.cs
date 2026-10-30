@@ -1,19 +1,23 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Text.Json;
+using Todo.Common;
 using Todo.Features.CustomLists.Models;
 using Todo.Features.Notes.Services;
 
 namespace Todo.Features.CustomLists.Services;
 
 /// <summary>
-/// Singleton in-memory implementation of <see cref="IListService"/>.
-/// Keeps a single <see cref="ObservableCollection{T}"/> of user-defined
-/// lists, ordered by <see cref="NoteList.DisplayOrder"/>. When a list
-/// is deleted, any notes that referenced it are returned to
-/// <c>My Notes</c> by clearing their <c>ListId</c> through the
-/// shared <see cref="INoteService"/>.
+/// Singleton in-memory implementation of <see cref="IListService"/>
+/// that restores and saves custom-list metadata through application
+/// preferences. When a list is deleted, any notes that referenced it
+/// are returned to <c>My Notes</c> by clearing their <c>ListId</c>
+/// through the shared <see cref="INoteService"/>.
 /// </summary>
 public sealed class InMemoryListService : IListService
 {
+    private const string PersistedListsKey = "CustomNoteLists";
     private readonly ObservableCollection<NoteList> _lists;
     private readonly INoteService _noteService;
 
@@ -21,7 +25,39 @@ public sealed class InMemoryListService : IListService
     {
         _noteService = noteService;
         _lists = new ObservableCollection<NoteList>();
+        var storedLists = JsonSerializer.Deserialize<List<StoredNoteList>>(
+            Preferences.Default.Get(PersistedListsKey, "[]")) ?? [];
+        var requiresThemeMigration = false;
+        foreach (var stored in storedLists.OrderBy(item => item.DisplayOrder))
+        {
+            var backgroundColorHex = stored.BackgroundColorHex;
+            if (string.IsNullOrWhiteSpace(backgroundColorHex))
+            {
+                backgroundColorHex = NoteListThemePalette.GetRandomThemeColor();
+                requiresThemeMigration = true;
+            }
+
+            var list = new NoteList
+            {
+                Id = stored.Id,
+                Name = stored.Name,
+                IsSystem = false,
+                DisplayOrder = stored.DisplayOrder,
+                SortOrder = stored.SortOrder,
+                BackgroundColorHex = backgroundColorHex,
+                BackgroundImageSource = stored.BackgroundImageSource,
+                CreatedAt = stored.CreatedAt
+            };
+            foreach (var source in stored.CustomBackgroundImageSources ?? [])
+                list.CustomBackgroundImageSources.Add(source);
+
+            _lists.Add(list);
+            Subscribe(list);
+        }
+        _lists.CollectionChanged += OnListsChanged;
         Lists = new ReadOnlyObservableCollection<NoteList>(_lists);
+        if (requiresThemeMigration)
+            PersistLists();
     }
 
     public ReadOnlyObservableCollection<NoteList> Lists { get; }
@@ -41,6 +77,7 @@ public sealed class InMemoryListService : IListService
             Name = trimmed,
             IsSystem = false,
             DisplayOrder = nextOrder,
+            BackgroundColorHex = NoteListThemePalette.GetRandomThemeColor(),
             CreatedAt = DateTime.Now
         };
         _lists.Add(list);
@@ -105,4 +142,64 @@ public sealed class InMemoryListService : IListService
         return _lists.Any(l => l.Id != excludeId
                                 && string.Equals(l.Name, name.Trim(), comparison));
     }
+
+    private void OnListsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems is not null)
+            foreach (NoteList list in e.OldItems)
+                Unsubscribe(list);
+        if (e.NewItems is not null)
+            foreach (NoteList list in e.NewItems)
+                Subscribe(list);
+        PersistLists();
+    }
+
+    private void Subscribe(NoteList list)
+    {
+        list.PropertyChanged += OnListPropertyChanged;
+        list.CustomBackgroundImageSources.CollectionChanged += OnBackgroundImagesChanged;
+    }
+
+    private void Unsubscribe(NoteList list)
+    {
+        list.PropertyChanged -= OnListPropertyChanged;
+        list.CustomBackgroundImageSources.CollectionChanged -= OnBackgroundImagesChanged;
+    }
+
+    private void OnListPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(NoteList.Name)
+            or nameof(NoteList.DisplayOrder)
+            or nameof(NoteList.SortOrder)
+            or nameof(NoteList.BackgroundImageSource)
+            or nameof(NoteList.BackgroundColorHex))
+            PersistLists();
+    }
+
+    private void OnBackgroundImagesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        => PersistLists();
+
+    private void PersistLists()
+    {
+        var storedLists = _lists.Select(list => new StoredNoteList(
+            list.Id,
+            list.Name,
+            list.DisplayOrder,
+            list.SortOrder,
+            list.BackgroundColorHex,
+            list.CreatedAt,
+            list.BackgroundImageSource,
+            list.CustomBackgroundImageSources.ToList())).ToList();
+        Preferences.Default.Set(PersistedListsKey, JsonSerializer.Serialize(storedLists));
+    }
+
+    private sealed record StoredNoteList(
+        string Id,
+        string Name,
+        int DisplayOrder,
+        NoteListSortOrder SortOrder,
+        string? BackgroundColorHex,
+        DateTime CreatedAt,
+        string? BackgroundImageSource = null,
+        List<string>? CustomBackgroundImageSources = null);
 }

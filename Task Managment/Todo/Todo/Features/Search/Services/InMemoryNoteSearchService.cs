@@ -25,7 +25,8 @@ public sealed class InMemoryNoteSearchService : INoteSearchService
             return Array.Empty<Note>();
 
         return _noteService.Notes
-            .Where(n => n.Title is not null
+            .Where(n => n.DeletedAt is null
+                        && n.Title is not null
                         && n.Title.Contains(trimmed, StringComparison.OrdinalIgnoreCase))
             .OrderBy(n => n.IsCompleted)
             .ThenBy(n => n.DisplayOrder)

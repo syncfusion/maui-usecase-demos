@@ -56,7 +56,12 @@
                                 Background="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
                                 InputViewPadding="16, 0, 16, 0" EnableFloating="False" Margin="0" ShowHelperText="False"
                                 ShowHint="True"
-                                VerticalOptions="Center">
+                                VerticalOptions="Fill">
+                    <syncfusionCore:SfTextInputLayout.HintLabelStyle>
+                        <syncfusionCore:LabelStyle FontSize="14"
+                                                   FontFamily="{StaticResource FontFamilyRegular}"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
+                    </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                     <syncfusionCore:SfTextInputLayout.TrailingView>
                         <Grid>
                             <buttons:SfButton ImageSource="search.png"
@@ -69,7 +74,7 @@
                                               VerticalOptions="Center">
                                 <buttons:SfButton.Content>
                                     <DataTemplate>
-                                        <Image Source="search.png" HeightRequest="15" WidthRequest="15" Margin="0,2,0,0"/>
+                                        <Image Source="search.png" HeightRequest="15" WidthRequest="15" />
                                     </DataTemplate>
                                 </buttons:SfButton.Content>
                             </buttons:SfButton>

@@ -2,10 +2,12 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Todo.Common;
+using Todo.Features.CustomLists.Services;
 using Todo.Features.EditNote.ViewModels;
 using Todo.Features.EditNote.Views;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.Services;
+using Todo.Features.Notes.ViewModels;
 using Todo.Features.Search.Services;
 
 namespace Todo.Features.Search.ViewModels;
@@ -27,18 +29,23 @@ public partial class SearchResultsViewModel : ViewModelBase
 {
     private readonly INoteSearchService _searchService;
     private readonly INoteService _noteService;
+    private readonly IListService _listService;
     private readonly INavigationService _navigation;
 
     public SearchResultsViewModel(
         INoteSearchService searchService,
         INoteService noteService,
+        IListService listService,
         INavigationService navigation)
     {
         _searchService = searchService;
         _noteService = noteService;
+        _listService = listService;
         _navigation = navigation;
         Results = new ObservableCollection<Note>();
     }
+
+    public ReadOnlyObservableCollection<Todo.Features.CustomLists.Models.NoteList> CustomLists => _listService.Lists;
 
     /// <summary>
     /// Currently-displayed search results. Bound to the list in
@@ -52,11 +59,21 @@ public partial class SearchResultsViewModel : ViewModelBase
     /// </summary>
     public bool HasNoResults => !string.IsNullOrWhiteSpace(Query) && Results.Count == 0;
 
+    public bool HasResults => !string.IsNullOrWhiteSpace(Query) && Results.Count > 0;
+
     /// <summary>
     /// True when the query is empty. Drives the "You can search the
     /// created notes here" empty state from <c>search.png</c>.
     /// </summary>
     public bool IsQueryEmpty => string.IsNullOrWhiteSpace(Query);
+
+    public string ResultsDescription => IsQueryEmpty ? string.Empty : $"Results for '{Query.Trim()}'";
+
+    public string ResultCountText => Results.Count == 1
+        ? "1 matching note found"
+        : $"{Results.Count} matching notes found";
+
+    public string NoResultsMessage => $"No notes found matching '{Query.Trim()}'";
 
     [ObservableProperty]
     private string query = string.Empty;
@@ -83,7 +100,11 @@ public partial class SearchResultsViewModel : ViewModelBase
             Results.Add(match);
 
         OnPropertyChanged(nameof(HasNoResults));
+        OnPropertyChanged(nameof(HasResults));
         OnPropertyChanged(nameof(IsQueryEmpty));
+        OnPropertyChanged(nameof(ResultsDescription));
+        OnPropertyChanged(nameof(ResultCountText));
+        OnPropertyChanged(nameof(NoResultsMessage));
     }
 
     // ---------------------------------------------------------------
@@ -102,6 +123,42 @@ public partial class SearchResultsViewModel : ViewModelBase
     {
         if (note is null) return;
         await _noteService.ToggleImportantAsync(note.Id);
+    }
+
+    [RelayCommand]
+    private async Task Delete(Note? note)
+    {
+        if (note is null) return;
+        await _noteService.SoftDeleteAsync(note.Id);
+        RefreshResults();
+    }
+
+    [RelayCommand]
+    private async Task Restore(Note? note)
+    {
+        if (note is null) return;
+        await _noteService.RestoreAsync(note.Id);
+        RefreshResults();
+    }
+
+    [RelayCommand]
+    private async Task MoveNoteToTargetAsync(DropTargetRequest? request)
+    {
+        if (request is null || string.IsNullOrEmpty(request.NoteId)) return;
+        var note = _noteService.Notes.FirstOrDefault(item => item.Id == request.NoteId);
+        if (note is null) return;
+
+        var category = NotesListViewModel.TryDecodeCategoryKey(request.TargetKey);
+        if (request.TargetKey == "my")
+        {
+            category = NotesListCategory.MyNotes;
+        }
+        if (category.HasValue)
+            await _noteService.MoveToCategoryAsync(note.Id, category.Value);
+        else if (request.TargetKey.StartsWith("list:", StringComparison.Ordinal))
+            await _noteService.MoveToListAsync(note.Id, request.TargetKey["list:".Length..]);
+
+        RefreshResults();
     }
 
     [RelayCommand]

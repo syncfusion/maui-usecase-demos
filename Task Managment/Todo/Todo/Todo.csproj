@@ -73,6 +73,7 @@
 		<PackageReference Include="Syncfusion.Maui.Expander" Version="35.1.40" />
 		<PackageReference Include="Syncfusion.Maui.ListView" Version="35.1.40" />
 		<PackageReference Include="Syncfusion.Maui.Picker" Version="35.1.40" />
+		<PackageReference Include="Syncfusion.Maui.Popup" Version="35.1.40" />
 	</ItemGroup>
 
 </Project>

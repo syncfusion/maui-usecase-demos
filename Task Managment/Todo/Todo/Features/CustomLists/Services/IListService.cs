@@ -4,10 +4,11 @@ using Todo.Features.CustomLists.Models;
 namespace Todo.Features.CustomLists.Services;
 
 /// <summary>
-/// Abstraction over the in-memory list store. The default
+/// Abstraction over the custom-list store. The default
 /// implementation keeps an <see cref="ObservableCollection{T}"/> that
 /// the shared sidebar observes and renders below the four built-in
-/// categories (per the design image <c>mynotes.png</c>).
+/// categories (per the design image <c>mynotes.png</c>), and persists
+/// custom-list names and appearance metadata across application launches.
 /// </summary>
 public interface IListService
 {

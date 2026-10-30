@@ -9,6 +9,7 @@
              xmlns:expander="clr-namespace:Syncfusion.Maui.Expander;assembly=Syncfusion.Maui.Expander"
              xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:noteViews="clr-namespace:Todo.Features.Notes.Views"
              x:Class="Todo.Features.Notes.Views.NotesContentView"
              x:Name="NotesContentRoot"
              x:DataType="vm:NotesListViewModel"
@@ -22,22 +23,18 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Border BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundColor}, Dark={StaticResource BackgroundDarkColor}}"
+    <Border BackgroundColor="{Binding ListBackgroundColor}"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 14">
         <Grid RowDefinitions="Auto,*,Auto">
 
-            <!-- Background image for the active category -->
             <Image Grid.RowSpan="3"
                    Source="{Binding BackgroundImage}"
                    IsVisible="{Binding HasBackgroundImage}"
                    Aspect="AspectFill"
                    HorizontalOptions="Fill"
-                   VerticalOptions="Fill" />
-            <BoxView Grid.RowSpan="3"
-                     Color="#66000000"
-                     IsVisible="{Binding HasBackgroundImage}" />
-
+                   VerticalOptions="Fill"
+                   InputTransparent="True" />
             <!-- Page title bar inside the content area -->
             <Grid Grid.Row="0"
                   Padding="20,14"
@@ -65,15 +62,8 @@
                     <Label Text="{Binding HeaderTitle}"
                            FontSize="20"
                            FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           TextColor="{Binding HeaderForegroundColor}"
                            VerticalOptions="Center">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding HasBackgroundImage}"
-                                         Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-                            </DataTrigger>
-                        </Label.Triggers>
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding RenameSelectedListCommand}" />
                         </Label.GestureRecognizers>
@@ -97,9 +87,9 @@
                         HeightRequest="40"
                         Padding="0" Rotation="90"
                         Background="Transparent"
-                        TextColor="{StaticResource OnPrimaryColor}"
-                        Command="{Binding OpenCreateNoteCommand}"
-                        SemanticProperties.Description="Create new note" />
+                        TextColor="{Binding HeaderForegroundColor}"
+                        Clicked="OnListOptionsClicked"
+                        SemanticProperties.Description="More list options" />
             </Grid>
 
             <!-- Notes list / empty state -->
@@ -114,36 +104,16 @@
                            WidthRequest="56"
                            HeightRequest="56"
                            Aspect="AspectFit"
-                           HorizontalOptions="Center"
-                           IsVisible="{Binding IsCustomListSelected}" />
-                    <Label Text="&#128203;"
-                           FontSize="56"
-                           TextColor="{StaticResource OnPrimaryColor}"
-                           HorizontalOptions="Center"
-                           IsVisible="{Binding IsCustomListSelected, Converter={StaticResource InvertedBoolConverter}}" />
+                           HorizontalOptions="Center" />
                     <Label Text="{Binding EmptyStateTitle}"
                            Style="{StaticResource EmptyStateMessageStyle}"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           TextColor="{Binding HeaderForegroundColor}"
                            HorizontalTextAlignment="Center">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding HasBackgroundImage}"
-                                         Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-                            </DataTrigger>
-                        </Label.Triggers>
                     </Label>
                     <Label Text="{Binding EmptyStateMessage}"
                            Style="{StaticResource EmptyStateMessageStyle}"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                           TextColor="{Binding HeaderForegroundColor}"
                            HorizontalTextAlignment="Center">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding HasBackgroundImage}"
-                                         Value="True">
-                                <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-                            </DataTrigger>
-                        </Label.Triggers>
                     </Label>
                 </VerticalStackLayout>
 
@@ -202,10 +172,11 @@
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Note">
                             <Border Margin="16,6"
-                                    Padding="14,12"
+                                    Padding="14,10"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                     StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 10">
+                                    StrokeShape="RoundRectangle 10"
+                                    Shadow="{StaticResource Elevation1}">
                                 <!-- Module-07 task 7-1 (draganddrop.png):
                                      when this card is the one being
                                      dragged, apply a stronger tint to
@@ -224,6 +195,8 @@
                                     <TapGestureRecognizer
                                         Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.EditNoteCommand}"
                                         CommandParameter="{Binding .}" />
+                                    <TapGestureRecognizer Buttons="Secondary"
+                                                          Tapped="OnNoteSecondaryTapped" />
                                     <!-- Module-07 task 7-2: a long-press
                                          starts a MAUI drag so the card can
                                          be dropped on a sidebar entry to
@@ -244,8 +217,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
 
-                                <Grid ColumnDefinitions="Auto,*,Auto,Auto"
-                                      ColumnSpacing="10"
+                                <Grid ColumnDefinitions="44,*,40,40"
+                                      ColumnSpacing="8"
                                       VerticalOptions="Center">
                                     <BoxView Grid.ColumnSpan="4"
                                              InputTransparent="True">
@@ -278,32 +251,23 @@
                                                          VerticalOptions="Center">
                                         <Label Text="{Binding Title}"
                                                Style="{StaticResource NoteTitleStyle}"
+                                               MaxLines="1"
                                                TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}" />
-                                        <HorizontalStackLayout Spacing="6">
-                                            <Image Source="calendaricon.png"
-                                                   WidthRequest="14"
-                                                   HeightRequest="14"
-                                                   Aspect="AspectFit"
-                                                   IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" />
-                                            <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}"
-                                                   Style="{StaticResource NoteMetaStyle}"
-                                                   IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" />
-                                            <Image Source="dateicon.png"
-                                                   WidthRequest="14"
-                                                   HeightRequest="14"
-                                                   Aspect="AspectFit"
-                                                   IsVisible="{Binding HasRepeat}" />
-                                            <Label Text="{Binding RepeatFrequency}"
-                                                   Style="{StaticResource NoteMetaStyle}"
-                                                   IsVisible="{Binding HasRepeat}" />
-                                            <Image Source="bellicon.png"
-                                                   WidthRequest="14"
-                                                   HeightRequest="14"
-                                                   Aspect="AspectFit"
-                                                   IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" />
-                                            <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}"
-                                                   Style="{StaticResource NoteMetaStyle}"
-                                                   IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" />
+                                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                            <HorizontalStackLayout Spacing="4"
+                                                                   IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
+                                                <Image Source="calendaricon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
+                                            </HorizontalStackLayout>
+                                            <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
+                                                <Image Source="dateicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" />
+                                            </HorizontalStackLayout>
+                                            <HorizontalStackLayout Spacing="4"
+                                                                   IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
+                                                <Image Source="bellicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
+                                            </HorizontalStackLayout>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
 
@@ -315,6 +279,7 @@
                                             Background="Transparent"
                                             WidthRequest="40"
                                             HeightRequest="40"
+                                            VerticalOptions="Center"
                                             Padding="0"
                                             Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ToggleImportantCommand}"
                                             CommandParameter="{Binding .}"
@@ -329,9 +294,9 @@
                                             TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                             WidthRequest="40"
                                             HeightRequest="40"
+                                            VerticalOptions="Center"
                                             Padding="0"
-                                            Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ShowNoteMenuCommand}"
-                                            CommandParameter="{Binding .}"
+                                            Clicked="OnNoteMenuClicked"
                                             SemanticProperties.Description="More note options" />
                                 </Grid>
                             </Border>
@@ -357,38 +322,66 @@
                     </expander:SfExpander.Header>
                     <expander:SfExpander.Content>
                         <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}"
-                                               ItemSpacing="0" ItemSize="62"
+                                               ItemSpacing="0" ItemSize="70"
                                                BackgroundColor="Transparent"
                                                SelectionMode="SingleDeselect">
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
-                                    <Border Margin="16,4" Padding="12,8"
+                                    <Border Margin="16,6" Padding="14,10"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                                            StrokeThickness="0" StrokeShape="RoundRectangle 8">
-                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
-                                            <CheckBox IsChecked="{Binding IsCompleted, Mode=OneWay}"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 8"
+                                            Shadow="{StaticResource Elevation1}">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Buttons="Secondary"
+                                                                  Tapped="OnNoteSecondaryTapped" />
+                                        </Border.GestureRecognizers>
+                                        <Grid ColumnDefinitions="44,*,40,40" ColumnSpacing="8">
+                                            <CheckBox Grid.Column="0"
+                                                      IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
                                                       VerticalOptions="Center" />
-                                            <Label Grid.Column="1" Text="{Binding Title}"
-                                                   VerticalOptions="Center"
-                                                   TextDecorations="Strikethrough"
-                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}">
-                                                <Label.GestureRecognizers>
-                                                    <TapGestureRecognizer
-                                                        Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.EditNoteCommand}"
-                                                        CommandParameter="{Binding .}" />
-                                                </Label.GestureRecognizers>
-                                            </Label>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                                <Label Text="{Binding Title}"
+                                                       Style="{StaticResource NoteTitleStyle}"
+                                                       MaxLines="1"
+                                                       TextDecorations="Strikethrough"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer
+                                                            Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.EditNoteCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+                                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                                    <HorizontalStackLayout Spacing="4"
+                                                                           IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
+                                                        <Image Source="calendaricon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
+                                                    </HorizontalStackLayout>
+                                                    <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
+                                                        <Image Source="dateicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" />
+                                                    </HorizontalStackLayout>
+                                                    <HorizontalStackLayout Spacing="4"
+                                                                           IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
+                                                        <Image Source="bellicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
+                                                    </HorizontalStackLayout>
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
                                             <buttons:SfButton Grid.Column="2"
                                                               Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
                                                               TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
-                                                              Background="Transparent" FontSize="18" Padding="0"
+                                                              Background="Transparent" FontSize="20" Padding="0"
+                                                              WidthRequest="40" HeightRequest="40"
+                                                              VerticalOptions="Center"
                                                               Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ToggleImportantCommand}"
                                                               CommandParameter="{Binding .}" />
                                             <buttons:SfButton Grid.Column="3" Text="&#8943;" Rotation="90"
                                                               Background="Transparent" Padding="0"
-                                                              Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ShowNoteMenuCommand}"
-                                                              CommandParameter="{Binding .}"
+                                                              FontSize="22" WidthRequest="40" HeightRequest="40"
+                                                              VerticalOptions="Center"
+                                                              Clicked="OnNoteMenuClicked"
                                                               SemanticProperties.Description="More note options" />
                                         </Grid>
                                     </Border>
@@ -404,7 +397,7 @@
             <Border Grid.Row="2"
                     Margin="16,12,16,16"
                     Padding="10,4"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource BottomBarBackgroundColor}, Dark={StaticResource SurfaceDarkColor}}"
+                    BackgroundColor="White"
                     StrokeThickness="0"  
                     StrokeShape="RoundRectangle 12">
                 <Grid ColumnDefinitions="*" VerticalOptions="Center">
@@ -413,7 +406,7 @@
                                                      ContainerType="Outlined" 
                                                      OutlineCornerRadius="28"
                                                      FocusedStrokeThickness="1"
-                                                     Background="{AppThemeBinding Light={StaticResource BottomBarBackgroundColor}, Dark={StaticResource SurfaceDarkColor}}"
+                                                     Background="White"
                                                      UnfocusedStrokeThickness="1" 
                                                      ShowHint="True" Stroke="Transparent"
                                                      EnableFloating="False" 
@@ -450,6 +443,20 @@
                     </syncfusionCore:SfTextInputLayout>
                 </Grid>
             </Border>
+            <noteViews:NoteActionFlyout x:Name="ActionFlyout"
+                                        Grid.RowSpan="3"
+                                        WidthRequest="0"
+                                        HeightRequest="0"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Start"
+                                        ZIndex="1000" />
+            <noteViews:ListOptionsFlyout x:Name="ListOptionsFlyout"
+                                         Grid.RowSpan="3"
+                                         WidthRequest="0"
+                                         HeightRequest="0"
+                                         HorizontalOptions="Start"
+                                         VerticalOptions="Start"
+                                         ZIndex="1001" />
         </Grid>
     </Border>
 

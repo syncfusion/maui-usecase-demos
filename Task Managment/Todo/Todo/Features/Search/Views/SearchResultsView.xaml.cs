@@ -1,5 +1,7 @@
 using Todo.Common;
 using Todo.Features.Notes.Models;
+using Todo.Features.Notes.ViewModels;
+using Todo.Features.Notes.Views;
 using Todo.Features.Search.ViewModels;
 
 namespace Todo.Features.Search.Views;
@@ -13,6 +15,50 @@ public partial class SearchResultsView : ContentView
     public SearchResultsView()
     {
         InitializeComponent();
+        ActionFlyout.ActionRequested += OnNoteActionRequested;
+    }
+
+    private void OnNoteMenuClicked(object? sender, EventArgs e)
+    {
+        if (sender is View anchor)
+            ShowNoteActions(anchor);
+    }
+
+    private void OnNoteSecondaryTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is View anchor)
+            ShowNoteActions(anchor);
+    }
+
+    private void ShowNoteActions(View anchor)
+    {
+        if (BindingContext is SearchResultsViewModel vm && anchor.BindingContext is Note note)
+            ActionFlyout.ShowFor(anchor, note, vm.CustomLists);
+    }
+
+    private void OnNoteActionRequested(object? sender, NoteActionRequestedEventArgs e)
+    {
+        if (BindingContext is not SearchResultsViewModel vm)
+            return;
+
+        switch (e.Action)
+        {
+            case NoteActionKind.ToggleCompletion:
+                vm.ToggleCompleteCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.Edit:
+                vm.OpenNoteCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.Move when e.TargetKey is not null:
+                vm.MoveNoteToTargetCommand.Execute(new DropTargetRequest(e.Note.Id, e.TargetKey));
+                break;
+            case NoteActionKind.Restore:
+                vm.RestoreCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.Delete:
+                vm.DeleteCommand.Execute(e.Note);
+                break;
+        }
     }
 
     /// <summary>

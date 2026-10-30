@@ -9,6 +9,69 @@ public partial class NotesContentView : ContentView
     public NotesContentView()
     {
         InitializeComponent();
+        ActionFlyout.ActionRequested += OnNoteActionRequested;
+    }
+
+    private void OnNoteMenuClicked(object? sender, EventArgs e)
+    {
+        if (sender is View anchor)
+            ShowNoteActions(anchor);
+    }
+
+    private void OnListOptionsClicked(object? sender, EventArgs e)
+    {
+        if (sender is not View anchor || BindingContext is not NotesListViewModel vm)
+            return;
+
+        if (!string.IsNullOrEmpty(vm.SelectedListId))
+        {
+            var list = vm.CustomLists.FirstOrDefault(item => item.Id == vm.SelectedListId);
+            if (list is not null)
+                ListOptionsFlyout.ShowFor(anchor, list, vm);
+            return;
+        }
+
+        ListOptionsFlyout.ShowFor(anchor, vm.SelectedCategory, vm);
+    }
+
+    private void OnNoteSecondaryTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is View anchor)
+            ShowNoteActions(anchor);
+    }
+
+    private void ShowNoteActions(View anchor)
+    {
+        if (BindingContext is NotesListViewModel vm && anchor.BindingContext is Note note)
+            ActionFlyout.ShowFor(anchor, note, vm.CustomLists);
+    }
+
+    private void OnNoteActionRequested(object? sender, NoteActionRequestedEventArgs e)
+    {
+        if (BindingContext is not NotesListViewModel vm)
+            return;
+
+        switch (e.Action)
+        {
+            case NoteActionKind.ToggleCompletion:
+                vm.ToggleCompleteCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.Edit:
+                vm.EditNoteCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.Move when e.TargetKey is not null:
+                vm.MoveNoteToTargetCommand.Execute(new DropTargetRequest(e.Note.Id, e.TargetKey));
+                break;
+            case NoteActionKind.Restore:
+                vm.RestoreCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.Delete:
+                vm.DeleteCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.DeletePermanently:
+                vm.ConfirmDeletePermanentlyCommand.Execute(e.Note);
+                break;
+        }
     }
 
     // -----------------------------------------------------------------

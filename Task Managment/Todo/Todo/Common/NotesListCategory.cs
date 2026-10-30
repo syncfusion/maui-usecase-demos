@@ -32,12 +32,28 @@ public static class NotesListCategoryExtensions
         _ => "MyNotesColor"
     };
 
-    public static string ToBackgroundImage(this NotesListCategory category) => category switch
+    public static string ToDefaultThemeColor(this NotesListCategory category) => category switch
     {
-        NotesListCategory.MyNotes => "mynotes_bg.png",
-        NotesListCategory.Important => "important_bg.png",
-        NotesListCategory.Reminder => "remainder_bg.png",
-        NotesListCategory.Bin => "bin_bg.png",
-        _ => "mynotes_bg.png"
+        NotesListCategory.MyNotes => "#F4F5F7",
+        NotesListCategory.Important => "#FFF2CC",
+        NotesListCategory.Reminder => "#EEE8FF",
+        NotesListCategory.Bin => "#FDE8E7",
+        _ => "#F4F5F7"
     };
+}
+
+public static class NoteListThemePalette
+{
+    public static IReadOnlyList<(string Name, string Hex)> Themes { get; } =
+    [
+        ("Amber", "#FFF2CC"),
+        ("Lavender", "#EEE8FF"),
+        ("Rose", "#FDE8E7"),
+        ("Mint", "#E8F5E9"),
+        ("Sky", "#E3F2FD"),
+        ("Soft Rose", "#FCE4EC"), 
+    ];
+
+    public static string GetRandomThemeColor()
+        => Themes[Random.Shared.Next(Themes.Count)].Hex;
 }

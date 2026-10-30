@@ -7,6 +7,7 @@
              xmlns:conv="clr-namespace:Todo.Converters"
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:noteViews="clr-namespace:Todo.Features.Notes.Views"
              x:Class="Todo.Features.Notes.Views.SidebarView"
              x:Name="SidebarRoot"
              x:DataType="vm:NotesListViewModel"
@@ -120,8 +121,7 @@
                                     <buttons:SfButton Grid.Column="2" Text="&#8943;" FontSize="18" Rotation="90"
                                                       WidthRequest="32" HeightRequest="32" Padding="0"
                                                       Background="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
-                                                      Command="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.ShowListMenuCommand}"
-                                                      CommandParameter="{Binding .}"
+                                                      Clicked="OnCustomListMoreClicked"
                                                       SemanticProperties.Description="More list options" />
                                 </Grid>
                             </Border>
@@ -137,5 +137,12 @@
                           TextColor="{StaticResource OnPrimaryColor}"
                           Command="{Binding OpenCreateListDialogCommand}"
                           SemanticProperties.Description="Create a to-do list" />
+        <noteViews:ListOptionsFlyout x:Name="ListOptionsFlyout"
+                                     Grid.RowSpan="4"
+                                     WidthRequest="0"
+                                     HeightRequest="0"
+                                     HorizontalOptions="Start"
+                                     VerticalOptions="Start"
+                                     ZIndex="1000" />
     </Grid>
 </ContentView>

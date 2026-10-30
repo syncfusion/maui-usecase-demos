@@ -55,6 +55,15 @@ public partial class SidebarView : ContentView
         vm.NavigateToListCommand.Execute(list.Id);
     }
 
+    private void OnCustomListMoreClicked(object? sender, EventArgs e)
+    {
+        if (sender is not View anchor || anchor.BindingContext is not NoteList list
+            || BindingContext is not NotesListViewModel vm)
+            return;
+
+        ListOptionsFlyout.ShowFor(anchor, list, vm);
+    }
+
     // -----------------------------------------------------------------
     //  Module-07 task 7-2: drag-and-drop drop targets
     // -----------------------------------------------------------------

@@ -63,7 +63,6 @@ public sealed class InMemoryNoteService : INoteService
         if (note.ReminderDate.HasValue)
         {
             // Reminder is a destination category, not an additional tag.
-            note.IsImportant = false;
             note.ListId = null;
             note.DeletedAt = null;
         }
@@ -122,13 +121,6 @@ public sealed class InMemoryNoteService : INoteService
             return Task.CompletedTask;
 
         existing.IsImportant = !existing.IsImportant;
-        if (existing.IsImportant)
-        {
-            // Starring moves the note out of other views and into Important.
-            existing.ReminderDate = null;
-            existing.ListId = null;
-            existing.DeletedAt = null;
-        }
         existing.UpdatedAt = DateTime.Now;
         return Task.CompletedTask;
     }
@@ -138,16 +130,11 @@ public sealed class InMemoryNoteService : INoteService
         IEnumerable<Note> query = _notes;
         query = category switch
         {
-            // The sample's Important, Reminder and Bin pages are separate
-            // starter lists; keep those items out of the empty My Notes view.
             NotesListCategory.MyNotes => query.Where(n => n.DeletedAt is null
                                                            && n.ListId is null
-                                                           && !n.IsImportant
                                                            && n.ReminderDate is null),
 
-            // Important shows every active note that has been starred.
-            // that has been starred – including ones that have since been
-            // moved to the Bin so users can still find them via the star.
+            // Important is an additional view of active starred notes.
             NotesListCategory.Important => query.Where(n => n.DeletedAt is null && n.IsImportant),
 
             // Reminder shows every active note with a reminder date.

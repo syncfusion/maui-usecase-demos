@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Todo.Features.CustomLists.Models;
@@ -35,7 +36,12 @@ public partial class NoteList : ObservableObject
     private NoteListSortOrder sortOrder;
 
     [ObservableProperty]
+    private string? backgroundColorHex;
+
+    [ObservableProperty]
     private string? backgroundImageSource;
+
+    public ObservableCollection<string> CustomBackgroundImageSources { get; } = new();
 
     [ObservableProperty]
     private DateTime createdAt = DateTime.Now;

@@ -1,9 +1,11 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Todo.Common;
+using Todo.Features.CustomLists.Models;
 using Todo.Features.CustomLists.Services;
 using Todo.Features.Dialogs.ViewModels;
 using Todo.Features.Dialogs.Views;
@@ -31,6 +33,7 @@ namespace Todo.Features.Notes.ViewModels;
 /// </summary>
 public partial class NotesListViewModel : ViewModelBase
 {
+    private const string ListAppearanceKeyPrefix = "ListAppearance";
     private readonly INoteService _noteService;
     private readonly IListService _listService;
     private readonly INavigationService _navigation;
@@ -63,7 +66,11 @@ public partial class NotesListViewModel : ViewModelBase
         SearchViewModel = new SearchResultsViewModel(
             new InMemoryNoteSearchService(_noteService),
             _noteService,
+            _listService,
             _navigation);
+
+        Preferences.Default.Remove("BuiltInBackgroundImage");
+        Preferences.Default.Remove("BuiltInCustomBackgroundImages");
 
         // Listen to the underlying store and refresh the visible list.
         if (_noteService.Notes is INotifyCollectionChanged notifying)
@@ -141,7 +148,7 @@ public partial class NotesListViewModel : ViewModelBase
     /// <summary>
     /// Indicates whether the active filter is a user-defined list
     /// (rather than a built-in category). Drives header copy and
-    /// background image selection.
+    /// theme selection.
     /// </summary>
     public bool IsCustomListSelected => !string.IsNullOrEmpty(SelectedListId);
 
@@ -157,12 +164,14 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(AccentColorKey));
         OnPropertyChanged(nameof(BackgroundImage));
         OnPropertyChanged(nameof(HasBackgroundImage));
+        OnPropertyChanged(nameof(ListBackgroundColor));
+        OnPropertyChanged(nameof(HeaderForegroundColor));
     }
 
     partial void OnSelectedListIdChanged(string? value)
     {
-        // Selecting a custom list falls back to My Notes chrome (the
-        // four built-in backgrounds are the documented design tokens).
+        // Selecting a custom list keeps the built-in category filter
+        // while using the selected list's own theme.
         HeaderTitle = string.IsNullOrEmpty(value)
             ? SelectedCategory.ToDisplayName()
             : ResolveCustomListName(value) ?? "List";
@@ -174,6 +183,8 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(AccentColorKey));
         OnPropertyChanged(nameof(BackgroundImage));
         OnPropertyChanged(nameof(HasBackgroundImage));
+        OnPropertyChanged(nameof(ListBackgroundColor));
+        OnPropertyChanged(nameof(HeaderForegroundColor));
     }
 
     private string? ResolveCustomListName(string listId)
@@ -195,21 +206,237 @@ public partial class NotesListViewModel : ViewModelBase
     /// </summary>
     public string AccentColorKey => SelectedCategory.ToAccentColorKey();
 
-    /// <summary>
-    /// Filename of the background image to display behind the list.
-    /// </summary>
-    public string BackgroundImage
+    public Color ListBackgroundColor
     {
         get
         {
-            if (!string.IsNullOrEmpty(SelectedListId))
-                return ResolveCustomList(SelectedListId)?.BackgroundImageSource
-                    ?? NotesListCategory.MyNotes.ToBackgroundImage();
-            return SelectedCategory.ToBackgroundImage();
+            var colorHex = GetBackgroundColorHex(
+                string.IsNullOrEmpty(SelectedListId) ? null : ResolveCustomList(SelectedListId),
+                SelectedCategory);
+            return Color.FromArgb(colorHex);
         }
     }
 
-    public bool HasBackgroundImage => !string.IsNullOrEmpty(BackgroundImage);
+    public string? BackgroundImage => GetBackgroundImageSource(
+        string.IsNullOrEmpty(SelectedListId) ? null : ResolveCustomList(SelectedListId),
+        SelectedCategory);
+
+    public bool HasBackgroundImage => !string.IsNullOrWhiteSpace(BackgroundImage);
+
+    public Color HeaderForegroundColor
+    {
+        get
+        {
+            var colorHex = GetBackgroundColorHex(
+                string.IsNullOrEmpty(SelectedListId) ? null : ResolveCustomList(SelectedListId),
+                SelectedCategory);
+            var color = Color.FromArgb(colorHex);
+            var luminance = (0.2126 * color.Red) + (0.7152 * color.Green) + (0.0722 * color.Blue);
+            return luminance < 0.5 ? Colors.White : Color.FromArgb("#29272F");
+        }
+    }
+
+    public string GetBackgroundColorHex(Todo.Features.CustomLists.Models.NoteList? list, NotesListCategory category)
+    {
+        if (list is not null)
+            return string.IsNullOrWhiteSpace(list.BackgroundColorHex)
+                ? NoteListThemePalette.Themes[0].Hex
+                : list.BackgroundColorHex;
+
+        var storedColor = Preferences.Default.Get(GetAppearanceKey(category, "color"), string.Empty);
+        return string.IsNullOrWhiteSpace(storedColor) ? category.ToDefaultThemeColor() : storedColor;
+    }
+
+    public string? GetBackgroundImageSource(Todo.Features.CustomLists.Models.NoteList? list, NotesListCategory category)
+    {
+        if (list is not null)
+            return list.BackgroundImageSource;
+
+        var imageSource = Preferences.Default.Get(GetAppearanceKey(category, "image"), string.Empty);
+        return string.IsNullOrWhiteSpace(imageSource) ? null : imageSource;
+    }
+
+    public IReadOnlyList<string> GetCustomBackgroundImageSources(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category)
+    {
+        if (list is not null)
+            return list.CustomBackgroundImageSources.ToArray();
+
+        var sources = new List<string>();
+        foreach (var builtInCategory in AvailableCategories)
+        {
+            var json = Preferences.Default.Get(GetAppearanceKey(builtInCategory, "custom-images"), "[]");
+            foreach (var source in DeserializeImageSources(json))
+            {
+                if (!sources.Contains(source, StringComparer.Ordinal))
+                    sources.Add(source);
+            }
+        }
+        return sources;
+    }
+
+    private static List<string> DeserializeImageSources(string json)
+    {
+        try { return JsonSerializer.Deserialize<List<string>>(json) ?? []; }
+        catch (JsonException) { return []; }
+    }
+
+    public void SetListBackgroundColor(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category,
+        string colorHex)
+    {
+        if (list is not null)
+        {
+            list.BackgroundColorHex = colorHex;
+            list.BackgroundImageSource = null;
+        }
+        else
+        {
+            Preferences.Default.Set(GetAppearanceKey(category, "color"), colorHex);
+            Preferences.Default.Remove(GetAppearanceKey(category, "image"));
+            NotifyActiveAppearanceChanged(category);
+        }
+    }
+
+    public void SetListBackgroundImage(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category,
+        string imageSource)
+    {
+        if (list is not null)
+        {
+            list.BackgroundImageSource = imageSource;
+        }
+        else
+        {
+            Preferences.Default.Set(GetAppearanceKey(category, "image"), imageSource);
+
+            var customImages = GetCustomBackgroundImageSources(null, category).ToList();
+            if (!customImages.Contains(imageSource, StringComparer.Ordinal))
+            {
+                customImages.Add(imageSource);
+                Preferences.Default.Set(GetAppearanceKey(category, "custom-images"), JsonSerializer.Serialize(customImages));
+            }
+            NotifyActiveAppearanceChanged(category);
+        }
+    }
+
+    public void AddCustomBackgroundImage(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category,
+        string imageSource)
+    {
+        if (list is not null)
+        {
+            if (!list.CustomBackgroundImageSources.Contains(imageSource, StringComparer.Ordinal))
+                list.CustomBackgroundImageSources.Add(imageSource);
+        }
+        else
+        {
+            var customImages = GetCustomBackgroundImageSources(null, category).ToList();
+            if (!customImages.Contains(imageSource, StringComparer.Ordinal))
+                customImages.Add(imageSource);
+            Preferences.Default.Set(GetAppearanceKey(category, "custom-images"), JsonSerializer.Serialize(customImages));
+        }
+
+        SetListBackgroundImage(list, category, imageSource);
+    }
+
+    public void RemoveCustomBackgroundImage(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category,
+        string imageSource)
+    {
+        if (list is not null)
+        {
+            list.CustomBackgroundImageSources.Remove(imageSource);
+            if (string.Equals(list.BackgroundImageSource, imageSource, StringComparison.Ordinal))
+                list.BackgroundImageSource = null;
+        }
+        else
+        {
+            foreach (var builtInCategory in AvailableCategories)
+            {
+                var customImages = DeserializeImageSources(
+                    Preferences.Default.Get(GetAppearanceKey(builtInCategory, "custom-images"), "[]"));
+                customImages.RemoveAll(source => string.Equals(source, imageSource, StringComparison.Ordinal));
+                Preferences.Default.Set(
+                    GetAppearanceKey(builtInCategory, "custom-images"),
+                    JsonSerializer.Serialize(customImages));
+
+                if (string.Equals(
+                    Preferences.Default.Get(GetAppearanceKey(builtInCategory, "image"), string.Empty),
+                    imageSource,
+                    StringComparison.Ordinal))
+                {
+                    Preferences.Default.Remove(GetAppearanceKey(builtInCategory, "image"));
+                }
+            }
+
+            NotifyActiveAppearanceChanged(category);
+        }
+
+        TryDeleteStoredBackgroundImage(imageSource);
+        OnPropertyChanged(nameof(BackgroundImage));
+        OnPropertyChanged(nameof(HasBackgroundImage));
+    }
+
+    private void TryDeleteStoredBackgroundImage(string imageSource)
+    {
+        if (_listService.Lists.Any(customList =>
+            string.Equals(customList.BackgroundImageSource, imageSource, StringComparison.Ordinal)
+            || customList.CustomBackgroundImageSources.Contains(imageSource, StringComparer.Ordinal)))
+        {
+            return;
+        }
+
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(imageSource)
+                && Path.IsPathRooted(imageSource)
+                && imageSource.StartsWith(FileSystem.AppDataDirectory, StringComparison.OrdinalIgnoreCase)
+                && File.Exists(imageSource))
+            {
+                File.Delete(imageSource);
+            }
+        }
+        catch
+        {
+            // The preference entry is removed even if a platform file cannot be deleted.
+        }
+    }
+
+    public void ApplyListSort(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category,
+        NoteListSortOrder sortOrder)
+    {
+        if (list is not null)
+        {
+            list.SortOrder = sortOrder;
+            return;
+        }
+
+        Preferences.Default.Set(GetAppearanceKey(category, "sort"), (int)sortOrder);
+        if (SelectedCategory == category && string.IsNullOrEmpty(SelectedListId))
+            ApplyFilter();
+    }
+
+    private static string GetAppearanceKey(NotesListCategory category, string setting)
+        => $"{ListAppearanceKeyPrefix}.{category}.{setting}";
+
+    private void NotifyActiveAppearanceChanged(NotesListCategory category)
+    {
+        if (string.IsNullOrEmpty(SelectedListId) && SelectedCategory == category)
+        {
+            OnPropertyChanged(nameof(BackgroundImage));
+            OnPropertyChanged(nameof(HasBackgroundImage));
+            OnPropertyChanged(nameof(ListBackgroundColor));
+            OnPropertyChanged(nameof(HeaderForegroundColor));
+        }
+    }
 
     // ---------------------------------------------------------------
     //  Empty-state copy (matched to design)
@@ -228,7 +455,7 @@ public partial class NotesListViewModel : ViewModelBase
             }
             return SelectedCategory switch
             {
-                NotesListCategory.MyNotes => "No list was found.",
+                NotesListCategory.MyNotes => "No notes yet",
                 NotesListCategory.Important => "No important notes",
                 NotesListCategory.Reminder => "No reminders",
                 NotesListCategory.Bin => "Bin is empty",
@@ -248,7 +475,7 @@ public partial class NotesListViewModel : ViewModelBase
                 return "Add a note using the input below.";
             return SelectedCategory switch
             {
-                NotesListCategory.MyNotes => "Please create a to-do list.",
+                NotesListCategory.MyNotes => "Add a note to see it here.",
                 NotesListCategory.Important => "Tap the star on a note to mark it important.",
                 NotesListCategory.Reminder => "Notes with a reminder date will appear here.",
                 NotesListCategory.Bin => "Soft-deleted notes can be restored from the Bin.",
@@ -258,8 +485,7 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     public bool IsEmpty => FilteredNotes.Count == 0;
-    public bool ShowEmptyNotesState =>
-        IsEmpty && (SelectedCategory != NotesListCategory.MyNotes || !string.IsNullOrEmpty(SelectedListId));
+    public bool ShowEmptyNotesState => IsEmpty;
 
     // ---------------------------------------------------------------
     //  Sidebar expand / collapse state (Module-08 task 8-1)
@@ -364,37 +590,6 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Three-dot "more" menu on a custom list entry. Opens a native
-    /// action sheet with Rename / Delete options.
-    /// </summary>
-    [RelayCommand]
-    private async Task ShowListMenuAsync(Todo.Features.CustomLists.Models.NoteList? list)
-    {
-        if (list is null) return;
-
-        var choice = await _navigation.ShowActionSheetAsync(
-            title: list.Name ?? "List",
-            message: null,
-            destruction: "Delete list",
-            "Rename List", "Sort By", "Customize Theme", "Delete List") ?? string.Empty;
-
-        switch (choice)
-        {
-            case "Rename List":
-                await OpenRenameListDialogAsync(list);
-                break;
-            case "Sort By":
-                await SortListAsync(list);
-                break;
-            case "Customize Theme":
-                await CustomizeListThemeAsync(list);
-                break;
-            case "Delete List":
-                await ConfirmDeleteListAsync(list);
-                break;
-        }
-    }
-
     [RelayCommand]
     private async Task RenameSelectedListAsync()
     {
@@ -419,58 +614,6 @@ public partial class NotesListViewModel : ViewModelBase
         catch (OperationCanceledException)
         {
         }
-    }
-
-    private async Task SortListAsync(Todo.Features.CustomLists.Models.NoteList list)
-    {
-        var choice = await _navigation.ShowActionSheetAsync(
-            title: "Sort By",
-            message: null,
-            destruction: null,
-            "Important", "Reminder", "Due Date", "Alphabetical", "Custom order");
-
-        list.SortOrder = choice switch
-        {
-            "Important" => Todo.Features.CustomLists.Models.NoteListSortOrder.Important,
-            "Reminder" => Todo.Features.CustomLists.Models.NoteListSortOrder.Reminder,
-            "Due Date" => Todo.Features.CustomLists.Models.NoteListSortOrder.DueDate,
-            "Alphabetical" => Todo.Features.CustomLists.Models.NoteListSortOrder.Alphabetical,
-            "Custom order" => Todo.Features.CustomLists.Models.NoteListSortOrder.Custom,
-            _ => list.SortOrder
-        };
-
-        if (SelectedListId == list.Id)
-            ApplyFilter();
-    }
-
-    private async Task CustomizeListThemeAsync(Todo.Features.CustomLists.Models.NoteList list)
-    {
-        var choice = await _navigation.ShowActionSheetAsync(
-            title: "Customize Theme",
-            message: null,
-            destruction: null,
-            "Choose background image", "Use default background");
-
-        if (choice == "Use default background")
-        {
-            list.BackgroundImageSource = null;
-        }
-        else if (choice == "Choose background image")
-        {
-            var photos = await MediaPicker.Default.PickPhotosAsync();
-            var photo = photos.FirstOrDefault();
-            if (photo is null) return;
-
-            var extension = Path.GetExtension(photo.FileName);
-            var destination = Path.Combine(FileSystem.AppDataDirectory, $"list-{list.Id}{extension}");
-            await using var source = await photo.OpenReadAsync();
-            await using var target = File.Create(destination);
-            await source.CopyToAsync(target);
-            list.BackgroundImageSource = destination;
-        }
-
-        if (SelectedListId == list.Id)
-            OnPropertyChanged(nameof(BackgroundImage));
     }
 
     // ---------------------------------------------------------------
@@ -785,56 +928,6 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Three-dot "more" menu on a note card. Opens a native action
-    /// sheet whose items depend on the active filter (active notes
-    /// show "Edit note" / "Delete"; bin shows "Restore" /
-    /// "Delete permanently").
-    /// </summary>
-    [RelayCommand]
-    private async Task ShowNoteMenuAsync(Note? note)
-    {
-        if (note is null) return;
-
-        string choice;
-        if (SelectedCategory == NotesListCategory.Bin)
-        {
-            choice = await _navigation.ShowActionSheetAsync(
-                title: note.Title ?? "Note",
-                message: null,
-                destruction: "Delete note",
-                "Mark as completed", "Edit note", "Restore note", "Delete note") ?? string.Empty;
-        }
-        else
-        {
-            choice = await _navigation.ShowActionSheetAsync(
-                title: note.Title ?? "Note",
-                message: null,
-                destruction: "Delete",
-                "Edit note", "Delete") ?? string.Empty;
-        }
-
-        switch (choice)
-        {
-            case "Edit note":
-                await EditNoteAsync(note);
-                break;
-            case "Mark as completed":
-                if (!note.IsCompleted)
-                    await ToggleComplete(note);
-                break;
-            case "Delete":
-                await Delete(note);
-                break;
-            case "Restore note":
-                await Restore(note);
-                break;
-            case "Delete note":
-                await ConfirmDeletePermanentlyAsync(note);
-                break;
-        }
-    }
-
-    /// <summary>
     /// Shows the destructive confirmation dialog (matches
     /// <c>deletepermently.png</c>) and permanently deletes the note
     /// on confirm.
@@ -869,9 +962,19 @@ public partial class NotesListViewModel : ViewModelBase
         // Module-05: a user-defined list takes priority over the
         // built-in category so the user can scope My Notes style
         // chrome to a specific list.
-        var source = !string.IsNullOrEmpty(SelectedListId)
-            ? _noteService.GetForList(SelectedListId!, ResolveCustomList(SelectedListId!)?.SortOrder ?? Todo.Features.CustomLists.Models.NoteListSortOrder.Custom)
-            : (IEnumerable<Note>)_noteService.GetForCategory(SelectedCategory);
+        IEnumerable<Note> source;
+        if (!string.IsNullOrEmpty(SelectedListId))
+        {
+            source = _noteService.GetForList(
+                SelectedListId!,
+                ResolveCustomList(SelectedListId!)?.SortOrder ?? NoteListSortOrder.Custom);
+        }
+        else
+        {
+            source = SortNotesForCategory(
+                _noteService.GetForCategory(SelectedCategory),
+                (NoteListSortOrder)Preferences.Default.Get(GetAppearanceKey(SelectedCategory, "sort"), (int)NoteListSortOrder.Custom));
+        }
         foreach (var note in source)
         {
             FilteredNotes.Add(note);
@@ -883,6 +986,16 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(HasCompletedNotes));
         OnPropertyChanged(nameof(HasActiveNotes));
     }
+
+    private static IEnumerable<Note> SortNotesForCategory(IEnumerable<Note> notes, NoteListSortOrder sortOrder)
+        => sortOrder switch
+        {
+            NoteListSortOrder.Important => notes.OrderByDescending(note => note.IsImportant).ThenBy(note => note.DisplayOrder),
+            NoteListSortOrder.Reminder => notes.OrderBy(note => note.ReminderDate is null).ThenBy(note => note.ReminderDate).ThenBy(note => note.DisplayOrder),
+            NoteListSortOrder.DueDate => notes.OrderBy(note => note.DueDate is null).ThenBy(note => note.DueDate).ThenBy(note => note.DisplayOrder),
+            NoteListSortOrder.Alphabetical => notes.OrderBy(note => note.Title, StringComparer.CurrentCultureIgnoreCase),
+            _ => notes.OrderBy(note => note.IsCompleted).ThenBy(note => note.DisplayOrder)
+        };
 
     private void OnNotesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -943,14 +1056,22 @@ public partial class NotesListViewModel : ViewModelBase
 
     private void OnListPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(Todo.Features.CustomLists.Models.NoteList.Name)
+            && sender is Todo.Features.CustomLists.Models.NoteList renamedList
+            && SelectedListId == renamedList.Id)
+            HeaderTitle = renamedList.Name;
+
         if (e.PropertyName is nameof(Todo.Features.CustomLists.Models.NoteList.Name)
                               or nameof(Todo.Features.CustomLists.Models.NoteList.SortOrder)
-                              or nameof(Todo.Features.CustomLists.Models.NoteList.BackgroundImageSource))
+                              or nameof(Todo.Features.CustomLists.Models.NoteList.BackgroundImageSource)
+                              or nameof(Todo.Features.CustomLists.Models.NoteList.BackgroundColorHex))
         {
             OnPropertyChanged(nameof(HeaderTitle));
             OnPropertyChanged(nameof(EmptyStateTitle));
             OnPropertyChanged(nameof(BackgroundImage));
             OnPropertyChanged(nameof(HasBackgroundImage));
+            OnPropertyChanged(nameof(ListBackgroundColor));
+            OnPropertyChanged(nameof(HeaderForegroundColor));
             if (e.PropertyName == nameof(Todo.Features.CustomLists.Models.NoteList.SortOrder)
                 && SelectedListId == ((Todo.Features.CustomLists.Models.NoteList)sender!).Id)
                 ApplyFilter();
