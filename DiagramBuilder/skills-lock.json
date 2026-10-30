@@ -1,0 +1,491 @@
+{
+  "version": 1,
+  "skills": {
+    "implementing-interactive-viewer": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-interactive-viewer/SKILL.md",
+      "computedHash": "bca44194de9c34e210356a3df541915358bed775fa0049c1baadfe11a25007e6"
+    },
+    "syncfusion-maui-accordion": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-accordion/SKILL.md",
+      "computedHash": "332f15eb95e8b268f3ffff195c2eab47ef22e570a28a38434d8b223fd63a2911"
+    },
+    "syncfusion-maui-ai-assistview": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-ai-assistview/SKILL.md",
+      "computedHash": "b2819f859bb582302963f4c7080a61b800d1b4d540404e59f3d93a9cb6c74f7b"
+    },
+    "syncfusion-maui-autocomplete": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-autocomplete/SKILL.md",
+      "computedHash": "2a7230b963804d55e74b0d339deb5b51b69550ca20484bd2409cb0abd371474a"
+    },
+    "syncfusion-maui-avatar-view": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-avatar-view/SKILL.md",
+      "computedHash": "061a8d0ff30b44e217bfb48c58bae58034235a1bf50d6a0857b37812ca7e8f4a"
+    },
+    "syncfusion-maui-backdrop": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-backdrop/SKILL.md",
+      "computedHash": "b5cb4d18dd8e0a5c636b72a58d9607e6a760cc0db7ccf53332039a2ef055510b"
+    },
+    "syncfusion-maui-badge-view": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-badge-view/SKILL.md",
+      "computedHash": "43ec6e002fc76002a4771cf51bd1fe3ffef00629a6ba858802b873f5223ebf92"
+    },
+    "syncfusion-maui-barcode-generator": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-barcode-generator/SKILL.md",
+      "computedHash": "4767d87008b57d99327b3226e3eb4db03dcceabcf4eeb333c5fb1addde022304"
+    },
+    "syncfusion-maui-busy-indicator": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-busy-indicator/SKILL.md",
+      "computedHash": "e9a32bd9657248744b6eaa340651b714b806b16597f8aa38fdb50fd4e2a7db49"
+    },
+    "syncfusion-maui-button": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-button/SKILL.md",
+      "computedHash": "f45bb16e73e3a12a367319f2054985219e6c3f3261f3b50e3211d060341311e7"
+    },
+    "syncfusion-maui-calendar": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-calendar/SKILL.md",
+      "computedHash": "1777de0e6ea609024eb2f1302af53665d52fa6e60e4e076d3281c7f7ddc90c28"
+    },
+    "syncfusion-maui-cards": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-cards/SKILL.md",
+      "computedHash": "08621b0d3d61ca1384dca642b758fc3b21650324f2c9a6ca002d3d7af8a6265b"
+    },
+    "syncfusion-maui-carousel": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-carousel/SKILL.md",
+      "computedHash": "f57a2e855d8870df7996b9f27723dca186d0236d629c5c89ff367930fd71978b"
+    },
+    "syncfusion-maui-cartesian-charts": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-cartesian-charts/SKILL.md",
+      "computedHash": "602d85c816a925a4f1bc2c00bd63db450cc875cf1bcb3946206d4debf0b16b33"
+    },
+    "syncfusion-maui-chat": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-chat/SKILL.md",
+      "computedHash": "8cb5ffed16fb3ad77b0921f78c03a5c58586c7881bff51ce2b49e05e70396c2c"
+    },
+    "syncfusion-maui-checkbox": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-checkbox/SKILL.md",
+      "computedHash": "d5446706bcaeccb319269ff994c11387c1937d91ce95d742d28ce366cd909d54"
+    },
+    "syncfusion-maui-chips": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-chips/SKILL.md",
+      "computedHash": "2276f061277a6a59564cdb71804c3619f9e816e5a3c11c50a1dc908f9589c8cf"
+    },
+    "syncfusion-maui-circular-charts": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-circular-charts/SKILL.md",
+      "computedHash": "03c06ed90e9e66101bfc6690890db70a0649b65e5397b6fee6e4f4d19448202b"
+    },
+    "syncfusion-maui-circular-progressbar": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-circular-progressbar/SKILL.md",
+      "computedHash": "1d958c8c6d97585856e951ba2e3982a3a79165d229ad0a8c722d5393db0c2ca5"
+    },
+    "syncfusion-maui-color-picker": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-color-picker/SKILL.md",
+      "computedHash": "b8db767267a6401842f3b4ffc7fc9f20f38916b4c6f8671f1b8751fb8ac1978a"
+    },
+    "syncfusion-maui-combobox": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-combobox/SKILL.md",
+      "computedHash": "e4f978b3e392238e04c80a49758c3c531b12584708787a3f73bcde03039f33ad"
+    },
+    "syncfusion-maui-dataform": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-dataform/SKILL.md",
+      "computedHash": "89e703eb8488363c2ccba2caed9bbe20c7b0085b72865e0b2d244c6cb1fb6371"
+    },
+    "syncfusion-maui-datagrid": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-datagrid/SKILL.md",
+      "computedHash": "c3fd3d93cf59302f9c8dbbb9e7ad5c1b9b3691a783b868bd342456a2f939e1c4"
+    },
+    "syncfusion-maui-datapager": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-datapager/SKILL.md",
+      "computedHash": "763a579a2ecb6ea27d90f3a819bca4a0109293ca5bb8ded272738e55c2aa0ff0"
+    },
+    "syncfusion-maui-date-picker": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-date-picker/SKILL.md",
+      "computedHash": "568b6ee3a0d1b1cef9781c028e14cf6d38d054098ff356881ac5d07b0e83c045"
+    },
+    "syncfusion-maui-date-time-picker": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-date-time-picker/SKILL.md",
+      "computedHash": "5206ce69b3f9f34c97a6cf8b42911b70fd6929e6f638f85ad8593fabe8c940e6"
+    },
+    "syncfusion-maui-date-time-range-selector": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-date-time-range-selector/SKILL.md",
+      "computedHash": "6deae53f5a7f2377b3abae51103ef1bc8e82b36f07dbb394382bb0b9f1afdbf9"
+    },
+    "syncfusion-maui-date-time-range-slider": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-date-time-range-slider/SKILL.md",
+      "computedHash": "86713cd5efa2896f9c58d589ddfd031aecca4f02d87c3269e5650f1c6f79e4dd"
+    },
+    "syncfusion-maui-date-time-slider": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-date-time-slider/SKILL.md",
+      "computedHash": "d378845d9cf0664e8a5a38dcf9e66157942caaa447e27a47038b5a9a418be09a"
+    },
+    "syncfusion-maui-digital-gauge": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-digital-gauge/SKILL.md",
+      "computedHash": "97ab92c60171ac79e79c44a089eebbfbec63fc8ce25dd8b2499f0ca975d8b72e"
+    },
+    "syncfusion-maui-docklayout": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-docklayout/SKILL.md",
+      "computedHash": "5469b174adf79ab904e6bf8c50628f12bfb2a029dbd1aef1af928eaeffc11fd9"
+    },
+    "syncfusion-maui-effects-view": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-effects-view/SKILL.md",
+      "computedHash": "78900f1b264839e58af35f9bfd3c997d54b8f2f47a751515c1b8adcb634090e7"
+    },
+    "syncfusion-maui-expander": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-expander/SKILL.md",
+      "computedHash": "24c3968062560abf2958ff233adf8f2613a5901073a0fa09bba38700a9183817"
+    },
+    "syncfusion-maui-funnel-charts": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-funnel-charts/SKILL.md",
+      "computedHash": "0b5bb9e53b5f74785852665ff9dede937ea3c53b2de00d21ee1bcee8c4b56157"
+    },
+    "syncfusion-maui-getting-started": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-getting-started/SKILL.md",
+      "computedHash": "0f80355c42eff7e75b846aa9e6a1ee9abc8e0c3cd8125fca1b8ff1389371791e"
+    },
+    "syncfusion-maui-grid-splitter": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-grid-splitter/SKILL.md",
+      "computedHash": "5a7d91c954aaf4f6ed99b7a7b91a7b76e9836111ee4e5c441005d1733ce2e9f5"
+    },
+    "syncfusion-maui-image-editor": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-image-editor/SKILL.md",
+      "computedHash": "f740af682ead0d882db175d3fb419f1e4f2189e51130136e3cf3f3b876695572"
+    },
+    "syncfusion-maui-kanban-board": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-kanban-board/SKILL.md",
+      "computedHash": "59f626ab8df7fa27a29dab0dceb35c4700130b1332fa9739466d2b20e0d2d896"
+    },
+    "syncfusion-maui-licensing": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-licensing/SKILL.md",
+      "computedHash": "7fdd327c8d31a8895bffe0f5b5fcc44efd9cd5bc8d23eb0401ed2b8b4d812fc2"
+    },
+    "syncfusion-maui-linear-gauge": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-linear-gauge/SKILL.md",
+      "computedHash": "c44b615ce247b0f1d06acc5c18e92ebdd8c69463069dc24b0df235d7cde9d8a8"
+    },
+    "syncfusion-maui-linear-progressbar": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-linear-progressbar/SKILL.md",
+      "computedHash": "ff0c292ef7941e2a4500a385607c84a9a90e72332ac2b407db4c36b8aca68938"
+    },
+    "syncfusion-maui-listview": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-listview/SKILL.md",
+      "computedHash": "ef77930f071a71e64b59f6f8a454af91ed892fd1e9a724ea568ada5277a798e9"
+    },
+    "syncfusion-maui-maps": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-maps/SKILL.md",
+      "computedHash": "ff9dcd711a58dcac1e0e24d9c9f4cfa1ef1246b9edae2022e839497a2ac5ce7d"
+    },
+    "syncfusion-maui-markdown-viewer": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-markdown-viewer/SKILL.md",
+      "computedHash": "49b420fa44ebe554daa8a7a14d3d793a5968778bacd23ee56ae01ca787e5bbb4"
+    },
+    "syncfusion-maui-masked-entry": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-masked-entry/SKILL.md",
+      "computedHash": "64268542d4c4069fd86133db1a5a17c5574e63e70889fc7f6c0be7a1aecead52"
+    },
+    "syncfusion-maui-migration": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-migration/SKILL.md",
+      "computedHash": "92330bcb825569548696d95fe689832344154c71c4e1dc76e647bae16090b99a"
+    },
+    "syncfusion-maui-navigation-drawer": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-navigation-drawer/SKILL.md",
+      "computedHash": "0b2b88abf8209fc1350d69d0177f2f3ae525ebfa7acaff56c477a44527cc85df"
+    },
+    "syncfusion-maui-numeric-entry": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-numeric-entry/SKILL.md",
+      "computedHash": "c88949740005810a4e06277af612424cf8d67e2f4812162d1e3b10c517ef2579"
+    },
+    "syncfusion-maui-parallax-view": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-parallax-view/SKILL.md",
+      "computedHash": "291df219be60e76402ddb90ae7c64c25b77cae69434bc27aac1c73d65c0dfcb2"
+    },
+    "syncfusion-maui-picker": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-picker/SKILL.md",
+      "computedHash": "ffa130b34495b9167ad409c2b84e340011896460ec4191a04f0370283cf91353"
+    },
+    "syncfusion-maui-polar-charts": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-polar-charts/SKILL.md",
+      "computedHash": "1cbd035ac539a2b0fdee2555ae68570c3687144f4f8f2fd853a032fff0be1ad9"
+    },
+    "syncfusion-maui-popup": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-popup/SKILL.md",
+      "computedHash": "780e1a56e4f3f12488eb51ae87cbde6fc8c5516e671cc5521121b24bae81bf38"
+    },
+    "syncfusion-maui-pull-to-refresh": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-pull-to-refresh/SKILL.md",
+      "computedHash": "4628126c66bcf95c2e2d3d9ebdf0c1b9c0b800539cb4053d564e3a10681bf9ec"
+    },
+    "syncfusion-maui-pyramid-charts": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-pyramid-charts/SKILL.md",
+      "computedHash": "f3fe923bce98f3fffa920946f48a9a340a5279fe5fda5f3109703795e04fc570"
+    },
+    "syncfusion-maui-radial-gauge": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-radial-gauge/SKILL.md",
+      "computedHash": "e9161f5f2131f5fe49f1ff65fa3136fdd47316718373834bb15df09ad09645c1"
+    },
+    "syncfusion-maui-radial-menu": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-radial-menu/SKILL.md",
+      "computedHash": "21e9333d32b2a4088778c97caf5d8d4fd4905d6bdb398dfc654f442537be1071"
+    },
+    "syncfusion-maui-radio-button": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-radio-button/SKILL.md",
+      "computedHash": "40223b24133550439d08704dfb152f2b7818ba6d57f247c094171750229151a8"
+    },
+    "syncfusion-maui-range-selector": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-range-selector/SKILL.md",
+      "computedHash": "c8837f79307db39e28ef9155ee35465a302c1adca184998ad9f790aa2f491896"
+    },
+    "syncfusion-maui-range-slider": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-range-slider/SKILL.md",
+      "computedHash": "762b6eb238d23aa1f0cf60150b186767bd93f8f9742f61f49ec34d7af98418b3"
+    },
+    "syncfusion-maui-rating": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-rating/SKILL.md",
+      "computedHash": "338fe11afcbf4f05d451806452690e79dba5cc455e4366c91bc951d21033ec90"
+    },
+    "syncfusion-maui-rich-text-editor": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-rich-text-editor/SKILL.md",
+      "computedHash": "8792c0fd78fcef02bf5c23d797b6a9b921e2f99a89373fa606aa239f97142e9d"
+    },
+    "syncfusion-maui-rotator": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-rotator/SKILL.md",
+      "computedHash": "1c5b62b3c94c3c97b05d4a57ef54fbb1a6927c8025b308fc687034561f581113"
+    },
+    "syncfusion-maui-scheduler": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-scheduler/SKILL.md",
+      "computedHash": "e01691a4c58cffa6efa8cba5145ff8be9b3cf68442fa94c7f5932c2867dc8018"
+    },
+    "syncfusion-maui-segmented-control": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-segmented-control/SKILL.md",
+      "computedHash": "1c482bc5d1fb5362802cd631e798d5bfc671adafb25d3a021fab7f0112a6a282"
+    },
+    "syncfusion-maui-shimmer": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-shimmer/SKILL.md",
+      "computedHash": "a969267dcbcd42c3ad82fc9b75d7e8dfe0389baff3dd9c4391ef8d1062757029"
+    },
+    "syncfusion-maui-signature-pad": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-signature-pad/SKILL.md",
+      "computedHash": "1894337a20c6f2cb276d3415617a243c239ae264f24d2147289304abfe5f7feb"
+    },
+    "syncfusion-maui-slider": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-slider/SKILL.md",
+      "computedHash": "94ed4cd22519589ca1009fe85614b251b617156931b4ce39245f122ed7da787e"
+    },
+    "syncfusion-maui-smart-datagrid": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-smart-datagrid/SKILL.md",
+      "computedHash": "7e4261c1b3244038d2986a3c54b46a537c734a482b93d8511207bcce07f63eae"
+    },
+    "syncfusion-maui-smart-scheduler": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-smart-scheduler/SKILL.md",
+      "computedHash": "d4ada3eb036a74417263c1bbb9a4517cb54cea5250e6e0523a09ac7db2c6fddb"
+    },
+    "syncfusion-maui-smart-text-editor": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-smart-text-editor/SKILL.md",
+      "computedHash": "d0647a5e97e93c0d523be8567357fa72f0b71709f8f21d6b3a50db9c8e3abdf1"
+    },
+    "syncfusion-maui-step-progressbar": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-step-progressbar/SKILL.md",
+      "computedHash": "a348b3f3b08c52f5cec99c2dfc28c2b0349f56ad46c40bb129707e55d6919b82"
+    },
+    "syncfusion-maui-sunburst-charts": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-sunburst-charts/SKILL.md",
+      "computedHash": "74fd6a5dd4fc0169549370552318f393b772b0d2f13ae84adbcb02c90c763cd1"
+    },
+    "syncfusion-maui-switch": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-switch/SKILL.md",
+      "computedHash": "8bba3d4567bbc133470b561f7fc86846ee1fc1029c962f3e30d12541eb3ec8b7"
+    },
+    "syncfusion-maui-tab-view": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-tab-view/SKILL.md",
+      "computedHash": "6151afa90cb3c67c9fa5680683b8cf4a5343e0ddc3ee7ef993f289b3bf04138c"
+    },
+    "syncfusion-maui-text-input-layout": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-text-input-layout/SKILL.md",
+      "computedHash": "cf780235b513463108320fdea20d7ae38a47162b3777a174136693d9857266d4"
+    },
+    "syncfusion-maui-theming": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-theming/SKILL.md",
+      "computedHash": "c2761778bebf38a488ddc0c8cbcaf5585d71029ff93412089a9eaf2f473b04ec"
+    },
+    "syncfusion-maui-time-picker": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-time-picker/SKILL.md",
+      "computedHash": "02c6e11585e297d20dc5d2962d55fe17225ee2c204f11d890480d7ba6b150ab3"
+    },
+    "syncfusion-maui-toolbar": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-toolbar/SKILL.md",
+      "computedHash": "6bbe5d1a80af0db48ec04ba29b73828cb3bf9e35cc65ce705b6d9a58793bb01d"
+    },
+    "syncfusion-maui-treegrid": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-treegrid/SKILL.md",
+      "computedHash": "ab7d91676e73278b1885c2211ab7ce984841e15ee5de5b50932d67584881cd0b"
+    },
+    "syncfusion-maui-treemap": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-treemap/SKILL.md",
+      "computedHash": "a30968aabae5a8197c1a31c069d5c4b9cc27caf749443a71d8ecbb188f3ce971"
+    },
+    "syncfusion-maui-treeview": {
+      "source": "syncfusion/maui-ui-components-skills",
+      "sourceType": "github",
+      "skillPath": "skills/syncfusion-maui-treeview/SKILL.md",
+      "computedHash": "19ab529b3082dadce66381d230ad249b8111d6a54d8b2a7c51b646a376b9ea13"
+    }
+  }
+}

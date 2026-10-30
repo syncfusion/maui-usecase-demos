@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             xmlns:constants="clr-namespace:DiagramBuilder.Constants"
+             xmlns:models="clr-namespace:DiagramBuilder.Models"
+             xmlns:conv="clr-namespace:DiagramBuilder.Converters"
+             x:Class="DiagramBuilder.Views.CreateDiagramPage"
+             Title="{Binding Title}"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <!-- Modal scrim -->
+        <Grid BackgroundColor="{DynamicResource ModalScrim}" />
+
+        <Border HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="980"
+                HeightRequest="640"
+                BackgroundColor="{DynamicResource WindowBackground}"
+                Stroke="{DynamicResource PanelBorderBrush}"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <shapes:RoundRectangle CornerRadius="4" />
+            </Border.StrokeShape>
+
+            <Grid RowDefinitions="Auto,*">
+                <!-- Header row -->
+                <Grid Padding="24,18,20,12"
+                      ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                        <Label Text="{Binding Title}"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}" />
+                        <Label Text="{Binding Subtitle}"
+                               FontSize="12"
+                               TextColor="{DynamicResource TextSecondary}" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1"
+                            Text="&#x2715;"
+                            WidthRequest="32"
+                            HeightRequest="32"
+                            Padding="0"
+                            BackgroundColor="Transparent"
+                            TextColor="{DynamicResource TextSecondary}"
+                            FontSize="14"
+                            AutomationId="create_close"
+                            Clicked="OnCloseClicked" />
+                </Grid>
+
+                <!-- Body: category rail + template list -->
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="240,*">
+                    <!-- Left category rail -->
+                    <Border BackgroundColor="{DynamicResource CategoryRailBackground}"
+                            StrokeThickness="0"
+                            Padding="0,12">
+                        <CollectionView ItemsSource="{Binding Categories}"
+                                        SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,2,0,2"
+                                            Padding="18,12,18,12"
+                                            BackgroundColor="Transparent">
+                                        <Grid ColumnDefinitions="3,*"
+                                              VerticalOptions="Center">
+                                            <BoxView x:Name="AccentBar"
+                                                     WidthRequest="3"
+                                                     HeightRequest="20"
+                                                     Color="{Binding Converter={StaticResource CategoryAccentConverter}}"
+                                                     VerticalOptions="Center" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding .}"
+                                                   FontSize="15"
+                                                   TextColor="{DynamicResource TextPrimary}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCategoryCommand}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Border>
+
+                    <!-- Right template panel -->
+                    <ScrollView Grid.Column="1">
+                        <VerticalStackLayout Padding="40,20,40,20" Spacing="20">
+
+                            <!-- Blank section -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Blank"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       CharacterSpacing="1"
+                                       TextColor="{DynamicResource TextSecondary}" />
+                                <Border Stroke="{DynamicResource PanelBorderBrush}"
+                                        StrokeThickness="1"
+                                        Padding="0"
+                                        BackgroundColor="{DynamicResource CanvasBackground}"
+                                        WidthRequest="640"
+                                        HeightRequest="170">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="6" />
+                                    </Border.StrokeShape>
+                                    <Grid ColumnDefinitions="*,Auto" Padding="20,20,20,20">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                                            <Label Text="{Binding EmptyDiagramTemplate.Title, FallbackValue=Blank Diagram}"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource TextPrimary}" />
+                                            <Label Text="{Binding EmptyDiagramTemplate.Description, FallbackValue=Start with an empty canvas.}"
+                                                   FontSize="12"
+                                                   TextColor="{DynamicResource TextSecondary}"
+                                                   LineBreakMode="WordWrap" />
+                                        </VerticalStackLayout>
+                                        <Button Grid.Column="1"
+                                                Text="{x:Static constants:AppStrings.CreateAction}"
+                                                WidthRequest="100"
+                                                HeightRequest="36"
+                                                VerticalOptions="Center"
+                                                BackgroundColor="{Binding EmptyDiagramTemplate.AccentColorKey, Converter={StaticResource ColorToBrushConverter}}"
+                                                TextColor="White"
+                                                AutomationId="create_blank"
+                                                Command="{Binding CreateDiagramCommand}"
+                                                CommandParameter="{Binding EmptyDiagramTemplate}" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Predefined section -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Predefined Templates"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       CharacterSpacing="1"
+                                       TextColor="{DynamicResource TextSecondary}" />
+                                <CollectionView ItemsSource="{Binding PredefinedTemplates}"
+                                                SelectionMode="None">
+                                    <CollectionView.ItemsLayout>
+                                        <LinearItemsLayout ItemSpacing="12"
+                                                            Orientation="Vertical" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:DiagramTemplate">
+                                            <Border Stroke="{DynamicResource PanelBorderBrush}"
+                                                    StrokeThickness="1"
+                                                    Padding="0"
+                                                    BackgroundColor="{DynamicResource CanvasBackground}"
+                                                    HeightRequest="160"
+                                                    WidthRequest="640">
+                                                <Border.StrokeShape>
+                                                    <shapes:RoundRectangle CornerRadius="6" />
+                                                </Border.StrokeShape>
+                                                <Grid ColumnDefinitions="160,*,Auto" Padding="0,0,0,0">
+                                                    <!-- Thumbnail area (left, accent color stripe) -->
+                                                    <Grid Grid.Column="0">
+                                                        <BoxView Color="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}" />
+                                                        <Grid HorizontalOptions="Center" VerticalOptions="Center"
+                                                              WidthRequest="110" HeightRequest="110">
+                                                            <Border BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="White"
+                                                                    StrokeThickness="2"
+                                                                    WidthRequest="50" HeightRequest="30"
+                                                                    HorizontalOptions="Center"
+                                                                    VerticalOptions="Center"
+                                                                    TranslationY="-30" />
+                                                            <BoxView Color="White"
+                                                                     WidthRequest="2" HeightRequest="20"
+                                                                     HorizontalOptions="Center"
+                                                                     VerticalOptions="Center"
+                                                                     TranslationY="-10" />
+                                                            <Border BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="White"
+                                                                    StrokeThickness="2"
+                                                                    WidthRequest="44" HeightRequest="30"
+                                                                    HorizontalOptions="Start"
+                                                                    VerticalOptions="Center"
+                                                                    TranslationX="-12"
+                                                                    TranslationY="20" />
+                                                            <Border BackgroundColor="{DynamicResource ThumbnailNodeFill}"
+                                                                    Stroke="White"
+                                                                    StrokeThickness="2"
+                                                                    WidthRequest="44" HeightRequest="30"
+                                                                    HorizontalOptions="End"
+                                                                    VerticalOptions="Center"
+                                                                    TranslationX="12"
+                                                                    TranslationY="20" />
+                                                        </Grid>
+                                                    </Grid>
+
+                                                    <!-- Text content -->
+                                                    <VerticalStackLayout Grid.Column="1" Padding="20,16,12,16" Spacing="6" VerticalOptions="Center">
+                                                        <Label Text="{Binding Title}"
+                                                               FontSize="15"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{DynamicResource TextPrimary}" />
+                                                        <Label Text="{Binding Description}"
+                                                               FontSize="12"
+                                                               TextColor="{DynamicResource TextSecondary}"
+                                                               LineBreakMode="WordWrap"
+                                                               MaxLines="2" />
+                                                        <Label Text="{Binding Nodes.Count, StringFormat='{0} shapes'}"
+                                                               FontSize="11"
+                                                               TextColor="{DynamicResource TextSecondary}" />
+                                                    </VerticalStackLayout>
+
+                                                    <!-- Create button -->
+                                                    <Button Grid.Column="2"
+                                                            Text="{x:Static constants:AppStrings.CreateAction}"
+                                                            WidthRequest="100"
+                                                            HeightRequest="36"
+                                                            Margin="0,0,20,0"
+                                                            VerticalOptions="Center"
+                                                            BackgroundColor="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}"
+                                                            TextColor="White"
+                                                            AutomationId="create_predefined"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.CreateDiagramCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="DiagramBuilder.Views.Dialogs.ExportDialog"
+             xmlns:constants="clr-namespace:DiagramBuilder.Constants"
+             BackgroundColor="{DynamicResource CanvasBackground}">
+
+    <!-- Export dialog per ui-spec.md §7: format chooser, region, file name,
+         bound to ExportViewModel. -->
+    <Border Stroke="{DynamicResource PanelBorderBrush}"
+            StrokeThickness="1"
+            Padding="20"
+            WidthRequest="420"
+            BackgroundColor="{DynamicResource CanvasBackground}">
+        <Border.StrokeShape>
+            <shapes:RoundRectangle CornerRadius="8" />
+        </Border.StrokeShape>
+        <VerticalStackLayout Spacing="12">
+
+            <Label Text="{x:Static constants:AppStrings.ExportDialogTitle}"
+                   FontSize="18" FontAttributes="Bold"
+                   TextColor="{DynamicResource TextPrimary}" />
+
+            <!-- Format -->
+            <Label Text="{x:Static constants:AppStrings.ExportFormatLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <HorizontalStackLayout Spacing="8">
+                <Button Text="{x:Static constants:AppStrings.ExportFormatPng}"
+                        Command="{Binding SelectFormatCommand}"
+                        CommandParameter="Png"
+                        IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}" />
+                <Button Text="{x:Static constants:AppStrings.ExportFormatJpeg}"
+                        Command="{Binding SelectFormatCommand}"
+                        CommandParameter="Jpeg" />
+                <Button Text="{x:Static constants:AppStrings.ExportFormatPdf}"
+                        Command="{Binding SelectFormatCommand}"
+                        CommandParameter="Pdf" />
+                <Button Text="{x:Static constants:AppStrings.ExportFormatSvg}"
+                        Command="{Binding SelectFormatCommand}"
+                        CommandParameter="Svg" />
+            </HorizontalStackLayout>
+
+            <!-- Region -->
+            <Label Text="{x:Static constants:AppStrings.ExportRegionLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <HorizontalStackLayout Spacing="8">
+                <Button Text="{x:Static constants:AppStrings.ExportRegionContent}"
+                        Command="{Binding SelectRegionCommand}"
+                        CommandParameter="Content" />
+                <Button Text="{x:Static constants:AppStrings.ExportRegionPageSettings}"
+                        Command="{Binding SelectRegionCommand}"
+                        CommandParameter="{x:Static constants:AppStrings.ExportRegionPageSettings}" />
+            </HorizontalStackLayout>
+
+            <!-- File name -->
+            <Label Text="{x:Static constants:AppStrings.ExportFileNameLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <Entry Text="{Binding FileName, Mode=TwoWay}"
+                   Style="{StaticResource PropertyEntryStyle}" />
+
+            <!-- Result -->
+            <Label Text="{Binding ResultText}"
+                   FontSize="12"
+                   TextColor="{DynamicResource TextSecondary}"
+                   IsVisible="{Binding HasResult}" />
+
+            <!-- Actions -->
+            <HorizontalStackLayout Spacing="8" Margin="0,12,0,0">
+                <Button Text="{x:Static constants:AppStrings.CreateAction}"
+                        Command="{Binding ExportCommand}"
+                        IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}" />
+                <Button Text="{x:Static constants:AppStrings.OkAction}"
+                        Command="{Binding ResetCommand}"
+                        IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}" />
+                <Button Text="{x:Static constants:AppStrings.ExportCancel}"
+                        Clicked="OnCancelClicked"
+                        IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

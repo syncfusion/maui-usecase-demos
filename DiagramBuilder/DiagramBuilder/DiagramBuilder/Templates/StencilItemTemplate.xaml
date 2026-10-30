@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  StencilItemTemplate: visual shape for one tile in the StencilPanel accordion.
+  The tile renders the shape preview via a ContentView host that the
+  StencilPanelControl code-behind fills with a real Microsoft.Maui.Controls.Shapes
+  primitive (Rectangle/Ellipse/Polygon/Path) so each stencil entry matches the
+  diagram's actual shape vocabulary.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+                    x:Class="DiagramBuilder.Templates.StencilItemTemplate">
+
+    <DataTemplate x:Key="StencilItemTemplate">
+        <Grid Padding="4">
+            <Border Stroke="{DynamicResource PanelBorderBrush}"
+                    StrokeThickness="1"
+                    Padding="8,6"
+                    BackgroundColor="{DynamicResource CanvasBackground}">
+                <Border.StrokeShape>
+                    <shapes:RoundRectangle CornerRadius="6" />
+                </Border.StrokeShape>
+                <StackLayout Spacing="4">
+                    <!-- Preview area: filled by code-behind based on ShapeType/ConnectorKind -->
+                    <ContentView x:Name="PreviewHost"
+                                 HeightRequest="36"
+                                 WidthRequest="48"
+                                 HorizontalOptions="Center"
+                                 AutomationId="stencil_preview" />
+                    <Label Text="{Binding DisplayName}"
+                           FontSize="11"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{DynamicResource TextPrimary}" />
+                </StackLayout>
+            </Border>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>
