@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:vm="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:dashboard="clr-namespace:HotelManagerSample.Dashboard;assembly=HotelManagerSample"
+             xmlns:bookings="clr-namespace:HotelManagerSample.Bookings;assembly=HotelManagerSample"
+             xmlns:rooms="clr-namespace:HotelManagerSample.Rooms;assembly=HotelManagerSample"
+             x:Class="HotelManagerSample.MobileShell"
+             x:DataType="vm:MobileShellViewModel"
+             Title="MobileShell"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource MobileSurface}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="*,Auto">
+        <tabView:SfTabView Grid.Row="0"
+                           TabBarPlacement="Bottom"
+                           HeaderItemSpacing="60"
+                           TabBarBorderColor="{StaticResource MobileDivider}"
+                           TabBarBorderThickness="1"
+                           IsEnabled="{Binding IsTabBarEnabled}"
+                           SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+                           EnableSwiping="False"
+                           TabBarSize="70"
+                           HeaderDisplayMode="Default"
+                           TabWidthMode="SizeToContent">
+
+            <tabView:SfTabView.Items>
+
+                <!-- ============= DASHBOARD ============= -->
+                <tabView:SfTabItem Header="Dashboard"
+                                   ImageSize="20"
+                                   ImageSource="dashboardblack.png">
+                    <tabView:SfTabItem.Content>
+                        <dashboard:MobileDashboardPage />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+                <!-- ============= BOOKINGS ============= -->
+                <tabView:SfTabItem Header="Bookings"
+                                   ImageSize="22"
+                                   ImageSource="booking.png">
+                    <tabView:SfTabItem.Content>
+                        <bookings:MobileBookingsPage />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+                <!-- ============= ROOMS ============= -->
+                <tabView:SfTabItem Header="Rooms"
+                                   ImageSize="20"
+                                   ImageSource="rooms.png">
+                    <tabView:SfTabItem.Content>
+                        <rooms:MobileRoomsPage />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+            </tabView:SfTabView.Items>
+        </tabView:SfTabView>
+    </Grid>
+</ContentPage>

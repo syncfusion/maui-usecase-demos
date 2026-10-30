@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:list="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:chips="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:vm="clr-namespace:HotelManagerSample.Rooms;assembly=HotelManagerSample"
+             xmlns:models="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:conv="clr-namespace:HotelManagerSample.Converters;assembly=HotelManagerSample"
+             xmlns:controls="clr-namespace:HotelManagerSample.Controls;assembly=HotelManagerSample"
+             x:Class="HotelManagerSample.Rooms.MobileRoomsPage"
+             x:DataType="vm:MobileRoomsViewModel"
+             Style="{StaticResource MobilePage}"
+             BackgroundColor="{StaticResource MobileSurface}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+            </Style>
+            
+            <conv:MobileRoomStatusBackgroundConverter x:Key="RoomStatusBg" />
+            <conv:MobileRoomStatusForegroundConverter x:Key="RoomStatusFg" />
+            <conv:MobileRoomStatusIconConverter        x:Key="RoomStatusIcon" />
+            <conv:MobileRoomStatusShortConverter       x:Key="RoomStatusShort" />
+            <conv:MobileStringToBoolConverter          x:Key="StringToBool" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- HEADER -->
+        <VerticalStackLayout Grid.Row="0" Padding="14,12,14,6" Spacing="12">
+
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                    <Label Style="{StaticResource MobileHotelName}" Text="Grand Horizon" />
+                    <Label Style="{StaticResource MobileHotelSubtitle}" Text="ROOMS" />
+                </VerticalStackLayout>
+                <Border Grid.Column="1"
+                    BackgroundColor="#E0E7FF"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 17"
+                    WidthRequest="34" HeightRequest="34">
+                    <Image Source="profile.png" Aspect="AspectFill" HeightRequest="34" WidthRequest="34" />
+                </Border>
+            </Grid>
+
+            <!-- Title + subtitle row -->
+            <VerticalStackLayout Spacing="0">
+                <Label Style="{StaticResource MobilePageTitle}" Text="Rooms" />
+                <Label Style="{StaticResource MobilePageSubtitle}"
+                       Text="15 keys · 3 floors · live inventory" />
+            </VerticalStackLayout>
+
+            <!-- Search -->
+            <Border Style="{StaticResource MobileInputField}">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                    <Label Grid.Column="0"
+                           Text="&#xe715;"
+                           FontFamily="MaterialAssets"
+                           FontSize="18"
+                           TextColor="{StaticResource MobileTextMuted}"
+                           VerticalTextAlignment="Center" />
+                    <controls:SfEntry Grid.Column="1"
+                           Text="{Binding SearchText, Mode=TwoWay}"
+                           Placeholder="Search rooms here..."
+                           PlaceholderColor="{StaticResource MobileTextSubtle}"
+                           FontSize="14"
+                           TextColor="{StaticResource MobileText}"
+                           BackgroundColor="Transparent"
+                           MinimumHeightRequest="44"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="2"
+                           Text="&#xe5cd;"
+                           FontFamily="MaterialAssets"
+                           FontSize="14"
+                           TextColor="{StaticResource MobileTextSubtle}"
+                           IsVisible="{Binding SearchText, Converter={StaticResource StringToBool}}"
+                           VerticalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnClearSearchTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            </Border>
+
+            <!-- Floor chips -->
+            <Label Style="{StaticResource MobileEyebrow}" Text="Floor" />
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <chips:SfChipGroup x:Name="FloorChipGroup"
+                                   ItemsSource="{Binding FloorChips}"
+                                   ChipType="Choice"
+                                   ChoiceMode="Single"
+                                   ItemHeight="32"
+                                   DisplayMemberPath="Label"
+                                   SelectionChanged="OnFloorChipSelectionChanged">
+                    <chips:SfChipGroup.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RoomFilterChip">
+                            <chips:SfChip Text="{Binding Label}">
+                                <chips:SfChip.Triggers>
+                                    <DataTrigger TargetType="chips:SfChip" Binding="{Binding IsActive}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource MobilePrimary}" />
+                                        <Setter Property="TextColor"        Value="{StaticResource PrimaryDarkText}" />
+                                        <Setter Property="FontFamily"       Value="OpenSansSemibold" />
+                                        <Setter Property="FontSize"         Value="14" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="chips:SfChip" Binding="{Binding IsActive}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource MobileChipBg}" />
+                                        <Setter Property="TextColor"        Value="{StaticResource PrimaryDarkText}" />
+                                        <Setter Property="FontFamily"       Value="OpenSansSemibold" />
+                                        <Setter Property="FontSize"         Value="14" />
+                                    </DataTrigger>
+                                </chips:SfChip.Triggers>
+                            </chips:SfChip>
+                        </DataTemplate>
+                    </chips:SfChipGroup.ItemTemplate>
+                </chips:SfChipGroup>
+            </ScrollView>
+
+            <!-- Status chips -->
+            <Label Style="{StaticResource MobileEyebrow}" Text="Status" />
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <chips:SfChipGroup x:Name="StatusChipGroup"
+                                   ItemsSource="{Binding StatusChips}"
+                                   ChipType="Choice"
+                                   ChoiceMode="Single"
+                                   ItemHeight="32"
+                                   DisplayMemberPath="Label"
+                                   SelectionChanged="OnStatusChipSelectionChanged">
+                    <chips:SfChipGroup.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RoomFilterChip">
+                            <chips:SfChip Text="{Binding Label}">
+                                <chips:SfChip.Triggers>
+                                    <DataTrigger TargetType="chips:SfChip" Binding="{Binding IsActive}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource MobilePrimary}" />
+                                        <Setter Property="TextColor"        Value="{StaticResource PrimaryDarkText}" />
+                                        <Setter Property="FontFamily"       Value="OpenSansSemibold" />
+                                        <Setter Property="FontSize"         Value="14" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="chips:SfChip" Binding="{Binding IsActive}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource MobileChipBg}" />
+                                        <Setter Property="TextColor"        Value="{StaticResource PrimaryDarkText}" />
+                                        <Setter Property="FontFamily"       Value="OpenSansSemibold" />
+                                        <Setter Property="FontSize"         Value="14" />
+                                    </DataTrigger>
+                                </chips:SfChip.Triggers>
+                            </chips:SfChip>
+                        </DataTemplate>
+                    </chips:SfChipGroup.ItemTemplate>
+                </chips:SfChipGroup>
+            </ScrollView>
+        </VerticalStackLayout>
+
+        <!-- LIST -->
+        <list:SfListView Grid.Row="1"
+                         ItemsSource="{Binding VisibleRooms}"
+                         ItemSpacing="0"
+                         AutoFitMode="DynamicHeight"
+                         Margin="0,0,0,20"
+                         SelectionMode="None"
+                         ScrollBarVisibility="Never"
+                         BackgroundColor="Transparent"
+                         IsScrollingEnabled="False"
+                         Padding="14,4,14,12">
+
+            <list:SfListView.EmptyView>
+                <VerticalStackLayout Padding="40,40,40,40" Spacing="6" HorizontalOptions="Center">
+                    <Label FontFamily="OpenSansSemibold"
+                           FontSize="14"
+                           TextColor="{StaticResource MobileTextMuted}"
+                           HorizontalTextAlignment="Center"
+                           Text="No rooms match your filters" />
+                    <Label Style="{StaticResource MobileKpiCaption}"
+                           HorizontalTextAlignment="Center"
+                           Text="Try a different floor or clear the status filter." />
+                </VerticalStackLayout>
+            </list:SfListView.EmptyView>
+
+            <list:SfListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Room">
+                        <Border Margin="0,6"
+                            Style="{StaticResource MobileCard}"
+                            Stroke="{StaticResource MobileDivider}"
+                            StrokeThickness="1.5"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="14,12">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Border Grid.Column="0"
+                                    HeightRequest="64" WidthRequest="64"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{Binding Status, Converter={StaticResource RoomStatusBg}}">
+                                <Image Source="hotel.png" HeightRequest="48" WidthRequest="48"/>
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label FontFamily="OpenSansSemibold"
+                                       FontSize="16"
+                                       TextColor="{StaticResource MobileText}"
+                                       Text="{Binding Number, StringFormat='Room No: {0}'}" />
+                                <Label Style="{StaticResource MobileKpiCaption}"
+                                       Text="{Binding Type}" />
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Border BackgroundColor="{Binding Status, Converter={StaticResource RoomStatusBg}}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 12"
+                                            Padding="8,3">
+                                        <Label FontFamily="OpenSansSemibold"
+                                               FontSize="10"
+                                               TextColor="{Binding Status, Converter={StaticResource RoomStatusFg}}"
+                                               Text="{Binding Status, Converter={StaticResource RoomStatusShort}}" />
+                                    </Border>
+                                    <Label Style="{StaticResource MobileKpiCaption}"
+                                           Text="{Binding Floor, StringFormat='· Floor No: {0}'}" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="-2" HorizontalOptions="End" VerticalOptions="Center">
+                                    <Label FontFamily="OpenSansSemibold"
+                                       FontSize="14"
+                                       TextColor="{StaticResource MobileText}"
+                                       Text="{Binding Rate, StringFormat='${0:0} / night'}" />
+                                </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </list:SfListView.ItemTemplate>
+        </list:SfListView>
+    </Grid>
+    </ScrollView>
+</ContentView>

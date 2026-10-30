@@ -1,0 +1,775 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="clr-namespace:Syncfusion.Maui.Toolkit.Chips;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:list="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:conv="clr-namespace:HotelManagerSample.Converters"
+             xmlns:models="clr-namespace:HotelManagerSample"
+             xmlns:viewModels="clr-namespace:HotelManagerSample"
+             xmlns:controls="clr-namespace:HotelManagerSample.Controls;assembly=HotelManagerSample"
+             x:Class="HotelManagerSample.RoomsPage"
+             x:Name="RoomsPageHost"
+             x:DataType="viewModels:RoomsViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F6F8FD">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:RoomStatusColorConverter x:Key="RoomStatusColor" />
+            <conv:StatTileBackgroundConverter x:Key="StatTileBackground" />
+            <conv:StringToColorConverter x:Key="StringToColor" />
+            <conv:StatusToStatusGradientConverter x:Key="StatusBg" />
+            <conv:StatusToStatusGradientConverter x:Key="StatusEquals" />
+            <conv:PercentToWidthConverter x:Key="PercentToWidth" />
+            <conv:BoolToFontFamilyConverter x:Key="BoolToFontFamily" />
+
+            <!-- Page typography -->
+            <Style x:Key="RoomsPageTitle" TargetType="Label">
+                <Setter Property="FontSize" Value="26"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="TextColor" Value="#0F172A"/>
+            </Style>
+            <Style x:Key="RoomsPageSubtitle" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+                <Setter Property="TextColor" Value="#374151"/>
+            </Style>
+            <Style x:Key="RoomsCountPill" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="#EEF2FC"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="Padding" Value="10,4"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- KPI tile chip -->
+            <Style x:Key="KpiIcon" TargetType="Border">
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="WidthRequest" Value="36"/>
+                <Setter Property="HeightRequest" Value="36"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="9"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="KpiLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="CharacterSpacing" Value="1"/>
+                <Setter Property="TextColor" Value="#1B2435"/>
+            </Style>
+            <Style x:Key="KpiValue" TargetType="Label">
+                <Setter Property="FontSize" Value="30"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="TextColor" Value="#0F172A"/>
+            </Style>
+            <Style x:Key="KpiCaption" TargetType="Label">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+                <Setter Property="TextColor" Value="#374151"/>
+            </Style>
+            <Style x:Key="KpiProgressBg" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="#E5EAF3"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="MinimumHeightRequest" Value="4"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="2"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ViewTogglePill" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Stroke" Value="#E2E8F2"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="Padding" Value="3,3"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Room cards -->
+            <Style x:Key="RoomCard" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="Stroke" Value="#EEF2F7"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="RoomCardTitle" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="TextColor" Value="#0F172A"/>
+            </Style>
+            <Style x:Key="RoomCardSubType" TargetType="Label">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="TextColor" Value="#1B2435"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+            </Style>
+            <Style x:Key="RoomCardEyebrow" TargetType="Label">
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="TextColor" Value="#1F2937"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="CharacterSpacing" Value="1"/>
+            </Style>
+            <Style x:Key="RoomCardBody" TargetType="Label">
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="VerticalTextAlignment" Value="End"/>
+                <Setter Property="TextColor" Value="#374151"/>
+            </Style>
+            <Style x:Key="RoomCardMuted" TargetType="Label">
+                <Setter Property="FontSize" Value="9"/>
+                <Setter Property="TextColor" Value="#374151"/>
+            </Style>
+            <Style x:Key="RoomPrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#4A43E6"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="Padding" Value="10,6"/>
+                <Setter Property="MinimumHeightRequest" Value="30"/>
+            </Style>
+            <Style x:Key="RoomSecondaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#F1F4FA"/>
+                <Setter Property="TextColor" Value="#1B2435"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="Padding" Value="10,6"/>
+                <Setter Property="MinimumHeightRequest" Value="30"/>
+            </Style>
+            <Style x:Key="RoomDangerButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#E9446B"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="Padding" Value="10,6"/>
+                <Setter Property="MinimumHeightRequest" Value="30"/>
+            </Style>
+            <Style x:Key="RoomDarkButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#0F172A"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="OpenSansSemibold"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="Padding" Value="10,6"/>
+                <Setter Property="MinimumHeightRequest" Value="30"/>
+            </Style>
+            <Style x:Key="AvatarBox" TargetType="Border">
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="BackgroundColor" Value="#F1ECFE"/>
+                <Setter Property="WidthRequest" Value="22"/>
+                <Setter Property="HeightRequest" Value="22"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="4"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="GuestFlag" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="#FDE7EE"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="Padding" Value="8,6"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="TurnoverCard" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="#FCEEDB"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="Padding" Value="8,4"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="6"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="StatusPill" TargetType="Border">
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="Padding" Value="7,3"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
+            </Style>
+
+            <Style x:Key="RoomHeroBg" TargetType="Border">
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="HeightRequest" Value="100"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="10,10,0,0"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- DataGrid styling (matches dashboard / bookings) -->
+            <syncfusion:DataGridStyle x:Key="RoomsTableStyle"
+                                      RowBackground="#FFFFFF"
+                                      AlternateRowBackground="#EEF2FC"
+                                      HeaderRowBackground="#EEF2FC"
+                                      HeaderRowTextColor="#1B2435"
+                                      HeaderRowFontSize="11"
+                                      HeaderRowFontFamily="OpenSansSemibold"
+                                      RowTextColor="#1B2435"
+                                      GridLineColor="#C7D0E2"
+                                      GridLineStrokeThickness="1"
+                                      HeaderGridLineColor="#A8B5CC"
+                                      HeaderGridLineStrokeThickness="1" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="252,*">
+        <controls:AppSidebar Grid.Column="0" ActiveTab="Rooms" />
+
+        <ScrollView Grid.Column="1" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Padding="24,14" Spacing="22">
+
+                <!-- ============== HEADER ============== -->
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto" RowSpacing="2">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Rooms" Style="{StaticResource RoomsPageTitle}"/>
+                    <Border Grid.Row="0" Grid.Column="1" Margin="0,5,0,0"
+                            Style="{StaticResource RoomsCountPill}"
+                            VerticalOptions="Center" HorizontalOptions="Start">
+                        <Label Text="{Binding TotalRooms, StringFormat='{0} Total Units'}"
+                               FontSize="9" FontFamily="OpenSansSemibold" TextColor="#3A4658"/>
+                    </Border>
+                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                           Text="Monitor real-time room status, housekeeping turnarounds, guest assignments, and live engineering tickets."
+                           Style="{StaticResource RoomsPageSubtitle}"/>
+                </Grid>
+
+                <!-- ============== SEARCH + VIEW TOGGLE ROW ============== -->
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14" Margin="0,2,0,0">
+
+                    <Border Grid.Column="0"
+                                    BackgroundColor="#F1F4FA"
+                                    StrokeThickness="0.25"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="10,0"
+                                    WidthRequest="320"
+                                    HeightRequest="32"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Center">
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      ColumnSpacing="8"
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="Fill">
+                                    <Label Grid.Column="0"
+                                           Text="&#xe715;"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="#3A4658"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <controls:SfEntry x:Name="RoomsSearchEntry"
+                                                      Grid.Column="1"
+                                                      Placeholder="Filter by guest name or room..."
+                                                      PlaceholderColor="#9AA3B7"
+                                                      FontFamily="OpenSansRegular"
+                                                      FontSize="11"
+                                                      TextColor="#1B2435"
+                                                      BackgroundColor="Transparent"
+                                                      IsTextPredictionEnabled="False"
+                                                      IsSpellCheckEnabled="False"
+                                                      VerticalOptions="Center"
+                                                      HorizontalOptions="Fill"
+                                                      Margin="0"
+                                                      Text="{Binding SearchText, Mode=TwoWay}"
+                                                      TextChanged="OnRoomsSearchTextChanged" />
+                                    <Label x:Name="RoomsSearchClear"
+                                           Grid.Column="2"
+                                           Text="&#xe5cd;"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="#3A4658"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           IsVisible="False">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnRoomsSearchClearTapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource ViewTogglePill}">
+                        <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="0">
+                            <Border Grid.Column="0" Padding="10,4"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 6">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SetActiveViewCommand}" CommandParameter="Grid" />
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ActiveView}" Value="Grid">
+                                        <Setter Property="BackgroundColor" Value="#EEF2FC"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ActiveView}" Value="Table">
+                                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Image Source="grid.png" HeightRequest="12" WidthRequest="12"/>
+                                    <Label Text="Grid" FontSize="9" FontFamily="OpenSansSemibold"
+                                           TextColor="#17243A" VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                            </Border>
+                            <Border Grid.Column="1" Padding="10,4"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 6">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SetActiveViewCommand}" CommandParameter="Table" />
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ActiveView}" Value="Grid">
+                                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ActiveView}" Value="Table">
+                                        <Setter Property="BackgroundColor" Value="#EEF2FC"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Image Source="table.png" HeightRequest="12" WidthRequest="12"/>
+                                    <Label Text="Table" FontSize="9" FontFamily="OpenSansSemibold"
+                                           TextColor="#17243A" VerticalTextAlignment="Center"/>
+                                </HorizontalStackLayout>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- ============== FLOOR + STATUS CHIPS (single shared row) ============== -->
+                <Grid ColumnDefinitions="Auto, Auto,Auto"
+                      ColumnSpacing="14"
+                      HorizontalOptions="Fill"
+                      VerticalOptions="Center">
+
+                    <!-- ============== FLOOR CHIPS ============== -->
+                    <toolkit:SfChipGroup Grid.Column="0"
+                                         ItemsSource="{Binding FloorFilters}"
+                                         DisplayMemberPath="Display"
+                                         ChipType="Choice"
+                                         ChoiceMode="Single"
+                                         SelectedItem="{Binding SelectedFloorFilter, Mode=TwoWay}"
+                                         ChipBackground="White"
+                                         ChipStroke="#E2E8F2"
+                                         ChipStrokeThickness="1"
+                                         SelectedChipBackground="#17243A"
+                                         SelectedChipTextColor="White"
+                                         ChipTextColor="#3A4658"
+                                         ChipFontFamily="OpenSansSemibold"
+                                         ChipTextSize="9"
+                                         ChipPadding="5,0"
+                                         HorizontalOptions="Start"
+                                         VerticalOptions="Center">
+                        <toolkit:SfChipGroup.ChipLayout>
+                            <FlexLayout HorizontalOptions="Start"
+                                        VerticalOptions="Center"
+                                        Wrap="NoWrap"
+                                        Direction="Row" />
+                        </toolkit:SfChipGroup.ChipLayout>
+                    </toolkit:SfChipGroup>
+
+                    <Label Grid.Column="1" Text="|" TextColor="#17243A"/>
+                    
+                    <!-- ============== STATUS CHIPS ============== -->
+                    <toolkit:SfChipGroup Grid.Column="1"
+                                         Margin="20,0,0,0"
+                                         ItemsSource="{Binding StatusFilters}"
+                                         DisplayMemberPath="Display"
+                                         ChipType="Choice"
+                                         ChoiceMode="Single"
+                                         SelectedItem="{Binding SelectedStatusFilter, Mode=TwoWay}"
+                                         ChipBackground="White"
+                                         ChipStroke="#E2E8F2"
+                                         ChipStrokeThickness="1"
+                                         SelectedChipBackground="#17243A"
+                                         SelectedChipTextColor="White"
+                                         ChipTextColor="#3A4658"
+                                         ChipFontFamily="OpenSansSemibold"
+                                         ChipTextSize="9"
+                                         ChipPadding="5,0"
+                                         HorizontalOptions="Start"
+                                         VerticalOptions="Center">
+                        <toolkit:SfChipGroup.ChipLayout>
+                            <FlexLayout HorizontalOptions="Start"
+                                        VerticalOptions="Center"
+                                        Wrap="NoWrap"
+                                        Direction="Row" />
+                        </toolkit:SfChipGroup.ChipLayout>
+                    </toolkit:SfChipGroup>
+                </Grid>
+
+                <!-- ============== GRID VIEW (Cards) ============== -->
+                <list:SfListView x:Name="RoomsGridList"
+                                 ItemsSource="{Binding FilteredRooms}"
+                                 SelectionMode="None"
+                                 AutoFitMode="Height"
+                                 IsScrollingEnabled="False"
+                                 ItemSpacing="16"
+                                 IsVisible="{Binding IsGridView}">
+                    <list:SfListView.ItemsLayout>
+                        <list:GridLayout SpanCount="3" />
+                    </list:SfListView.ItemsLayout>
+                    <list:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                            <Border Style="{StaticResource RoomCard}">
+                                <VerticalStackLayout Spacing="0">
+
+                                    <!-- Hero image -->
+                                    <Grid>
+                                        <Border Style="{StaticResource RoomHeroBg}"
+                                                BackgroundColor="{Binding Status, Converter={StaticResource StatusBg}}">
+                                            <Image Source="{Binding PhotoSource}"
+                                                   Aspect="AspectFill"
+                                                   HeightRequest="100"
+                                                   VerticalOptions="Fill"
+                                                   HorizontalOptions="Fill"/>
+                                        </Border>
+
+                                        <Border Style="{StaticResource StatusPill}"
+                                                BackgroundColor="{Binding Status, Converter={StaticResource StatusBg}}"
+                                                HorizontalOptions="End" VerticalOptions="Start"
+                                                Margin="0,8,8,0">
+                                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                <Ellipse WidthRequest="5" HeightRequest="5"
+                                                         Fill="{Binding Status, Converter={StaticResource RoomStatusColor}}"
+                                                         VerticalOptions="Center"/>
+                                                <Label Text="{Binding Status}" FontSize="8"
+                                                       FontFamily="OpenSansSemibold" TextColor="#3A4658"
+                                                       VerticalTextAlignment="Center"/>
+                                            </HorizontalStackLayout>
+                                        </Border>
+                                    </Grid>
+
+                                    <VerticalStackLayout Spacing="8" Padding="14,12">
+
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="0">
+                                                <Label Text="{Binding Number, StringFormat='Room No: {0}'}" Style="{StaticResource RoomCardTitle}"/>
+                                                <HorizontalStackLayout Spacing="3" Margin="0,2,0,0">
+                                                    <Label Text="Floor No:" FontSize="9" TextColor="#3A4658"/>
+                                                    <Label Text="{Binding Floor}" FontSize="9" TextColor="#3A4658"/>
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Grid>
+
+                                        <Label Text="{Binding Type}" Style="{StaticResource RoomCardSubType}"/>
+
+                                        <!-- AVAILABLE -->
+                                        <VerticalStackLayout Spacing="6"
+                                            IsVisible="{Binding Status, Converter={StaticResource StatusEquals}, ConverterParameter=Available}">
+                                            <Label Text="{Binding AmenitiesLine}" Style="{StaticResource RoomCardBody}"/>
+                                            <HorizontalStackLayout Spacing="6" Margin="0,2,0,0">
+                                                <Label Text="{Binding RateLabel}"
+                                                       FontFamily="OpenSansSemibold" FontSize="13"
+                                                       TextColor="#17243A"/>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <!-- OCCUPIED -->
+                                        <VerticalStackLayout Spacing="6"
+                                            IsVisible="{Binding Status, Converter={StaticResource StatusEquals}, ConverterParameter=Occupied}">
+                                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                <Border Style="{StaticResource AvatarBox}">
+                                                    <Label Text="{Binding GuestInitials}" FontSize="9"
+                                                           FontFamily="OpenSansSemibold"
+                                                           TextColor="#5146E5"
+                                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                </Border>
+                                                <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                                    <Label Text="{Binding GuestName}" FontSize="10"
+                                                           FontFamily="OpenSansSemibold" TextColor="#17243A"/>
+                                                    <Label Text="{Binding CheckInRange}" Style="{StaticResource RoomCardMuted}"/>
+                                                </VerticalStackLayout>
+                                            </HorizontalStackLayout>
+
+                                            <Grid ColumnDefinitions="*,*" ColumnSpacing="6">
+                                                <HorizontalStackLayout Grid.Column="0" Spacing="0">
+                                                    <Label Text="Check-out :" Style="{StaticResource RoomCardEyebrow}"/>
+                                                    <Label Text="{Binding CheckInDayName, StringFormat='{}{0:MMM dd, yyyy}'}" FontSize="10"
+                                                           FontFamily="OpenSansSemibold" TextColor="#17243A"/>
+                                                </HorizontalStackLayout>
+                                                <HorizontalStackLayout Grid.Column="1" Spacing="0">
+                                                    <Label Text="Duration :" Style="{StaticResource RoomCardEyebrow}"/>
+                                                    <Label Text="{Binding CheckInTime, StringFormat='{0} hours'}" Style="{StaticResource RoomCardBody}"/>
+                                                </HorizontalStackLayout>
+                                            </Grid>
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout Spacing="6"
+                                            IsVisible="{Binding Status, Converter={StaticResource StatusEquals}, ConverterParameter=Cleaning}">
+                                            <VerticalStackLayout Spacing="0">
+                                                <Label Text="CHECKOUT" Style="{StaticResource RoomCardEyebrow}"/>
+                                                <HorizontalStackLayout Spacing="4">
+                                                    <Label Text="{Binding CheckInDayName}" FontSize="10"
+                                                           FontFamily="OpenSansSemibold" TextColor="#17243A"/>
+                                                    <Label Text="@" FontSize="10" TextColor="#17243A"/>
+                                                    <Label Text="{Binding CheckInTime}" FontSize="10" TextColor="#17243A"/>
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                            <Border Style="{StaticResource TurnoverCard}">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                                        <Label Text="IN TURNOVER"
+                                                               FontSize="8" FontFamily="OpenSansSemibold"
+                                                               TextColor="#7A4408"/>
+                                                    </VerticalStackLayout>
+                                                    <ProgressBar Progress="0.6" HeightRequest="3"
+                                                                 ProgressColor="#F2A33C"
+                                                                 BackgroundColor="#FCEEDB"
+                                                                 VerticalOptions="Center" WidthRequest="60"/>
+                                                    <Label Text="60%"
+                                                           FontSize="10" FontFamily="OpenSansSemibold"
+                                                           TextColor="#9A6412"
+                                                           VerticalOptions="Center"/>
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                            <Label Text="HOUSEKEEPING STATUS" Style="{StaticResource RoomCardEyebrow}"/>
+                                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                <Label Text="Inspected &amp; Sanitized" Style="{StaticResource RoomCardBody}"/>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <!-- RESERVED -->
+                                        <VerticalStackLayout Spacing="6"
+                                            IsVisible="{Binding Status, Converter={StaticResource StatusEquals}, ConverterParameter=Reserved}">
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <HorizontalStackLayout Spacing="6">
+                                                    <Border Style="{StaticResource AvatarBox}">
+                                                        <Label Text="{Binding GuestInitials}" FontSize="9"
+                                                               FontFamily="OpenSansSemibold" TextColor="#1F8FA8"
+                                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                    </Border>
+                                                    <VerticalStackLayout Spacing="0">
+                                                        <Label Text="{Binding GuestName}" FontSize="10"
+                                                               FontFamily="OpenSansSemibold" TextColor="#17243A"/>
+                                                        <Label Text="{Binding PartyLabel}" Style="{StaticResource RoomCardMuted}"/>
+                                                    </VerticalStackLayout>
+                                                </HorizontalStackLayout>
+                                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                    <Label Text="Expected Arrival" Style="{StaticResource RoomCardEyebrow}"/>
+                                                    <Label Text="Today, 3:00 PM" Style="{StaticResource RoomCardBody}"/>
+                                                </VerticalStackLayout>
+                                            </Grid>
+                                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                <Border BackgroundColor="#E6F2F6" StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 6" Padding="6,1">
+                                                    <Label Text="Ready for Check-in"
+                                                           FontSize="7" FontFamily="OpenSansSemibold"
+                                                           TextColor="#1F8FA8"/>
+                                                </Border>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <!-- MAINTENANCE -->
+                                        <VerticalStackLayout Spacing="6"
+                                            IsVisible="{Binding Status, Converter={StaticResource StatusEquals}, ConverterParameter=Maintenance}">
+                                            <Label Text="{Binding ReportedBy}" FontSize="10"
+                                                   FontFamily="OpenSansSemibold" TextColor="#7F1F37"/>
+                                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                <Label Text="{Binding Technician}"
+                                                       Style="{StaticResource RoomCardMuted}"/>
+                                            </HorizontalStackLayout>
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                                                <Label Grid.Column="0" Text="{Binding EstimatedCompletion, StringFormat='Est. {0}'}"
+                                                       FontSize="9" FontFamily="OpenSansSemibold" TextColor="#3A4658"/>
+                                                <Label Grid.Column="1" Text="Downtime: 1 hr left"
+                                                       Style="{StaticResource RoomCardMuted}"/>
+                                            </Grid>
+                                        </VerticalStackLayout>
+
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </list:SfListView.ItemTemplate>
+                </list:SfListView>
+
+                <!-- ============== TABLE VIEW (DataGrid) ============== -->
+                <Border IsVisible="{Binding IsTableView}"
+                        BackgroundColor="White"
+                        Stroke="#EEF2F7"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 10"
+                        Padding="0">
+
+                    <VerticalStackLayout Spacing="0">
+
+                        <Grid Padding="14,12" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="0">
+                                <Label Text="Room Inventory"
+                                       FontSize="13" FontFamily="OpenSansSemibold" TextColor="#17243A"/>
+                                <Label Text="{Binding VisibleCountLabel}"
+                                       FontSize="9" TextColor="#3A4658"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <syncfusion:SfDataGrid x:Name="RoomsTable"
+                                               ItemsSource="{Binding TableRooms}"
+                                               AutoGenerateColumnsMode="None"
+                                               DefaultStyle="{StaticResource RoomsTableStyle}"
+                                               HeaderRowHeight="32"
+                                               Margin="14,0,0,15"
+                                               InputTransparent="True"
+                                               RowHeight="56"
+                                               HorizontalOptions="Fill"
+                                               VerticalOptions="Fill"
+                                               HeightRequest="{Binding GridHeight}"
+                                               SelectionMode="Single"
+                                               ShowRowHeader="False"
+                                               VerticalScrollBarVisibility="Never"
+                                               HorizontalScrollBarVisibility="Never">
+
+                            <syncfusion:SfDataGrid.Columns>
+
+                                <!-- 1) ROOM  (# + type + thumb) -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Number"
+                                                                   HeaderText="ROOM"
+                                                                   Width="160">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                                            <Grid ColumnDefinitions="44,*" ColumnSpacing="10" Padding="4,0" Margin="20,0,0,0" VerticalOptions="Center" HorizontalOptions="Start">
+                                                <Border Grid.Column="0" WidthRequest="44" HeightRequest="44"
+                                                        StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                                                    <Image Source="{Binding PhotoSource}"
+                                                           Aspect="AspectFill"
+                                                           VerticalOptions="Fill" HorizontalOptions="Fill"/>
+                                                </Border>
+                                                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                                    <Label Text="{Binding Number, StringFormat='#{0}'}"
+                                                           FontSize="10" FontFamily="OpenSansSemibold" TextColor="#1B2435" />
+                                                    <Label Text="{Binding Type}"
+                                                           FontSize="9" TextColor="#3A4658" LineBreakMode="TailTruncation" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 2) FLOOR -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Floor"
+                                                                   HeaderText="Floor"
+                                                                   HeaderTextAlignment="Center"
+                                                                   CellTextAlignment="Center"
+                                                                   Width="120" >
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                                            <Label Text="{Binding Floor, StringFormat='Floor: {0}'}" FontSize="11" FontFamily="OpenSansSemibold" VerticalTextAlignment="Center" HorizontalOptions="Center" TextColor="#1B2435" />
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 3) GUEST -->
+                                <syncfusion:DataGridTemplateColumn MappingName="GuestName"
+                                                                   HeaderText="Guest Name"
+                                                                   Width="120">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                                            <Grid ColumnDefinitions="*" ColumnSpacing="8" Padding="4,0" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <VerticalStackLayout Spacing="1" VerticalOptions="Center" HorizontalOptions="Center">
+                                                    <Label Text="{Binding GuestName}"
+                                                           FontSize="11" FontFamily="OpenSansSemibold" VerticalTextAlignment="End" TextColor="#1B2435" />
+                                                    <Label Text="-" IsVisible="{Binding IsGuestAssigned}" FontSize="16" TextColor="#3A4658" HorizontalOptions="Start" VerticalTextAlignment="Start"
+                                                           LineBreakMode="TailTruncation" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 4) STATUS (pill) -->
+                                <syncfusion:DataGridTemplateColumn MappingName="Status"
+                                                                   HeaderText="Status"
+                                                                   Width="100">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                                            <Border BackgroundColor="{Binding Status, Converter={StaticResource StatusBg}}"
+                                                    StrokeThickness="0" StrokeShape="RoundRectangle 10"
+                                                    Padding="8,3" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                    <Ellipse Fill="{Binding Status, Converter={StaticResource RoomStatusColor}}"
+                                                             WidthRequest="5" HeightRequest="5" VerticalOptions="Center" />
+                                                    <Label Text="{Binding Status}"
+                                                           FontSize="9" FontAttributes="Bold" TextColor="#1B2435"
+                                                           VerticalTextAlignment="Center" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 5) PRICE -->
+                                <syncfusion:DataGridTemplateColumn MappingName="RateLabel"
+                                                                   HeaderText="Price"
+                                                                   Width="80">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                                            <Label Text="{Binding RateLabel}"
+                                                   FontSize="10" FontFamily="OpenSansSemibold" TextColor="#1B2435"
+                                                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 6) CHECK-IN -->
+                                <syncfusion:DataGridTemplateColumn MappingName="CheckInDayName"
+                                                                   HeaderText="Check-in"
+                                                                   Width="100">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                                            <VerticalStackLayout Spacing="0" Margin="20,0,0,0" VerticalOptions="Center" HorizontalOptions="Start">
+                                                <Label Text="{Binding CheckInDayName}"
+                                                       FontSize="10" FontFamily="OpenSansSemibold" TextColor="#1B2435" />
+                                                <Label Text="{Binding CheckInRange}"
+                                                       FontSize="9" TextColor="#3A4658" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                                <!-- 7) AMENITIES -->
+                                <syncfusion:DataGridTemplateColumn MappingName="AmenitiesLine"
+                                                                   HeaderText="Amenities"
+                                                                   Width="280">
+                                    <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:RoomDetailsModel">
+                                            <Label Text="{Binding AmenitiesLine}"
+                                                   FontSize="9" TextColor="#1B2435"
+                                                   Margin="20,0,0,0"
+                                                   VerticalTextAlignment="Center"
+                                                   HorizontalTextAlignment="Start"
+                                                   LineBreakMode="TailTruncation" />
+                                        </DataTemplate>
+                                    </syncfusion:DataGridTemplateColumn.CellTemplate>
+                                </syncfusion:DataGridTemplateColumn>
+
+                            </syncfusion:SfDataGrid.Columns>
+
+                        </syncfusion:SfDataGrid>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
