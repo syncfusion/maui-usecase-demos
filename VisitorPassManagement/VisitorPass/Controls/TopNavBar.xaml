@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:VisitorPass.Controls;assembly=VisitorPass"
+             x:Class="VisitorPass.Controls.TopNavBar">
+
+    <Grid ColumnDefinitions="Auto,*,Auto"
+          ColumnSpacing="12"
+          Padding="0">
+
+        <VerticalStackLayout Grid.Column="0"
+                             Spacing="0"
+                             VerticalOptions="Center"
+                             IsVisible="{Binding ShowTitle, Source={RelativeSource AncestorType={x:Type ContentView}}}">
+            <Label Text="{Binding Title, Source={RelativeSource AncestorType={x:Type ContentView}}}"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="22"
+                   TextColor="{StaticResource TextPrimary}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Column="1"
+              ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="12"
+              VerticalOptions="Center">
+
+            <Border Grid.Column="0"
+                    BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Border}"
+                    StrokeThickness="1"
+                    Padding="14,8"
+                    StrokeShape="RoundRectangle 14"
+                    VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="8">
+                    <Image Source="calender.png" HeightRequest="14" WidthRequest="14" />
+                    <Label Text="{Binding CurrentDate, Source={RelativeSource AncestorType={x:Type ContentView}}, StringFormat='{0:dddd, MMM dd, yyyy}'}"
+                           FontSize="14"
+                           TextColor="{StaticResource TextPrimary}"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <Border Grid.Column="1"
+                    BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Border}"
+                    Margin="0,4,0,0"
+                    HeightRequest="40"
+                    StrokeThickness="1"
+                    Padding="8,0"
+                    StrokeShape="RoundRectangle 14"
+                    VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                    <Label Text="{x:Static controls:IconKeys.Search}"
+                           FontFamily="MauiMaterialAssets"
+                           FontSize="14"
+                           TextColor="{StaticResource TextMuted}"
+                           VerticalOptions="Center" />
+                    <controls:SfEntry Placeholder="Quick search badges, guests.. "
+                                      Text="{Binding SearchText}"
+                                      FontFamily="OpenSansRegular"
+                                      FontSize="13"
+                                      TextColor="{StaticResource TextPrimary}"
+                                      PlaceholderColor="{StaticResource TextMuted}"
+                                      HorizontalOptions="Fill"
+                                      BackgroundColor="Transparent"
+                                      VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <Grid Grid.Column="2"
+                  ColumnDefinitions="Auto,Auto"
+                  ColumnSpacing="12"
+                  HorizontalOptions="End"
+                  VerticalOptions="Center">
+
+                <HorizontalStackLayout Grid.Column="1"
+                                       Spacing="10"
+                                       VerticalOptions="Center">
+                    <VerticalStackLayout Spacing="0"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="End">
+                        <Label Text="Sarah Jenkins"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="14"
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalTextAlignment="End" />
+                        <Label Text="Facility Admin"
+                               FontFamily="OpenSansRegular"
+                               FontSize="11"
+                               TextColor="{StaticResource TextSecondary}"
+                               HorizontalTextAlignment="End" />
+                    </VerticalStackLayout>
+
+                    <Border WidthRequest="40"
+                            HeightRequest="40"
+                            BackgroundColor="{StaticResource Primary}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 20">
+                        <Label Text="{x:Static controls:IconKeys.Person}"
+                               FontFamily="MaterialAssets"
+                               TextColor="{StaticResource White}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentView>

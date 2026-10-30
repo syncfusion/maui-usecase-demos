@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             x:Class="VisitorPass.Controls.VisitorStatusBadge">
+    
+    <core:SfBadgeView x:Name="Badge"
+                      HeightRequest="30"
+                      WidthRequest="90"
+                      HorizontalOptions="Center"
+                      VerticalOptions="Center">
+        <core:SfBadgeView.Content>
+            <Grid>
+                 <!--Desktop / Tablet: full label.--> 
+                <Label Text="{Binding Status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToDisplayLabelConverter}}"
+                   TextColor="{StaticResource TextSecondary}"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="11"
+                   VerticalTextAlignment="Center"
+                   HorizontalTextAlignment="Center"
+                   IsVisible="{OnIdiom Phone=False, Default=True}" />
+                 <!--Phone: compact label.--> 
+                <Label Text="{Binding Status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToShortLabelConverter}}"
+                       TextColor="{StaticResource TextSecondary}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="11"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="{OnIdiom Phone=True, Default=False}" />
+            </Grid>
+        </core:SfBadgeView.Content>
+    </core:SfBadgeView>
+
+    <!--<Border Padding="10,4"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 16"
+            BackgroundColor="{Binding BackgroundBrushKey}">
+
+        <HorizontalStackLayout Spacing="6">
+
+            <Label Text="{Binding BrushKey, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToDisplayLabelConverter}}"
+                   FontFamily="MauiMaterialAssets"
+                   FontSize="12"
+                   TextColor="{Binding BrushKey}"
+                   VerticalOptions="Center"/>
+
+            <Label Text="{Binding status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToDisplayLabelConverter}}"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="11"
+                   TextColor="{Binding BrushKey}"
+                   VerticalOptions="Center"/>
+
+        </HorizontalStackLayout>
+
+    </Border>-->
+</ContentView>

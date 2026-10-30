@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ============================================================
+         Base / per-idiom styles (HARNESS §7).
+
+         Per-idiom patterns:
+         1. Define two named styles (e.g. PagePaddingDesktop +
+            PagePaddingMobile) that share key properties (Background)
+            but differ in Padding.
+         2. Page set its Padding via an `OnIdiom` markup expression
+            inline; this is cheaper for one-off cases. Use named
+            styles for values reused across more than one page.
+
+         Page-level Padding is also handled directly by `OnIdiom` on
+         the page root in VP-041 (Dashboard XAML), so the named
+         styles below are wired up but optional.
+         ============================================================ -->
+
+    <!-- =========================================================
+         1. Page padding styles (HARNESS §7 decision matrix)
+         ========================================================= -->
+    <Style x:Key="PagePaddingDesktop" TargetType="ContentPage">
+        <Setter Property="Padding" Value="24,0,24,28" />
+    </Style>
+
+    <Style x:Key="PagePaddingMobile" TargetType="ContentPage">
+        <Setter Property="Padding" Value="14,8,14,14" />
+    </Style>
+
+    <!-- =========================================================
+         2. Section spacing styles
+         ========================================================= -->
+    <Style x:Key="SectionSpacingDesktop" TargetType="VerticalStackLayout">
+        <Setter Property="Spacing" Value="18" />
+    </Style>
+
+    <Style x:Key="SectionSpacingMobile" TargetType="VerticalStackLayout">
+        <Setter Property="Spacing" Value="14" />
+    </Style>
+
+    <!-- =========================================================
+         3. Font-size styles (named so per-idiom consumers can
+            pick the right one without inline OnIdiom)
+         ========================================================= -->
+    <Style x:Key="FontSizeBodyDesktop" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style x:Key="FontSizeBodyMobile" TargetType="Label">
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style x:Key="FontSizeHeading" TargetType="Label">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+    </Style>
+
+    <Style x:Key="FontSizeEyebrow" TargetType="Label">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+        <Setter Property="CharacterSpacing" Value="1.0" />
+    </Style>
+
+    <Style x:Key="KpiValue" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <!-- =========================================================
+         4. Headline / SubHeadline (kept from VP-001 skeleton).
+         ========================================================= -->
+    <Style x:Key="Headline" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="32" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
+
+    <Style x:Key="SubHeadline" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+    </Style>
+
+    <!-- =========================================================
+         5. Implicit base styles (apply to all instances of the
+            control type) — kept small and theme-aware.
+         ========================================================= -->
+    <Style TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style TargetType="Page" ApplyToDerivedTypes="True">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+    </Style>
+
+    <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+        <Setter Property="Shell.NavBarIsVisible" Value="False" />
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="14,10" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="MinimumWidthRequest" Value="44" />
+    </Style>
+
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style TargetType="Border">
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+    </Style>
+
+    <!-- =========================================================
+         6. ActivityIndicator, BoxView, ScrollView defaults.
+         ========================================================= -->
+    <Style TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{StaticResource Primary}" />
+    </Style>
+
+    <Style TargetType="ScrollView">
+        <Setter Property="VerticalScrollBarVisibility" Value="Never" />
+    </Style>
+
+</ResourceDictionary>

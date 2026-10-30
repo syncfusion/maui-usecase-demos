@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    PageHeaderStrip - the blue-tinted info strip rendered at the
+    very top of the content area on every page (Dashboard /
+    Directory / VisitorDetails).
+
+    Matches the design:
+      [Location chip] [date]   [search badges cluster]   [bell] [user]
+-->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:VisitorPass.Controls;assembly=VisitorPass"
+             x:Class="VisitorPass.Controls.PageHeaderStrip">
+
+    <Border BackgroundColor="{StaticResource PrimaryLight}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 10"
+            Padding="16,10"
+            Margin="0,0,0,4">
+        <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto"
+              ColumnSpacing="12"
+              VerticalOptions="Center">
+
+            <!-- Location chip -->
+            <HorizontalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                <Label Text="{x:Static controls:IconKeys.Place}"
+                       FontFamily="MauiMaterialAssets"
+                       FontSize="14"
+                       TextColor="{StaticResource Primary}"
+                       VerticalOptions="Center" />
+                <Label Text="Central Office"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="11"
+                       TextColor="{StaticResource PrimaryDark}"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- Date -->
+            <Label Grid.Column="1"
+                   Text="Tue, Oct 21"
+                   FontFamily="OpenSansRegular"
+                   FontSize="11"
+                   TextColor="{StaticResource TextSecondary}"
+                   VerticalOptions="Center" />
+
+            <!-- Spacer -->
+            <BoxView Grid.Column="2"
+                     WidthRequest="0"
+                     HeightRequest="0" />
+
+            <!-- Notification bell -->
+            <Border Grid.Column="3"
+                    BackgroundColor="{StaticResource Surface}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 14"
+                    WidthRequest="28" HeightRequest="28"
+                    VerticalOptions="Center">
+                <Label Text="{x:Static controls:IconKeys.Notifications}"
+                       FontFamily="MauiMaterialAssets"
+                       FontSize="14"
+                       TextColor="{StaticResource TextSecondary}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <!-- User pill -->
+            <Border Grid.Column="4"
+                    BackgroundColor="{StaticResource Primary}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 14"
+                    HeightRequest="28"
+                    Padding="6,0,10,0"
+                    VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="6">
+                    <Border BackgroundColor="{StaticResource PrimaryDark}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 11"
+                            WidthRequest="22" HeightRequest="22"
+                            VerticalOptions="Center">
+                        <Label Text="A"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="10"
+                               TextColor="{StaticResource White}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="Anandh"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="11"
+                           TextColor="{StaticResource White}"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+        </Grid>
+    </Border>
+</ContentView>

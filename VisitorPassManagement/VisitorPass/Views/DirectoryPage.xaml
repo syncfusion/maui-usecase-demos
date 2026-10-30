@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Phase 5 — Directory (Screen 2, single page).
+
+    Hosts everything the Directory screen shows in one ContentPage:
+    TopNavBar (no Register trigger — Dashboard owns that), a live
+    search Entry, a horizontal CollectionView of status filter chips
+    (Border-based, using the VP-003 FilterChip style), the visitor
+    SfDataGrid, and an EmptyState placeholder for "no matches".
+
+    Per HARNESS §7, layout differences between desktop / tablet and
+    phone are expressed via OnIdiom — never via parallel DesktopUI /
+    MobileUI folders.
+
+    Why a CollectionView of Borders instead of SfChipGroup:
+      The Syncfusion toolkit ships SfChipGroup but the
+      SfChipStyles class doesn't expose visual setters in this
+      release. The VP-003 FilterChip Border style is already wired
+      into the theme palette and matches the in-repo reference
+      patterns; using it here keeps one styling model across the
+      whole app.
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:VisitorPass.ViewModels;assembly=VisitorPass"
+             xmlns:models="clr-namespace:VisitorPass.Models;assembly=VisitorPass"
+             xmlns:controls="clr-namespace:VisitorPass.Controls;assembly=VisitorPass"
+             xmlns:sfgrid="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:barcode="clr-namespace:Syncfusion.Maui.Barcode;assembly=Syncfusion.Maui.Barcode"
+             xmlns:chip="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="VisitorPass.Views.DirectoryPage"
+             x:DataType="vm:DirectoryViewModel"
+             BackgroundColor="{StaticResource Surface}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!--
+                Directory DataGrid style — slightly heavier header
+                and row height than TodayGridStyle because the
+                directory's avatar + name + contact template needs
+                more vertical room than the dashboard's compact cells.
+            -->
+            <sfgrid:DataGridStyle x:Key="DirectoryGridStyle"
+                                  RowBackground="{StaticResource Surface}"
+                                  AlternateRowBackground="{StaticResource SurfaceAlt}"
+                                  HeaderRowBackground="{StaticResource SurfaceAlt}"
+                                  HeaderRowTextColor="{StaticResource TextMuted}"
+                                  HeaderRowFontSize="10"
+                                  HeaderRowFontFamily="OpenSansSemibold"
+                                  RowTextColor="{StaticResource TextPrimary}"
+                                  RowFontSize="11"
+                                  RowFontFamily="OpenSansRegular"
+                                  GridLineColor="{StaticResource Border}"
+                                  GridLineStrokeThickness="0.5" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!--
+        Root 2-column Grid: sidebar on the left (desktop / tablet
+        only), content on the right. Same idiom-switched
+        ColumnDefinitions as the Dashboard page.
+    -->
+    <ScrollView>
+        <Grid ColumnDefinitions="{OnIdiom Desktop='232,*', Phone='0,*'}"
+          ColumnSpacing="0">
+
+        <!-- Sidebar (desktop / tablet only) -->
+        <controls:SideNavigation Grid.Column="0"
+                                ActiveRoute="directory"
+                                IsVisible="{OnIdiom Phone=False, Default=True}" />
+
+        <!-- Content (always visible) -->
+        <Grid Grid.Column="1"
+              Padding="{OnIdiom Desktop='24,0,24,24', Phone='14,8,14,14'}"
+              RowSpacing="14"
+              RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+
+        <!-- ============================== -->
+        <!-- 1. Directory summary and search -->
+        <!-- ============================== -->
+        <VerticalStackLayout Grid.Row="0" Spacing="12">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <VerticalStackLayout Spacing="2">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="Visitor Directory"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="22"
+                               TextColor="{StaticResource TextPrimary}" />
+                        <Border BackgroundColor="{StaticResource PrimaryLight}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10"
+                                Padding="9,4"
+                                VerticalOptions="Center">
+                            <Label Text="{Binding FilteredVisitors.Count, StringFormat='{0} Records'}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="10"
+                                   TextColor="{StaticResource Primary}" />
+                        </Border>
+                    </HorizontalStackLayout>
+                    <Label Text="Search and filter every visit"
+                           FontSize="12"
+                           TextColor="{StaticResource TextSecondary}" />
+                </VerticalStackLayout>
+                <Grid Grid.Column="2" />
+            </Grid>
+
+                    <Grid ColumnDefinitions="{OnIdiom Desktop='*,*,*,*,*,*', Phone='*,*'}"
+                          RowDefinitions="{OnIdiom Desktop='Auto', Phone='Auto,Auto,Auto'}"
+                          ColumnSpacing="8"
+                          RowSpacing="8">
+
+                        <!-- Total Records -->
+                        <Border Grid.Row="0"
+                                Grid.Column="0"
+                                BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,8">
+
+                            <Grid ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+
+                                <Ellipse WidthRequest="8"
+                                         HeightRequest="8"
+                                         Fill="#2563EB"
+                                         VerticalOptions="Center"/>
+
+                                <Label Text="Total Records"
+                                       Grid.Column="1"
+                                       Style="{StaticResource SectionEyebrow}"
+                                       VerticalOptions="Center"/>
+
+                                <Label Text="{Binding TotalVisitors}"
+                                       FontSize="16"
+                                       Grid.Column="2"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="End"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       Margin="8,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Checked In -->
+                        <Border Grid.Row="0"
+                                Grid.Column="1"
+                                BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,8">
+
+                            <Grid ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+
+                                <Ellipse WidthRequest="8"
+                                         HeightRequest="8"
+                                         Fill="{StaticResource StatusCheckedIn}"
+                                         VerticalOptions="Center"/>
+
+                                <Label Text="Checked In"
+                                       Grid.Column="1"
+                                       VerticalOptions="Center"
+                                       Style="{StaticResource SectionEyebrow}"/>
+
+                                <Label Text="{Binding CheckedInVisitors}"
+                                       FontSize="16"
+                                       Grid.Column="2"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="End"
+                                       TextColor="{StaticResource StatusCheckedIn}"
+                                       Margin="8,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Expected -->
+                        <Border Grid.Row="0"
+                                Grid.Column="2"
+                                BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,8">
+
+                            <Grid ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+
+                                <Ellipse WidthRequest="8"
+                                         HeightRequest="8"
+                                         Fill="{StaticResource StatusExpected}"
+                                         VerticalOptions="Center"/>
+
+                                <Label Text="Expected"
+                                       VerticalOptions="Center"
+                                       Grid.Column="1"
+                                       Style="{StaticResource SectionEyebrow}"/>
+
+                                <Label Text="{Binding ExpectedVisitors}"
+                                       FontSize="16"
+                                       Grid.Column="2"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="End"
+                                       TextColor="{StaticResource StatusExpected}"
+                                       Margin="8,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Overdue Exit -->
+                        <Border Grid.Row="0"
+                                Grid.Column="3"
+                                BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,8">
+
+                            <Grid ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+
+                                <Ellipse WidthRequest="8"
+                                         HeightRequest="8"
+                                         Fill="{StaticResource StatusOverdue}"
+                                         VerticalOptions="Center"/>
+
+                                <Label Text="Overdue Exit"
+                                       Grid.Column="1"
+                                       VerticalOptions="Center"
+                                       Style="{StaticResource SectionEyebrow}"/>
+
+                                <Label Text="{Binding OverdueVisitors}"
+                                       FontSize="16"
+                                       Grid.Column="2"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="End"
+                                       TextColor="{StaticResource StatusOverdue}"
+                                       Margin="8,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Checked Out -->
+                        <Border Grid.Row="0"
+                                Grid.Column="4"
+                                BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,8">
+
+                            <Grid ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+
+                                <Ellipse WidthRequest="8"
+                                         HeightRequest="8"
+                                         Fill="#6B7280"
+                                         VerticalOptions="Center"/>
+
+                                <Label Text="Checked Out"
+                                       Grid.Column="1"
+                                       VerticalOptions="Center"
+                                       Style="{StaticResource SectionEyebrow}"/>
+
+                                <Label Text="{Binding CheckedOutVisitors}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       Grid.Column="2"
+                                       HorizontalOptions="End"
+                                       TextColor="#6B7280"
+                                       Margin="8,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Cancelled -->
+                        <Border Grid.Row="0"
+                                Grid.Column="5"
+                                BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,8">
+
+                            <Grid ColumnSpacing="8" ColumnDefinitions="Auto,*,Auto">
+
+                                <Ellipse WidthRequest="8"
+                                         HeightRequest="8"
+                                         Fill="{StaticResource StatusCancelled}"
+                                         VerticalOptions="Center"/>
+
+                                <Label Text="Cancelled"
+                                       Grid.Column="1"
+                                       VerticalOptions="Center"
+                                       Style="{StaticResource SectionEyebrow}"/>
+
+                                <Label Text="{Binding CancelledVisitors}"
+                                       FontSize="16"
+                                       Grid.Column="2"
+                                       FontAttributes="Bold"
+                                       HorizontalTextAlignment="End"
+                                       TextColor="{StaticResource StatusCancelled}"
+                                       Margin="8,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+
+        <Border BackgroundColor="{StaticResource Surface}"
+                StrokeThickness="1"
+                Stroke="{StaticResource Border}"
+                StrokeShape="RoundRectangle 12"
+                Padding="12,0"
+                HeightRequest="42">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <!-- Search glyph (Material Icons font). VP-104. -->
+                <Label Grid.Column="0"
+                       Text="{x:Static controls:IconKeys.Search}"
+                       FontFamily="MauiMaterialAssets"
+                       FontSize="14"
+                       TextColor="{StaticResource TextMuted}"
+                       VerticalOptions="Center" />
+                <controls:SfEntry Grid.Column="1"
+                                  Placeholder="Search by name, host, or pass id..."
+                                  PlaceholderColor="{StaticResource TextMuted}"
+                                  TextColor="{StaticResource TextPrimary}"
+                                  BackgroundColor="Transparent"
+                                  FontSize="13"
+                                  FontFamily="OpenSansRegular"
+                                  VerticalTextAlignment="Center"
+                                  Text="{Binding SearchText, Mode=TwoWay}" />
+            </Grid>
+            </Border>
+        </VerticalStackLayout>
+
+        <!-- ============================== -->
+        <!-- 2. Status filter chips         -->
+        <!--    Horizontal CollectionView   -->
+        <!--    of FilterChip Borders.      -->
+        <!--    Selection toggled via       -->
+        <!--    SelectStatusCommand.        -->
+        <!-- ============================== -->
+            <chip:SfChipGroup
+                    x:Name="StatusChipGroup"
+                    Grid.Row="1"
+                    ItemsSource="{Binding StatusFilters}"
+                    DisplayMemberPath="Label"
+                    ChipType="Choice"
+                    ChoiceMode="Single"
+                    ChipPadding="4,8"
+                    HorizontalOptions="Start"
+                    SelectionChanged="OnStatusChipSelectionChanged"
+                    x:DataType="vm:DirectoryViewModel">
+                <chip:SfChipGroup.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DirectoryViewModel+StatusFilter">
+                        <chip:SfChip Text="{Binding Label}">
+                            <chip:SfChip.Triggers>
+                                <DataTrigger TargetType="chip:SfChip"
+                                             Binding="{Binding IsSelected}"
+                                             Value="True">
+                                    <Setter Property="Background" Value="{StaticResource Primary}" />
+                                    <Setter Property="TextColor" Value="{StaticResource White}" />
+                                    <Setter Property="FontFamily" Value="OpenSansRegular" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="chip:SfChip"
+                                             Binding="{Binding IsSelected}"
+                                             Value="False">
+                                    <Setter Property="Background" Value="{StaticResource SurfaceAlt}" />
+                                    <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                                    <Setter Property="FontFamily" Value="OpenSansRegular" />
+                                </DataTrigger>
+                            </chip:SfChip.Triggers>
+                        </chip:SfChip>
+                    </DataTemplate>
+                </chip:SfChipGroup.ItemTemplate>
+            </chip:SfChipGroup>
+
+        <!-- ============================== -->
+        <!-- 3. SfDataGrid OR EmptyState    -->
+        <!-- ============================== -->
+            <Grid Grid.Row="2">
+
+                <!-- The data grid is the default. -->
+                <sfgrid:SfDataGrid x:Name="VisitorGrid"
+                                    ItemsSource="{Binding FilteredVisitors}"
+                                    AutoGenerateColumnsMode="None"
+                                    IsVisible="{OnIdiom Default=true, Phone=false}"
+                                    SelectionMode="Single"
+                                    ColumnWidthMode="Auto"
+                                    HeaderRowHeight="42"
+                                    RowHeight="56"
+                                    VerticalScrollBarVisibility="Never"
+                                    HorizontalScrollBarVisibility="Never"
+                                    HeightRequest="{Binding GridHeight}"
+                                    GridLinesVisibility="Horizontal"
+                                    DefaultStyle="{StaticResource DirectoryGridStyle}"
+                                    CellTapped="OnCellTapped">
+
+                    <sfgrid:SfDataGrid.Columns>
+
+                        <!-- Visitor: avatar + name + contact. -->
+                        <sfgrid:DataGridTemplateColumn HeaderText="Visitor"
+                                                MappingName="VisitorName"
+                                                HeaderTextAlignment="Center"
+                                                Width="200">
+                            <sfgrid:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:Visitor">
+                                    <Grid ColumnDefinitions="Auto,*"
+                                            ColumnSpacing="10"
+                                            Margin="30,0,0,0"
+                                            Padding="14,0,0,0"
+                                            VerticalOptions="Center">
+                                        <VerticalStackLayout Grid.Column="1"
+                                                        Spacing="1"
+                                                        VerticalOptions="Center">
+                                            <Label Text="{Binding VisitorName}"
+                                            FontFamily="OpenSansSemibold"
+                                            FontSize="12"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding ContactNumber}"
+                                            FontFamily="OpenSansRegular"
+                                            FontSize="10"
+                                            TextColor="{StaticResource TextMuted}"
+                                            LineBreakMode="TailTruncation" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </sfgrid:DataGridTemplateColumn.CellTemplate>
+                        </sfgrid:DataGridTemplateColumn>
+
+                        <!-- Host -->
+                        <sfgrid:DataGridTemplateColumn HeaderText="Host"
+                                                HeaderTextAlignment="Start"
+                                                MappingName="Host"
+                                                Width="200">
+                            <sfgrid:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:Visitor">
+                                    <Label Text="{Binding Host}"
+                                    VerticalOptions="Center"
+                                    FontFamily="OpenSansRegular"
+                                    FontSize="11"
+                                    TextColor="{StaticResource TextSecondary}" />
+                                </DataTemplate>
+                            </sfgrid:DataGridTemplateColumn.CellTemplate>
+                        </sfgrid:DataGridTemplateColumn>
+
+                        <!-- Purpose -->
+                        <sfgrid:DataGridTemplateColumn HeaderText="Purpose"
+                                                MappingName="Purpose"
+                                                HeaderTextAlignment="Start"
+                                                Width="120">
+                            <sfgrid:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:Visitor">
+                                    <Border BackgroundColor="{StaticResource PrimaryLight}"
+                                            StrokeThickness="0"
+                                            Padding="10,6"
+                                            HorizontalOptions="Start"
+                                            VerticalOptions="Center"
+                                            StrokeShape="RoundRectangle 12">
+                                        <Label Text="{Binding Purpose}"
+                                                FontFamily="OpenSansSemibold"
+                                                FontSize="10"
+                                                TextColor="{StaticResource Primary}" />
+                                    </Border>
+                                </DataTemplate>
+                            </sfgrid:DataGridTemplateColumn.CellTemplate>
+                        </sfgrid:DataGridTemplateColumn>
+
+                        <!-- Visit time (short label). -->
+                        <sfgrid:DataGridTemplateColumn HeaderText="Visit Time"
+                                                MappingName="VisitTime"
+                                                Width="130"
+                                                Visible="{OnIdiom Phone=False, Default=True}">
+                            <sfgrid:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:Visitor">
+                                    <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                                            StrokeThickness="0"
+                                            Padding="10,6"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            StrokeShape="RoundRectangle 12">
+                                        <Label Text="{Binding VisitTime, StringFormat='{0:hh\\:mm}'}"
+                                                FontFamily="OpenSansSemibold"
+                                                FontSize="10"
+                                                TextColor="{StaticResource TextSecondary}" />
+                                    </Border>
+                                </DataTemplate>
+                            </sfgrid:DataGridTemplateColumn.CellTemplate>
+                        </sfgrid:DataGridTemplateColumn>
+
+                        <!-- Pass ID (hidden on phone). -->
+                        <sfgrid:DataGridTemplateColumn HeaderText="Pass ID"
+                                                        HeaderTextAlignment="Center"
+                                                        MappingName="PassId"
+                                                        Width="180"
+                                                        Visible="{OnIdiom Phone=False, Default=True}">
+                            <sfgrid:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:Visitor">
+                                    <Label Text="{Binding PassId}"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Center"
+                                            FontFamily="OpenSansSemibold"
+                                            FontSize="11"
+                                            TextColor="{StaticResource Primary}" />
+                                </DataTemplate>
+                            </sfgrid:DataGridTemplateColumn.CellTemplate>
+                        </sfgrid:DataGridTemplateColumn>
+
+                        <!-- Status badge. -->
+                        <sfgrid:DataGridTemplateColumn HeaderText="Status"
+                                                MappingName="Status"
+                                                HeaderTextAlignment="Start"
+                                                Width="150">
+                            <sfgrid:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:Visitor">
+                                    <controls:VisitorStatusBadge Status="{Binding Status}"
+                                                                    BackgroundKey="{Binding StatusBackgroundBrushKey}"
+                                                                    VerticalOptions="Center"
+                                                                    HorizontalOptions="Start" />
+                                </DataTemplate>
+                            </sfgrid:DataGridTemplateColumn.CellTemplate>
+                        </sfgrid:DataGridTemplateColumn>
+                    </sfgrid:SfDataGrid.Columns>
+                </sfgrid:SfDataGrid>
+
+                <listView:SfListView
+                        IsVisible="{OnIdiom Phone=True, Default=False}"
+                        AutoFitMode="DynamicHeight"
+                        IsScrollingEnabled="False"
+                        ScrollBarVisibility="Never"
+                        ItemSpacing="0,6"
+                        HeightRequest="1550"
+                        SelectionBackground="Transparent"
+                        ItemsSource="{Binding FilteredVisitors}"
+                        SelectionMode="None"
+                        ItemTapped="SfListView_ItemTapped">
+
+                    <listView:SfListView.ItemTemplate>
+                           <DataTemplate x:DataType="models:Visitor">
+                                <Border
+                                Padding="14"
+                                BackgroundColor="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeShape="RoundRectangle 18">
+
+                                <VerticalStackLayout Spacing="12">
+
+                                    <!-- Header -->
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+
+                                        <controls:VisitorAvatar
+                                                WidthRequest="44"
+                                                HeightRequest="44"
+                                                Initials="{Binding VisitorName}" />
+
+                                        <Label
+                                            Grid.Column="1"
+                                            Text="{Binding VisitorName}"
+                                            FontFamily="OpenSansSemibold"
+                                            FontSize="15"
+                                            Margin="0,10,0,0"
+                                            TextColor="{StaticResource TextPrimary}" />
+
+                                        <controls:VisitorStatusBadge
+                                                    Grid.Column="2"
+                                                    Margin="0,10,0,0"
+                                                    Status="{Binding Status}"
+                                                    VerticalOptions="Start" />
+
+                                    </Grid>
+
+                                    <!-- Host + Visit -->
+
+                                    <Grid ColumnDefinitions="*,*">
+
+                                        <VerticalStackLayout Spacing="2">
+
+                                            <Label
+                                                Text="Host Contact"
+                                                Style="{StaticResource SectionEyebrow}" />
+
+                                            <Label
+                                                Text="{Binding Host}"
+                                                FontFamily="OpenSansSemibold"
+                                                FontSize="12"
+                                                TextColor="{StaticResource TextPrimary}" />
+
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout
+                                                    Grid.Column="1"
+                                                    Spacing="2">
+
+                                            <Label
+                                                    Text="Arrival &amp; Access"
+                                                    Style="{StaticResource SectionEyebrow}" />
+
+                                            <Label
+                                                    Text="{Binding VisitTime,StringFormat='{0:hh\\:mm}'}"
+                                                    FontFamily="OpenSansSemibold"
+                                                    FontSize="13"
+                                                    TextColor="{StaticResource TextPrimary}" />
+
+                                        </VerticalStackLayout>
+                                    </Grid>
+
+                                    <!-- Footer -->
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+                                            ColumnSpacing="8">
+
+                                        <Label
+                                                Text="{Binding PassId,StringFormat='Pass: {0}'}"
+                                                FontFamily="OpenSansSemibold"
+                                                FontSize="11"
+                                                TextColor="{StaticResource Primary}"
+                                                VerticalOptions="Center" />
+
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </listView:SfListView.ItemTemplate>
+                </listView:SfListView>
+            </Grid>
+
+            <!-- ============================== -->
+            <!-- 4. Active Dossier preview      -->
+            <!-- ============================== -->
+            <Border Grid.Row="3"
+                    Style="{StaticResource PanelCard}"
+                    Padding="{OnIdiom Desktop='22,18,22,18', Phone='14,12,14,12'}"
+                    IsVisible="{Binding HasSelectedVisitor}">
+
+                <Grid ColumnDefinitions="{OnIdiom Desktop='Auto,*,Auto', Phone='*'}"
+                      ColumnSpacing="{OnIdiom Desktop=22, Phone=0}"
+                      RowDefinitions="Auto,Auto,Auto,Auto"
+                      RowSpacing="14">
+
+                    <!-- Eyebrow + status badge row -->
+                    <Grid Grid.Row="0" Grid.Column="0"
+                          Grid.ColumnSpan="{OnIdiom Desktop=3, Phone=1}"
+                          ColumnDefinitions="*,Auto">
+                        <HorizontalStackLayout Grid.Column="0" Spacing="10" VerticalOptions="Center">
+                            <Label Text="{x:Static controls:IconKeys.Badge}"
+                                   FontFamily="MauiMaterialAssets"
+                                   FontSize="18"
+                                   TextColor="{StaticResource Primary}"
+                                   VerticalOptions="Center" />
+                            <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                <Label Text="ACTIVE DOSSIER"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="10"
+                                       CharacterSpacing="1.4"
+                                       TextColor="{StaticResource TextMuted}" />
+                                <Label Text="Visitor Pass Details"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="16"
+                                       TextColor="{StaticResource TextPrimary}" />
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                        <controls:VisitorStatusBadge Grid.Column="1"
+                                                      Status="{Binding SelectedVisitor.Status}"
+                                                      VerticalOptions="Center" />
+                    </Grid>
+
+                    <!-- Identity column: avatar + name + host + purpose -->
+                    <HorizontalStackLayout Grid.Row="1"
+                                           Grid.Column="0"
+                                           Spacing="14"
+                                           VerticalOptions="Center">
+                        <controls:VisitorAvatar Initials="{Binding SelectedVisitor.VisitorName}"
+                                                WidthRequest="56"
+                                                HeightRequest="56" />
+                        <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                            <Label Text="{Binding SelectedVisitor.VisitorName}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="15"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Text="{Binding SelectedVisitor.Host}"
+                                   FontFamily="OpenSansRegular"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextSecondary}" />
+                            <Label Text="{Binding SelectedVisitor.Purpose}"
+                                   FontFamily="OpenSansRegular"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <!-- QR barcode + passcode caption -->
+                    <VerticalStackLayout Grid.Row="{OnIdiom Desktop=1, Phone=2}"
+                                         Grid.Column="{OnIdiom Desktop=1, Phone=0}"
+                                         Spacing="6"
+                                         HorizontalOptions="{OnIdiom Desktop=Center, Phone=Start}"
+                                         VerticalOptions="Center">
+                        <barcode:SfBarcodeGenerator Value="{Binding SelectedVisitor.PassId}"
+                                                     BackgroundColor="{StaticResource Surface}"
+                                                     ForegroundColor="{StaticResource TextPrimary}"
+                                                     HeightRequest="110"
+                                                     WidthRequest="110"
+                                                     HorizontalOptions="Center">
+                            <barcode:SfBarcodeGenerator.Symbology>
+                                <barcode:QRCode />
+                            </barcode:SfBarcodeGenerator.Symbology>
+                        </barcode:SfBarcodeGenerator>
+                        <Label Text="SECURE PASSCODE"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="9"
+                               CharacterSpacing="1.4"
+                               TextColor="{StaticResource TextMuted}"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="{Binding SelectedVisitor.PassId, StringFormat='{0}-CC'}"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="11"
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+
+                    <!-- Summary tiles + action buttons -->
+                    <VerticalStackLayout Grid.Row="{OnIdiom Desktop=1, Phone=3}"
+                                         Grid.Column="{OnIdiom Desktop=2, Phone=0}"
+                                         Spacing="10"
+                                         HorizontalOptions="{OnIdiom Desktop=End, Phone=Fill}"
+                                         VerticalOptions="Center">
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="10">
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource KpiCard}"
+                                    BackgroundColor="{StaticResource SurfaceAlt}"
+                                    Padding="10,8">
+                                <VerticalStackLayout Spacing="0">
+                                    <Label Text="PASS ID"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="8"
+                                           CharacterSpacing="1.4"
+                                           TextColor="{StaticResource TextMuted}" />
+                                    <Label Text="{Binding SelectedVisitor.PassId}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="11"
+                                           TextColor="{StaticResource Primary}"
+                                           VerticalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="1"
+                                    Style="{StaticResource KpiCard}"
+                                    BackgroundColor="{StaticResource SurfaceAlt}"
+                                    Padding="10,8">
+                                <VerticalStackLayout Spacing="0">
+                                    <Label Text="CHECK-IN"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="8"
+                                           CharacterSpacing="1.4"
+                                           TextColor="{StaticResource TextMuted}" />
+                                    <Label Text="{Binding SelectedVisitor.CheckInTimeDisplay}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="11"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <Button Text="Open Full Pass Details"
+                                Clicked="OnOpenFullPass"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="{StaticResource White}"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="12"
+                                Padding="14,10"
+                                CornerRadius="10"
+                                HeightRequest="42" />
+
+                        <HorizontalStackLayout Spacing="8" HorizontalOptions="Fill">
+                            <Button Text="Print Badge"
+                                    Clicked="OnOpenFullPass"
+                                    BackgroundColor="{StaticResource SurfaceAlt}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="11"
+                                    Padding="10,8"
+                                    CornerRadius="8"
+                                    HeightRequest="36"
+                                    HorizontalOptions="Fill" />
+                            <Button Text="Call Host"
+                                    Clicked="OnOpenFullPass"
+                                    BackgroundColor="{StaticResource SurfaceAlt}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="11"
+                                    Padding="10,8"
+                                    CornerRadius="8"
+                                    HeightRequest="36"
+                                    HorizontalOptions="Fill" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- ============================== -->
+            <!-- 5. Footer (row count summary)  -->
+            <!-- ============================== -->
+            <Label Grid.Row="4"
+                   Text="{Binding FilteredVisitors.Count, StringFormat='{0} visitors shown'}"
+                   TextColor="{StaticResource TextMuted}"
+                   FontFamily="OpenSansRegular"
+                   FontSize="11"
+                   HorizontalOptions="Start" />
+
+        </Grid>
+    </Grid>
+    </ScrollView>
+</ContentPage>

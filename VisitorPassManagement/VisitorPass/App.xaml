@@ -1,0 +1,66 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:VisitorPass"
+             xmlns:conv="clr-namespace:VisitorPass.Converters;assembly=VisitorPass"
+             xmlns:syncTheme="clr-namespace:Syncfusion.Maui.Themes;assembly=Syncfusion.Maui.Core"
+             UserAppTheme="Light"
+             x:Class="VisitorPass.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <!-- 1. Syncfusion MaterialLight palette + control brushes.
+                        Loaded FIRST so our visitor-pass keys win any clash. -->
+                <syncTheme:SyncfusionThemeResourceDictionary VisualTheme="MaterialLight" />
+
+                <!-- 2. Local palette tokens (Primary, Surface, Status
+                        Expected/CheckedIn/CheckedOut/Cancelled/Overdue, etc.) -->
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+
+                <!-- 3. Base styles + per-idiom named styles
+                        (PagePaddingDesktop / Mobile, SectionSpacingDesktop
+                        / Mobile, font sizes, Headline / SubHeadline,
+                        default Label / Button / Entry / Page). -->
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+
+                <!-- 4. Reusable card / panel / badge styles
+                        (KpiCard, PanelCard, ChartPanelCard, SectionTitle,
+                        SectionEyebrow, StatusBadgePill, FilterChip,
+                        RegisterVisitorPill, Fab). -->
+                <ResourceDictionary Source="Resources/Styles/VisitorPassCard.xaml" />
+                <ResourceDictionary Source="Resources/Styles/DashboardChartStyles.xaml" />
+
+                <!-- 5. Syncfusion palette overrides — MUST be loaded LAST
+                        so the SfsPrimary / SfBorderColor / SfsStatus*
+                        keys override the MaterialLight defaults from
+                        SyncfusionThemeResourceDictionary. -->
+                <ResourceDictionary Source="Resources/Styles/VisitorPassTheme.xaml" />
+                <ResourceDictionary>
+                    <x:String x:Key="SfListViewTheme">CommonTheme</x:String>
+                    <Color x:Key="SfListViewHoverListViewItemBackground">Transparent</Color>
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- ===== Value converters (VP-024) =====
+                 Registered inline in App.xaml so every page reaches
+                 them via {StaticResource …}. New converters should be
+                 added here too. -->
+            <conv:VisitorStatusToColorConverter           x:Key="VisitorStatusToColorConverter" />
+            <conv:VisitorStatusToBackgroundConverter      x:Key="VisitorStatusToBackgroundConverter" />
+            <conv:VisitorStatusToBrushConverter            x:Key="VisitorStatusToBrushConverter" />
+            <conv:VisitorStatusToDisplayLabelConverter    x:Key="VisitorStatusToDisplayLabelConverter" />
+            <conv:VisitorStatusToShortLabelConverter      x:Key="VisitorStatusToShortLabelConverter" />
+            <conv:StringNotEmptyToBoolConverter           x:Key="StringNotEmptyToBoolConverter" />
+            <conv:DateToShortLabelConverter               x:Key="DateToShortLabelConverter" />
+            <conv:InitialsConverter                        x:Key="InitialsConverter" />
+            <conv:IdiomToBoolConverter                     x:Key="IdiomToBoolConverter" />
+            <conv:InvertBoolConverter                      x:Key="InvertBoolConverter" />
+            <conv:IntToBoolConverter                       x:Key="IntToBoolConverter" />
+            <conv:IntEqualsConverter                       x:Key="IntEqualsConverter" />
+            <conv:IntGreaterThanConverter                  x:Key="IntGreaterThanConverter" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
