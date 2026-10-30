@@ -1,27 +1,34 @@
-# Harness Document Index — CANONICALITY
+# Diagram Builder — Agent Documentation Index
 
-**Canonical (authoritative) harness documents — implement from these only:**
+This folder contains the complete, canonical documentation set for building the
+Diagram Builder sample. Every document below is authoritative — there are no
+superseded drafts.
 
-| Document | Role |
+| Document | Responsibility |
 |---|---|
-| `spec.md` | Product specification: scope, user journeys, FR-1…FR-12, NFRs, menu/toolbar spec |
-| `architecture.md` | Architecture: layering, DI, SfDiagram integration pattern, command routing, navigation |
-| `ui-spec.md` | UI specification derived from `design-images/` mockups: layout, menus, toolbar, panels, theme |
-| `tasks.md` | Task breakdown (Tasks 1–10) with objectives, requirements, impacted files, acceptance criteria, validation steps |
-| `validation.md` | Validation checklist to run per task and fully after Task 10 |
+| `spec.md` | Product specification: scope, user journeys J1–J5, functional requirements FR-1…FR-12, non-functional requirements, menu/toolbar specification, mock-data strategy, success criteria |
+| `architecture.md` | Architecture: layering, DI map, MVVM rules, SfDiagram integration pattern (behavior + adapter), selection/property data flow, command routing, navigation, project structure, verified SfDiagram API notes, known control constraints |
+| `ui-spec.md` | UI specification derived from `design-images/` mockups: window frame, menus, toolbar, stencil, canvas, property panel, dialogs, theme palette, accessibility requirements |
+| `tasks.md` | Task breakdown (Tasks 1–10) with objective, implementation requirements, impacted files, acceptance criteria, and validation steps per task |
+| `validation.md` | Validation checklist (11 sections) to run after each task (relevant subset) and fully after Task 10 |
 
-**Earlier working drafts (00–08 numbered files):** superseded by the canonical documents
-above. They are retained only for provenance. Where any numbered draft disagrees with a
-canonical document, the canonical document wins. Known superseded statements include:
-- `01-architecture.md` refers to a `WindowViewModel` for panel toggles — superseded by
-  `architecture.md` (`DiagramDesignerViewModel.ShowStencil/ShowProperties/ShowToolbar`).
-- `05-design-guidelines.md` / `02-project-structure.md` mention a third `DiagramTheme.xaml`
-  dictionary — superseded by `tasks.md` Task 1 (merge `Colors.xaml` + `Styles.xaml` only).
-- `08-implementation-tasks.md` checkbox states do not reflect actual repo state (only
-  `Constants/` exists; Models/Services/ViewModels/Views/Controls are unimplemented).
-
-**Authoritative external sources (do not invent beyond these):**
-1. `diagram-control-specs.md` — SfDiagram/SymbolPalette architecture, APIs, events, constraints.
+**Authoritative external sources:**
+1. `diagram-control-specs.md` (repo root) — SfDiagram/SymbolPalette architecture, APIs, events, constraints.
 2. `design-images/*.png` — visual ground truth for all screens.
-3. `.agents/skills/` + `.claude/skills/` — available Syncfusion MAUI control skills.
+3. `.agents/skills/` + `.claude/skills/` — available Syncfusion MAUI control skills (no Diagram skill exists; `diagram-control-specs.md` is the authoritative Diagram reference).
 4. Syncfusion Diagram help: https://help.syncfusion.com/diagram-sdk/maui/overview
+
+**How to build the sample:** read `spec.md` first for the product definition, then
+`architecture.md` and `ui-spec.md` for the technical and visual contracts, then execute
+`tasks.md` Tasks 1–10 sequentially, running the relevant `validation.md` section after
+each task and the full checklist after Task 10.
+
+## Document conventions
+
+- "Mock" means an in-memory implementation surfaced through a service interface — no
+  backend, file system, or network is ever involved.
+- Requirements are uniquely identified (FR-n) and every task in `tasks.md` traces back
+  to them; the acceptance criteria of Task 10 are the release gate.
+- The SfDiagram API statements in `architecture.md` §7 were verified against
+  `Syncfusion.Maui.Diagram` **35.1.41** and take precedence over any conflicting
+  recollection when writing control-facing code.
