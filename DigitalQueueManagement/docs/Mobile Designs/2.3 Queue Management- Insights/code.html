@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="mobile_tab" name="shell-type"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      .pt-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+      main > :first-child {
+        margin-top: 0 !important;
+      }
+      main > :last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface": "#0b1c30",
+            "secondary": "#006a61",
+            "secondary-fixed-dim": "#6bd8cb",
+            "on-primary-fixed-variant": "#173bab",
+            "outline": "#757684",
+            "primary-fixed": "#dde1ff",
+            "on-secondary-fixed": "#00201d",
+            "on-surface-variant": "#444653",
+            "on-tertiary-fixed": "#2f1500",
+            "primary-fixed-dim": "#b8c4ff",
+            "on-secondary-container": "#006f66",
+            "error-container": "#ffdad6",
+            "surface": "#f8f9ff",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#005049",
+            "outline-variant": "#c4c5d5",
+            "on-primary-fixed": "#001453",
+            "surface-container-high": "#dce9ff",
+            "surface-container-low": "#eff4ff",
+            "tertiary-fixed": "#ffdcc3",
+            "on-error-container": "#93000a",
+            "primary": "#00288e",
+            "surface-variant": "#d3e4fe",
+            "inverse-on-surface": "#eaf1ff",
+            "background": "#f8f9ff",
+            "on-background": "#0b1c30",
+            "on-tertiary-container": "#ffa85d",
+            "on-secondary": "#ffffff",
+            "surface-container-highest": "#d3e4fe",
+            "surface-bright": "#f8f9ff",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#6e3900",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#532a00",
+            "inverse-primary": "#b8c4ff",
+            "secondary-fixed": "#89f5e7",
+            "secondary-container": "#86f2e4",
+            "surface-dim": "#cbdbf5",
+            "inverse-surface": "#213145",
+            "primary-container": "#1e40af",
+            "tertiary-container": "#743d00",
+            "on-primary-container": "#a8b8ff",
+            "on-tertiary": "#ffffff",
+            "surface-container": "#e5eeff",
+            "tertiary-fixed-dim": "#ffb77d",
+            "on-error": "#ffffff",
+            "surface-tint": "#3755c3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "1.5rem",
+            "margin": "1rem",
+            "space-lg": "1rem",
+            "space-xl": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-2xl": "2rem",
+            "gutter": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "headline-sm": ["Inter"],
+            "code-tabular": ["Inter"],
+            "display-ticket": ["Inter"],
+            "headline-md": ["Inter"],
+            "display-ticket-mobile": ["Inter"],
+            "label-md": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "code-tabular": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "display-ticket": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-ticket-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex flex-col antialiased selection:bg-primary selection:text-on-primary">
+<!-- Top App Bar & Segmented Control -->
+<header class="fixed top-0 inset-x-0 z-50 bg-surface/95 backdrop-blur-xl border-b border-surface-container-high/60 pt-safe">
+<div class="px-margin pt-space-md pb-space-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between h-10">
+<h1 class="font-headline-sm text-headline-sm font-semibold tracking-tight text-on-surface">Queue Management</h1>
+<button aria-label="More options" class="w-10 h-10 -mr-1 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[24px]">more_vert</span>
+</button>
+</div>
+<!-- Segmented Control -->
+<nav class="flex items-center p-1 bg-surface-container rounded-xl gap-1">
+<a class="flex-1 py-1.5 text-center font-label-md text-label-md rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="tokens" href="#">Tokens</a>
+<a class="flex-1 py-1.5 text-center font-label-md text-label-md rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="counters" href="#">Counters</a>
+<a class="flex-1 py-1.5 text-center font-label-md text-label-md rounded-lg bg-primary text-on-primary shadow-sm font-semibold transition-all" data-path="insights" href="#">Insights</a>
+</nav>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex flex-col relative w-full pt-32 pb-24 bg-surface min-h-screen">
+<div class="flex flex-col w-full px-margin py-space-sm gap-space-md max-w-[430px] mx-auto">
+<!-- Section 1: Analytics Summary Card -->
+<section class="p-space-lg rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">Live Overview</span>
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+            Real-time
+          </span>
+</div>
+<div class="grid grid-cols-3 divide-x divide-surface-container">
+<div class="flex flex-col pr-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Waiting</span>
+<span class="mt-1 font-headline-md text-headline-md font-bold text-on-surface font-code-tabular">8</span>
+<span class="text-[11px] text-primary font-medium mt-0.5">In line</span>
+</div>
+<div class="flex flex-col px-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Completed</span>
+<span class="mt-1 font-headline-md text-headline-md font-bold text-secondary font-code-tabular">42</span>
+<span class="text-[11px] text-secondary font-medium mt-0.5">Today</span>
+</div>
+<div class="flex flex-col pl-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Counters</span>
+<span class="mt-1 font-headline-md text-headline-md font-bold text-on-surface font-code-tabular">3</span>
+<span class="text-[11px] text-on-surface-variant font-medium mt-0.5">Active</span>
+</div>
+</div>
+</section>
+<!-- Section 2: Tokens by Service Type Chart Card -->
+<section class="p-space-lg rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col gap-space-md">
+<div class="flex items-start justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Tokens by Service Type</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Distribution across customer categories</p>
+</div>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-code-tabular font-label-sm text-label-sm">
+            50 tkns
+          </span>
+</div>
+<!-- Column Chart (SVG) -->
+<div class="w-full pt-space-xs">
+<div class="relative h-44 w-full flex items-end justify-between px-6 pb-6 pt-2">
+<!-- Grid Lines -->
+<div class="absolute inset-x-0 top-3 border-b border-dashed border-surface-container pointer-events-none"></div>
+<div class="absolute inset-x-0 top-1/2 border-b border-dashed border-surface-container pointer-events-none"></div>
+<div class="absolute inset-x-0 bottom-6 border-b border-surface-container-high pointer-events-none"></div>
+<!-- Enquiry Column (22 tokens - 73% height) -->
+<div class="flex flex-col items-center gap-1.5 h-full justify-end z-10 w-16">
+<span class="font-code-tabular font-label-sm text-label-sm text-primary font-bold">22</span>
+<div class="w-10 rounded-t-lg bg-primary-container transition-all hover:opacity-90" style="height: 65%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center leading-none mt-1">Enquiry</span>
+</div>
+<!-- Payment Column (18 tokens - 60% height) -->
+<div class="flex flex-col items-center gap-1.5 h-full justify-end z-10 w-16">
+<span class="font-code-tabular font-label-sm text-label-sm text-secondary font-bold">18</span>
+<div class="w-10 rounded-t-lg bg-secondary transition-all hover:opacity-90" style="height: 52%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center leading-none mt-1">Payment</span>
+</div>
+<!-- Support Column (10 tokens - 33% height) -->
+<div class="flex flex-col items-center gap-1.5 h-full justify-end z-10 w-16">
+<span class="font-code-tabular font-label-sm text-label-sm text-surface-tint font-bold">10</span>
+<div class="w-10 rounded-t-lg bg-surface-tint transition-all hover:opacity-90" style="height: 32%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center leading-none mt-1">Support</span>
+</div>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex items-center justify-center gap-space-lg pt-1 border-t border-surface-container/60">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Enquiry (44%)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Payment (36%)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-tint"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Support (20%)</span>
+</div>
+</div>
+</section>
+<!-- Section 3: Average Wait Time Chart Card -->
+<section class="p-space-lg rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col gap-space-md">
+<div class="flex items-start justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Average Wait Time</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Average customer queue duration by service</p>
+</div>
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+</div>
+</div>
+<!-- Horizontal Bar Chart -->
+<div class="flex flex-col gap-space-md pt-space-xs">
+<!-- Enquiry -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-medium">Enquiry</span>
+<span class="font-code-tabular font-label-md text-label-md text-on-surface font-bold">7.5m</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex">
+<div class="bg-primary-container h-full rounded-full transition-all duration-500" style="width: 68%;"></div>
+</div>
+</div>
+<!-- Payment -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-medium">Payment</span>
+<span class="font-code-tabular font-label-md text-label-md text-secondary font-bold">4.2m</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex">
+<div class="bg-secondary h-full rounded-full transition-all duration-500" style="width: 38%;"></div>
+</div>
+</div>
+<!-- Support -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-medium">Support</span>
+<span class="font-code-tabular font-label-md text-label-md text-tertiary-container font-bold">11.0m</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex">
+<div class="bg-tertiary-fixed-dim h-full rounded-full transition-all duration-500" style="width: 100%;"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-1 border-t border-surface-container/60">
+<span>0m</span>
+<span>5m</span>
+<span>10m</span>
+<span>15m max</span>
+</div>
+</section>
+<!-- Section 4: Counter Performance Chart Card -->
+<section class="p-space-lg rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col gap-space-md">
+<div class="flex items-start justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Counter Performance</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Completed tokens handled per counter desk</p>
+</div>
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[18px]">equalizer</span>
+</div>
+</div>
+<!-- Column Chart (Counters) -->
+<div class="w-full pt-space-xs">
+<div class="relative h-44 w-full flex items-end justify-between px-6 pb-6 pt-2">
+<!-- Grid Lines -->
+<div class="absolute inset-x-0 top-3 border-b border-dashed border-surface-container pointer-events-none"></div>
+<div class="absolute inset-x-0 top-1/2 border-b border-dashed border-surface-container pointer-events-none"></div>
+<div class="absolute inset-x-0 bottom-6 border-b border-surface-container-high pointer-events-none"></div>
+<!-- Counter 1 (18 completed) -->
+<div class="flex flex-col items-center gap-1.5 h-full justify-end z-10 w-16">
+<span class="font-code-tabular font-label-sm text-label-sm text-primary font-bold">18</span>
+<div class="w-10 rounded-t-lg bg-primary transition-all hover:opacity-90" style="height: 72%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface font-medium text-center leading-none mt-1">Counter 1</span>
+</div>
+<!-- Counter 2 (14 completed) -->
+<div class="flex flex-col items-center gap-1.5 h-full justify-end z-10 w-16">
+<span class="font-code-tabular font-label-sm text-label-sm text-secondary font-bold">14</span>
+<div class="w-10 rounded-t-lg bg-secondary transition-all hover:opacity-90" style="height: 56%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface font-medium text-center leading-none mt-1">Counter 2</span>
+</div>
+<!-- Counter 3 (10 completed) -->
+<div class="flex flex-col items-center gap-1.5 h-full justify-end z-10 w-16">
+<span class="font-code-tabular font-label-sm text-label-sm text-on-surface-variant font-bold">10</span>
+<div class="w-10 rounded-t-lg bg-surface-container-highest transition-all hover:opacity-90" style="height: 40%;"></div>
+<span class="font-label-sm text-label-sm text-on-surface font-medium text-center leading-none mt-1">Counter 3</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 border-t border-surface-container/60 text-body-sm text-body-sm text-on-surface-variant">
+<span>Total completed: <strong class="text-on-surface font-code-tabular">42 tokens</strong></span>
+<span class="text-secondary font-medium">100% operational</span>
+</div>
+</section>
+<!-- Section 5: Completed vs Pending Chart Card -->
+<section class="p-space-lg rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col gap-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Completed vs Pending</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Session fulfillment ratio status</p>
+</div>
+<!-- Doughnut Chart (SVG) -->
+<div class="flex items-center justify-between gap-space-lg py-space-xs">
+<!-- Circular Ring SVG -->
+<div class="relative w-32 h-32 shrink-0 flex items-center justify-center">
+<svg class="w-32 h-32 -rotate-90 transform" viewbox="0 0 100 100">
+<!-- Background / Pending Arc (100 circumference = 2 * pi * 38 ≈ 238.76) -->
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#dde1ff" stroke-width="12"></circle>
+<!-- Completed Arc (84% of 238.76 = 200.55) -->
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#00288e" stroke-dasharray="238.76" stroke-dashoffset="38.2" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<!-- Center Label -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface font-code-tabular leading-tight">84%</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant font-medium uppercase tracking-wider">Done</span>
+</div>
+</div>
+<!-- Breakdown Details -->
+<div class="flex-1 flex flex-col gap-space-sm">
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary shrink-0"></span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Completed</span>
+<span class="text-[11px] text-on-surface-variant">42 tokens</span>
+</div>
+</div>
+<span class="font-code-tabular font-label-lg text-label-lg font-bold text-primary">84%</span>
+</div>
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary-fixed shrink-0 border border-outline-variant/40"></span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Pending</span>
+<span class="text-[11px] text-on-surface-variant">8 tokens</span>
+</div>
+</div>
+<span class="font-code-tabular font-label-lg text-label-lg font-bold text-on-surface-variant">16%</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container-high/60 shadow-[0_-1px_8px_rgba(0,0,0,0.03)]" data-active-classes="text-primary font-bold">
+<div class="flex justify-around items-center h-16 px-margin max-w-[430px] mx-auto">
+<a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] px-space-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="overview" href="#">
+<span class="material-symbols-outlined text-[24px]">grid_view</span>
+<span class="font-label-md text-label-md font-medium">Overview</span>
+</a>
+<a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] px-space-md transition-colors text-primary font-bold" data-path="manage" href="#">
+<span class="material-symbols-outlined text-[24px]">confirmation_number</span>
+<span class="font-label-md text-label-md">Manage</span>
+</a>
+</div>
+</nav>
+</body></html>

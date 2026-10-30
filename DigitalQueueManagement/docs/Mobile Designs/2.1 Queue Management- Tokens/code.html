@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-error": "#ffffff",
+        "tertiary-fixed": "#ffdcc3",
+        "primary-fixed": "#dde1ff",
+        "outline-variant": "#c4c5d5",
+        "secondary": "#006a61",
+        "surface-tint": "#3755c3",
+        "tertiary": "#532a00",
+        "on-secondary": "#ffffff",
+        "outline": "#757684",
+        "surface-bright": "#f8f9ff",
+        "surface-variant": "#d3e4fe",
+        "on-primary-container": "#a8b8ff",
+        "error-container": "#ffdad6",
+        "background": "#f8f9ff",
+        "secondary-container": "#86f2e4",
+        "on-primary-fixed-variant": "#173bab",
+        "on-secondary-fixed-variant": "#005049",
+        "inverse-surface": "#213145",
+        "on-primary": "#ffffff",
+        "primary-container": "#1e40af",
+        "surface-container-lowest": "#ffffff",
+        "on-tertiary-fixed-variant": "#6e3900",
+        "inverse-on-surface": "#eaf1ff",
+        "primary": "#00288e",
+        "primary-fixed-dim": "#b8c4ff",
+        "on-error-container": "#93000a",
+        "inverse-primary": "#b8c4ff",
+        "secondary-fixed": "#89f5e7",
+        "surface-container": "#e5eeff",
+        "error": "#ba1a1a",
+        "surface-container-low": "#eff4ff",
+        "tertiary-container": "#743d00",
+        "on-surface-variant": "#444653",
+        "surface-dim": "#cbdbf5",
+        "surface-container-highest": "#d3e4fe",
+        "on-tertiary-fixed": "#2f1500",
+        "on-primary-fixed": "#001453",
+        "surface-container-high": "#dce9ff",
+        "on-secondary-container": "#006f66",
+        "surface": "#f8f9ff",
+        "on-surface": "#0b1c30",
+        "on-tertiary-container": "#ffa85d",
+        "on-secondary-fixed": "#00201d",
+        "tertiary-fixed-dim": "#ffb77d",
+        "on-tertiary": "#ffffff",
+        "secondary-fixed-dim": "#6bd8cb",
+        "on-background": "#0b1c30"
+      },
+      borderRadius: {
+        "DEFAULT": "0.125rem",
+        "lg": "0.25rem",
+        "xl": "0.5rem",
+        "full": "0.75rem"
+      },
+      fontFamily: {
+        "body-lg": ["Inter", "sans-serif"],
+        "label-md": ["Inter", "sans-serif"],
+        "headline-sm": ["Inter", "sans-serif"],
+        "headline-lg-mobile": ["Inter", "sans-serif"],
+        "display-ticket-mobile": ["Inter", "sans-serif"],
+        "body-sm": ["Inter", "sans-serif"],
+        "headline-lg": ["Inter", "sans-serif"],
+        "label-lg": ["Inter", "sans-serif"],
+        "label-sm": ["Inter", "sans-serif"],
+        "body-md": ["Inter", "sans-serif"],
+        "code-tabular": ["Inter", "sans-serif"],
+        "headline-md": ["Inter", "sans-serif"]
+      }
+    }
+  }
+};</script><style>
+  @layer base {
+    html, body {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9ff;
+    }
+    body {
+      overscroll-behavior-y: none;
+      -webkit-font-smoothing: antialiased;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    .pt-safe {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+</head>
+<body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen selection:bg-primary selection:text-on-primary">
+<div class="w-full max-w-[390px] mx-auto min-h-screen flex flex-col bg-surface relative shadow-2xl">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md border-b border-surface-container/60 pt-safe transition-all">
+<div class="h-14 px-4 flex items-center justify-between">
+<h1 class="text-[20px] font-bold tracking-tight text-on-surface leading-tight">Queue Management</h1>
+<div class="flex items-center">
+<button aria-label="More options" class="w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container active:scale-95 transition-all focus:outline-none">
+<span class="material-symbols-outlined text-[22px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Segmented Control (Tokens / Counters / Insights) -->
+<div class="px-4 pb-3 pt-0.5">
+<div class="flex p-1 bg-surface-container-high/80 rounded-xl gap-1 border border-surface-container-highest/60" id="mainTabNav">
+<button class="flex-1 py-1.5 px-3 text-center rounded-lg text-[13px] font-semibold bg-primary text-on-primary shadow-sm transition-all flex items-center justify-center gap-1.5" data-tab="tokens" type="button">
+<span class="material-symbols-outlined text-[16px]">confirmation_number</span>
+<span>Tokens</span>
+</button>
+<button class="flex-1 py-1.5 px-3 text-center rounded-lg text-[13px] font-semibold text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center gap-1.5" data-tab="counters" type="button">
+<span class="material-symbols-outlined text-[16px]">desktop_windows</span>
+<span>Counters</span>
+</button>
+<button class="flex-1 py-1.5 px-3 text-center rounded-lg text-[13px] font-semibold text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center gap-1.5" data-tab="insights" type="button">
+<span class="material-symbols-outlined text-[16px]">query_stats</span>
+<span>Insights</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col pb-24 px-4 pt-3.5 space-y-3.5">
+<!-- Search Bar -->
+<div class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">search</span>
+<input class="w-full h-11 pl-10 pr-9 bg-surface-container-lowest text-on-surface text-[14px] font-medium rounded-xl shadow-xs border border-surface-container placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary transition-all" id="tokenSearchInput" placeholder="Search token number" type="text"/>
+<button aria-label="Clear search" class="hidden absolute right-3 w-5 h-5 flex items-center justify-center text-outline hover:text-on-surface transition-colors" id="clearSearchBtn" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<!-- Horizontal Status Filter Chips -->
+<div class="-mx-4 px-4 overflow-x-auto no-scrollbar py-0.5">
+<div class="flex items-center gap-1.5 w-max" id="statusFilterChips">
+<button class="filter-chip px-3.5 py-1.5 rounded-full bg-primary text-on-primary text-[12px] font-semibold shadow-xs transition-all active:scale-95" data-filter="all" type="button">
+            All
+</button>
+<button class="filter-chip px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface text-[12px] font-semibold transition-all active:scale-95" data-filter="waiting" type="button">
+            Waiting
+</button>
+<button class="filter-chip px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface text-[12px] font-semibold transition-all active:scale-95" data-filter="serving" type="button">
+            Serving
+</button>
+<button class="filter-chip px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface text-[12px] font-semibold transition-all active:scale-95" data-filter="skipped" type="button">
+            Skipped
+</button>
+<button class="filter-chip px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface text-[12px] font-semibold transition-all active:scale-95" data-filter="completed" type="button">
+            Completed
+</button>
+</div>
+</div>
+<!-- Token Cards List (Vertically Stacked, Comfortable Spacing) -->
+<div class="flex flex-col gap-3 pt-1" id="tokenListContainer">
+<!-- Token A-104 -->
+<article class="token-card group bg-surface-container-lowest rounded-xl p-4 border border-surface-container/80 shadow-xs hover:shadow-md transition-all active:scale-[0.99] cursor-pointer" data-dept="Payments &amp; Billing" data-desk="Counter 1" data-status="serving" data-token="A-104">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="font-bold text-[22px] tracking-tight text-primary font-mono leading-none">A-104</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                Priority
+              </span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-secondary-container text-on-secondary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+              Serving
+            </span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[13px] border-t border-surface-container/50 pt-2.5">
+<div class="flex items-center gap-1.5 min-w-0 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-outline">payments</span>
+<span class="font-medium truncate">Payments &amp; Billing</span>
+<span class="text-outline-variant">•</span>
+<span class="font-semibold text-primary truncate">Counter 1</span>
+</div>
+<span class="text-[12px] font-bold text-secondary whitespace-nowrap pl-2">0m (Now)</span>
+</div>
+</article>
+<!-- Token A-105 -->
+<article class="token-card group bg-surface-container-lowest rounded-xl p-4 border border-surface-container/80 shadow-xs hover:shadow-md transition-all active:scale-[0.99] cursor-pointer" data-dept="Payments &amp; Billing" data-desk="Counter 1" data-status="waiting" data-token="A-105">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<span class="font-bold text-[22px] tracking-tight text-on-surface font-mono leading-none">A-105</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                Priority
+              </span>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-primary-fixed text-on-primary-fixed">
+<span class="material-symbols-outlined text-[13px]">schedule</span>
+              Waiting
+            </span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[13px] border-t border-surface-container/50 pt-2.5">
+<div class="flex items-center gap-1.5 min-w-0 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-outline">payments</span>
+<span class="font-medium truncate">Payments &amp; Billing</span>
+<span class="text-outline-variant">•</span>
+<span class="font-medium text-on-surface-variant truncate">Counter 1</span>
+</div>
+<span class="text-[12px] font-medium text-on-surface-variant whitespace-nowrap pl-2">~4 mins</span>
+</div>
+</article>
+<!-- Token B-202 -->
+<article class="token-card group bg-surface-container-lowest rounded-xl p-4 border border-surface-container/80 shadow-xs hover:shadow-md transition-all active:scale-[0.99] cursor-pointer" data-dept="General Inquiry" data-desk="Counter 2" data-status="waiting" data-token="B-202">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<span class="font-bold text-[22px] tracking-tight text-on-surface font-mono leading-none">B-202</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-surface-container text-on-surface-variant">
+                Normal
+              </span>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-primary-fixed text-on-primary-fixed">
+<span class="material-symbols-outlined text-[13px]">schedule</span>
+              Waiting
+            </span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[13px] border-t border-surface-container/50 pt-2.5">
+<div class="flex items-center gap-1.5 min-w-0 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-outline">help_outline</span>
+<span class="font-medium truncate">General Inquiry</span>
+<span class="text-outline-variant">•</span>
+<span class="font-medium text-on-surface-variant truncate">Counter 2</span>
+</div>
+<span class="text-[12px] font-medium text-on-surface-variant whitespace-nowrap pl-2">~8 mins</span>
+</div>
+</article>
+<!-- Token C-301 -->
+<article class="token-card group bg-surface-container-lowest rounded-xl p-4 border border-surface-container/80 shadow-xs hover:shadow-md transition-all active:scale-[0.99] cursor-pointer" data-dept="Customer Support" data-desk="Counter 3" data-status="serving" data-token="C-301">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<span class="font-bold text-[22px] tracking-tight text-primary font-mono leading-none">C-301</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                Priority
+              </span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-secondary-container text-on-secondary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+              Serving
+            </span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[13px] border-t border-surface-container/50 pt-2.5">
+<div class="flex items-center gap-1.5 min-w-0 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-outline">support_agent</span>
+<span class="font-medium truncate">Customer Support</span>
+<span class="text-outline-variant">•</span>
+<span class="font-semibold text-primary truncate">Counter 3</span>
+</div>
+<span class="text-[12px] font-bold text-secondary whitespace-nowrap pl-2">0m (Now)</span>
+</div>
+</article>
+<!-- Token D-401 -->
+<article class="token-card group bg-surface-container-lowest rounded-xl p-4 border border-error-container/60 shadow-xs hover:shadow-md transition-all active:scale-[0.99] cursor-pointer" data-dept="Customer Support" data-desk="Counter 2" data-status="skipped" data-token="D-401">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2.5">
+<span class="font-bold text-[22px] tracking-tight text-outline font-mono leading-none line-through decoration-error/50">D-401</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-surface-container text-on-surface-variant">
+                Normal
+              </span>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-error-container text-on-error-container">
+<span class="material-symbols-outlined text-[13px]">replay</span>
+              Skipped
+            </span>
+</div>
+<div class="mt-3 flex items-center justify-between text-[13px] border-t border-surface-container/50 pt-2.5">
+<div class="flex items-center gap-1.5 min-w-0 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-outline">support_agent</span>
+<span class="font-medium truncate">Customer Support</span>
+<span class="text-outline-variant">•</span>
+<span class="font-medium text-on-surface-variant truncate">Counter 2</span>
+</div>
+<span class="text-[12px] font-semibold text-error whitespace-nowrap pl-2">
+              Skipped
+            </span>
+</div>
+</article>
+<!-- Empty State (Hidden by default) -->
+<div class="hidden flex-col items-center justify-center py-12 px-4 text-center" id="noResultsState">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-outline mb-2">
+<span class="material-symbols-outlined text-[26px]">search_off</span>
+</div>
+<p class="font-semibold text-on-surface text-[14px]">No tokens found</p>
+<p class="text-[12px] text-on-surface-variant mt-0.5">Try searching with a different token number or filter.</p>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Navigation Bar -->
+<nav class="fixed bottom-0 inset-x-0 z-40 max-w-[390px] mx-auto pb-safe bg-surface/95 backdrop-blur-xl border-t border-surface-container/70 shadow-[0_-4px_16px_rgba(0,0,0,0.03)]">
+<div class="flex justify-around items-center h-16 px-6">
+<!-- Overview Tab -->
+<a class="flex flex-col items-center justify-center flex-1 h-12 text-on-surface-variant hover:text-primary transition-all group" data-nav="overview" href="#overview">
+<span class="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">dashboard</span>
+<span class="text-[11px] font-medium mt-0.5">Overview</span>
+</a>
+<!-- Manage Tab (Active) -->
+<a aria-current="page" class="flex flex-col items-center justify-center flex-1 h-12 text-primary font-bold transition-all group relative" data-nav="manage" href="#manage">
+<div class="relative">
+<span class="material-symbols-outlined text-[22px]">confirmation_number</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full ring-2 ring-surface"></span>
+</div>
+<span class="text-[11px] font-bold mt-0.5 tracking-tight">Manage</span>
+</a>
+</div>
+</nav>
+<!-- Mini Toast Feedback Notification (Hidden by default) -->
+<div class="fixed top-16 inset-x-0 z-50 flex justify-center pointer-events-none transition-all duration-300 opacity-0 -translate-y-2" id="toastNotification">
+<div class="bg-inverse-surface text-inverse-on-surface text-[12px] font-semibold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border border-white/10">
+<span class="material-symbols-outlined text-[16px] text-secondary-fixed">check_circle</span>
+<span id="toastMessage">Action completed</span>
+</div>
+</div>
+</div>
+<!-- Interactive JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Status Filter Chips Logic
+      const filterChips = document.querySelectorAll('.filter-chip');
+      const tokenCards = document.querySelectorAll('.token-card');
+      const searchInput = document.getElementById('tokenSearchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      const noResultsState = document.getElementById('noResultsState');
+      const toast = document.getElementById('toastNotification');
+      const toastMessage = document.getElementById('toastMessage');
+
+      let currentFilter = 'all';
+
+      function showToast(msg) {
+        toastMessage.textContent = msg;
+        toast.classList.remove('opacity-0', '-translate-y-2');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', '-translate-y-2');
+        }, 2000);
+      }
+
+      function filterAndSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        tokenCards.forEach(card => {
+          const cardStatus = card.dataset.status;
+          const tokenNum = (card.dataset.token || '').toLowerCase();
+          const desk = (card.dataset.desk || '').toLowerCase();
+          const dept = (card.dataset.dept || '').toLowerCase();
+
+          const matchesFilter = (currentFilter === 'all') || (cardStatus === currentFilter);
+          const matchesSearch = !query || tokenNum.includes(query) || desk.includes(query) || dept.includes(query);
+
+          if (matchesFilter && matchesSearch) {
+            card.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        if (visibleCount === 0) {
+          noResultsState.classList.remove('hidden');
+          noResultsState.classList.add('flex');
+        } else {
+          noResultsState.classList.add('hidden');
+          noResultsState.classList.remove('flex');
+        }
+
+        clearSearchBtn.style.display = query.length > 0 ? 'flex' : 'none';
+      }
+
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          filterChips.forEach(c => {
+            c.classList.remove('bg-primary', 'text-on-primary', 'shadow-xs');
+            c.classList.add('bg-surface-container', 'text-on-surface-variant');
+          });
+          chip.classList.remove('bg-surface-container', 'text-on-surface-variant');
+          chip.classList.add('bg-primary', 'text-on-primary', 'shadow-xs');
+
+          currentFilter = chip.dataset.filter;
+          filterAndSearch();
+        });
+      });
+
+      // 2. Search Input & Clear logic
+      searchInput.addEventListener('input', filterAndSearch);
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        filterAndSearch();
+        searchInput.focus();
+      });
+
+      // 3. Segmented control tabs (Tokens, Counters, Insights)
+      const tabButtons = document.querySelectorAll('#mainTabNav button');
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabButtons.forEach(b => {
+            b.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+            b.classList.add('text-on-surface-variant');
+          });
+          btn.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+          btn.classList.remove('text-on-surface-variant');
+          
+          const tabName = btn.dataset.tab;
+          showToast(`Switched to ${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+        });
+      });
+
+      // 4. Token Cards Quick Interaction
+      tokenCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const token = card.dataset.token;
+          showToast(`Token ${token} selected`);
+        });
+      });
+
+      // 5. Bottom Navigation tab switching
+      const bottomNavLinks = document.querySelectorAll('nav a');
+      bottomNavLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          bottomNavLinks.forEach(l => {
+            l.removeAttribute('aria-current');
+            l.className = 'flex flex-col items-center justify-center flex-1 h-12 text-on-surface-variant hover:text-primary transition-all group';
+            const dot = l.querySelector('.bg-primary.rounded-full');
+            if (dot) dot.remove();
+          });
+          link.setAttribute('aria-current', 'page');
+          link.className = 'flex flex-col items-center justify-center flex-1 h-12 text-primary font-bold transition-all group relative';
+          
+          const iconWrapper = link.querySelector('div') || link;
+          if (!iconWrapper.querySelector('.bg-primary.rounded-full')) {
+            const dot = document.createElement('span');
+            dot.className = 'absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full ring-2 ring-surface';
+            iconWrapper.appendChild(dot);
+          }
+          showToast(`Viewing ${link.dataset.nav === 'overview' ? 'Overview' : 'Queue Management'}`);
+        });
+      });
+    });
+  </script>
+</body></html>
