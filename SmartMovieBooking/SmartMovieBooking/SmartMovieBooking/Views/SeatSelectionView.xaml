@@ -213,7 +213,11 @@
                        VerticalOptions="Center"
                        StaysOpen="False">
             <popup:SfPopup.PopupStyle>
-                <popup:PopupStyle OutsideBackground="#CC0B1020" />
+                <popup:PopupStyle WidthRequest="720"
+                                  HeightRequest="640"
+                                  MaximumWidthRequest="720"
+                                  MaximumHeightRequest="720"
+                                  OutsideBackground="#CC0B1020" />
             </popup:SfPopup.PopupStyle>
             <popup:SfPopup.ContentTemplate>
                 <DataTemplate>

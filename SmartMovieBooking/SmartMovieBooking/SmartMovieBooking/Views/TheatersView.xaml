@@ -53,6 +53,10 @@
                                        FontSize="13"
                                        TextColor="#4B5563"
                                        LineBreakMode="WordWrap" />
+                                <Label Text="{Binding MovieSynopsis, FallbackValue=''}"
+                                       FontSize="12"
+                                       TextColor="#6B7280"
+                                       LineBreakMode="WordWrap" />
                                 <HorizontalStackLayout Spacing="8">
                                     <Border Background="#EEF2FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="10,6">
                                         <Label Text="{Binding MovieCertificateText, FallbackValue='UA'}" FontSize="10" TextColor="#4338CA" />
