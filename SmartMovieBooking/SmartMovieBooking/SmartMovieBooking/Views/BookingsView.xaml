@@ -35,11 +35,11 @@
                                    TextColor="#5B6275" />
                         </VerticalStackLayout>
 
-                        <HorizontalStackLayout Grid.Column="1" Spacing="10" HorizontalOptions="End">
-                            <Border StrokeThickness="0" BackgroundColor="#EEF2FF" StrokeShape="RoundRectangle 999" Padding="14,8">
+                        <HorizontalStackLayout Grid.Column="1" Spacing="10" HorizontalOptions="End" VerticalOptions="Center">
+                            <Border StrokeThickness="0" BackgroundColor="#EEF2FF" StrokeShape="RoundRectangle 16" Padding="14,8">
                                 <Label Text="{Binding UpcomingCount, StringFormat='Upcoming ({0})'}" FontSize="12" TextColor="#4338CA" />
                             </Border>
-                            <Border StrokeThickness="0" BackgroundColor="#F3F4F6" StrokeShape="RoundRectangle 999" Padding="14,8">
+                            <Border StrokeThickness="0" BackgroundColor="#F3F4F6" StrokeShape="RoundRectangle 16" Padding="14,8">
                                 <Label Text="All Tickets" FontSize="12" TextColor="#374151" />
                             </Border>
                         </HorizontalStackLayout>
@@ -62,37 +62,41 @@
                                             BackgroundColor="#FFFFFF"
                                             Padding="18">
                     <VerticalStackLayout Spacing="14">
-                        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="Upcoming Showtimes"
-                                       FontFamily="OpenSansSemibold"
-                                       FontSize="20"
-                                       FontAttributes="Bold"
-                                       TextColor="#111827" />
-                                <Label Text="Most booking details are shown directly on the ticket card below."
-                                       FontSize="12"
-                                       TextColor="#6B7280" />
-                            </VerticalStackLayout>
-                            <Border Grid.Column="1"
-                                    BackgroundColor="#EDE9FE"
-                                    StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 999"
-                                    Padding="12,6"
-                                    HorizontalOptions="End"
-                                    VerticalOptions="Center">
-                                <Label Text="{Binding UpcomingCount, StringFormat='{0} Ready'}"
-                                       FontSize="12"
-                                       FontFamily="OpenSansSemibold"
-                                       TextColor="#5B21B6" />
-                            </Border>
-                        </Grid>
-
-                        <syncfusion:SfListView ItemsSource="{Binding Bookings}"
-                                               IsScrollingEnabled="False"
-                                               AutoFitMode="DynamicHeight"
-                                               ItemSpacing="14"
-                                               BackgroundColor="Transparent">
-                            <syncfusion:SfListView.ItemTemplate>
+						<Grid ColumnDefinitions="*,Auto"
+							  VerticalOptions="Center">
+							<VerticalStackLayout Spacing="4">
+								<Label Text="Upcoming Showtimes"
+									   FontFamily="OpenSansSemibold"
+									   FontSize="20"
+									   FontAttributes="Bold"
+									   TextColor="#111827" />
+								<Label Text="Most booking details are shown directly on the ticket card below."
+									   FontSize="12"
+									   TextColor="#6B7280" />
+							</VerticalStackLayout>
+							<Border Grid.Column="1"
+									BackgroundColor="#EDE9FE"
+									StrokeThickness="0"
+									StrokeShape="RoundRectangle 999"
+									Padding="12,6"
+									HorizontalOptions="End"
+									VerticalOptions="Center">
+								<Label Text="{Binding UpcomingCount, StringFormat='{0} Ready'}"
+									   FontSize="12"
+									   FontFamily="OpenSansSemibold"
+									   TextColor="#5B21B6" />
+							</Border>
+						</Grid>
+						<syncfusion:SfListView ItemsSource="{Binding Bookings}"
+											   ScrollBarVisibility="Never"
+											   AutoFitMode="DynamicHeight"
+											   SelectionMode="None"
+							                   ItemSpacing="14"
+											   BackgroundColor="Transparent">
+							<syncfusion:SfListView.ItemsLayout>
+								<syncfusion:GridLayout SpanCount="1" />
+							</syncfusion:SfListView.ItemsLayout>
+							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Booking">
                                     <syncfusionCards:SfCardView CornerRadius="22"
                                                                  BackgroundColor="#FAFAFF"
