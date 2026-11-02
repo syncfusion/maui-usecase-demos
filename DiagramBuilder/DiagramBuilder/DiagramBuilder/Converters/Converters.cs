@@ -46,20 +46,21 @@ public class ZoomToPercentConverter : IValueConverter
 /// <summary>
 /// Color key string (ResourceKeys) → resolved Color or Brush. Honors the
 /// caller's target type so the same converter works for both
-/// <c>BoxView.Color</c> (Color) and <c>BackgroundColor</c>/<c>Fill</c>
-/// (Brush) bindings. Falls back to a Brush when the target type is unknown.
+/// <c>BoxView.Color</c>/<c>BackgroundColor</c> (Color) and <c>Fill</c>/<c>Stroke</c>
+/// (Brush) bindings. Returns a Color unless the target explicitly asks for a
+/// Brush, because MAUI's binding engine casts the converter output strictly.
 /// </summary>
 public class ColorToBrushConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var color = Services.ResourceLookup.Color(value as string, Colors.White);
-        if (targetType == typeof(Color))
+        if (typeof(Brush).IsAssignableFrom(targetType))
         {
-            return color;
+            return new SolidColorBrush(color);
         }
 
-        return new SolidColorBrush(color);
+        return color;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>

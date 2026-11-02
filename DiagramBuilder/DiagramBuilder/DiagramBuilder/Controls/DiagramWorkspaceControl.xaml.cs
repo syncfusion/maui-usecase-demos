@@ -153,12 +153,13 @@ public partial class DiagramWorkspaceControl : ContentView
                 {
                     ws.Palette.Palettes.Add(palette);
                 }
-                ws.Palette.IsVisible = true;
             }
-            else
-            {
-                ws.Palette.IsVisible = false;
-            }
+
+            // The SymbolPalette stays hidden: the standalone StencilPanelControl is
+            // the Shapes panel in the designer layout, so the canvas shows no extra
+            // left column. The palette is still populated above so the symbol
+            // palette host remains available to the surface behavior.
+            ws.Palette.IsVisible = false;
         }
     }
 
