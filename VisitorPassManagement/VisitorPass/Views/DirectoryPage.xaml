@@ -49,6 +49,7 @@
                                   HeaderRowTextColor="{StaticResource TextMuted}"
                                   HeaderRowFontSize="10"
                                   HeaderRowFontFamily="OpenSansSemibold"
+                                  SelectionBackground="Transparent"
                                   RowTextColor="{StaticResource TextPrimary}"
                                   RowFontSize="11"
                                   RowFontFamily="OpenSansRegular"
@@ -106,6 +107,7 @@
                 <Grid Grid.Column="2" />
             </Grid>
 
+                    <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
                     <Grid ColumnDefinitions="{OnIdiom Desktop='*,*,*,*,*,*', Phone='*,*'}"
                           RowDefinitions="{OnIdiom Desktop='Auto', Phone='Auto,Auto,Auto'}"
                           ColumnSpacing="8"
@@ -292,6 +294,7 @@
                         </Border>
 
                     </Grid>
+                    </ScrollView>
 
         <Border BackgroundColor="{StaticResource Surface}"
                 StrokeThickness="1"

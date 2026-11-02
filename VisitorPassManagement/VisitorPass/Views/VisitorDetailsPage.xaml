@@ -426,19 +426,20 @@
                                                                TextColor="{StaticResource TextPrimary}"
                                                                VerticalOptions="Center" />
                                                             <Border Grid.Column="1"
-                                                                IsVisible="{Binding IsCurrent}"
-                                                                BackgroundColor="{StaticResource StatusCheckedInBg}"
-                                                                StrokeThickness="0"
-                                                                StrokeShape="RoundRectangle 8"
-                                                                Padding="8,3"
-                                                                HorizontalOptions="Start"
-                                                                Margin="8,0,0,0">
-                                                                <Label Text="CURRENT STAGE"
-                                                                   FontFamily="OpenSansSemibold" FontSize="8"
-                                                                   CharacterSpacing="1"
-                                                                   TextColor="{StaticResource StatusCheckedIn}" />
+                                                                    IsVisible="{Binding IsCurrent}"
+                                                                    BackgroundColor="{StaticResource StatusCheckedInBg}"
+                                                                    StrokeThickness="0"
+                                                                    StrokeShape="RoundRectangle 8"
+                                                                    Padding="8,3"
+                                                                    HorizontalOptions="Start"
+                                                                    Margin="8,0,0,0">
+                                                                <Label Text="Current Stage"
+                                                                       IsVisible="{OnIdiom Default=True, Phone=False}"
+                                                                       FontFamily="OpenSansSemibold" FontSize="8"
+                                                                       CharacterSpacing="1"
+                                                                       TextColor="{StaticResource StatusCheckedIn}" />
                                                             </Border>
-                                                            <Label Grid.Column="2"
+                                                            <Label Grid.Column="{OnIdiom Default=2, Phone=1}"
                                                                Text="{Binding Timestamp}"
                                                                FontFamily="OpenSansRegular" FontSize="10"
                                                                TextColor="{StaticResource TextMuted}"
