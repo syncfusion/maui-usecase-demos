@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using DiagramBuilder.Constants;
 using DiagramBuilder.Models;
 using DiagramBuilder.Services;
+using Syncfusion.Maui.Diagram;
 
 namespace DiagramBuilder.ViewModels;
 
@@ -38,7 +39,7 @@ public partial class StencilViewModel : ObservableObject
     /// host page first initializes; changes are pushed through the bindable
     /// property on the workspace control.
     /// </summary>
-    public System.Collections.ObjectModel.ObservableCollection<object> PaletteGroups { get; } = [];
+    public System.Collections.ObjectModel.ObservableCollection<Syncfusion.Maui.Diagram.Palette> PaletteGroups { get; } = [];
 
     /// <summary>Groups filtered by the current search text.</summary>
     public IEnumerable<StencilGroup> VisibleGroups

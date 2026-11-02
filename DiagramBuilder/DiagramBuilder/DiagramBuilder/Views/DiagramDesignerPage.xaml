@@ -84,6 +84,8 @@
                                            VerticalOptions="Fill"
                                            HorizontalOptions="Fill"
                                            Margin="8"
+                                           WidthRequest="260"
+                                           HeightRequest="600"
                                            SymbolWidth="64"
                                            SymbolHeight="64"
                                            EnableSearch="True"
