@@ -136,7 +136,7 @@
 							<syncfusion:GridLayout SpanCount="1" />
 						</syncfusion:SfListView.ItemsLayout>
 						<syncfusion:SfListView.ItemTemplate>
-							<DataTemplate x:DataType="sys:DateTime">
+							<DataTemplate x:DataType="models:SelectableDate">
 								<Border StrokeThickness="1"
 										Stroke="#D7D8E6"
 										BackgroundColor="#FFFFFF"
@@ -144,33 +144,65 @@
 										HeightRequest="68"
 										WidthRequest="84"
 										StrokeShape="RoundRectangle 14">
+									<Border.Triggers>
+										<DataTrigger TargetType="Border"
+													 Binding="{Binding IsSelected}"
+													 Value="True">
+											<Setter Property="BackgroundColor" Value="#3525CD" />
+											<Setter Property="Stroke" Value="#3525CD" />
+										</DataTrigger>
+									</Border.Triggers>
 									<Border.GestureRecognizers>
 										<TapGestureRecognizer Tapped="OnDateTapped"
-															  CommandParameter="{Binding .}" />
+															  CommandParameter="{Binding Date}" />
 									</Border.GestureRecognizers>
 									<Border.Behaviors>
 										<behaviors:HoverAnimationBehavior />
 									</Border.Behaviors>
 									<Grid RowDefinitions="Auto,Auto,Auto"
 										  RowSpacing="0">
-										<Label Text="{Binding ., Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
+										<Label Text="{Binding Date, Converter={StaticResource DateLabelConverter}, ConverterParameter=labelonly}"
 											   FontFamily="OpenSansSemibold"
 											   FontSize="9"
 											   TextColor="#49454F"
-											   HorizontalTextAlignment="Center" />
+											   HorizontalTextAlignment="Center">
+											<Label.Triggers>
+												<DataTrigger TargetType="Label"
+															 Binding="{Binding IsSelected}"
+															 Value="True">
+													<Setter Property="TextColor" Value="#C7C4F5" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
 										<Label Grid.Row="1"
-											   Text="{Binding ., StringFormat='{0:dd}'}"
+											   Text="{Binding Date, StringFormat='{0:dd}'}"
 											   FontFamily="OpenSansSemibold"
 											   FontAttributes="Bold"
 											   FontSize="15"
 											   TextColor="#1A1A2E"
-											   HorizontalTextAlignment="Center" />
+											   HorizontalTextAlignment="Center">
+											<Label.Triggers>
+												<DataTrigger TargetType="Label"
+															 Binding="{Binding IsSelected}"
+															 Value="True">
+													<Setter Property="TextColor" Value="#FFFFFF" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
 										<Label Grid.Row="2"
-											   Text="{Binding ., StringFormat='{0:ddd MMM}'}"
+											   Text="{Binding Date, StringFormat='{0:ddd MMM}'}"
 											   FontFamily="OpenSansSemibold"
 											   FontSize="9"
 											   TextColor="#49454F"
-											   HorizontalTextAlignment="Center" />
+											   HorizontalTextAlignment="Center">
+											<Label.Triggers>
+												<DataTrigger TargetType="Label"
+															 Binding="{Binding IsSelected}"
+															 Value="True">
+													<Setter Property="TextColor" Value="#C7C4F5" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
 									</Grid>
 								</Border>
 							</DataTemplate>

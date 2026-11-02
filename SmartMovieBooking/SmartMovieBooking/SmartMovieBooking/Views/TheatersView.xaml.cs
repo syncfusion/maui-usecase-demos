@@ -26,7 +26,7 @@ public partial class TheatersView : ContentPage
 
     private async void OnDateTapped(object? sender, TappedEventArgs e)
     {
-        if (sender is not BindableObject bindable || bindable.BindingContext is not DateTime d) return;
+        if (e.Parameter is not DateTime d) return;
 
         _vm.SelectedDate = d;
         await _vm.LoadAsync();

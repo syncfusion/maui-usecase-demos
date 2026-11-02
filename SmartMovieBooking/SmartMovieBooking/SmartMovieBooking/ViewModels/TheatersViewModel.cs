@@ -16,12 +16,12 @@ public partial class TheatersViewModel : ObservableObject
         _theaters = theaters;
         _showtimes = showtimes;
         _session = session;
-        Dates = new ObservableCollection<DateTime>();
+        Dates = new ObservableCollection<SelectableDate>();
         Theaters = new ObservableCollection<Theater>();
         BuildDateStrip();
     }
 
-    public ObservableCollection<DateTime> Dates { get; }
+    public ObservableCollection<SelectableDate> Dates { get; }
     public ObservableCollection<Theater> Theaters { get; }
 
     [ObservableProperty] private DateTime _selectedDate;
@@ -42,11 +42,17 @@ public partial class TheatersViewModel : ObservableObject
     [ObservableProperty] private string _movieReleaseText = string.Empty;
     [ObservableProperty] private string _moviePriceRangeText = string.Empty;
 
+    partial void OnSelectedDateChanged(DateTime value)
+    {
+        foreach (var d in Dates)
+            d.IsSelected = d.Date == value.Date;
+    }
+
     private void BuildDateStrip()
     {
         Dates.Clear();
         var today = DateTime.Today;
-        for (int i = 0; i < 7; i++) Dates.Add(today.AddDays(i));
+        for (int i = 0; i < 7; i++) Dates.Add(new SelectableDate(today.AddDays(i)));
         SelectedDate = today;
     }
 
