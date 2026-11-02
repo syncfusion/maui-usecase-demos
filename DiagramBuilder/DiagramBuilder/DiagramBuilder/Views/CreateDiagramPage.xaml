@@ -61,19 +61,22 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Border Margin="0,2,0,2"
-                                            Padding="18,12,18,12"
+                                            Padding="0,0,0,0"
                                             BackgroundColor="Transparent">
                                         <Grid ColumnDefinitions="3,*"
                                               VerticalOptions="Center">
                                             <BoxView x:Name="AccentBar"
+                                                     Grid.Column="0"
                                                      WidthRequest="3"
                                                      HeightRequest="20"
                                                      Color="{Binding Converter={StaticResource CategoryAccentConverter}}"
+                                                     IsVisible="{Binding ., Converter={StaticResource StringEqualsConverter}, ConverterParameter={Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedCategoryName}}"
                                                      VerticalOptions="Center" />
                                             <Label Grid.Column="1"
                                                    Text="{Binding .}"
                                                    FontSize="15"
                                                    TextColor="{DynamicResource TextPrimary}"
+                                                   Padding="18,12,18,12"
                                                    VerticalOptions="Center" />
                                         </Grid>
                                         <Border.GestureRecognizers>

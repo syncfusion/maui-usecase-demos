@@ -19,6 +19,7 @@
             <converters:SelectionKindToVisibilityConverter x:Key="SelectionKindToVisibilityConverter" />
             <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
             <converters:CategoryAccentConverter x:Key="CategoryAccentConverter" />
+            <converters:StringEqualsConverter x:Key="StringEqualsConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

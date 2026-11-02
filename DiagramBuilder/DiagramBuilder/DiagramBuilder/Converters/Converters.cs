@@ -200,3 +200,24 @@ public class CategoryAccentConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
         throw new NotSupportedException();
 }
+
+/// <summary>
+/// True when the bound value equals the parameter string (case-insensitive).
+/// Used by the Create Diagram rail to show the accent bar only on the selected
+/// category: <c>{Binding ., Converter={StaticResource StringEqualsConverter}, ConverterParameter={Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedCategoryName}}</c>.
+/// </summary>
+public class StringEqualsConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is null || parameter is null)
+        {
+            return false;
+        }
+
+        return string.Equals(value.ToString(), parameter.ToString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}
