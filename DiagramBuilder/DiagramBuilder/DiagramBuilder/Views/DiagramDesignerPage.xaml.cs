@@ -1,3 +1,4 @@
+using System.Collections.Specialized;
 using System.ComponentModel;
 using DiagramBuilder.Controls;
 using DiagramBuilder.Services;
@@ -40,50 +41,41 @@ public partial class DiagramDesignerPage : ContentPage
 
         MenuBar.IsChecked = viewModel.MenuBar.IsChecked;
 
-        // Wire both Workspace instances so the same commands work whether the
-        // shapes panel is visible or the canvas is full-bleed.
-        WireWorkspace(WorkspaceWithShapes);
-        WireWorkspace(WorkspaceFullBleed);
+        // Wire the single workspace. The SymbolPalette it discovers lives inside
+        // the workspace control's DiagramGrid alongside the SfDiagram, so palette
+        // discovery succeeds regardless of how the host page is laid out.
+        WireWorkspace(Workspace);
 
         // Mirror the shared Stencil VM palette groups into the native SymbolPalette
-        // (Shapes panel). Syncfusion's JS bridge caches the Palettes reference at
-        // initialisation, so the collection must be ASSIGNED to SymbolPalette.Palettes
-        // rather than mutated via Clear()/Add() — per the Syncfusion diagram-sdk
-        // MAUI getting-started docs.
-        ShapesPalette.Palettes = viewModel.Stencil.PaletteGroups;
-        ((INotifyCollectionChanged)viewModel.Stencil.PaletteGroups).CollectionChanged +=
-            (_, _) => ShapesPalette.Palettes = viewModel.Stencil.PaletteGroups;
+        // (inside the workspace control). Syncfusion's JS bridge caches the Palettes
+        // reference at initialisation, so the collection must be ASSIGNED to
+        // SymbolPalette.Palettes rather than mutated via Clear()/Add() — per the
+        // Syncfusion diagram-sdk MAUI getting-started docs.
+        var paletteGroups = viewModel.Stencil.PaletteGroups;
+        Workspace.ShapesPalette.Palettes = paletteGroups;
+        ((INotifyCollectionChanged)paletteGroups).CollectionChanged +=
+            (_, _) => Workspace.ShapesPalette.Palettes = paletteGroups;
 
         // Wire panel-header chevrons to the show/hide relay commands.
-        ShapesHeader.ToggleCommand = new Command(() => viewModel.ShowStencil = !viewModel.ShowStencil);
         PropertyPanel.Header.ToggleCommand = new Command(() => viewModel.ShowProperties = !viewModel.ShowProperties);
 
         // Wire surface request relays (VM → control, one-way; the VM stays
         // control-agnostic — each delegate only awaits a behavior method).
-        viewModel.UndoRequested = () => ActiveWorkspace().Behavior.UndoAsync();
-        viewModel.RedoRequested = () => ActiveWorkspace().Behavior.RedoAsync();
-        viewModel.CutRequested = () => ActiveWorkspace().Behavior.CutAsync();
-        viewModel.CopyRequested = () => ActiveWorkspace().Behavior.CopyAsync();
-        viewModel.PasteRequested = () => ActiveWorkspace().Behavior.PasteAsync();
-        viewModel.DeleteRequested = () => ActiveWorkspace().Behavior.DeleteSelectionAsync();
-        viewModel.PrintRequested = () => ActiveWorkspace().Behavior.PrintAsync();
-        viewModel.Zoom.FitToPageRequested = new Command(() => _ = ActiveWorkspace().Behavior.FitToPageAsync());
+        viewModel.UndoRequested = () => Workspace.Behavior.UndoAsync();
+        viewModel.RedoRequested = () => Workspace.Behavior.RedoAsync();
+        viewModel.CutRequested = () => Workspace.Behavior.CutAsync();
+        viewModel.CopyRequested = () => Workspace.Behavior.CopyAsync();
+        viewModel.PasteRequested = () => Workspace.Behavior.PasteAsync();
+        viewModel.DeleteRequested = () => Workspace.Behavior.DeleteSelectionAsync();
+        viewModel.PrintRequested = () => Workspace.Behavior.PrintAsync();
+        viewModel.Zoom.FitToPageRequested = new Command(() => _ = Workspace.Behavior.FitToPageAsync());
 
         _zoomSubscription = OnZoomPropertyChanged;
-        WorkspaceWithShapes.SurfaceBehaviorZoomFactor = viewModel.Zoom.CurrentZoom;
-        WorkspaceFullBleed.SurfaceBehaviorZoomFactor = viewModel.Zoom.CurrentZoom;
+        Workspace.SurfaceBehaviorZoomFactor = viewModel.Zoom.CurrentZoom;
 
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
     }
-
-    /// <summary>
-    /// Routes diagram-surface relay commands to the visible workspace. There are
-    /// two Workspace instances in the visual tree (one in each layout mode), so
-    /// commands dispatch to whichever is currently shown.
-    /// </summary>
-    private DiagramWorkspaceControl ActiveWorkspace() =>
-        _viewModel.ShowStencil ? WorkspaceWithShapes : WorkspaceFullBleed;
 
     private void WireWorkspace(DiagramWorkspaceControl workspace)
     {
@@ -105,8 +97,7 @@ public partial class DiagramDesignerPage : ContentPage
         if (args.PropertyName == nameof(ZoomViewModel.CurrentZoom)
             && sender is ZoomViewModel zoom)
         {
-            WorkspaceWithShapes.SurfaceBehaviorZoomFactor = zoom.CurrentZoom;
-            WorkspaceFullBleed.SurfaceBehaviorZoomFactor = zoom.CurrentZoom;
+            Workspace.SurfaceBehaviorZoomFactor = zoom.CurrentZoom;
         }
     }
 
@@ -118,9 +109,7 @@ public partial class DiagramDesignerPage : ContentPage
     /// <summary>Document loaded by service → push to live SfDiagram (template load).</summary>
     private void OnDocumentLoaded(object? sender, Models.DiagramDocument document)
     {
-        // Mirror the template into both workspaces so the visible one shows it.
-        WorkspaceWithShapes.LoadTemplate(document);
-        WorkspaceFullBleed.LoadTemplate(document);
+        Workspace.LoadTemplate(document);
         _viewModel.SetDocumentTitle(document.Title);
         _viewModel.SetStatus(string.Format(Constants.AppStrings.StatusOpenedFormat, document.Title));
     }
@@ -158,11 +147,8 @@ public partial class DiagramDesignerPage : ContentPage
         _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
         _viewModel.Zoom.PropertyChanged += _zoomSubscription;
 
-        WorkspaceWithShapes.TemplateLoaded -= OnTemplateLoaded;
-        WorkspaceWithShapes.TemplateLoaded += OnTemplateLoaded;
-
-        WorkspaceFullBleed.TemplateLoaded -= OnTemplateLoaded;
-        WorkspaceFullBleed.TemplateLoaded += OnTemplateLoaded;
+        Workspace.TemplateLoaded -= OnTemplateLoaded;
+        Workspace.TemplateLoaded += OnTemplateLoaded;
 
         if (_dialogShown)
         {
@@ -179,8 +165,7 @@ public partial class DiagramDesignerPage : ContentPage
         // Symmetric teardown for page-scoped UI subscriptions only. Service-level
         // subscriptions are kept (see OnAppearing for the rationale) so a
         // DocumentLoaded event fired while the modal is up still reaches the page.
-        WorkspaceWithShapes.TemplateLoaded -= OnTemplateLoaded;
-        WorkspaceFullBleed.TemplateLoaded -= OnTemplateLoaded;
+        Workspace.TemplateLoaded -= OnTemplateLoaded;
         _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
     }
 }
