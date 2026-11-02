@@ -14,36 +14,25 @@
             BackgroundColor="{DynamicResource CanvasBackground}">
         <Grid RowDefinitions="*">
 
-            <!-- Canvas grid: SfDiagram and SymbolPalette MUST be direct Grid siblings
-                 (architecture.md §3.3 — sibling discovery walks immediate children only). -->
+            <!-- Canvas grid: SfDiagram alone — the SymbolPalette is rendered as the
+                 standalone Shapes panel (StencilPanelControl) to match the design
+                 (single column layout: Shapes | Canvas | Properties). -->
             <Grid x:Name="DiagramGrid"
                   Grid.Row="0"
-                  ColumnDefinitions="Auto,*"
+                  ColumnDefinitions="*"
                   ColumnSpacing="0">
 
-                <!-- Shared SymbolPalette host (rendered if PaletteGroups is set) -->
+                <!-- Kept hidden so the surface-behavior code-behind that walks the
+                     symbol palette host (DiagramWorkspaceControl.xaml.cs) continues
+                     to compile, but no UI is rendered. -->
                 <diagram:SymbolPalette x:Name="Palette"
                                        Grid.Column="0"
-                                       VerticalOptions="Start"
-                                       Margin="8,8,0,8"
-                                       SymbolWidth="64"
-                                       SymbolHeight="64"
-                                       EnableSearch="True"
-                                       ExpandMode="Multiple"
                                        IsVisible="False" />
 
                 <diagram:SfDiagram x:Name="Diagram"
-                                   Grid.Column="1"
+                                   Grid.Column="0"
                                    BackgroundColor="{DynamicResource CanvasBackground}">
                     <diagram:SfDiagram.Behaviors>
-                        <!-- DiagramSurfaceBehavior exposes bindable Command properties.
-                             They cannot be bound from XAML via {x:Reference Workspace}
-                             because 'Workspace' is the x:Name in the parent page, not in
-                             this file's scope (which only contains DiagramGrid, Palette,
-                             Diagram and SurfaceBehavior). Instead, DiagramWorkspaceControl
-                             exposes matching BindableProperties (ReadyCommand etc.) with
-                             property-changed callbacks that propagate the value into the
-                             behavior — see DiagramWorkspaceControl.xaml.cs. -->
                         <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
                     </diagram:SfDiagram.Behaviors>
                 </diagram:SfDiagram>

@@ -5,6 +5,7 @@
              xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
              xmlns:behaviors="clr-namespace:DiagramBuilder.Behaviors;assembly=DiagramBuilder"
+             x:Name="RootPage"
              Title="{Binding DocumentTitle}"
              BackgroundColor="{DynamicResource WindowBackground}">
 
@@ -50,8 +51,9 @@
         <!-- Stencil (left, 280 px, collapsible) -->
         <controls:StencilPanelControl x:Name="StencilPanel"
                                       Grid.Row="3" Grid.Column="0"
+                                      BindingContext="{Binding Stencil}"
                                       WidthRequest="280"
-                                      IsVisible="{Binding ShowStencil}" />
+                                      IsVisible="{Binding Source={x:Reference RootPage}, Path=BindingContext.ShowStencil}" />
 
         <!-- Canvas (center, fill) -->
         <controls:DiagramWorkspaceControl x:Name="Workspace"
@@ -61,8 +63,9 @@
         <!-- Properties (right, 320 px, collapsible) -->
         <controls:PropertyPanelControl x:Name="PropertyPanel"
                                        Grid.Row="3" Grid.Column="2"
+                                       BindingContext="{Binding PropertyPanel}"
                                        WidthRequest="320"
-                                       IsVisible="{Binding ShowProperties}" />
+                                       IsVisible="{Binding Source={x:Reference RootPage}, Path=BindingContext.ShowProperties}" />
 
         <!-- Row 4: status bar -->
         <Border Grid.Row="4" Grid.ColumnSpan="3"

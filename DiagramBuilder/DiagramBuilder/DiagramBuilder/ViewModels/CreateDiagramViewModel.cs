@@ -67,7 +67,9 @@ public partial class CreateDiagramViewModel : ObservableObject
         _ = LoadTemplatesAsync(value);
     }
 
-    /// <summary>Selects a category card (parameter is the enum name, from a bound CommandParameter).</summary>
+    /// <summary>Selects a category card. Parameter is the display label (e.g. "Flow Chart"),
+    /// which doesn't match the <see cref="DiagramCategory"/> enum member names ("FlowChart").
+    /// Map the label back to the enum explicitly so the click always changes the selection.</summary>
     [RelayCommand]
     private void SelectCategory(string? categoryName)
     {
@@ -76,9 +78,13 @@ public partial class CreateDiagramViewModel : ObservableObject
             return;
         }
 
-        SelectedCategory = Enum.TryParse<DiagramCategory>(categoryName, ignoreCase: true, out var parsed)
-            ? parsed
-            : SelectedCategory;
+        SelectedCategory = categoryName switch
+        {
+            AppStrings.CategoryFlowChart => DiagramCategory.FlowChart,
+            AppStrings.CategoryMindMap => DiagramCategory.MindMap,
+            AppStrings.CategoryOrganizationChart => DiagramCategory.OrganizationChart,
+            _ => SelectedCategory,
+        };
     }
 
     /// <summary>Preloads templates; called on page appearing.</summary>
