@@ -111,6 +111,29 @@
     <Color x:Key="Gray950">#141414</Color>
 
     <!-- ============================================================ -->
+    <!-- Unified popup / dialog / flyout chrome                       -->
+    <!-- Shared surface, stroke, text, hover and divider colors used  -->
+    <!-- by every dialog and flyout in the app.                       -->
+    <!-- ============================================================ -->
+    <Color x:Key="PopupSurfaceColor">#FFFFFF</Color>
+    <Color x:Key="PopupSurfaceDarkColor">#29272F</Color>
+    <Color x:Key="PopupStrokeColor">#E3DFEA</Color>
+    <Color x:Key="PopupStrokeDarkColor">#44414B</Color>
+    <Color x:Key="PopupHoverColor">#F2EEFA</Color>
+    <Color x:Key="PopupHoverDarkColor">#3A3644</Color>
+    <Color x:Key="PopupDividerColor">#ECE8F1</Color>
+    <Color x:Key="PopupDividerDarkColor">#3A3740</Color>
+    <Color x:Key="PopupTextPrimaryColor">#29272F</Color>
+    <Color x:Key="PopupTextPrimaryDarkColor">#F5F3F7</Color>
+    <Color x:Key="PopupTextSecondaryColor">#77727F</Color>
+    <Color x:Key="PopupTextSecondaryDarkColor">#B7B2C0</Color>
+    <Color x:Key="ChipStrokeColor">#DAD4E8</Color>
+    <Color x:Key="ChipBackgroundColor">#FAF9FC</Color>
+    <Color x:Key="DestructiveColor">#D32F2F</Color>
+    <Color x:Key="DestructiveHoverColor">#FDECEC</Color>
+    <Color x:Key="DestructiveHoverDarkColor">#4A2E32</Color>
+
+    <!-- ============================================================ -->
     <!-- Drag-and-drop tokens (Module-07)                              -->
     <!-- Stronger shadow for the lifted card and the gap-highlight    -->
     <!-- tint shown when a card is being dragged, per draganddrop.png. -->

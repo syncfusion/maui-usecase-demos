@@ -2,99 +2,134 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Todo.Features.EditNote.ViewModels"
-             xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
-             xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              x:Class="Todo.Features.EditNote.Views.EditNotePage"
              x:DataType="vm:EditNoteViewModel"
              Shell.NavBarIsVisible="False"
              Shell.PresentationMode="ModalNotAnimated"
-             BackgroundColor="#7A000000">
+             BackgroundColor="#80000000">
 
     <Grid Padding="24" VerticalOptions="Center" HorizontalOptions="Center">
-        <Border WidthRequest="360"
-                MaximumHeightRequest="540"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 16">
+        <Border WidthRequest="372"
+                MaximumHeightRequest="560"
+                BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
+                Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="20">
             <Border.Shadow>
-                <Shadow Brush="#40000000" Radius="12" Offset="0,4" Opacity="0.22" />
+                <Shadow Brush="#40000000" Radius="16" Offset="0,8" Opacity="0.18" />
             </Border.Shadow>
 
-            <Grid RowDefinitions="64,Auto,*,Auto,52">
-                <Grid Grid.Row="0" ColumnDefinitions="24,*,44" Padding="16,0" VerticalOptions="Center">
-                    <CheckBox Grid.Column="0" Color="{StaticResource PrimaryColor}" />
-                    <Entry Grid.Column="1"
-                           Text="{Binding Title, Mode=TwoWay}"
-                           FontSize="14"
-                           VerticalOptions="Center"
-                           BackgroundColor="Transparent"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
-                    <buttons:SfButton Grid.Column="2"
-                                      Text="×"
-                                      FontSize="20"
-                                      TextColor="#6D6875"
-                                      BackgroundColor="Transparent"
-                                      WidthRequest="44"
-                                      HeightRequest="44"
+            <Grid RowDefinitions="Auto,1,*,1,Auto">
+                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                    <Label Text="{Binding DialogTitle}"
+                           FontFamily="{StaticResource FontFamilySemibold}"
+                           FontSize="18"
+                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                           VerticalOptions="Center" />
+                    <buttons:SfButton Grid.Column="1"
+                                      Text="✕"
+                                      WidthRequest="40"
+                                      HeightRequest="40"
                                       Padding="0"
-                                      Command="{Binding SaveCommand}" />
+                                      BackgroundColor="Transparent"
+                                      TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
+                                      FontSize="18"
+                                      Command="{Binding CancelCommand}" />
                 </Grid>
 
-                <BoxView Grid.Row="1" HeightRequest="1" Color="#ECEAF0" Margin="16,0" />
+                <BoxView Grid.Row="1"
+                         HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource PopupDividerColor}, Dark={StaticResource PopupDividerDarkColor}}"
+                         Margin="0,16" />
 
-                <ScrollView Grid.Row="2" Padding="16,12" MaximumHeightRequest="330">
-                    <VerticalStackLayout Spacing="10">
-                        <Border HeightRequest="40" Stroke="#DAD4E8" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="10,0">
-                            <Grid ColumnDefinitions="24,*,20" VerticalOptions="Center">
-                                <Image Grid.Column="0" Source="calendaricon.png" WidthRequest="15" HeightRequest="15" />
-                                <Label Grid.Column="1" Text="Due date" VerticalOptions="Center" FontSize="13" />
-                                <CheckBox Grid.Column="2" IsChecked="{Binding HasDueDate, Mode=TwoWay}" Color="{StaticResource PrimaryColor}" />
-                            </Grid>
-                        </Border>
-                        <picker:SfDatePicker SelectedDate="{Binding DueDateSelection, Mode=TwoWay}" IsVisible="{Binding HasDueDate}" HeightRequest="220" />
+                <ScrollView Grid.Row="2">
+                    <VerticalStackLayout Spacing="14">
+                        <Grid ColumnDefinitions="44,*,40" ColumnSpacing="10" VerticalOptions="Center">
+                            <CheckBox Grid.Column="0"
+                                      IsChecked="{Binding HasDueDate, Mode=TwoWay}"
+                                      Color="{StaticResource PrimaryColor}"
+                                      VerticalOptions="Center" />
+                            <Entry Grid.Column="1"
+                                   Text="{Binding Title, Mode=TwoWay}"
+                                   FontSize="16"
+                                   FontFamily="{StaticResource FontFamilySemibold}"
+                                   BackgroundColor="Transparent"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                            <buttons:SfButton Grid.Column="2"
+                                              Text="★"
+                                              WidthRequest="40"
+                                              HeightRequest="40"
+                                              Padding="0"
+                                              BackgroundColor="Transparent"
+                                              FontSize="18"
+                                              TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}" />
+                        </Grid>
 
-                        <Border HeightRequest="40" Stroke="#DAD4E8" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="10,0">
-                            <Grid ColumnDefinitions="24,*" VerticalOptions="Center">
-                                <Image Grid.Column="0" Source="dateicon.png" WidthRequest="15" HeightRequest="15" />
-                                <Picker Grid.Column="1"
-                                        ItemsSource="{Binding RepeatOptions}"
-                                        SelectedItem="{Binding RepeatFrequency, Mode=TwoWay}"
-                                        Title="Repeat"
-                                        FontSize="13"
-                                        BackgroundColor="Transparent" />
+                        <VerticalStackLayout Spacing="10">
+                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
+                                <Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                <Border Grid.Column="1"
+                                        Padding="12,8"
+                                        Stroke="{StaticResource ChipStrokeColor}"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                    <Label Text="{Binding DueDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=date}"
+                                           FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                                </Border>
                             </Grid>
-                        </Border>
-
-                        <Border HeightRequest="40" Stroke="#DAD4E8" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="10,0">
-                            <Grid ColumnDefinitions="24,*,20" VerticalOptions="Center">
-                                <Image Grid.Column="0" Source="bellicon.png" WidthRequest="15" HeightRequest="15" />
-                                <Label Grid.Column="1" Text="Reminder" VerticalOptions="Center" FontSize="13" />
-                                <CheckBox Grid.Column="2" IsChecked="{Binding HasReminder, Mode=TwoWay}" Color="{StaticResource PrimaryColor}" />
+                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
+                                <Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                <Border Grid.Column="1"
+                                        Padding="12,8"
+                                        Stroke="{StaticResource ChipStrokeColor}"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                    <Label Text="{Binding RepeatFrequency, Converter={StaticResource EnumDisplayNameConverter}}"
+                                           FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                                </Border>
                             </Grid>
-                        </Border>
-                        <VerticalStackLayout IsVisible="{Binding HasReminder}" Spacing="0">
-                            <picker:SfDatePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
-                            <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}" />
+                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
+                                <Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                <Border Grid.Column="1"
+                                        Padding="12,8"
+                                        Stroke="{StaticResource ChipStrokeColor}"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                    <Label Text="{Binding ReminderDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=datetime}"
+                                           FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                                </Border>
+                            </Grid>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </ScrollView>
 
-                <BoxView Grid.Row="3" HeightRequest="1" Color="#ECEAF0" Margin="16,0" />
-                <Grid Grid.Row="4" ColumnDefinitions="*,44" Padding="16,0" VerticalOptions="Center">
+                <BoxView Grid.Row="3"
+                         HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource PopupDividerColor}, Dark={StaticResource PopupDividerDarkColor}}"
+                         Margin="0,16" />
+
+                <Grid Grid.Row="4" ColumnDefinitions="*,Auto" VerticalOptions="Center">
                     <Label Text="{Binding CreatedAgeText}"
                            IsVisible="{Binding HasCreatedInfo}"
                            FontSize="12"
-                           TextColor="#77727F"
+                           TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
-                                      Text="⌫"
-                                      FontSize="16"
-                                      TextColor="#77727F"
-                                      BackgroundColor="Transparent"
-                                      WidthRequest="44"
-                                      HeightRequest="44"
+                                      Text="🗑"
+                                      WidthRequest="40"
+                                      HeightRequest="40"
                                       Padding="0"
+                                      BackgroundColor="Transparent"
+                                      TextColor="{StaticResource DestructiveColor}"
                                       Command="{Binding DeleteCommand}" />
                 </Grid>
             </Grid>

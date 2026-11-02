@@ -9,63 +9,42 @@
              Shell.PresentationMode="ModalNotAnimated"
              BackgroundColor="#80000000">
 
-    <Grid Padding="32"
-          VerticalOptions="Center"
-          HorizontalOptions="Center">
-
-        <Border MaximumWidthRequest="440"
-                WidthRequest="{OnIdiom Phone=300, Default=400}"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                StrokeThickness="0"
+    <Grid Padding="24" VerticalOptions="Center" HorizontalOptions="Center">
+        <Border WidthRequest="340"
+                BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
+                Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
+                StrokeThickness="1"
                 StrokeShape="RoundRectangle 16"
                 Padding="24">
             <Border.Shadow>
-                <Shadow Brush="#33000000"
-                        Radius="8"
-                        Offset="0,4"
-                        Opacity="0.20" />
+                <Shadow Brush="#40000000" Radius="16" Offset="0,8" Opacity="0.18" />
             </Border.Shadow>
-            <VerticalStackLayout Spacing="16">
-
+            <VerticalStackLayout Spacing="14">
                 <Label Text="{Binding Title}"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
+                       FontFamily="{StaticResource FontFamilySemibold}"
+                       FontSize="18"
+                       TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
 
                 <Label Text="{Binding Message}"
                        FontSize="14"
-                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
+                       TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}" />
 
-                <Grid ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12"
-                      HorizontalOptions="End"
-                      Margin="0,8,0,0">
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" HorizontalOptions="End" Margin="0,8,0,0">
                     <buttons:SfButton Grid.Column="1"
-                            Text="{Binding CancelText}"
-                            Style="{StaticResource TextButtonStyle}"
-                            Command="{Binding CancelCommand}"
-                            MinimumWidthRequest="96" />
+                                      Text="{Binding CancelText}"
+                                      Style="{StaticResource TextButtonStyle}"
+                                      Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="2"
-                            x:Name="ConfirmButton"
-                            Text="{Binding ConfirmText}"
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            Command="{Binding ConfirmCommand}"
-                            MinimumWidthRequest="96">
+                                      Text="{Binding ConfirmText}"
+                                      Style="{StaticResource PrimaryButtonStyle}"
+                                      Command="{Binding ConfirmCommand}">
                         <buttons:SfButton.Triggers>
-                            <DataTrigger TargetType="buttons:SfButton"
-                                         Binding="{Binding IsDestructive}"
-                                         Value="True">
-                                <Setter Property="BackgroundColor" Value="{StaticResource ErrorColor}" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="buttons:SfButton"
-                                         Binding="{Binding IsDestructive}"
-                                         Value="False">
-                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+                            <DataTrigger TargetType="buttons:SfButton" Binding="{Binding IsDestructive}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource DestructiveColor}" />
                             </DataTrigger>
                         </buttons:SfButton.Triggers>
                     </buttons:SfButton>
                 </Grid>
-
             </VerticalStackLayout>
         </Border>
     </Grid>

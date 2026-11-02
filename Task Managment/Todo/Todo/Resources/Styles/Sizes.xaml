@@ -61,4 +61,36 @@
         <Shadow.Opacity>0.16</Shadow.Opacity>
     </Shadow>
 
+    <!-- ============================================================ -->
+    <!-- Unified popup / dialog / flyout chrome                       -->
+    <!-- Every dialog and flyout in the app uses these tokens so the  -->
+    <!-- surfaces, corner radii, shadows and menu metrics stay        -->
+    <!-- consistent across all screens.                               -->
+    <!-- ============================================================ -->
+    <CornerRadius x:Key="DialogCornerRadius">16</CornerRadius>
+    <CornerRadius x:Key="FlyoutCornerRadius">12</CornerRadius>
+    <CornerRadius x:Key="ChipCornerRadius">12</CornerRadius>
+
+    <x:Double x:Key="DialogPadding">24</x:Double>
+    <x:Double x:Key="MenuRowHeight">44</x:Double>
+    <x:Double x:Key="MenuIconColumnWidth">24</x:Double>
+    <x:Double x:Key="MenuSurfacePadding">8</x:Double>
+    <x:Double x:Key="MenuSeparatorHeight">9</x:Double>
+
+    <!-- Soft elevation for centered dialogs -->
+    <Shadow x:Key="PopupElevation">
+        <Shadow.Brush>#40000000</Shadow.Brush>
+        <Shadow.Radius>16</Shadow.Radius>
+        <Shadow.Offset>0,8</Shadow.Offset>
+        <Shadow.Opacity>0.18</Shadow.Opacity>
+    </Shadow>
+
+    <!-- Lighter elevation for contextual flyouts -->
+    <Shadow x:Key="FlyoutElevation">
+        <Shadow.Brush>#40000000</Shadow.Brush>
+        <Shadow.Radius>12</Shadow.Radius>
+        <Shadow.Offset>0,4</Shadow.Offset>
+        <Shadow.Opacity>0.16</Shadow.Opacity>
+    </Shadow>
+
 </ResourceDictionary>

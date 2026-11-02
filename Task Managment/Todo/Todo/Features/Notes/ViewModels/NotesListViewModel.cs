@@ -574,8 +574,8 @@ public partial class NotesListViewModel : ViewModelBase
 
         var vm = new ConfirmDialogViewModel(_navigation)
         {
-            Title = "Delete list?",
-            Message = $"The '{list.Name}' list will be removed. Notes in this list will move back to My Notes.",
+            Title = "Delete this list?",
+            Message = "Are you sure you want to delete this list.",
             ConfirmText = "Delete",
             IsDestructive = true
         };
