@@ -26,14 +26,12 @@
                                     BackgroundColor="#FFFFFF"
                                     Padding="18,16">
             <VerticalStackLayout Spacing="4">
-                <Label x:Name="ScreenTitleLabel"
-                       Text="Select Seats"
+                <Label Text="{Binding ScreenTitle}"
                        FontFamily="OpenSansSemibold"
                        FontSize="22"
                        FontAttributes="Bold"
                        TextColor="#1A1A2E" />
-                <Label x:Name="TheaterLabel"
-                       Text=""
+                <Label Text="{Binding TheaterAndShowtime}"
                        FontSize="13"
                        TextColor="#49454F" />
             </VerticalStackLayout>
@@ -161,13 +159,11 @@
                                      Grid.Column="0"
                                      Spacing="2"
                                      VerticalOptions="Center">
-                    <Label x:Name="SeatsSummaryLabel"
-                           Text="0 seats selected"
+                    <Label Text="{Binding SelectedSeatSummary}"
                            FontFamily="OpenSansSemibold"
                            FontSize="13"
                            TextColor="#1A1A2E" />
-                    <Label x:Name="TotalLabel"
-                           Text="$0.00"
+                    <Label Text="{Binding FormattedTotal}"
                            FontFamily="OpenSansSemibold"
                            FontAttributes="Bold"
                            FontSize="18"

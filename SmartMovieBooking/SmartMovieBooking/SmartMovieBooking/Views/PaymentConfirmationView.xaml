@@ -12,8 +12,7 @@
     <Grid Padding="20">
         <Border Background="#0B1020" />
 
-        <Border WidthRequest="720"
-                MaximumWidthRequest="720"
+        <Border MaximumWidthRequest="720"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Stroke="#DCE3F5"

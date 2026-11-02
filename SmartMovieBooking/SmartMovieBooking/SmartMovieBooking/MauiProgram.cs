@@ -12,11 +12,11 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        // Register the Syncfusion license key. The placeholder string below
-        // is valid as a community-license trial; replace with your own key
-        // for production builds to remove the trial watermark.
-        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
-            "Ngo9BigBOggjHTQxAR8/V1JNaF5cXmRCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5dcXRXRGZcUUBwXUJZWEM=");
+        var syncfusionLicenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
+        if (!string.IsNullOrWhiteSpace(syncfusionLicenseKey))
+        {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncfusionLicenseKey);
+        }
 
         var builder = MauiApp.CreateBuilder();
         builder
