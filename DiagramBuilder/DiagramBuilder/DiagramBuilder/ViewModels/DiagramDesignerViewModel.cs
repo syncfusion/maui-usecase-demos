@@ -110,10 +110,16 @@ public partial class DiagramDesignerViewModel : ObservableObject
 
     // ---------- Document lifecycle ----------
 
+    /// <summary>Raised when the create-diagram dialog should be shown (host page pushes it modally).</summary>
+    public event EventHandler? CreateDialogRequested;
+
     [RelayCommand]
-    private async Task NewDocumentAsync()
+    private void NewDocument()
     {
-        await Shell.Current.GoToAsync($"//{AppConstants.RouteCreateDiagram}");
+        // Spec: FILE ▸ New returns to the create dialog (modal over the designer).
+        // The host page pushes the same CreateDiagramPage instance used at launch so
+        // the modal push/pop flow stays symmetric.
+        CreateDialogRequested?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -142,10 +148,59 @@ public partial class DiagramDesignerViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task PrintDocumentAsync() => await Task.CompletedTask;
+    private async Task PrintDocumentAsync()
+    {
+        if (PrintRequested is null)
+        {
+            // Degrade to an explicit status message per Task 9 acceptance.
+            Status = string.Format(AppStrings.StatusCommandExecuted, AppConstants.CmdPrint);
+            return;
+        }
+
+        await PrintRequested();
+        Status = AppStrings.StatusPrinted;
+    }
 
     /// <summary>Raised when the export dialog should be shown (host page pushes it modally).</summary>
     public event EventHandler? ExportDialogRequested;
+
+    // ---------- Surface request relays (set by the host page; VM stays control-agnostic) ----------
+    // The page assigns each delegate to the matching DiagramSurfaceBehavior method
+    // (architecture.md §12: one-way VM→control by awaiting the control's async
+    // methods). A null delegate degrades to an explicit status message so every
+    // command still executes without crash (Task 9 acceptance).
+
+    /// <summary>Executes undo on the live diagram, or null when unbound.</summary>
+    public Func<Task>? UndoRequested { get; set; }
+
+    /// <summary>Executes redo on the live diagram, or null when unbound.</summary>
+    public Func<Task>? RedoRequested { get; set; }
+
+    /// <summary>Cuts the selection on the live diagram, or null when unbound.</summary>
+    public Func<Task>? CutRequested { get; set; }
+
+    /// <summary>Copies the selection on the live diagram, or null when unbound.</summary>
+    public Func<Task>? CopyRequested { get; set; }
+
+    /// <summary>Pastes on the live diagram, or null when unbound.</summary>
+    public Func<Task>? PasteRequested { get; set; }
+
+    /// <summary>Deletes the selection on the live diagram, or null when unbound.</summary>
+    public Func<Task>? DeleteRequested { get; set; }
+
+    /// <summary>Prints the live diagram, or null when unbound.</summary>
+    public Func<Task>? PrintRequested { get; set; }
+
+    private async Task RunSurfaceRequestAsync(Func<Task>? request, string commandId)
+    {
+        if (request is null)
+        {
+            Status = string.Format(AppStrings.StatusCommandExecuted, commandId);
+            return;
+        }
+
+        await request();
+    }
 
     [RelayCommand]
     private void ShowExportDialog() => ExportDialogRequested?.Invoke(this, EventArgs.Empty);
@@ -161,21 +216,22 @@ public partial class DiagramDesignerViewModel : ObservableObject
         switch (commandId)
         {
             // FILE
-            case AppConstants.CmdNew: await NewDocumentCommand.ExecuteAsync(null); break;
+            case AppConstants.CmdNew: NewDocumentCommand.Execute(null); break;
             case AppConstants.CmdOpen: await OpenDocumentCommand.ExecuteAsync(null); break;
             case AppConstants.CmdSave: await SaveDocumentCommand.ExecuteAsync(null); break;
             case AppConstants.CmdSaveAs: await SaveAsDocumentCommand.ExecuteAsync(null); break;
             case AppConstants.CmdExport: ShowExportDialogCommand.Execute(null); break;
             case AppConstants.CmdPrint: await PrintDocumentCommand.ExecuteAsync(null); break;
 
-            // EDIT (undo/redo handled by the behavior; clipboard ops are control-supported,
-            // the rest dispatch with status messages via the mock services).
-            case AppConstants.CmdUndo:
-            case AppConstants.CmdRedo:
-            case AppConstants.CmdCut:
-            case AppConstants.CmdCopy:
-            case AppConstants.CmdPaste:
-            case AppConstants.CmdDelete:
+            // EDIT: control-supported operations route to the behavior relays
+            // (architecture.md §12). Duplicate and Select All have no SfDiagram
+            // API in this package version (verified 35.1.42) — status messages.
+            case AppConstants.CmdUndo: await RunSurfaceRequestAsync(UndoRequested, commandId); break;
+            case AppConstants.CmdRedo: await RunSurfaceRequestAsync(RedoRequested, commandId); break;
+            case AppConstants.CmdCut: await RunSurfaceRequestAsync(CutRequested, commandId); break;
+            case AppConstants.CmdCopy: await RunSurfaceRequestAsync(CopyRequested, commandId); break;
+            case AppConstants.CmdPaste: await RunSurfaceRequestAsync(PasteRequested, commandId); break;
+            case AppConstants.CmdDelete: await RunSurfaceRequestAsync(DeleteRequested, commandId); break;
             case AppConstants.CmdDuplicate:
             case AppConstants.CmdSelectAll:
                 Status = string.Format(AppStrings.StatusCommandExecuted, commandId);

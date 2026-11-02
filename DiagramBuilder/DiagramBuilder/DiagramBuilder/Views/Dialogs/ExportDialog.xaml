@@ -70,7 +70,7 @@
 
             <!-- Actions -->
             <HorizontalStackLayout Spacing="8" Margin="0,12,0,0">
-                <Button Text="{x:Static constants:AppStrings.CreateAction}"
+                <Button Text="{x:Static constants:AppStrings.ExportAction}"
                         Command="{Binding ExportCommand}"
                         IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}" />
                 <Button Text="{x:Static constants:AppStrings.OkAction}"

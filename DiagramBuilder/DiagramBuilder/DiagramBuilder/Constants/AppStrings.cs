@@ -217,6 +217,7 @@ public static class AppStrings
     public const string StatusSelectionFormat = "{0} selected";
     public const string StatusNothingSelected = "Nothing selected";
     public const string StatusCommandExecuted = "{0} executed.";
+    public const string StatusPrinted = "Diagram sent to print.";
     public const string SaveNotAvailableTitle = "Save Diagram";
     public const string SaveNotAvailableMessage = "Diagrams are kept in memory for this demo session.";
     public const string OpenNotAvailableTitle = "Open Diagram";
