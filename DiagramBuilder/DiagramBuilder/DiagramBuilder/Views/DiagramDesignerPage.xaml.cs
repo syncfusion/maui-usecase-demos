@@ -1,3 +1,4 @@
+using DiagramBuilder.Controls;
 using DiagramBuilder.Services;
 using DiagramBuilder.ViewModels;
 
