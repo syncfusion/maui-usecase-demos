@@ -8,8 +8,10 @@ using Syncfusion.Maui.Diagram;
 namespace DiagramBuilder.Controls;
 
 /// <summary>
-/// Workspace canvas (ui-spec.md §5). Hosts the SfDiagram; the SymbolPalette
-/// lives on the host page as a direct Grid sibling (architecture.md §3.3).
+/// Workspace canvas (ui-spec.md §5). Hosts the SfDiagram and a hidden
+/// SymbolPalette as direct siblings inside <c>DiagramGrid</c> — Syncfusion's
+/// palette discovery requires the SymbolPalette to be among
+/// <c>SfDiagram.Parent</c>'s immediate children (architecture.md §3.3).
 /// Attaches <see cref="Behaviors.DiagramSurfaceBehavior"/> declaratively to
 /// the SfDiagram.
 /// </summary>
@@ -82,6 +84,15 @@ public partial class DiagramWorkspaceControl : ContentView
     public DiagramSurfaceBehavior Behavior => SurfaceBehavior;
 
     public SfDiagram DiagramControl => Diagram;
+
+    /// <summary>
+    /// The hidden SymbolPalette sibling of the SfDiagram inside
+    /// <c>DiagramGrid</c>. It is a config carrier: Syncfusion discovers it via
+    /// <c>FindSiblingSymbolPalette()</c> and renders the shapes inside the
+    /// SfDiagram's own webview. Assign <see cref="SymbolPalette.Palettes"/> to
+    /// populate it.
+    /// </summary>
+    public SymbolPalette ShapesPalette => ShapesPaletteView;
 
     public DiagramWorkspaceControl()
     {

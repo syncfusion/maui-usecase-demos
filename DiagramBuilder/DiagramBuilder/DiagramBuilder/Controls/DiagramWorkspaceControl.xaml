@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  DiagramWorkspaceControl: hosts the SfDiagram and nothing else. The Shapes panel
-  (Syncfusion SymbolPalette) is a sibling of this control on the host page, which
-  is the layout Syncfusion's drag-and-drop wiring requires (architecture.md §3.3).
+  DiagramWorkspaceControl: hosts the SfDiagram plus a hidden SymbolPalette
+  sibling. Syncfusion's palette discovery (FindSiblingSymbolPalette) looks for a
+  SymbolPalette among SfDiagram.Parent's immediate children, so the palette must
+  live inside this control's DiagramGrid next to the SfDiagram. It renders
+  nothing in MAUI (IsVisible=False) — once discovered, the palette's config is
+  applied and the shapes render inside the SfDiagram's own webview.
 -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -28,6 +31,18 @@
                     <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
                 </diagram:SfDiagram.Behaviors>
             </diagram:SfDiagram>
+
+            <!--
+              Hidden config carrier for the symbol palette. Syncfusion discovers
+              it as a sibling of the SfDiagram (same Grid) and mirrors its shape
+              list into the #symbolpalette div inside the SfDiagram webview.
+            -->
+            <diagram:SymbolPalette x:Name="ShapesPaletteView"
+                                   IsVisible="False"
+                                   SymbolWidth="64"
+                                   SymbolHeight="64"
+                                   EnableSearch="True"
+                                   ExpandMode="Multiple" />
         </Grid>
     </Border>
 </ContentView>
