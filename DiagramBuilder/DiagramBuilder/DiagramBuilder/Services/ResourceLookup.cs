@@ -41,4 +41,57 @@ public static class ResourceLookup
 
     /// <summary>Read-only snapshot of every (key, color) the lookup knows about.</summary>
     public static IReadOnlyDictionary<string, Color> PaletteSnapshot() => Palette;
+
+    /// <summary>
+    /// Resolves an application resource to a <see cref="Color"/>. The theme exposes
+    /// both <c>Color</c> keys (e.g. "TextPrimary") and <c>Brush</c> keys (e.g.
+    /// "TextPrimaryBrush"), so a resource may hold either. Casting blindly to
+    /// <see cref="Color"/> throws <see cref="InvalidCastException"/> at runtime when a
+    /// brush key is used — this helper accepts both and returns the underlying color.
+    /// </summary>
+    public static Color ResourceColor(string key, Color? fallback = null)
+    {
+        fallback ??= Colors.Transparent;
+        return TryGetResource(key, out var value) ? value switch
+        {
+            Color color => color,
+            SolidColorBrush solid => solid.Color,
+            _ => fallback,
+        } : fallback;
+    }
+
+    /// <summary>
+    /// Resolves an application resource to a <see cref="Brush"/>. Accepts a
+    /// <c>Color</c> resource (wrapped in a <see cref="SolidColorBrush"/>) or a brush
+    /// resource (returned as-is).
+    /// </summary>
+    public static Brush ResourceBrush(string key, Brush? fallback = null)
+    {
+        fallback ??= new SolidColorBrush(Colors.Transparent);
+        return TryGetResource(key, out var value) ? value switch
+        {
+            Brush brush => brush,
+            Color color => new SolidColorBrush(color),
+            _ => fallback,
+        } : fallback;
+    }
+
+    private static bool TryGetResource(string key, out object? value)
+    {
+        value = null;
+        var resources = Application.Current?.Resources;
+        if (resources is null)
+        {
+            return false;
+        }
+
+        // ResourceDictionary.TryGetValue searches merged dictionaries too.
+        if (resources.TryGetValue(key, out var found))
+        {
+            value = found;
+            return true;
+        }
+
+        return false;
+    }
 }

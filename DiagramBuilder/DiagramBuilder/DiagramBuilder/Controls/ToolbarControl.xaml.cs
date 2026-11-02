@@ -209,10 +209,10 @@ public partial class ToolbarControl : ContentView
 
     private View BuildColorSwatchButton(Models.ToolbarItem item)
     {
-        var fillColor = (Color)Application.Current!.Resources[item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary"];
+        var fillColor = Services.ResourceLookup.ResourceColor(item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary");
         var swatch = new Border
         {
-            Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
+            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
             StrokeThickness = 1,
             StrokeShape = new RoundRectangle { CornerRadius = 4 },
             WidthRequest = 24,
@@ -327,7 +327,7 @@ public partial class ToolbarControl : ContentView
             Text = headerKey,
             FontSize = 11,
             FontAttributes = FontAttributes.Bold,
-            TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+            TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             Margin = new Thickness(8, 4),
         });
         foreach (var child in subItems)
@@ -357,11 +357,11 @@ public partial class ToolbarControl : ContentView
 
         return new Border
         {
-            Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
+            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
             StrokeThickness = 1,
             StrokeShape = new RoundRectangle { CornerRadius = 8 },
             Content = stack,
-            BackgroundColor = (Color)Application.Current!.Resources["CanvasBackground"],
+            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
         };
     }
 

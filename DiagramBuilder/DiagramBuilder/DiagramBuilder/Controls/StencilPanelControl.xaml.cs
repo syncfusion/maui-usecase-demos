@@ -119,13 +119,15 @@ public partial class StencilPanelControl : ContentView
     {
         var tile = new Border
         {
-            Stroke = (Color)Application.Current!.Resources["PanelBorderBrush"],
+            // Border.Stroke is a Brush — "PanelBorderBrush" is a SolidColorBrush resource,
+            // so it must not be cast to Color.
+            Stroke = Services.ResourceLookup.ResourceBrush("PanelBorderBrush"),
             StrokeThickness = 1,
             Padding = new Thickness(6, 6),
             Margin = new Thickness(4),
             WidthRequest = 80,
             HeightRequest = 70,
-            BackgroundColor = (Color)Application.Current!.Resources["CanvasBackground"],
+            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 6 },
             AutomationId = "stencil_tile_" + item.Id,
         };
@@ -136,7 +138,7 @@ public partial class StencilPanelControl : ContentView
             Text = item.DisplayName,
             FontSize = 11,
             HorizontalTextAlignment = TextAlignment.Center,
-            TextColor = (Color)Application.Current!.Resources["TextPrimary"],
+            TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
         });
         tile.Content = stack;
 
@@ -179,8 +181,8 @@ public partial class StencilPanelControl : ContentView
 
     private View BuildShapePreview(ShapeType type)
     {
-        var strokeColor = (Color)Application.Current!.Resources["TextPrimary"];
-        var fillColor = (Color)Application.Current!.Resources["CanvasBackground"];
+        var strokeColor = Services.ResourceLookup.ResourceColor("TextPrimary");
+        var fillColor = Services.ResourceLookup.ResourceColor("CanvasBackground");
         View shape = type switch
         {
             ShapeType.Rectangle => new Microsoft.Maui.Controls.Shapes.Rectangle
@@ -257,7 +259,7 @@ public partial class StencilPanelControl : ContentView
 
     private View BuildConnectorPreview(ConnectorKind kind)
     {
-        var strokeColor = (Color)Application.Current!.Resources["TextPrimary"];
+        var strokeColor = Services.ResourceLookup.ResourceColor("TextPrimary");
         return kind switch
         {
             ConnectorKind.Straight => new Microsoft.Maui.Controls.Shapes.Line

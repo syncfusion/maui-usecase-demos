@@ -106,16 +106,16 @@ public partial class PropertyPanelControl : ContentView
     {
         return new Border
         {
-            Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
+            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
             StrokeThickness = 1,
             Padding = new Thickness(8, 6),
-            BackgroundColor = (Color)Application.Current!.Resources["CanvasBackground"],
+            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 4 },
             Content = new Label
             {
                 Text = label,
                 FontSize = 13,
-                TextColor = (Color)Application.Current!.Resources["TextPrimary"],
+                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                 VerticalTextAlignment = TextAlignment.Center,
                 AutomationId = automationId,
             },
@@ -486,12 +486,12 @@ public partial class PropertyPanelControl : ContentView
                 HeightRequest = 28,
                 CornerRadius = 0,
                 BackgroundColor = opt == selected
-                    ? (Color)Application.Current!.Resources["PrimaryColor"]
-                    : (Color)Application.Current!.Resources["CanvasBackground"],
+                    ? Services.ResourceLookup.ResourceColor("PrimaryColor")
+                    : Services.ResourceLookup.ResourceColor("CanvasBackground"),
                 TextColor = opt == selected
                     ? Colors.White
-                    : (Color)Application.Current!.Resources["TextPrimary"],
-                BorderColor = (Color)Application.Current!.Resources["PanelBorderColor"],
+                    : Services.ResourceLookup.ResourceColor("TextPrimary"),
+                BorderColor = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
                 BorderWidth = 1,
                 AutomationId = automationId + "_" + opt,
             };
@@ -505,7 +505,7 @@ public partial class PropertyPanelControl : ContentView
         return new Switch
         {
             IsToggled = isChecked,
-            OnColor = (Color)Application.Current!.Resources["PrimaryColor"],
+            OnColor = Services.ResourceLookup.ResourceColor("PrimaryColor"),
             AutomationId = automationId,
         };
     }
