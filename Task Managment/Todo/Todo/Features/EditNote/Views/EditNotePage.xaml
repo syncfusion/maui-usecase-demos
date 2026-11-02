@@ -9,86 +9,95 @@
              x:DataType="vm:EditNoteViewModel"
              Shell.NavBarIsVisible="False"
              Shell.PresentationMode="ModalNotAnimated"
-             BackgroundColor="#80000000">
+             BackgroundColor="#7A000000">
 
-    <Grid Padding="32"
-          VerticalOptions="Center"
-          HorizontalOptions="Center">
-
-        <Border MaximumWidthRequest="480"
-            WidthRequest="{OnIdiom Phone=340, Default=440}"
-            MaximumHeightRequest="720"
+    <Grid Padding="24" VerticalOptions="Center" HorizontalOptions="Center">
+        <Border WidthRequest="360"
+                MaximumHeightRequest="540"
                 BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                 StrokeThickness="0"
-                StrokeShape="RoundRectangle 16"
-                Padding="24">
+                StrokeShape="RoundRectangle 16">
             <Border.Shadow>
-                <Shadow Brush="#33000000"
-                        Radius="8"
-                        Offset="0,4"
-                        Opacity="0.20" />
+                <Shadow Brush="#40000000" Radius="12" Offset="0,4" Opacity="0.22" />
             </Border.Shadow>
-            <VerticalStackLayout Spacing="12">
 
-                <!-- Dialog title -->
-                <Label Text="{Binding DialogTitle}"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
-
-                <!-- Title input -->
-                <syncfusionCore:SfTextInputLayout Hint="Note title"
-                                                  ContainerType="Outlined"
-                                                  ShowHint="True">
-                    <Entry Text="{Binding Title, Mode=TwoWay}"
+            <Grid RowDefinitions="64,Auto,*,Auto,52">
+                <Grid Grid.Row="0" ColumnDefinitions="24,*,44" Padding="16,0" VerticalOptions="Center">
+                    <CheckBox Grid.Column="0" Color="{StaticResource PrimaryColor}" />
+                    <Entry Grid.Column="1"
+                           Text="{Binding Title, Mode=TwoWay}"
                            FontSize="14"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-                           ReturnType="Done" />
-                </syncfusionCore:SfTextInputLayout>
+                           VerticalOptions="Center"
+                           BackgroundColor="Transparent"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
+                    <buttons:SfButton Grid.Column="2"
+                                      Text="×"
+                                      FontSize="20"
+                                      TextColor="#6D6875"
+                                      BackgroundColor="Transparent"
+                                      WidthRequest="44"
+                                      HeightRequest="44"
+                                      Padding="0"
+                                      Command="{Binding SaveCommand}" />
+                </Grid>
 
-                <ScrollView MaximumHeightRequest="440">
-                    <VerticalStackLayout Spacing="8">
-                        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                            <Label Text="Due date" VerticalOptions="Center" />
-                            <CheckBox Grid.Column="1" IsChecked="{Binding HasDueDate, Mode=TwoWay}" />
-                        </Grid>
-                        <picker:SfDatePicker SelectedDate="{Binding DueDateSelection, Mode=TwoWay}"
-                                             IsVisible="{Binding HasDueDate}" />
+                <BoxView Grid.Row="1" HeightRequest="1" Color="#ECEAF0" Margin="16,0" />
 
-                        <Label Text="Repeat" FontAttributes="Bold" />
-                        <Picker ItemsSource="{Binding RepeatOptions}"
-                                SelectedItem="{Binding RepeatFrequency, Mode=TwoWay}"
-                                Title="Select repeat frequency" />
+                <ScrollView Grid.Row="2" Padding="16,12" MaximumHeightRequest="330">
+                    <VerticalStackLayout Spacing="10">
+                        <Border HeightRequest="40" Stroke="#DAD4E8" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="10,0">
+                            <Grid ColumnDefinitions="24,*,20" VerticalOptions="Center">
+                                <Image Grid.Column="0" Source="calendaricon.png" WidthRequest="15" HeightRequest="15" />
+                                <Label Grid.Column="1" Text="Due date" VerticalOptions="Center" FontSize="13" />
+                                <CheckBox Grid.Column="2" IsChecked="{Binding HasDueDate, Mode=TwoWay}" Color="{StaticResource PrimaryColor}" />
+                            </Grid>
+                        </Border>
+                        <picker:SfDatePicker SelectedDate="{Binding DueDateSelection, Mode=TwoWay}" IsVisible="{Binding HasDueDate}" HeightRequest="220" />
 
-                        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                            <Label Text="Reminder" VerticalOptions="Center" />
-                            <CheckBox Grid.Column="1" IsChecked="{Binding HasReminder, Mode=TwoWay}" />
-                        </Grid>
-                        <picker:SfDatePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}"
-                                             IsVisible="{Binding HasReminder}" />
-                        <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}"
-                                    IsVisible="{Binding HasReminder}" />
+                        <Border HeightRequest="40" Stroke="#DAD4E8" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="10,0">
+                            <Grid ColumnDefinitions="24,*" VerticalOptions="Center">
+                                <Image Grid.Column="0" Source="dateicon.png" WidthRequest="15" HeightRequest="15" />
+                                <Picker Grid.Column="1"
+                                        ItemsSource="{Binding RepeatOptions}"
+                                        SelectedItem="{Binding RepeatFrequency, Mode=TwoWay}"
+                                        Title="Repeat"
+                                        FontSize="13"
+                                        BackgroundColor="Transparent" />
+                            </Grid>
+                        </Border>
+
+                        <Border HeightRequest="40" Stroke="#DAD4E8" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="10,0">
+                            <Grid ColumnDefinitions="24,*,20" VerticalOptions="Center">
+                                <Image Grid.Column="0" Source="bellicon.png" WidthRequest="15" HeightRequest="15" />
+                                <Label Grid.Column="1" Text="Reminder" VerticalOptions="Center" FontSize="13" />
+                                <CheckBox Grid.Column="2" IsChecked="{Binding HasReminder, Mode=TwoWay}" Color="{StaticResource PrimaryColor}" />
+                            </Grid>
+                        </Border>
+                        <VerticalStackLayout IsVisible="{Binding HasReminder}" Spacing="0">
+                            <picker:SfDatePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
+                            <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}" />
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </ScrollView>
 
-                <!-- Action buttons -->
-                <Grid ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12"
-                      HorizontalOptions="End"
-                      Margin="0,8,0,0">
-                        <buttons:SfButton Grid.Column="1"
-                            Text="Cancel"
-                            Style="{StaticResource TextButtonStyle}"
-                            Command="{Binding CancelCommand}"
-                            MinimumWidthRequest="96" />
-                    <buttons:SfButton Grid.Column="2"
-                            Text="{Binding PrimaryButtonText}"
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            Command="{Binding SaveCommand}"
-                            MinimumWidthRequest="96" />
+                <BoxView Grid.Row="3" HeightRequest="1" Color="#ECEAF0" Margin="16,0" />
+                <Grid Grid.Row="4" ColumnDefinitions="*,44" Padding="16,0" VerticalOptions="Center">
+                    <Label Text="{Binding CreatedAgeText}"
+                           IsVisible="{Binding HasCreatedInfo}"
+                           FontSize="12"
+                           TextColor="#77727F"
+                           VerticalOptions="Center" />
+                    <buttons:SfButton Grid.Column="1"
+                                      Text="⌫"
+                                      FontSize="16"
+                                      TextColor="#77727F"
+                                      BackgroundColor="Transparent"
+                                      WidthRequest="44"
+                                      HeightRequest="44"
+                                      Padding="0"
+                                      Command="{Binding DeleteCommand}" />
                 </Grid>
-
-            </VerticalStackLayout>
+            </Grid>
         </Border>
     </Grid>
 </ContentPage>

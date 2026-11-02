@@ -83,7 +83,9 @@ public enum NoteRepeatFrequency
 {
     Never,
     Daily,
+    Weekdays,
     Weekly,
     Monthly,
-    Yearly
+    Yearly,
+    Custom
 }

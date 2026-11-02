@@ -57,6 +57,8 @@ public partial class EditNoteViewModel : ViewModelBase
 
     public string DialogTitle => IsExisting ? "Edit note" : "Create note";
     public string PrimaryButtonText => IsExisting ? "Save" : "Create";
+    public string CreatedAgeText { get; private set; } = "Created just now";
+    public bool HasCreatedInfo => _existing is not null;
 
     public EditNoteViewModel(INoteService noteService, INavigationService navigation)
         : this(noteService, navigation, null, null)
@@ -80,6 +82,13 @@ public partial class EditNoteViewModel : ViewModelBase
             HasReminder = existing.ReminderDate.HasValue;
             ReminderDateSelection = existing.ReminderDate?.Date ?? DateTime.Today;
             ReminderTimeSelection = existing.ReminderDate?.TimeOfDay ?? new TimeSpan(9, 0, 0);
+            var age = DateTime.Now - existing.CreatedAt;
+            CreatedAgeText = age.TotalMinutes < 1 ? "Created just now" :
+                age.TotalHours < 1 ? $"Created {(int)age.TotalMinutes} min ago" :
+                age.TotalDays < 1 ? $"Created {(int)age.TotalHours} hours ago" :
+                $"Created {(int)age.TotalDays} days ago";
+            OnPropertyChanged(nameof(CreatedAgeText));
+            OnPropertyChanged(nameof(HasCreatedInfo));
         }
     }
 
@@ -116,6 +125,14 @@ public partial class EditNoteViewModel : ViewModelBase
     private async Task CancelAsync()
     {
         await _navigation.PopModalAsync(false);
+    }
+
+    [RelayCommand]
+    private async Task DeleteAsync()
+    {
+        if (_existing is null) return;
+        await _noteService.SoftDeleteAsync(_existing.Id);
+        await _navigation.PopModalAsync(true);
     }
 
     private bool CanSave() => !string.IsNullOrWhiteSpace(Title);

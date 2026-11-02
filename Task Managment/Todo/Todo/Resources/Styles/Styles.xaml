@@ -444,15 +444,44 @@
         </Setter>
     </Style>-->
 
-    <!-- Text-only / link button (e.g. dialog Cancel) --><!--
+    <!-- Unified dialog/flyout actions -->
     <Style x:Key="TextButtonStyle" TargetType="buttons:SfButton">
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilyRegular}" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="12,10" />
         <Setter Property="MinimumHeightRequest" Value="44" />
-    </Style>-->
+        <Setter Property="MinimumWidthRequest" Value="88" />
+    </Style>
+
+    <Style x:Key="PrimaryButtonStyle" TargetType="buttons:SfButton">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="MinimumWidthRequest" Value="88" />
+    </Style>
+
+    <Style x:Key="DialogPrimaryButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="MinimumWidthRequest" Value="88" />
+    </Style>
+
+    <Style x:Key="DialogTextButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="MinimumWidthRequest" Value="88" />
+    </Style>
 
     <!--<Style x:Key="PrimarySfButtonStyle" TargetType="buttons:SfButton">
         <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />

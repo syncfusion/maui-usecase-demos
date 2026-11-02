@@ -79,7 +79,7 @@
                                        Grid.Row="0"
                                        IsVisible="{Binding HasResults}"
                                        ItemSpacing="0"
-                                       ItemSize="70"
+                                       ItemSize="76"
                                        BackgroundColor="Transparent"
                                        SelectionMode="None">
                             <syncfusion:SfListView.ItemTemplate>

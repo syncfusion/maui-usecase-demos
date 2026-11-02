@@ -145,7 +145,7 @@
                         Padding="10,6"
                         BackgroundColor="{StaticResource PrimaryColor}"
                         StrokeThickness="0"
-                        StrokeShape="RoundRectangle 8"
+                        StrokeShape="RoundRectangle 10"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start">
                     <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
@@ -165,7 +165,7 @@
                         IsVisible="{Binding IsEmpty, Converter={StaticResource InvertedBoolConverter}}">
                     <syncfusion:SfListView Grid.Row="0" ItemsSource="{Binding ActiveNotes}"
                                    IsVisible="{Binding HasActiveNotes}"
-                                   ItemSpacing="0" ItemSize="70"
+                                   ItemSpacing="0" ItemSize="76"
                                    BackgroundColor="Transparent"
                                    SelectionMode="SingleDeselect"
                                    ItemDragging="OnItemDragging">
@@ -253,21 +253,16 @@
                                                Style="{StaticResource NoteTitleStyle}"
                                                MaxLines="1"
                                                TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}" />
-                                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                                            <HorizontalStackLayout Spacing="4"
-                                                                   IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                <Image Source="calendaricon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
-                                                <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
-                                            </HorizontalStackLayout>
-                                            <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
-                                                <Image Source="dateicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
-                                                <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" />
-                                            </HorizontalStackLayout>
-                                            <HorizontalStackLayout Spacing="4"
-                                                                   IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                <Image Source="bellicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
-                                                <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
-                                            </HorizontalStackLayout>
+                                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                            <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                <HorizontalStackLayout Spacing="4"><Image Source="calendaricon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                            </Border>
+                                            <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                <HorizontalStackLayout Spacing="4"><Image Source="dateicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                            </Border>
+                                            <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                <HorizontalStackLayout Spacing="4"><Image Source="bellicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                            </Border>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
 
@@ -322,14 +317,14 @@
                     </expander:SfExpander.Header>
                     <expander:SfExpander.Content>
                         <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}"
-                                               ItemSpacing="0" ItemSize="70"
+                                               ItemSpacing="0" ItemSize="76"
                                                BackgroundColor="Transparent"
                                                SelectionMode="SingleDeselect">
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
                                     <Border Margin="16,6" Padding="14,10"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                                            StrokeThickness="0" StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 10"
                                             Shadow="{StaticResource Elevation1}">
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Buttons="Secondary"
@@ -352,21 +347,16 @@
                                                             CommandParameter="{Binding .}" />
                                                     </Label.GestureRecognizers>
                                                 </Label>
-                                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                                                    <HorizontalStackLayout Spacing="4"
-                                                                           IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Image Source="calendaricon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
-                                                        <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
-                                                    </HorizontalStackLayout>
-                                                    <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
-                                                        <Image Source="dateicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
-                                                        <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" />
-                                                    </HorizontalStackLayout>
-                                                    <HorizontalStackLayout Spacing="4"
-                                                                           IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Image Source="bellicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
-                                                        <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
-                                                    </HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                    <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                        <HorizontalStackLayout Spacing="4"><Image Source="calendaricon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                    </Border>
+                                                    <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                        <HorizontalStackLayout Spacing="4"><Image Source="dateicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                    </Border>
+                                                    <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                        <HorizontalStackLayout Spacing="4"><Image Source="bellicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                    </Border>
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
                                             <buttons:SfButton Grid.Column="2"
@@ -400,13 +390,42 @@
                     BackgroundColor="White"
                     StrokeThickness="0"  
                     StrokeShape="RoundRectangle 12">
-                <Grid ColumnDefinitions="*" VerticalOptions="Center">
-                    <syncfusionCore:SfTextInputLayout Grid.Column="0"
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" VerticalOptions="Center">
+                    <FlexLayout Grid.Row="0"
+                                IsVisible="True"
+                                Direction="Row"
+                                Wrap="Wrap"
+                                JustifyContent="Start"
+                                AlignItems="Center"
+                                Padding="4,0,0,8">
+                        <Border IsVisible="{Binding HasDraftDueDate}" Margin="0,0,6,0" StrokeThickness="1" Stroke="#D6D0E2" StrokeShape="RoundRectangle 14" BackgroundColor="#F7F5FB" Padding="8,4">
+                            <HorizontalStackLayout Spacing="4">
+                                <Image Source="calendaricon.png" WidthRequest="13" HeightRequest="13" />
+                                <Label Text="{Binding DraftDueDateText}" FontSize="11" TextColor="#4E4A57" />
+                                <buttons:SfButton Text="×" WidthRequest="18" HeightRequest="18" Padding="0" FontSize="12" TextColor="#77727F" Background="Transparent" Command="{Binding RemoveDraftDueDateCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border IsVisible="{Binding HasDraftRepeat}" Margin="0,0,6,0" StrokeThickness="1" Stroke="#D6D0E2" StrokeShape="RoundRectangle 14" BackgroundColor="#F7F5FB" Padding="8,4">
+                            <HorizontalStackLayout Spacing="4">
+                                <Image Source="dateicon.png" WidthRequest="13" HeightRequest="13" />
+                                <Label Text="{Binding DraftRepeatText}" FontSize="11" TextColor="#4E4A57" />
+                                <buttons:SfButton Text="×" WidthRequest="18" HeightRequest="18" Padding="0" FontSize="12" TextColor="#77727F" Background="Transparent" Command="{Binding RemoveDraftRepeatCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border IsVisible="{Binding HasDraftReminder}" Margin="0,0,6,0" StrokeThickness="1" Stroke="#D6D0E2" StrokeShape="RoundRectangle 14" BackgroundColor="#F7F5FB" Padding="8,4">
+                            <HorizontalStackLayout Spacing="4">
+                                <Image Source="bellicon.png" WidthRequest="13" HeightRequest="13" />
+                                <Label Text="{Binding DraftReminderDateText}" FontSize="11" TextColor="#4E4A57" />
+                                <buttons:SfButton Text="×" WidthRequest="18" HeightRequest="18" Padding="0" FontSize="12" TextColor="#77727F" Background="Transparent" Command="{Binding RemoveDraftReminderCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </FlexLayout>
+                    <syncfusionCore:SfTextInputLayout Grid.Row="1" Grid.Column="0"
                                                      Hint="Add a note"
                                                      ContainerType="Outlined" 
                                                      OutlineCornerRadius="28"
                                                      FocusedStrokeThickness="1"
-                                                     Background="White"
+                                                     Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                                      UnfocusedStrokeThickness="1" 
                                                      ShowHint="True" Stroke="Transparent"
                                                      EnableFloating="False" 
@@ -416,17 +435,17 @@
                         <syncfusionCore:SfTextInputLayout.TrailingView>
                             <Grid ColumnDefinitions="36,36,36,36" VerticalOptions="Center" HorizontalOptions="Fill" WidthRequest="150">
                                 <buttons:SfButton Grid.Column="0" WidthRequest="36" HeightRequest="36" Padding="0"
-                                                  Background="Transparent" Command="{Binding OpenCreateNoteCommand}"
+                                                  Background="Transparent" Clicked="OnDueDateClicked"
                                                   SemanticProperties.Description="Set due date">
                                     <buttons:SfButton.Content><DataTemplate><Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="1" WidthRequest="36" HeightRequest="36" Padding="0"
-                                                  Background="Transparent" Command="{Binding OpenCreateNoteCommand}"
+                                                  Background="Transparent" Clicked="OnRepeatClicked"
                                                   SemanticProperties.Description="Set repeat frequency">
                                     <buttons:SfButton.Content><DataTemplate><Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="2" WidthRequest="36" HeightRequest="36" Padding="0"
-                                                  Background="Transparent" Command="{Binding OpenCreateNoteCommand}"
+                                                  Background="Transparent" Clicked="OnReminderClicked"
                                                   SemanticProperties.Description="Set reminder date and time">
                                     <buttons:SfButton.Content><DataTemplate><Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
@@ -443,6 +462,13 @@
                     </syncfusionCore:SfTextInputLayout>
                 </Grid>
             </Border>
+            <noteViews:TaskSchedulingFlyout x:Name="SchedulingFlyout"
+                                            Grid.RowSpan="3"
+                                            WidthRequest="0"
+                                            HeightRequest="0"
+                                            HorizontalOptions="Start"
+                                            VerticalOptions="Start"
+                                            ZIndex="999" />
             <noteViews:NoteActionFlyout x:Name="ActionFlyout"
                                         Grid.RowSpan="3"
                                         WidthRequest="0"

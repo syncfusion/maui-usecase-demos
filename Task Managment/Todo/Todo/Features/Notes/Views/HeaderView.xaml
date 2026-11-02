@@ -42,7 +42,7 @@
         <!-- Search pill -->
         <Border Grid.Column="1"
                 WidthRequest="{OnIdiom Phone=180, Default=460}"
-                Margin="0,0,0,10" Padding="2"
+                Margin="0" Padding="0"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 BackgroundColor="Transparent"
@@ -51,12 +51,13 @@
             <Grid ColumnDefinitions="*,Auto">
                  
                 <syncfusionCore:SfTextInputLayout ContainerType="Outlined"
-                                OutlineCornerRadius="28" FocusedStrokeThickness="1"   Hint="Search"
-                                UnfocusedStrokeThickness="1"  ReserveSpaceForAssistiveLabels="False" Stroke="Transparent"
+                                OutlineCornerRadius="28" FocusedStrokeThickness="1" Hint=""
+                                UnfocusedStrokeThickness="1" ReserveSpaceForAssistiveLabels="False" Stroke="Transparent"
                                 Background="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
-                                InputViewPadding="16, 0, 16, 0" EnableFloating="False" Margin="0" ShowHelperText="False"
-                                ShowHint="True"
-                                VerticalOptions="Fill">
+                                InputViewPadding="16,0,16,0" EnableFloating="False" Margin="0" ShowHelperText="False"
+                                ShowHint="False"
+                                HeightRequest="44"
+                                VerticalOptions="Center">
                     <syncfusionCore:SfTextInputLayout.HintLabelStyle>
                         <syncfusionCore:LabelStyle FontSize="14"
                                                    FontFamily="{StaticResource FontFamilyRegular}"
@@ -93,12 +94,15 @@
                     </syncfusionCore:SfTextInputLayout.TrailingView>
 
                     <Entry Text="{Binding SearchViewModel.Query, Mode=TwoWay}"
+                            Placeholder="Search"
                             FontSize="14"
                             TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
                             PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center"
                             IsReadOnly="False"
                             Focused="OnSearchEntryFocused"
-                            VerticalTextAlignment="Center"
+                            HeightRequest="44"
                             VerticalOptions="Center" />
                 </syncfusionCore:SfTextInputLayout>
                 <Grid.GestureRecognizers>

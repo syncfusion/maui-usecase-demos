@@ -44,14 +44,15 @@
                       Margin="0,8,0,0">
                     <Button Grid.Column="1"
                             Text="{Binding CancelText}"
-                            Style="{StaticResource TextButtonStyle}"
+                            Style="{StaticResource DialogTextButtonStyle}"
                             Command="{Binding CancelCommand}"
                             MinimumWidthRequest="96" />
                     <Button Grid.Column="2"
                             Text="{Binding ConfirmText}"
-                            Style="{StaticResource PrimaryButtonStyle}"
+                            Style="{StaticResource DialogPrimaryButtonStyle}"
                             Command="{Binding ConfirmCommand}"
-                            MinimumWidthRequest="96" />
+                            MinimumWidthRequest="96"
+                            BackgroundColor="{StaticResource ErrorColor}" />
                 </Grid>
 
             </VerticalStackLayout>

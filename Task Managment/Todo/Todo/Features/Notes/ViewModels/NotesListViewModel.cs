@@ -649,10 +649,51 @@ public partial class NotesListViewModel : ViewModelBase
     [ObservableProperty]
     private string newNoteTitle = string.Empty;
 
-    partial void OnNewNoteTitleChanged(string value)
+    [ObservableProperty]
+    private DateTime? draftDueDate;
+
+    [ObservableProperty]
+    private DateTime? draftReminderDate;
+
+    [ObservableProperty]
+    private NoteRepeatFrequency draftRepeatFrequency = NoteRepeatFrequency.Never;
+
+    public bool HasDraftDueDate => DraftDueDate.HasValue;
+    public bool HasDraftReminder => DraftReminderDate.HasValue;
+    public bool HasDraftRepeat => DraftRepeatFrequency != NoteRepeatFrequency.Never;
+
+    public string DraftDueDateText => DraftDueDate?.ToString("ddd d MMM, HH:mm") ?? string.Empty;
+    public string DraftReminderDateText => DraftReminderDate?.ToString("ddd d MMM, HH:mm") ?? string.Empty;
+    public string DraftRepeatText => DraftRepeatFrequency == NoteRepeatFrequency.Never ? string.Empty : DraftRepeatFrequency.ToString();
+
+    partial void OnNewNoteTitleChanged(string value) => AddNoteCommand.NotifyCanExecuteChanged();
+
+    partial void OnDraftDueDateChanged(DateTime? value) => NotifyDraftScheduleChanged();
+    partial void OnDraftReminderDateChanged(DateTime? value) => NotifyDraftScheduleChanged();
+    partial void OnDraftRepeatFrequencyChanged(NoteRepeatFrequency value) => NotifyDraftScheduleChanged();
+
+    private void NotifyDraftScheduleChanged()
     {
-        AddNoteCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(HasDraftDueDate));
+        OnPropertyChanged(nameof(HasDraftReminder));
+        OnPropertyChanged(nameof(HasDraftRepeat));
+        OnPropertyChanged(nameof(DraftDueDateText));
+        OnPropertyChanged(nameof(DraftReminderDateText));
+        OnPropertyChanged(nameof(DraftRepeatText));
     }
+
+    [RelayCommand]
+    private void RemoveDraftDueDate() => DraftDueDate = null;
+
+    [RelayCommand]
+    private void RemoveDraftReminder() => DraftReminderDate = null;
+
+    [RelayCommand]
+    private void RemoveDraftRepeat() => DraftRepeatFrequency = NoteRepeatFrequency.Never;
+
+    public void SetDraftDueDate(DateTime value) => DraftDueDate = value;
+    public void SetDraftReminderDate(DateTime value) => DraftReminderDate = value;
+    public void SetDraftRepeatFrequency(NoteRepeatFrequency value) => DraftRepeatFrequency = value;
 
     [RelayCommand(CanExecute = nameof(CanAddNote))]
     private async Task AddNoteAsync()
@@ -663,8 +704,16 @@ public partial class NotesListViewModel : ViewModelBase
 
         // Notes created from the bottom input are attached to the
         // currently-active custom list, if any (Module-05).
-        await _noteService.CreateAsync(title, listId: SelectedListId);
+        await _noteService.CreateAsync(
+            title,
+            dueDate: DraftDueDate,
+            reminderDate: DraftReminderDate,
+            listId: SelectedListId,
+            repeatFrequency: DraftRepeatFrequency);
         NewNoteTitle = string.Empty;
+        DraftDueDate = null;
+        DraftReminderDate = null;
+        DraftRepeatFrequency = NoteRepeatFrequency.Never;
     }
 
     private bool CanAddNote() => !string.IsNullOrWhiteSpace(NewNoteTitle);

@@ -35,8 +35,8 @@ public sealed class NoteActionFlyout : ContentView
             ShowOverlayAlways = false,
             OverlayMode = PopupOverlayMode.Transparent,
             StaysOpen = false,
-            WidthRequest = 220,
-            HeightRequest = 212,
+            WidthRequest = 240,
+            HeightRequest = 236,
             AutoSizeMode = PopupAutoSizeMode.None,
             AnimationMode = PopupAnimationMode.None,
             AnimationDuration = 150,
@@ -122,11 +122,11 @@ public sealed class NoteActionFlyout : ContentView
 
         _surface = new Border
         {
-            WidthRequest = 220,
-            HeightRequest = 212,
-            Padding = new Thickness(1),
+            WidthRequest = 240,
+            HeightRequest = 236,
+            Padding = new Thickness(6),
             StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(10) },
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(12) },
             Content = new ScrollView
             {
                 Content = stage,
@@ -154,13 +154,13 @@ public sealed class NoteActionFlyout : ContentView
         var button = new SfButton
         {
             Text = text,
-            HeightRequest = 44,
-            Padding = new Thickness(14, 0),
+            HeightRequest = 42,
+            Padding = new Thickness(12, 0),
             Background = Colors.Transparent,
             FontSize = 14,
             HorizontalOptions = LayoutOptions.Fill,
             HorizontalTextAlignment = TextAlignment.Start,
-            CornerRadius = 0,
+            CornerRadius = 8,
             Command = new Command(action)
         };
         button.SetAppThemeColor(SfButton.TextColorProperty,
@@ -173,7 +173,7 @@ public sealed class NoteActionFlyout : ContentView
         pointerOver.Setters.Add(new Setter
         {
             Property = VisualElement.BackgroundColorProperty,
-            Value = Color.FromArgb("#F1EEF2")
+            Value = Color.FromArgb("#F0ECFA")
         });
         commonStates.States.Add(pointerOver);
         VisualStateManager.SetVisualStateGroups(button, new VisualStateGroupList { commonStates });

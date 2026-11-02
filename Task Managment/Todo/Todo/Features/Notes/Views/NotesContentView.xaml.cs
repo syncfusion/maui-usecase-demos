@@ -12,6 +12,24 @@ public partial class NotesContentView : ContentView
         ActionFlyout.ActionRequested += OnNoteActionRequested;
     }
 
+    private void OnDueDateClicked(object? sender, EventArgs e)
+    {
+        if (sender is View anchor && BindingContext is NotesListViewModel vm)
+            SchedulingFlyout.ShowDueDate(anchor, vm);
+    }
+
+    private void OnRepeatClicked(object? sender, EventArgs e)
+    {
+        if (sender is View anchor && BindingContext is NotesListViewModel vm)
+            SchedulingFlyout.ShowRepeat(anchor, vm);
+    }
+
+    private void OnReminderClicked(object? sender, EventArgs e)
+    {
+        if (sender is View anchor && BindingContext is NotesListViewModel vm)
+            SchedulingFlyout.ShowReminder(anchor, vm);
+    }
+
     private void OnNoteMenuClicked(object? sender, EventArgs e)
     {
         if (sender is View anchor)
