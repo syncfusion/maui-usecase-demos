@@ -107,6 +107,9 @@ public partial class CreateDiagramViewModel : ObservableObject
         }
 
         await _diagramService.CreateDocumentAsync(template);
+        // Reset-then-set so the change always notifies even if the flag is
+        // already true from a previous create (singleton VM, reused dialog).
+        CloseRequested = false;
         CloseRequested = true;
     }
 }

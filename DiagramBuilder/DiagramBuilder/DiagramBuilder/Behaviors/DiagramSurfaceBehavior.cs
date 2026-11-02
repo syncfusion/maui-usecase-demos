@@ -150,12 +150,18 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
         }
     }
 
+    // Latest selection ids — control selection state is only observable through
+    // SelectionChanged (Node/Connector expose no writable IsSelected in this
+    // package version); cached so the delete relay can resolve the selection.
+    private IReadOnlyList<string> _selectedNodeIds = [];
+    private IReadOnlyList<string> _selectedConnectorIds = [];
+
     private void OnSelectionChanged(object? sender, DiagramSelectionChangedEventArgs e)
     {
         // Extract ids only — the ViewModel works with plain strings, never control types.
-        var nodeIds = e.SelectedNodes?.Select(n => n.Id).ToList() ?? [];
-        var connectorIds = e.SelectedConnectors?.Select(c => c.Id).ToList() ?? [];
-        var payload = new SelectionPayload(nodeIds, connectorIds);
+        _selectedNodeIds = e.SelectedNodes?.Select(n => n.Id).ToList() ?? [];
+        _selectedConnectorIds = e.SelectedConnectors?.Select(c => c.Id).ToList() ?? [];
+        var payload = new SelectionPayload(_selectedNodeIds, _selectedConnectorIds);
 
         if (SelectionChangedCommand?.CanExecute(payload) == true)
         {
@@ -204,6 +210,67 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
         }
     }
 
+    // ---------- EDIT relays (VM → control; signatures verified against package 35.1.42) ----------
+
+    public async Task CutAsync()
+    {
+        if (_diagram is not null)
+        {
+            await _diagram.Cut();
+        }
+    }
+
+    public async Task CopyAsync()
+    {
+        if (_diagram is not null)
+        {
+            // Copy returns the clipboard payload; the sample only needs the effect.
+            await _diagram.Copy();
+        }
+    }
+
+    public async Task PasteAsync()
+    {
+        if (_diagram is not null)
+        {
+            // Paste takes an optional elements parameter; null pastes the control clipboard.
+            await _diagram.Paste(null);
+        }
+    }
+
+    /// <summary>
+    /// Deletes the currently selected elements by removing them from the underlying
+    /// collections (the MAUI layer exposes no dedicated delete method); the control
+    /// raises CollectionChanged for the dispatch table's dirty-tracking. Selection
+    /// ids come from the cached SelectionChanged payload.
+    /// </summary>
+    public Task DeleteSelectionAsync()
+    {
+        if (_diagram is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        // Snapshot ids before mutating (CollectionChanged handlers run during removal).
+        var nodeIds = new HashSet<string>(_selectedNodeIds);
+        var connectorIds = new HashSet<string>(_selectedConnectorIds);
+
+        var nodes = _diagram.Nodes.OfType<Node>().Where(n => nodeIds.Contains(n.Id)).ToList();
+        var connectors = _diagram.Connectors.OfType<Connector>().Where(c => connectorIds.Contains(c.Id)).ToList();
+
+        foreach (var connector in connectors)
+        {
+            _diagram.Connectors.Remove(connector);
+        }
+
+        foreach (var node in nodes)
+        {
+            _diagram.Nodes.Remove(node);
+        }
+
+        return Task.CompletedTask;
+    }
+
     public async Task UndoAsync()
     {
         if (_diagram is not null)
@@ -221,6 +288,16 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
     }
 
     public async Task<bool> CanUndoAsync() => _diagram is not null && await _diagram.CanUndoAsync();
+
+    /// <summary>Prints the diagram (Windows-best per architecture.md; status elsewhere).</summary>
+    public async Task PrintAsync()
+    {
+        if (_diagram is not null)
+        {
+            // Print takes an optional DiagramExportOptions parameter (default).
+            await _diagram.Print(null);
+        }
+    }
 
     public async Task<bool> CanRedoAsync() => _diagram is not null && await _diagram.CanRedoAsync();
 

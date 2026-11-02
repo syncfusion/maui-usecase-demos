@@ -53,14 +53,17 @@ public partial class ZoomViewModel : ObservableObject
         }
     }
 
-    // Fit is a control operation (SfDiagram.FitToPage) routed through the behavior;
-    // the VM only updates the state — the behavior re-reports actual zoom.
+    // Fit is a control operation (SfDiagram.FitToPage) routed through the behavior:
+    // the VM raises the request; the host page binds a relay that executes it.
+
+    /// <summary>
+    /// Set by the host page to a relay that executes fit-to-page on the live
+    /// SfDiagram (control operation — the VM never references the control).
+    /// </summary>
+    public System.Windows.Input.ICommand? FitToPageRequested { get; set; }
 
     [RelayCommand]
-    private void FitToScreen()
-    {
-        // Actual fit zoom is reported back by DiagramSurfaceBehavior.
-    }
+    private void FitToScreen() => FitToPageRequested?.Execute(null);
 
     [RelayCommand]
     private void ToggleShowGrid() => ShowGrid = !ShowGrid;
