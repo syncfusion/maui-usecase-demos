@@ -1,4 +1,4 @@
-﻿using HomeInventoryManager.Model;
+using HomeInventoryManager.Model;
 using HomeInventoryManager.ViewModel;
 
 namespace HomeInventoryManager.Views;
@@ -34,19 +34,19 @@ public partial class ScanPage : ContentPage
 
 	private async void Vm_CancelRequested(object? sender, EventArgs e)
 	{
-		Application.Current.Windows[0].Page = new ScanPage();
+		await SafeGoToAsync("//Scan");
 	}
 
 	// ---------- Navigation ----------
 	private async void Vm_ItemSaved(object? sender, InventoryItem e)
 	{
-		Application.Current.Windows[0].Page = new InventoryPage();
+		await SafeGoToAsync("//Inventory");
 
 	}
 
 	private async void Back_Tapped(object? sender, TappedEventArgs e)
 	{
-		Application.Current.Windows[0].Page = new InventoryPage();
+		await SafeGoToAsync("//Inventory");
 
 	}
 

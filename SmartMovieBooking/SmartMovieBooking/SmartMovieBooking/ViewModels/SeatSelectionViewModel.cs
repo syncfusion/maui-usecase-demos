@@ -42,6 +42,12 @@ public partial class SeatSelectionViewModel : ObservableObject
     public string SelectedSeatSummary => SelectedSeats.Count == 0
         ? "0 seats selected"
         : $"{SelectedSeats.Count} seat{(SelectedSeats.Count == 1 ? string.Empty : "s")} selected";
+    public string TheaterAndShowtime => string.IsNullOrWhiteSpace(TheaterName)
+        ? ShowtimeLabel
+        : $"{TheaterName} · {ShowtimeLabel}";
+
+    partial void OnTheaterNameChanged(string value) => OnPropertyChanged(nameof(TheaterAndShowtime));
+    partial void OnShowtimeLabelChanged(string value) => OnPropertyChanged(nameof(TheaterAndShowtime));
 
     public Task InitializeAsync()
     {

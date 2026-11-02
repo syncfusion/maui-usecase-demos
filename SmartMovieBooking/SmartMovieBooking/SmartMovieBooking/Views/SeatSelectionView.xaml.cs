@@ -18,22 +18,12 @@ public partial class SeatSelectionView : ContentPage
     {
         base.OnAppearing();
         await _vm.InitializeAsync();
-        ScreenTitleLabel.Text = _vm.ScreenTitle;
-        TheaterLabel.Text = $"{_vm.TheaterName} · {_vm.ShowtimeLabel}";
-        UpdatePricing();
-    }
-
-    private void UpdatePricing()
-    {
-        SeatsSummaryLabel.Text = _vm.SelectedSeatSummary;
-        TotalLabel.Text = _vm.FormattedTotal;
     }
 
     private void OnSeatTapped(object? sender, TappedEventArgs e)
     {
         if (sender is not Border border || border.BindingContext is not Seat seat) return;
         _vm.ToggleSeat(seat);
-        UpdatePricing();
     }
 
     private async void OnCancelClicked(object? sender, EventArgs e)
@@ -42,7 +32,6 @@ public partial class SeatSelectionView : ContentPage
     private async void OnConfirmClicked(object? sender, EventArgs e)
     {
         await _vm.ConfirmAsync();
-        UpdatePricing();
     }
 
     private async void OnDoneClicked(object? sender, EventArgs e)
