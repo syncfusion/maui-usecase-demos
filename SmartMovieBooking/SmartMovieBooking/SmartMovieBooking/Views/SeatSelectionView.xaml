@@ -169,7 +169,7 @@
                            FontSize="18"
                            TextColor="#3525CD" />
                 </VerticalStackLayout>
-                <HorizontalStackLayout Grid.Row="{OnIdiom Default=0, Phone=1}"
+                <HorizontalStackLayout
                                        Grid.Column="{OnIdiom Default=1, Phone=0}"
                                        Grid.ColumnSpan="{OnIdiom Default=1, Phone=1}"
                                        Spacing="8"
@@ -210,13 +210,13 @@
 					   StaysOpen="False">
 			<popup:SfPopup.ContentTemplate>
                 <DataTemplate>
-                    <Border WidthRequest="720"
-                            MaximumWidthRequest="720"
+                    <Border MaximumWidthRequest="720"
+                            HorizontalOptions="Center"
                             Stroke="#DCE3F5"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 28"
                             Background="#F7F9FF"
-                            Padding="24">
+                            Padding="16">
                         <Border.Shadow>
                             <Shadow Brush="#1A235220"
                                     Offset="0,14"
@@ -249,7 +249,8 @@
                                            TextColor="#5C5F76" />
                                 </VerticalStackLayout>
 
-                                <Grid HeightRequest="96"
+                                <Grid
+                                      HeightRequest="96"
                                       WidthRequest="96"
                                       HorizontalOptions="End"
                                       VerticalOptions="Start">
@@ -268,7 +269,7 @@
 
                             <syncfusionCards:SfCardView CornerRadius="24"
                                                         BackgroundColor="#FFFFFF"
-                                                        Padding="18">
+                                                        Padding="14">
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
                                     <VerticalStackLayout Spacing="6">
                                         <Label Text="BOOKING ID"
