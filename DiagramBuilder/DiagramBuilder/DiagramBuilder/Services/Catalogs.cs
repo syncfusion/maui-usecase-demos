@@ -13,7 +13,10 @@ public static class StencilCatalog
     [
         new StencilGroup
         {
-            Id = "stencil.flow",
+            // Ids must stay CSS-safe: Syncfusion's EJ2 SymbolPalette uses the palette
+            // id as a DOM id AND as a "#id" CSS selector for its content div — a dot
+            // makes it a class selector that never matches, hiding every symbol.
+            Id = "stencilFlow",
             Title = AppStrings.StencilGroupFlowShapes,
             IsExpanded = true,
             Items =
@@ -27,7 +30,7 @@ public static class StencilCatalog
         },
         new StencilGroup
         {
-            Id = "stencil.basic",
+            Id = "stencilBasic",
             Title = AppStrings.StencilGroupBasicShapes,
             Items =
             {
@@ -42,7 +45,7 @@ public static class StencilCatalog
         },
         new StencilGroup
         {
-            Id = "stencil.connectors",
+            Id = "stencilConnectors",
             Title = AppStrings.StencilGroupConnectors,
             IsConnectorGroup = true,
             Items =

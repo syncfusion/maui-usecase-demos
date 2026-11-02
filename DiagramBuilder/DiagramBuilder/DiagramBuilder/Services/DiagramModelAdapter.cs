@@ -84,7 +84,7 @@ public static class DiagramModelAdapter
         ShapeType.Circle => new BasicShape(NodeBasicShapes.Ellipse, 0),
         ShapeType.Triangle => new BasicShape(NodeBasicShapes.Triangle, 0),
         ShapeType.Hexagon => new BasicShape(NodeBasicShapes.Hexagon, 0),
-        ShapeType.Diamond => new FlowShape(NodeFlowShapes.Decision),
+        ShapeType.Diamond => new BasicShape(NodeBasicShapes.Diamond, 0),
         ShapeType.Pentagon => new BasicShape(NodeBasicShapes.Pentagon, 0),
         ShapeType.Star => new BasicShape(NodeBasicShapes.Star, 0),
 
@@ -175,6 +175,10 @@ public static class DiagramModelAdapter
             {
                 palette.Symbols.Add(ToSymbolNode(item, ToShape(shapeType)));
             }
+            else if (item.ConnectorKind is { } connectorKind)
+            {
+                palette.Symbols.Add(ToSymbolConnector(item, connectorKind));
+            }
         }
 
         return palette;
@@ -189,6 +193,34 @@ public static class DiagramModelAdapter
         Height = 64,
         Style = new ShapeStyle { Fill = ResourceLookup.Color(ResourceKeys.CanvasBackground) },
     };
+
+    /// <summary>
+    /// Palette symbol for a connector stencil entry: a straight/orthogonal segment with an arrowhead,
+    /// sized to the symbol cell. The wire format only distinguishes "Straight" and "Orthogonal"
+    /// (ConnectorSegmentType), so a Bezier entry previews as a straight segment too.
+    /// </summary>
+    private static Connector ToSymbolConnector(StencilItem item, ConnectorKind connectorKind)
+    {
+        var connector = new Connector
+        {
+            Id = item.Id,
+            Type = connectorKind switch
+            {
+                ConnectorKind.Orthogonal => ConnectorSegmentType.Orthogonal,
+                _ => ConnectorSegmentType.Straight,
+            },
+            // Points in the symbol's 64x64 cell (centered vertically, spanning most of the width).
+            SourcePoint = new Microsoft.Maui.Graphics.Point(8, 32),
+            TargetPoint = new Microsoft.Maui.Graphics.Point(56, 32),
+            Style = new ShapeStyle
+            {
+                StrokeColor = ResourceLookup.Color(ResourceKeys.TextPrimary),
+                StrokeWidth = 2,
+            },
+        };
+
+        return connector;
+    }
 
     private static Syncfusion.Maui.Diagram.HorizontalAlignment ToHorizontalAlignment(string value) => value switch
     {
