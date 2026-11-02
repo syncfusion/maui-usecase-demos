@@ -78,13 +78,15 @@ public partial class RegisterVisitorView : ContentView
         timePickerButton.Text = e.NewValue.ToString();
     }
 
-    private void datePicker_SelectionChanged(object sender, Syncfusion.Maui.Toolkit.Picker.DatePickerSelectionChangedEventArgs e)
+    private void datePicker_SelectionChanged(
+    object sender,
+    Syncfusion.Maui.Toolkit.Picker.DatePickerSelectionChangedEventArgs e)
     {
         if (BindingContext is RegisterVisitorViewModel vm &&
-        e.NewValue is DateTime date)
+            e.NewValue is DateTime date)
         {
             vm.VisitDate = date;
+            datePickerButton.Text = date.ToString("dd/MM/yyyy");
         }
-        datePickerButton.Text = e.NewValue.ToString();
     }
 }

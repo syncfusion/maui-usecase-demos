@@ -9,21 +9,19 @@ using VisitorPass.Services;
 namespace VisitorPass.ViewModels;
 
 /// <summary>
-/// VP-060 — ViewModel for the Digital Pass / Visitor Details screen
-/// (Screen 3).
+/// ViewModel for the Digital Pass / Visitor Details screen (Screen 3).
 ///
 /// Lifecycle:
-///   1. The page constructs the VM via DI.
-///   2. The Shell pushes a <c>details</c> route with
-///      <c>?passId={…}</c> as a query parameter.
-///   3. <see cref="ApplyQueryAttributes"/> (from
-///      <see cref="IQueryAttributable"/>) captures the passId; the
-///      page calls <see cref="LoadAsync"/> from its
-///      <c>OnAppearing</c> hook.
-///   4. <see cref="LoadAsync"/> resolves the visitor from
+///   1. The page constructs the VM via DI and passes the
+///      <c>passId</c> through the constructor.
+///   2. The page calls <see cref="SetPassId"/> from the
+///      constructor; <see cref="LoadAsync"/> runs from
+///      <c>OnAppearing</c>.
+///   3. <see cref="LoadAsync"/> resolves the visitor from
 ///      <see cref="IVisitorStore.FindByPassId"/> and populates
-///      <see cref="Visitor"/> + recomputes <see cref="Timeline"/>.
-///   5. The user taps <see cref="CheckInCommand"/> /
+///      <see cref="Visitor"/> + recomputes the timeline +
+///      journey collections.
+///   4. The user taps <see cref="CheckInCommand"/> /
 ///      <see cref="CheckOutCommand"/> / <see cref="CancelVisitCommand"/>;
 ///      each delegates to the store (which raises
 ///      <see cref="IVisitorStore.VisitorsChanged"/>) and the VM
@@ -33,21 +31,20 @@ namespace VisitorPass.ViewModels;
 /// <c>Cancelled</c> the last step becomes "Cancelled"; when the
 /// visitor is <c>Overdue</c> the second step gets an "Overdue" badge.
 ///
-/// Button-visibility logic per HARNESS §9 (Screen 3 notes):
+/// Button-visibility logic:
 ///   - CheckIn    — only when status is Expected / Overdue.
 ///   - CheckOut   — only when status is CheckedIn.
 ///   - Cancel     — only when status is Expected / Overdue.
 ///   - No buttons when the visit is terminal (CheckedOut / Cancelled).
 /// </summary>
-public partial class VisitorDetailsViewModel : BaseViewModel, IQueryAttributable
+public partial class VisitorDetailsViewModel : BaseViewModel
 {
-    /// <summary>Shell route name registered in <c>AppShell.xaml</c>.</summary>
+    /// <summary>Route identifier used when navigating to the Digital Pass page.</summary>
     public const string Route = "details";
 
     /// <summary>
-    /// Query-parameter name used by both the Dashboard
-    /// (TodayGrid cell-tap) and the Directory (directory cell-tap)
-    /// navigation handlers. Must stay in sync with
+    /// Query-parameter name used by the Dashboard's TodayGrid
+    /// cell-tap navigation handler. Stays in sync with
     /// <c>DashboardPage.VisitorIdQueryKey</c>; re-asserted here so
     /// the consumer has a single source of truth on both sides.
     /// </summary>
@@ -353,26 +350,9 @@ public partial class VisitorDetailsViewModel : BaseViewModel, IQueryAttributable
     }
 
     /// <summary>
-    /// Shell hook: called by <c>Shell</c> when navigation pushes a new
-    /// details route. We stash the <c>passId</c> in
-    /// <see cref="_pendingPassId"/> so <see cref="LoadAsync"/> can
-    /// retrieve it (we don't load synchronously here because
-    /// <c>FindByPassId</c> should run on the UI thread or after the
-    /// shell transition completes).
-    /// </summary>
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        if (query.TryGetValue(PassIdQueryKey, out var raw)
-            && raw is string passId
-            && !string.IsNullOrWhiteSpace(passId))
-        {
-            _pendingPassId = passId;
-        }
-    }
-
     /// <summary>
     /// Called from the Details page's OnAppearing handler. Resolves
-    /// the pending pass-id (set by ApplyQueryAttributes or
+    /// the pending pass-id (set by the page's constructor via
     /// <see cref="SetPassId"/>) and rebuilds the timeline.
     /// </summary>
     public async Task LoadAsync()
@@ -492,11 +472,12 @@ public partial class VisitorDetailsViewModel : BaseViewModel, IQueryAttributable
         // Mirror the rich checkpoint list as StepProgressBarItem entries.
         // The SfStepProgressBar only renders items of type
         // StepProgressBarItem (or a collection wired through
-        // StepProgressBarMapping); passing a JourneyCheckpoint collection
-        // directly results in zero steps being drawn. Syncfusion's
-        // StepProgressBarItem.Status setter is internal in 33.2.15 — we
-        // reach it through reflection so the bar's node colours reflect
-        // each checkpoint's Completed / InProgress / NotStarted state.
+        // StepProgressBarItemMapping); passing a JourneyCheckpoint
+        // collection directly results in zero steps being drawn.
+        // Syncfusion's StepProgressBarItem.Status has a public
+        // setter in the assembly but it's not part of the official
+        // public API surface in 33.2.15, so we set it through the
+        // StepItemStatusAccessor reflection shim (see below).
         foreach (var checkpoint in Journey)
         {
             var item = new StepProgressBarItem();
@@ -600,23 +581,6 @@ public partial class VisitorDetailsViewModel : BaseViewModel, IQueryAttributable
         OnPropertyChanged(nameof(ExpectedDurationDisplay));
         OnPropertyChanged(nameof(SyncPill));
         OnPropertyChanged(nameof(Revision));
-    }
-
-    /// <summary>
-    /// Called by the page when navigating away — clears the visitor
-    /// so the next visit to <c>details</c> doesn't briefly show the
-    /// old visitor.
-    /// </summary>
-    public void Clear()
-    {
-        Visitor = null;
-        Timeline.Clear();
-        StepItems.Clear();
-        Journey.Clear();
-        JourneySteps.Clear();
-        CheckpointsCleared = 0;
-        _pendingPassId = null;
-        NotifyDerived();
     }
 
     [RelayCommand(CanExecute = nameof(IsCheckInVisible))]
@@ -735,14 +699,18 @@ public sealed record JourneyCheckpoint(
 }
 
 /// <summary>
-/// Reflection shim for <see cref="StepProgressBarItem"/>.
-/// Syncfusion 33.2.15's <c>Status</c> setter is <c>internal</c>; the
-/// public <c>StepProgressBarItemMapping</c> only forwards
-/// <c>PrimaryText</c> / <c>SecondaryText</c> / <c>ImageSource</c>. To
-/// drive the bar's Completed / InProgress / NotStarted visuals from a
-/// custom checkpoint list, we set <c>Status</c> through the property's
-/// auto-generated setter. The setter is a plain CLR property — the
-/// reflection cost is a one-off cached lookup.
+/// Reflection shim that drives <see cref="StepProgressBarItem"/>'s
+/// per-step status. The 33.2.15 <c>Status</c> setter is a CLR
+/// property with a <c>public</c> setter at runtime but the C#
+/// compiler refuses to bind to it directly (it isn't part of the
+/// public API surface). Setting the value through reflection lets
+/// the SfStepProgressBar's Completed / InProgress / NotStarted
+/// visuals follow the visitor's status.
+///
+/// The lookup is cached in a static field so the cost is paid once
+/// per process. If Syncfusion ever removes the property the
+/// exception bubbles up the first time the visitor details page
+/// rebuilds the timeline, so the failure mode is loud and early.
 /// </summary>
 internal static class StepItemStatusAccessor
 {
@@ -754,5 +722,11 @@ internal static class StepItemStatusAccessor
             "StepProgressBarItem.Status property not found; Syncfusion API changed.");
 
     public static void Set(StepProgressBarItem item, StepStatus status)
-        => StatusProperty.SetValue(item, status);
+    {
+        if (StatusProperty is null || !StatusProperty.CanWrite)
+            throw new InvalidOperationException(
+                "StepProgressBarItem.Status is not writable; Syncfusion API changed.");
+
+        StatusProperty.SetValue(item, status);
+    }
 }

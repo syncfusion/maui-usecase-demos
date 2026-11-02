@@ -40,10 +40,6 @@
                 <ScrollView Grid.Column="1" Padding="10">
                     <VerticalStackLayout Padding="{OnIdiom Desktop='24,0,24,28', Phone='14,8,14,14'}"
                                      Spacing="{OnIdiom Desktop=18, Phone=14}">
-                        
-                        <controls:TopNavBar Title="Visitor Command Center" IsVisible="false"
-                              Subtitle="Real-time visitor activity overview"
-                              ShowRegisterButton="True" />
 
                         <Grid ColumnDefinitions="*,Auto, Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
                             <Label Text="Visitor Command Center" FontFamily="OpenSansSemibold"
@@ -57,9 +53,9 @@
                                 </HorizontalStackLayout>
                             </Border>
                             <!-- Register trigger.
-                                Desktop / Tablet: header pill (RegisterVisitorPill style).
+                                Desktop / Tablet: header pill.
                                 Phone: floating action button anchored bottom-right.
-                                Both raise the same Tapped event handled in code-behind. -->
+                                Both raise the same Clicked event handled in code-behind. -->
                             <buttons:SfButton Grid.Column="2"
                                           Grid.ColumnSpan="2"
                                           Background="{StaticResource Primary}"
@@ -68,7 +64,7 @@
                                           HeightRequest="40"
                                           Padding="14,9"
                                           HorizontalTextAlignment="Center"
-                                          Clicked="SfButton_Clicked"
+                                          Clicked="OnRegisterClicked"
                                           IsVisible="{Binding ShowRegisterButton, Source={RelativeSource AncestorType={x:Type ContentView}}}">
                                 <buttons:SfButton.Content>
                                     <DataTemplate>
@@ -522,8 +518,7 @@
                     CornerRadius="22"
                     HeightRequest="48"
                     FontFamily="OpenSansSemibold"
-                    FontSize="13"
-                    Clicked="OnDashboardTapped" />
+                    FontSize="13" />
 
                 <!-- Directory -->
 
@@ -543,7 +538,6 @@
             </Grid>
         </Border>
         <sfpopup:SfPopup x:Name="RegisterPopup" ShowHeader="False" ShowFooter="False" ShowCloseButton="True"
-                             Closed="OnRegisterPopupClosed" Opened="OnRegisterPopupOpened"
                              WidthRequest="{OnIdiom Desktop=640, Phone=340}" AutoSizeMode="Height">
             <sfpopup:SfPopup.PopupStyle>
                 <sfpopup:PopupStyle StrokeThickness="0" CornerRadius="{OnIdiom Default=16, Phone=24}" />

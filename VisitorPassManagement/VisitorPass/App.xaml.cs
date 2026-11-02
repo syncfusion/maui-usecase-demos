@@ -1,18 +1,25 @@
+using Microsoft.Extensions.DependencyInjection;
 using VisitorPass.Views;
 
 namespace VisitorPass;
 
 /// <summary>
-/// VP-UI nav-refactor — the app now uses a plain NavigationPage
-/// instead of MAUI Shell. Shell's relative routing crashes when
-/// invoked from inside content pages ("Relative routing to shell
-/// elements is currently not supported"), and the user wants
-/// register to live inside an SfPopup rather than a pushed
-/// page — neither of which fit Shell's content-template model.
+/// Application root.
 ///
-/// This class returns a NavigationPage hosting the Dashboard as
-/// the root, so all subsequent navigation is plain
-/// <c>Navigation.PushAsync</c> against the root.
+/// The app uses a plain <see cref="NavigationPage"/> rather than MAUI
+/// Shell. Two reasons drive that choice:
+///   1. Register Visitor lives inside an <c>SfPopup</c> on
+///      desktop / tablet, and an in-page overlay on phone. Shell's
+///      content-template model does not host that idiom-aware layout
+///      cleanly.
+///   2. Navigation events from within content pages
+///      (<c>Navigation.PushAsync</c>) are the simplest mental model
+///      for a sample reader — every page directly handles the
+///      Register / Detail / Sidebar taps without Shell route plumbing.
+///
+/// Dashboard is resolved from DI so the singleton view-model +
+/// <see cref="Services.ThemeService"/> are wired up via constructor
+/// injection.
 /// </summary>
 public partial class App : Application
 {
@@ -23,15 +30,12 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        return new Window(new AppShell());
-        // Resolve the singleton DashboardPage from DI so the
-        // constructor-injected VM + ThemeService are wired up.
-        //var services = Handler!.MauiContext!.Services;
-        //var dashboard = services.GetRequiredService<DashboardPage>();
-        //return new Window(new NavigationPage(dashboard)
-        //{
-        //    BarBackgroundColor = Color.FromArgb("#F6F8FD"),
-        //    BarTextColor = Color.FromArgb("#17243A")
-        //});
+        var services = Handler!.MauiContext!.Services;
+        var dashboard = services.GetRequiredService<DashboardPage>();
+        return new Window(new NavigationPage(dashboard)
+        {
+            BarBackgroundColor = Color.FromArgb("#F6F8FD"),
+            BarTextColor = Color.FromArgb("#17243A"),
+        });
     }
 }

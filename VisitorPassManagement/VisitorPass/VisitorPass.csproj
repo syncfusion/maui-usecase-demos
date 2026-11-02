@@ -47,9 +47,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<MauiXaml Update="AppShell.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Views\DashboardPage.xaml" Inflator="Runtime" />
 	</ItemGroup>
 
@@ -75,7 +72,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Syncfusion.Maui.Core" Version="33.2.15" />
-		<PackageReference Include="Syncfusion.Maui.Toolkit" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Toolkit" Version="1.0.11" />
 		<PackageReference Include="Syncfusion.Maui.Charts" Version="33.2.15" />
 		<PackageReference Include="Syncfusion.Maui.DataGrid" Version="33.2.15" />
 		<PackageReference Include="Syncfusion.Maui.Popup" Version="33.2.15" />

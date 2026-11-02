@@ -1,16 +1,18 @@
 namespace VisitorPass.Controls;
 
 /// <summary>
-/// VP-UI sidebar - vertical nav rail injected into every page on
-/// desktop / tablet idioms (hidden on phone via OnIdiom).
+/// Sidebar — vertical nav rail injected into every page on desktop
+/// / tablet idioms (hidden on phone via OnIdiom).
 ///
 /// The control exposes a single <see cref="ActiveRoute"/> Bindable
 /// property and a <see cref="NavItemClicked"/> event:
-///   - ActiveRoute = "dashboard" -> Command Center tile highlighted
+///   - ActiveRoute = "dashboard" → Command Center tile highlighted
 ///     in primary colour, Visitor Directory in muted style.
-///   - ActiveRoute = "directory" -> reverse.
+///   - ActiveRoute = "directory" → reverse.
 ///   - When the user taps either tile, the page's code-behind
-///     receives NavItemClicked and issues Shell.GoToAsync.
+///     receives NavItemClicked and routes via plain
+///     <c>Navigation.PushAsync</c> (the sample does not use
+///     <c>Shell.GoToAsync</c>).
 ///
 /// Visual states are switched via DataTriggers in the XAML so the
 /// code-behind stays free of visual-tree walking.

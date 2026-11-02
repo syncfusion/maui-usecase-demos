@@ -3,28 +3,29 @@ using Syncfusion.Maui.DataGrid;
 using ChipSelectionChangedEventArgs = Syncfusion.Maui.Core.Chips.SelectionChangedEventArgs;
 using VisitorPass.Controls;
 using VisitorPass.Models;
-using VisitorPass.Services;
 using VisitorPass.ViewModels;
 
 namespace VisitorPass.Views;
 
 /// <summary>
-/// VP-051 / VP-052 — Directory page code-behind.
+/// Directory page code-behind.
 ///
 /// Events:
-///   - SfDataGrid.CellTapped on the visitor grid -> pushes
-///     VisitorDetailsPage via Navigation.PushAsync (no Shell).
-///   - TopNavBar.ThemeToggleClicked -> ThemeService.Toggle();
-///     nav bar's IsDarkMode rebinds from the service.
-///   - Sidebar.NavItemClicked -> pops back to root then pushes
-///     Dashboard (no Shell).
+///   - <c>SfDataGrid.CellTapped</c> / <c>SfListView.ItemTapped</c> on
+///     the visitor grid pushes
+///     <see cref="VisitorDetailsPage"/> via
+///     <c>Navigation.PushAsync</c>.
+///   - <c>SfChipGroup.SelectionChanged</c> on the status chip row
+///     forwards the chosen <see cref="DirectoryViewModel.StatusFilter"/>
+///     to <c>SelectStatusCommand</c>.
+///   - <c>SideNavigation.NavItemClicked</c> pops back to the
+///     dashboard root.
 ///
-/// Per HARNESS §6 rule 2 there is no business logic here.
+/// Per the MVVM rule there is no business logic here.
 /// </summary>
 public partial class DirectoryPage : ContentPage
 {
     private readonly IServiceProvider _services;
-    private readonly ThemeService _theme;
 
     public DirectoryPage(
         DirectoryViewModel viewModel,
@@ -34,11 +35,6 @@ public partial class DirectoryPage : ContentPage
         BindingContext = viewModel;
         _services = services;
 
-        if (this.FindTopNavBar() is { } navBar)
-        {
-            this.RegisterClicked += OnRegisterClicked;
-        }
-
         if (this.FindSideNavigation() is { } sidebar)
             sidebar.NavItemClicked += OnSidebarNavItemClicked;
     }
@@ -47,35 +43,8 @@ public partial class DirectoryPage : ContentPage
     {
         if (route == DirectoryViewModel.Route)
             return; // already here
-        // Pop back to root then push the target page so we don't
-        // stack duplicates (uses Navigation, not Shell).
         if (route == DashboardViewModel.Route)
             await Navigation.PopToRootAsync();
-    }
-
-    public event EventHandler? RegisterClicked;
-
-    private void SfButton_Clicked(object sender, EventArgs e)
-    {
-        RegisterClicked?.Invoke(this, EventArgs.Empty);
-    }
-
-    private async void OnRegisterClicked(object? sender, EventArgs e)
-        => await OpenRegistrationAsync();
-
-    private async void OnRegisterVisitor(object? sender, TappedEventArgs e)
-        => await OpenRegistrationAsync();
-
-    private async Task OpenRegistrationAsync()
-    {
-        var page = new RegisterVisitorPage(_services.GetRequiredService<RegisterVisitorViewModel>());
-        page.DismissRequested += async (_, _) => await Navigation.PopAsync();
-        page.PassGenerated += async (_, visitor) =>
-        {
-            await Navigation.PopAsync();
-            await OpenVisitorDetailsAsync(visitor);
-        };
-        await Navigation.PushAsync(page);
     }
 
     private void OnStatusChipSelectionChanged(object? sender, ChipSelectionChangedEventArgs e)
@@ -96,11 +65,9 @@ public partial class DirectoryPage : ContentPage
         await OpenVisitorDetailsAsync(visitor);
     }
 
-    /// <summary>
-    /// "Open Full Pass Details" button on the Active Dossier
-    /// preview card. Pushes the Digital Pass page with the
-    /// currently selected visitor's pass id.
-    /// </summary>
+    /// <summary>"Open Full Pass Details" button on the Active
+    /// Dossier preview card. Pushes the Digital Pass page with the
+    /// currently selected visitor's pass id.</summary>
     private async void OnOpenFullPass(object? sender, EventArgs e)
     {
         if (BindingContext is not DirectoryViewModel vm

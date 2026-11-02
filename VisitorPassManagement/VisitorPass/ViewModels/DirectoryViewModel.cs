@@ -35,7 +35,7 @@ namespace VisitorPass.ViewModels;
 /// </summary>
 public partial class DirectoryViewModel : BaseViewModel
 {
-    /// <summary>Shell route name registered in <c>AppShell.xaml</c>.</summary>
+    /// <summary>Route identifier used by <c>SideNavigation.NavItemClicked</c> to route to the Directory page.</summary>
     public const string Route = "directory";
 
     private readonly IVisitorStore _store;
@@ -62,14 +62,23 @@ public partial class DirectoryViewModel : BaseViewModel
     [ObservableProperty]
     private bool _hasNoResults;
 
-    public int TotalVisitors => _store.Visitors.Count;
-    public int ExpectedVisitors => _store.Visitors.Count(visitor => visitor.Status == VisitorStatus.Expected);
-    public int CheckedInVisitors => _store.Visitors.Count(visitor => visitor.Status == VisitorStatus.CheckedIn);
-    public int OverdueVisitors => _store.Visitors.Count(visitor => visitor.Status == VisitorStatus.Overdue);
+    [ObservableProperty]
+    private int _totalVisitors;
 
-    public int CheckedOutVisitors => _store.Visitors.Count(visitor => visitor.Status == VisitorStatus.CheckedOut);
+    [ObservableProperty]
+    private int _expectedVisitors;
 
-    public int CancelledVisitors => _store.Visitors.Count(visitor => visitor.Status == VisitorStatus.Cancelled);
+    [ObservableProperty]
+    private int _checkedInVisitors;
+
+    [ObservableProperty]
+    private int _overdueVisitors;
+
+    [ObservableProperty]
+    private int _checkedOutVisitors;
+
+    [ObservableProperty]
+    private int _cancelledVisitors;
 
 
     /// <summary>
@@ -122,13 +131,22 @@ public partial class DirectoryViewModel : BaseViewModel
         SelectedStatus = filter;
     }
 
-    /// <summary>Re-evaluate the filtered list. Public so the page can
-    /// call it from the search-entry's TextChanged handler without
-    /// waiting for a store mutation.</summary>
+    /// <summary>Re-evaluate the filtered list and the directory
+    /// summary cards. Public so the page can call it from the
+    /// search-entry's TextChanged handler without waiting for a
+    /// store mutation.</summary>
     [RelayCommand]
     public void Rebuild()
     {
         var visitors = _store.Visitors;
+
+        TotalVisitors = visitors.Count;
+        ExpectedVisitors = visitors.Count(v => v.Status == VisitorStatus.Expected);
+        CheckedInVisitors = visitors.Count(v => v.Status == VisitorStatus.CheckedIn);
+        CheckedOutVisitors = visitors.Count(v => v.Status == VisitorStatus.CheckedOut);
+        OverdueVisitors = visitors.Count(v => v.Status == VisitorStatus.Overdue);
+        CancelledVisitors = visitors.Count(v => v.Status == VisitorStatus.Cancelled);
+
         var query = (SearchText ?? string.Empty).Trim();
         var status = SelectedStatus;
 
@@ -137,10 +155,6 @@ public partial class DirectoryViewModel : BaseViewModel
             FilteredVisitors.Add(v);
 
         HasNoResults = FilteredVisitors.Count == 0;
-        OnPropertyChanged(nameof(TotalVisitors));
-        OnPropertyChanged(nameof(ExpectedVisitors));
-        OnPropertyChanged(nameof(CheckedInVisitors));
-        OnPropertyChanged(nameof(OverdueVisitors));
     }
 
     /// <summary>Reset every filter and re-run the query. Bound to

@@ -36,7 +36,7 @@ namespace VisitorPass.ViewModels;
 /// </summary>
 public partial class DashboardViewModel : BaseViewModel
 {
-    /// <summary>Shell route name registered in <c>AppShell.xaml</c>.</summary>
+    /// <summary>Route identifier used by <c>SideNavigation.NavItemClicked</c> to route back to the Dashboard.</summary>
     public const string Route = "dashboard";
 
     /// <summary>Maximum rows in the today's-activity grid.</summary>
@@ -72,22 +72,6 @@ public partial class DashboardViewModel : BaseViewModel
     /// visitors whose <c>VisitDate</c> is today, ordered by VisitTime.
     /// </summary>
     public ObservableCollection<Visitor> TodayVisitors { get; } = new();
-
-    /// <summary>
-    /// Raised when the user taps the "Register Visitor" pill in the
-    /// Dashboard's TopNavBar. The page code-behind routes this to
-    /// either <c>SfPopup.IsOpen = true</c> (desktop) or
-    /// <c>Navigation.PushModalAsync(new RegisterVisitorPage())</c> (phone).
-    /// </summary>
-    public event EventHandler? RegisterVisitorRequested;
-
-    /// <summary>
-    /// RelayCommand bound to the TopNavBar's RegisterClicked event by
-    /// the page code-behind. Raising <see cref="RegisterVisitorRequested"/>
-    /// keeps the page free of business logic per HARNESS §6 rule 2.
-    /// </summary>
-    [RelayCommand]
-    private void RegisterVisitor() => RegisterVisitorRequested?.Invoke(this, EventArgs.Empty);
 
     public DashboardViewModel(IVisitorStore store)
     {

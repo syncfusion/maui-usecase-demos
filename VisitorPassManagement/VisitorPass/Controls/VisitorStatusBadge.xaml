@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    VisitorStatusBadge - reusable status pill built on SfBadgeView.
+
+    The badge shows the status label as text; the badge's
+    BackgroundColor is driven by SfBadgeView's default theme brush
+    (overridden via SyncfusionThemeResourceDictionary) so the same
+    badge stays visually consistent with the rest of the app.
+
+    Two label variants share the badge so the same ContentView can
+    show the full label on desktop / tablet and the compact label on
+    phone.
+-->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="VisitorPass.Controls.VisitorStatusBadge">
-    
+
     <core:SfBadgeView x:Name="Badge"
                       HeightRequest="30"
                       WidthRequest="90"
@@ -11,15 +23,13 @@
                       VerticalOptions="Center">
         <core:SfBadgeView.Content>
             <Grid>
-                 <!--Desktop / Tablet: full label.--> 
                 <Label Text="{Binding Status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToDisplayLabelConverter}}"
-                   TextColor="{StaticResource TextSecondary}"
-                   FontFamily="OpenSansSemibold"
-                   FontSize="11"
-                   VerticalTextAlignment="Center"
-                   HorizontalTextAlignment="Center"
-                   IsVisible="{OnIdiom Phone=False, Default=True}" />
-                 <!--Phone: compact label.--> 
+                       TextColor="{StaticResource TextSecondary}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="11"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="{OnIdiom Phone=False, Default=True}" />
                 <Label Text="{Binding Status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToShortLabelConverter}}"
                        TextColor="{StaticResource TextSecondary}"
                        FontFamily="OpenSansSemibold"
@@ -29,27 +39,4 @@
             </Grid>
         </core:SfBadgeView.Content>
     </core:SfBadgeView>
-
-    <!--<Border Padding="10,4"
-            StrokeThickness="0"
-            StrokeShape="RoundRectangle 16"
-            BackgroundColor="{Binding BackgroundBrushKey}">
-
-        <HorizontalStackLayout Spacing="6">
-
-            <Label Text="{Binding BrushKey, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToDisplayLabelConverter}}"
-                   FontFamily="MauiMaterialAssets"
-                   FontSize="12"
-                   TextColor="{Binding BrushKey}"
-                   VerticalOptions="Center"/>
-
-            <Label Text="{Binding status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToDisplayLabelConverter}}"
-                   FontFamily="OpenSansSemibold"
-                   FontSize="11"
-                   TextColor="{Binding BrushKey}"
-                   VerticalOptions="Center"/>
-
-        </HorizontalStackLayout>
-
-    </Border>-->
 </ContentView>
