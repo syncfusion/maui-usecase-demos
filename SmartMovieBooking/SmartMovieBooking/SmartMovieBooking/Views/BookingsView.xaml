@@ -58,8 +58,8 @@
                     </Grid>
                 </syncfusionCards:SfCardView>
 
-                <syncfusionCards:SfCardView CornerRadius="22"
-                                            BackgroundColor="#FFFFFF"
+				<Border StrokeShape="RoundRectangle 22"
+						BackgroundColor="#FFFFFF"
                                             Padding="18">
                     <VerticalStackLayout Spacing="14">
 						<Grid ColumnDefinitions="*,Auto"
@@ -89,6 +89,7 @@
 						</Grid>
 						<syncfusion:SfListView ItemsSource="{Binding Bookings}"
 											   ScrollBarVisibility="Never"
+                                               IsScrollingEnabled="False"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None"
 							                   ItemSpacing="14"
@@ -98,10 +99,8 @@
 							</syncfusion:SfListView.ItemsLayout>
 							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Booking">
-                                    <syncfusionCards:SfCardView CornerRadius="22"
-                                                                 BackgroundColor="#FAFAFF"
-                                                                 BorderColor="#E5E7F2"
-                                                                 BorderThickness="1"
+									<Border StrokeShape="RoundRectangle 22"
+											BackgroundColor="#FAFAFF"
                                                                  Padding="16">
                                         <Grid ColumnDefinitions="220,*,140" ColumnSpacing="16">
                                             <Border StrokeThickness="0"
@@ -113,7 +112,7 @@
                                                             StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 16"
                                                             Padding="10"
-                                                            HeightRequest="188">
+                                                            HeightRequest="238">
                                                         <Grid RowDefinitions="Auto,*,Auto">
                                                             <Border BackgroundColor="#7C3AED"
                                                                     StrokeThickness="0"
@@ -257,7 +256,7 @@
                                                        TextColor="#374151" />
                                             </VerticalStackLayout>
                                         </Grid>
-                                    </syncfusionCards:SfCardView>
+                                    </Border>
                                 </DataTemplate>
                             </syncfusion:SfListView.ItemTemplate>
                             <syncfusion:SfListView.EmptyView>
@@ -280,7 +279,7 @@
                             </syncfusion:SfListView.EmptyView>
                         </syncfusion:SfListView>
                     </VerticalStackLayout>
-                </syncfusionCards:SfCardView>
+                </Border>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

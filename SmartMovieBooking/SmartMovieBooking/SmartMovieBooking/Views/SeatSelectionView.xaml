@@ -203,23 +203,16 @@
         </syncfusionCards:SfCardView>
 
 
-        <popup:SfPopup x:Name="ConfirmationPopup"
-                       IsOpen="{Binding IsConfirmationVisible, Mode=TwoWay}"
-                       ShowHeader="False"
-                       ShowFooter="False"
-                       ShowCloseButton="False"
-                       CanBeDismissedByTappingOutsideOfPopup="False"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       StaysOpen="False">
-            <popup:SfPopup.PopupStyle>
-                <popup:PopupStyle WidthRequest="720"
-                                  HeightRequest="640"
-                                  MaximumWidthRequest="720"
-                                  MaximumHeightRequest="720"
-                                  OutsideBackground="#CC0B1020" />
-            </popup:SfPopup.PopupStyle>
-            <popup:SfPopup.ContentTemplate>
+		<popup:SfPopup x:Name="ConfirmationPopup"
+					   IsOpen="{Binding IsConfirmationVisible, Mode=TwoWay}"
+					   ShowHeader="False"
+					   ShowFooter="False"
+					   AutoSizeMode="Both"
+					   ShowCloseButton="False"
+					   HorizontalOptions="Center"
+					   VerticalOptions="Center"
+					   StaysOpen="False">
+			<popup:SfPopup.ContentTemplate>
                 <DataTemplate>
                     <Border WidthRequest="720"
                             MaximumWidthRequest="720"
@@ -366,9 +359,9 @@
                                                            Clicked="OnDoneClicked"
                                                            HorizontalOptions="Fill" />
                                 <syncfusionButtons:SfButton Text="View Bookings"
-                                                           BackgroundColor="#EEF1FF"
-                                                           TextColor="#1A1A2E"
-                                                           CornerRadius="10"
+															BackgroundColor="#3525CD"
+															TextColor="#FFFFFF"
+															CornerRadius="10"
                                                            FontFamily="OpenSansSemibold"
                                                            HeightRequest="44"
                                                            Clicked="OnViewBookingsClicked"
