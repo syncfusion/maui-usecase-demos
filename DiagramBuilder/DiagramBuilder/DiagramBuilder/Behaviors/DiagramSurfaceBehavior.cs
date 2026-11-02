@@ -103,6 +103,13 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
         set => SetValue(ZoomFactorProperty, value);
     }
 
+    /// <summary>
+    /// True once the SfDiagram has reported its JS bridge Created event. The
+    /// diagram can be queried for layout/camera after this fires — earlier calls
+    /// (FitToPage, Zoom, etc.) may silently fail or throw on some platforms.
+    /// </summary>
+    public bool IsReady { get; private set; }
+
     // ---------- Attach / detach ----------
 
     private SfDiagram? _diagram;
@@ -144,6 +151,7 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
 
     private void OnDiagramCreated(object? sender, EventArgs e)
     {
+        IsReady = true;
         if (ReadyCommand?.CanExecute(null) == true)
         {
             ReadyCommand.Execute(null);

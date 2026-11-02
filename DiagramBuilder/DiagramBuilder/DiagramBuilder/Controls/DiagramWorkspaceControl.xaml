@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  DiagramWorkspaceControl: hosts the SfDiagram and nothing else. The Shapes panel
+  (Syncfusion SymbolPalette) is a sibling of this control on the host page, which
+  is the layout Syncfusion's drag-and-drop wiring requires (architecture.md §3.3).
+-->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:diagram="clr-namespace:Syncfusion.Maui.Diagram;assembly=Syncfusion.Maui.Diagram"
              xmlns:behaviors="clr-namespace:DiagramBuilder.Behaviors;assembly=DiagramBuilder"
-             xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
              x:Class="DiagramBuilder.Controls.DiagramWorkspaceControl">
     <ContentView.Resources>
         <ResourceDictionary />
@@ -12,31 +17,17 @@
     <Border Stroke="{DynamicResource PanelBorderBrush}"
             StrokeThickness="1"
             BackgroundColor="{DynamicResource CanvasBackground}">
-        <Grid RowDefinitions="*">
-
-            <!-- Canvas grid: SfDiagram alone — the SymbolPalette is rendered as the
-                 standalone Shapes panel (StencilPanelControl) to match the design
-                 (single column layout: Shapes | Canvas | Properties). -->
-            <Grid x:Name="DiagramGrid"
-                  Grid.Row="0"
-                  ColumnDefinitions="*"
-                  ColumnSpacing="0">
-
-                <!-- Kept hidden so the surface-behavior code-behind that walks the
-                     symbol palette host (DiagramWorkspaceControl.xaml.cs) continues
-                     to compile, but no UI is rendered. -->
-                <diagram:SymbolPalette x:Name="Palette"
-                                       Grid.Column="0"
-                                       IsVisible="False" />
-
-                <diagram:SfDiagram x:Name="Diagram"
-                                   Grid.Column="0"
-                                   BackgroundColor="{DynamicResource CanvasBackground}">
-                    <diagram:SfDiagram.Behaviors>
-                        <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
-                    </diagram:SfDiagram.Behaviors>
-                </diagram:SfDiagram>
-            </Grid>
+        <Border.StrokeShape>
+            <shapes:RoundRectangle CornerRadius="12" />
+        </Border.StrokeShape>
+        <Grid x:Name="DiagramGrid"
+              RowDefinitions="*">
+            <diagram:SfDiagram x:Name="Diagram"
+                               BackgroundColor="{DynamicResource CanvasBackground}">
+                <diagram:SfDiagram.Behaviors>
+                    <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
+                </diagram:SfDiagram.Behaviors>
+            </diagram:SfDiagram>
         </Grid>
     </Border>
 </ContentView>

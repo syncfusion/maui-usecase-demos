@@ -9,7 +9,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-                <ResourceDictionary Source="Templates/StencilItemTemplate.xaml" />
                 <ResourceDictionary Source="Templates/PropertyEditorTemplates.xaml" />
                 <ResourceDictionary Source="Templates/TemplateCardTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
