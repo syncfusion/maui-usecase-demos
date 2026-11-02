@@ -30,7 +30,7 @@ public partial class StencilViewModel : ObservableObject
     private string activeConnectorToolId = string.Empty;
 
     /// <summary>Group ids currently expanded (accordion multiple mode).</summary>
-    public HashSet<string> ExpandedGroupIds { get; } = ["stencil.flow"];
+    public HashSet<string> ExpandedGroupIds { get; } = ["stencilFlow"];
 
     public IReadOnlyList<StencilGroup> AllGroups { get; } = StencilCatalog.All.ToList();
 
