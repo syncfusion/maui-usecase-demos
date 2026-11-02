@@ -104,10 +104,10 @@ public partial class MenuBarControl : ContentView
         AppendRows(stack, root.Children, indent: 0, isTopLevel: true);
         var border = new Border
         {
-            Stroke = (Color)Application.Current!.Resources["PanelBorderColor"],
+            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
             StrokeThickness = 1,
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
-            BackgroundColor = (Color)Application.Current!.Resources["CanvasBackground"],
+            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
             Content = stack,
         };
         return border;
@@ -189,7 +189,7 @@ public partial class MenuBarControl : ContentView
             Text = item.TextKey,
             FontSize = 11,
             FontAttributes = FontAttributes.Bold,
-            TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+            TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
         };
@@ -197,7 +197,7 @@ public partial class MenuBarControl : ContentView
         {
             Text = "\u25B8", // ▸
             FontSize = 11,
-            TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+            TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
         };
