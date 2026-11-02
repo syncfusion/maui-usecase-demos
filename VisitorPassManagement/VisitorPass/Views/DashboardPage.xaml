@@ -31,8 +31,8 @@
     </ResourceDictionary>
   </ContentPage.Resources>
 
-        <Grid>
-        <ScrollView>
+        <Grid RowDefinitions="*, Auto">
+        <ScrollView Grid.Row="0">
             <Grid ColumnDefinitions="{OnIdiom Desktop='232,*', Phone='0,*'}" RowDefinitions="{OnIdiom Default='Auto', Phone='*,Auto'}" ColumnSpacing="0">
 
                 <controls:SideNavigation Grid.Column="0" ActiveRoute="dashboard"
@@ -493,53 +493,55 @@
                     </VerticalStackLayout>
                 </ScrollView>
 
-                <Border
-                        Grid.Row="1"
-                        Grid.ColumnSpan="2"
-                        IsVisible="{OnIdiom Phone=True, Default=False}"
-                        BackgroundColor="{StaticResource Surface}"
-                        StrokeThickness="0"
-                        Padding="6"
-                        Margin="10"
-                        StrokeShape="RoundRectangle 28">
-
-                    <Grid ColumnDefinitions="*,*"
-                                ColumnSpacing="6">
-
-                        <!-- Dashboard -->
-
-                        <buttons:SfButton
-                                    Grid.Column="0"
-                                    Text="Dashboard"
-                                    ImageSource="dashboard.png"
-                                    ImageAlignment="Left"
-                                    Background="{StaticResource Primary}"
-                                    TextColor="White"
-                                    CornerRadius="22"
-                                    HeightRequest="48"
-                                    FontFamily="OpenSansSemibold"
-                                    FontSize="13"
-                                    Clicked="OnDashboardTapped" />
-
-                        <!-- Directory -->
-
-                        <buttons:SfButton
-                                    Grid.Column="1"
-                                    Text="Directory"
-                                    ImageSource="directory.png"
-                                    ImageAlignment="Left"
-                                    Background="Transparent"
-                                    TextColor="{StaticResource TextSecondary}"
-                                    CornerRadius="22"
-                                    HeightRequest="48"
-                                    FontFamily="OpenSansSemibold"
-                                    FontSize="13"
-                                    Clicked="OnDirectoryTapped" />
-
-                    </Grid>
-                </Border>
+                
             </Grid>
         </ScrollView>
+
+        <Border
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            IsVisible="{OnIdiom Phone=True, Default=False}"
+            BackgroundColor="{StaticResource Surface}"
+            StrokeThickness="0"
+            Padding="6"
+            Margin="10"
+            StrokeShape="RoundRectangle 28">
+
+            <Grid ColumnDefinitions="*,*"
+                ColumnSpacing="6">
+
+                <!-- Dashboard -->
+
+                <buttons:SfButton
+                    Grid.Column="0"
+                    Text="Dashboard"
+                    ImageSource="dashboard.png"
+                    ImageAlignment="Left"
+                    Background="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="22"
+                    HeightRequest="48"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="13"
+                    Clicked="OnDashboardTapped" />
+
+                <!-- Directory -->
+
+                <buttons:SfButton
+                    Grid.Column="1"
+                    Text="Directory"
+                    ImageSource="directory.png"
+                    ImageAlignment="Left"
+                    Background="Transparent"
+                    TextColor="{StaticResource TextSecondary}"
+                    CornerRadius="22"
+                    HeightRequest="48"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="13"
+                    Clicked="OnDirectoryTapped" />
+
+            </Grid>
+        </Border>
         <sfpopup:SfPopup x:Name="RegisterPopup" ShowHeader="False" ShowFooter="False" ShowCloseButton="True"
                              Closed="OnRegisterPopupClosed" Opened="OnRegisterPopupOpened"
                              WidthRequest="{OnIdiom Desktop=640, Phone=340}" AutoSizeMode="Height">
