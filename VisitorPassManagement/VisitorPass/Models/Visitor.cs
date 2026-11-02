@@ -16,7 +16,7 @@ namespace VisitorPass.Models;
 /// etc. update without a full grid rebuild.
 ///
 /// Fields are per SPEC §5:
-///   PassId                — VP-#### unique local id
+///   PassId                — VP-yyyyMMdd-#### unique local id
 ///   VisitorName           — visitor full name
 ///   Host                  — from the predefined list
 ///   Purpose               — from the predefined list
@@ -35,7 +35,7 @@ namespace VisitorPass.Models;
 /// </summary>
 public partial class Visitor : ObservableObject
 {
-    /// <summary>Unique local identifier (format: <c>VP-####</c>).</summary>
+    /// <summary>Unique local identifier (format: <c>VP-yyyyMMdd-####</c>).</summary>
     [ObservableProperty]
     private string _passId = string.Empty;
 

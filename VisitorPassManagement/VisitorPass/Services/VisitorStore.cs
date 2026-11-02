@@ -69,7 +69,7 @@ public sealed class VisitorStore : IVisitorStore
     {
         ArgumentNullException.ThrowIfNull(visitor);
         if (string.IsNullOrWhiteSpace(visitor.PassId))
-            visitor.PassId = _passCodeGenerator.Next(visitor.VisitDate, Visitors.Count);
+            visitor.PassId = _passCodeGenerator.Next(visitor.VisitDate);
         if (string.IsNullOrWhiteSpace(visitor.PassCode))
             visitor.PassCode = visitor.PassId;
         visitor.PropertyChanged += OnVisitorPropertyChanged;

@@ -81,7 +81,7 @@ public static class VisitorData
                 AvatarColor = AvatarSwatches[swatchIndex % AvatarSwatches.Length],
                 Notes = notes,
             };
-            v.PassId = generator.Next(visitDate, visitors.Count);
+            v.PassId = generator.Next(visitDate);
             v.PassCode = v.PassId;
             swatchIndex++;
             visitors.Add(v);

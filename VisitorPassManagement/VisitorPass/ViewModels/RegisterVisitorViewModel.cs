@@ -98,17 +98,12 @@ public partial class RegisterVisitorViewModel : BaseViewModel
 
     /// <summary>
     /// Available host names from the predefined list (rendered as
-    /// <c>SfComboBox</c> choices).
+    /// <c>SfComboBox</c> choices). Pulled from
+    /// <see cref="VisitorPass.Models.Hosts"/> so registered visitors
+    /// always end up with a name that the directory + details
+    /// screens can resolve.
     /// </summary>
-    public IReadOnlyList<string> HostOptions { get; } = new[]
-    {
-        "Anandh Krishnan",
-        "Priya Sundaram",
-        "Vikram Iyer",
-        "Lakshmi Narayanan",
-        "Arjun Venkatesh",
-        "Reception Desk",
-    };
+    public IReadOnlyList<string> HostOptions { get; } = VisitorPass.Models.Hosts.All.ToArray();
 
     private void ResetValidation()
     {
@@ -195,9 +190,7 @@ public partial class RegisterVisitorViewModel : BaseViewModel
 
         ValidationErrors.Clear();
 
-        var visitorCount = _store.Visitors.Count;
-
-        var newId = _passCodes.Next(VisitDate, visitorCount);
+        var newId = _passCodes.Next(VisitDate);
         var visitor = new Visitor
         {
             PassId = newId,
