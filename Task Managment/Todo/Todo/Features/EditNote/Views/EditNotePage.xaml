@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Todo.Features.EditNote.ViewModels"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
+             xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="Todo.Features.EditNote.Views.EditNotePage"
              x:DataType="vm:EditNoteViewModel"
              Shell.NavBarIsVisible="False"
@@ -45,7 +47,7 @@
                          Margin="0,16" />
 
                 <ScrollView Grid.Row="2" Margin="0">
-                    <VerticalStackLayout Spacing="12">
+                    <VerticalStackLayout Spacing="10">
                         <Grid ColumnDefinitions="44,*,40" ColumnSpacing="10" VerticalOptions="Center">
                             <CheckBox Grid.Column="0"
                                       IsChecked="{Binding HasDueDate, Mode=TwoWay}"
@@ -74,46 +76,87 @@
                                               TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}" />
                         </Grid>
 
-                        <VerticalStackLayout Spacing="8">
-                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                <Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
-                                <Border Grid.Column="1"
-                                        Padding="12,8"
-                                        Stroke="{StaticResource ChipStrokeColor}"
-                                        StrokeThickness="1"
-                                        StrokeShape="RoundRectangle 12"
-                                        BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                    <Label Text="{Binding DueDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=date}"
-                                           FontSize="13"
-                                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
-                                </Border>
-                            </Grid>
-                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                <Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
-                                <Border Grid.Column="1"
-                                        Padding="12,8"
-                                        Stroke="{StaticResource ChipStrokeColor}"
-                                        StrokeThickness="1"
-                                        StrokeShape="RoundRectangle 12"
-                                        BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                    <Label Text="{Binding RepeatFrequency, Converter={StaticResource EnumDisplayNameConverter}}"
-                                           FontSize="13"
-                                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
-                                </Border>
-                            </Grid>
-                            <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                <Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
-                                <Border Grid.Column="1"
-                                        Padding="12,8"
-                                        Stroke="{StaticResource ChipStrokeColor}"
-                                        StrokeThickness="1"
-                                        StrokeShape="RoundRectangle 12"
-                                        BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                    <Label Text="{Binding ReminderDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=datetime}"
-                                           FontSize="13"
-                                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
-                                </Border>
-                            </Grid>
+                        <VerticalStackLayout Spacing="6">
+                            <Border Padding="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleDueDatePickerCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
+                                    <Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Border Grid.Column="1"
+                                            Padding="12,8"
+                                            Stroke="{StaticResource ChipStrokeColor}"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 12"
+                                            BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                        <Label Text="{Binding DueDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=date}"
+                                               FontSize="13"
+                                               TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <picker:SfDatePicker IsVisible="{Binding IsDueDatePickerVisible}"
+                                                 SelectedDate="{Binding DueDateSelection, Mode=TwoWay}"
+                                                 HeightRequest="220" />
+
+                            <Border Padding="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleRepeatPickerCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
+                                    <Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Border Grid.Column="1"
+                                            Padding="12,8"
+                                            Stroke="{StaticResource ChipStrokeColor}"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 12"
+                                            BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                        <Label Text="{Binding RepeatFrequency, Converter={StaticResource EnumDisplayNameConverter}}"
+                                               FontSize="13"
+                                               TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <Picker IsVisible="{Binding IsRepeatPickerVisible}"
+                                    ItemsSource="{Binding RepeatOptions}"
+                                    SelectedItem="{Binding RepeatFrequency, Mode=TwoWay}"
+                                    HeightRequest="44"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+
+                            <Border Padding="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleReminderPickerCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
+                                    <Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Border Grid.Column="1"
+                                            Padding="12,8"
+                                            Stroke="{StaticResource ChipStrokeColor}"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 12"
+                                            BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                        <Label Text="{Binding ReminderDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=datetime}"
+                                               FontSize="13"
+                                               TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <VerticalStackLayout IsVisible="{Binding IsReminderPickerVisible}" Spacing="6">
+                                <picker:SfDatePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
+                                <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </ScrollView>

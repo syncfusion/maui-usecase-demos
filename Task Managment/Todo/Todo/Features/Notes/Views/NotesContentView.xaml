@@ -452,8 +452,16 @@
                                                      Stroke="Transparent"
                                                      EnableFloating="False"
                                                      ReserveSpaceForAssistiveLabels="False"
-                                                     InputViewPadding="12,2,152,2"
+                                                     InputViewPadding="14,0,150,0"
                                                      VerticalOptions="Center">
+                        <syncfusionCore:SfTextInputLayout.LeadingView>
+                            <Image Source="notesicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" Margin="0,4,0,0" />
+                        </syncfusionCore:SfTextInputLayout.LeadingView>
+                        <syncfusionCore:SfTextInputLayout.HintLabelStyle>
+                            <syncfusionCore:LabelStyle FontSize="14"
+                                                       FontFamily="{StaticResource FontFamilyRegular}"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
+                        </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                         <syncfusionCore:SfTextInputLayout.TrailingView>
                             <Grid ColumnDefinitions="36,36,36,36" VerticalOptions="Center" HorizontalOptions="Fill" WidthRequest="150">
                                 <buttons:SfButton Grid.Column="0" WidthRequest="36" HeightRequest="36" Padding="0"

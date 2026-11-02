@@ -35,13 +35,22 @@ public partial class EditNoteViewModel : ViewModelBase
     private bool hasDueDate;
 
     [ObservableProperty]
+    private bool isDueDatePickerVisible;
+
+    [ObservableProperty]
     private DateTime dueDateSelection = DateTime.Today;
 
     [ObservableProperty]
     private NoteRepeatFrequency repeatFrequency;
 
     [ObservableProperty]
+    private bool isRepeatPickerVisible;
+
+    [ObservableProperty]
     private bool hasReminder;
+
+    [ObservableProperty]
+    private bool isReminderPickerVisible;
 
     [ObservableProperty]
     private DateTime reminderDateSelection = DateTime.Today;
@@ -77,9 +86,12 @@ public partial class EditNoteViewModel : ViewModelBase
             IsExisting = true;
             Title = existing.Title ?? string.Empty;
             HasDueDate = existing.DueDate.HasValue;
+            IsDueDatePickerVisible = HasDueDate;
             DueDateSelection = existing.DueDate?.Date ?? DateTime.Today;
             RepeatFrequency = existing.RepeatFrequency;
+            IsRepeatPickerVisible = RepeatFrequency != NoteRepeatFrequency.Never;
             HasReminder = existing.ReminderDate.HasValue;
+            IsReminderPickerVisible = HasReminder;
             ReminderDateSelection = existing.ReminderDate?.Date ?? DateTime.Today;
             ReminderTimeSelection = existing.ReminderDate?.TimeOfDay ?? new TimeSpan(9, 0, 0);
             var age = DateTime.Now - existing.CreatedAt;
@@ -93,6 +105,9 @@ public partial class EditNoteViewModel : ViewModelBase
     }
 
     partial void OnTitleChanged(string value) => SaveCommand.NotifyCanExecuteChanged();
+    partial void OnHasDueDateChanged(bool value) => IsDueDatePickerVisible = value;
+    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value) => IsRepeatPickerVisible = value != NoteRepeatFrequency.Never;
+    partial void OnHasReminderChanged(bool value) => IsReminderPickerVisible = value;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
@@ -126,6 +141,15 @@ public partial class EditNoteViewModel : ViewModelBase
     {
         await _navigation.PopModalAsync(false);
     }
+
+    [RelayCommand]
+    private void ToggleDueDatePicker() => IsDueDatePickerVisible = !IsDueDatePickerVisible;
+
+    [RelayCommand]
+    private void ToggleRepeatPicker() => IsRepeatPickerVisible = !IsRepeatPickerVisible;
+
+    [RelayCommand]
+    private void ToggleReminderPicker() => IsReminderPickerVisible = !IsReminderPickerVisible;
 
     [RelayCommand]
     private async Task DeleteAsync()
