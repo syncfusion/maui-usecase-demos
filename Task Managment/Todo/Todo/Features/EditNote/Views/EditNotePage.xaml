@@ -44,20 +44,26 @@
                          Color="{AppThemeBinding Light={StaticResource PopupDividerColor}, Dark={StaticResource PopupDividerDarkColor}}"
                          Margin="0,16" />
 
-                <ScrollView Grid.Row="2">
-                    <VerticalStackLayout Spacing="14">
+                <ScrollView Grid.Row="2" Margin="0">
+                    <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="44,*,40" ColumnSpacing="10" VerticalOptions="Center">
                             <CheckBox Grid.Column="0"
                                       IsChecked="{Binding HasDueDate, Mode=TwoWay}"
                                       Color="{StaticResource PrimaryColor}"
-                                      VerticalOptions="Center" />
-                            <Entry Grid.Column="1"
-                                   Text="{Binding Title, Mode=TwoWay}"
-                                   FontSize="16"
-                                   FontFamily="{StaticResource FontFamilySemibold}"
-                                   BackgroundColor="Transparent"
-                                   VerticalOptions="Center"
-                                   TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="Center" />
+                            <Border Grid.Column="1"
+                                    Padding="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent">
+                                <Entry Text="{Binding Title, Mode=TwoWay}"
+                                       FontSize="16"
+                                       FontFamily="{StaticResource FontFamilySemibold}"
+                                       BackgroundColor="Transparent"
+                                       VerticalTextAlignment="Center"
+                                       Margin="0"
+                                       TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                            </Border>
                             <buttons:SfButton Grid.Column="2"
                                               Text="★"
                                               WidthRequest="40"
@@ -68,7 +74,7 @@
                                               TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}" />
                         </Grid>
 
-                        <VerticalStackLayout Spacing="10">
+                        <VerticalStackLayout Spacing="8">
                             <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
                                 <Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
                                 <Border Grid.Column="1"

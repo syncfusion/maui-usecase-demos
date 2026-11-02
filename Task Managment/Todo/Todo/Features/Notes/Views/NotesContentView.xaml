@@ -217,7 +217,7 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
 
-                                <Grid ColumnDefinitions="44,*,40,40"
+                                <Grid ColumnDefinitions="40,*,40,40"
                                       ColumnSpacing="8"
                                       VerticalOptions="Center">
                                     <BoxView Grid.ColumnSpan="4"
@@ -243,25 +243,46 @@
                                               IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                               CheckedChanged="OnCheckChanged"
                                               Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}"
-                                              VerticalOptions="Center" />
+                                              VerticalOptions="Center"
+                                              HorizontalOptions="Center" />
 
                                     <!-- Title + metadata -->
                                     <VerticalStackLayout Grid.Column="1"
-                                                         Spacing="2"
-                                                         VerticalOptions="Center">
+                                                         Spacing="4"
+                                                         VerticalOptions="Center"
+                                                         Margin="0,0,0,1">
                                         <Label Text="{Binding Title}"
                                                Style="{StaticResource NoteTitleStyle}"
+                                               FontSize="16"
+                                               VerticalTextAlignment="Center"
                                                MaxLines="1"
                                                TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}" />
-                                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                            <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                <HorizontalStackLayout Spacing="4"><Image Source="calendaricon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                        <HorizontalStackLayout Spacing="8"
+                                                               VerticalOptions="Center"
+                                                               Margin="0,1,0,0">
+                                            <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}"
+                                                    Padding="8,4"
+                                                    Stroke="{StaticResource ChipStrokeColor}"
+                                                    StrokeThickness="1"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Image Source="calendaricon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
-                                            <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                <HorizontalStackLayout Spacing="4"><Image Source="dateicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                            <Border IsVisible="{Binding HasRepeat}"
+                                                    Padding="8,4"
+                                                    Stroke="{StaticResource ChipStrokeColor}"
+                                                    StrokeThickness="1"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Image Source="dateicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
-                                            <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                <HorizontalStackLayout Spacing="4"><Image Source="bellicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                            <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}"
+                                                    Padding="8,4"
+                                                    Stroke="{StaticResource ChipStrokeColor}"
+                                                    StrokeThickness="1"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    BackgroundColor="{StaticResource ChipBackgroundColor}">
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Image Source="bellicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
@@ -386,9 +407,9 @@
             <!-- Bottom input bar -->
             <Border Grid.Row="2"
                     Margin="16,12,16,16"
-                    Padding="10,4"
+                    Padding="10,8"
                     BackgroundColor="White"
-                    StrokeThickness="0"  
+                    StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
                 <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" VerticalOptions="Center">
                     <FlexLayout Grid.Row="0"
@@ -397,7 +418,7 @@
                                 Wrap="Wrap"
                                 JustifyContent="Start"
                                 AlignItems="Center"
-                                Padding="4,0,0,8">
+                                Padding="4,0,0,6">
                         <Border IsVisible="{Binding HasDraftDueDate}" Margin="0,0,6,0" StrokeThickness="1" Stroke="#D6D0E2" StrokeShape="RoundRectangle 14" BackgroundColor="#F7F5FB" Padding="8,4">
                             <HorizontalStackLayout Spacing="4">
                                 <Image Source="calendaricon.png" WidthRequest="13" HeightRequest="13" />
@@ -422,15 +443,16 @@
                     </FlexLayout>
                     <syncfusionCore:SfTextInputLayout Grid.Row="1" Grid.Column="0"
                                                      Hint="Add a note"
-                                                     ContainerType="Outlined" 
+                                                     ContainerType="Outlined"
                                                      OutlineCornerRadius="28"
                                                      FocusedStrokeThickness="1"
                                                      Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                                                     UnfocusedStrokeThickness="1" 
-                                                     ShowHint="True" Stroke="Transparent"
-                                                     EnableFloating="False" 
+                                                     UnfocusedStrokeThickness="1"
+                                                     ShowHint="True"
+                                                     Stroke="Transparent"
+                                                     EnableFloating="False"
                                                      ReserveSpaceForAssistiveLabels="False"
-                                                     InputViewPadding="12,0,152,0"
+                                                     InputViewPadding="12,2,152,2"
                                                      VerticalOptions="Center">
                         <syncfusionCore:SfTextInputLayout.TrailingView>
                             <Grid ColumnDefinitions="36,36,36,36" VerticalOptions="Center" HorizontalOptions="Fill" WidthRequest="150">
@@ -458,6 +480,8 @@
                         </syncfusionCore:SfTextInputLayout.TrailingView>
                         <Entry Text="{Binding NewNoteTitle, Mode=TwoWay}"
                                Style="{StaticResource InputPillEntryStyle}"
+                               BackgroundColor="Transparent"
+                               Margin="0"
                                ReturnCommand="{Binding AddNoteCommand}" />
                     </syncfusionCore:SfTextInputLayout>
                 </Grid>
