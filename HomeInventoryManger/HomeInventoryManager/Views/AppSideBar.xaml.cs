@@ -18,28 +18,27 @@ public partial class AppSideBar : ContentView
 		set => SetValue(ActiveTabProperty, value);
 	}
 
+	private static Task NavigateToAsync(string route)
+		=> Shell.Current is null ? Task.CompletedTask : Shell.Current.GoToAsync(route);
+
 	private async void OnDashboardTapped(object sender, TappedEventArgs e)
 	{
-		Application.Current.Windows[0].Page = new DashboardPage();
-		//await GoToAsyncSafe(NavigationTab.Dashboard);
+		await NavigateToAsync("//Dashboard");
 	}
 
 	private async void OnInventoryTapped(object sender, TappedEventArgs e)
 	{
-		Application.Current.Windows[0].Page = new InventoryPage();
-		//await GoToAsyncSafe(NavigationTab.Inventory);
+		await NavigateToAsync("//Inventory");
 	}
 
 	private async void OnScanTapped(object sender, TappedEventArgs e)
 	{
-		Application.Current.Windows[0].Page = new ScanPage();
-		//await GoToAsyncSafe(NavigationTab.Scan);
+		await NavigateToAsync("//Scan");
 	}
 
 	private async void OnWarrantyTapped(object sender, TappedEventArgs e)
 	{
-		Application.Current.Windows[0].Page = new WarrantyPage();
-		//await GoToAsyncSafe(NavigationTab.Warranty);
+		await NavigateToAsync("//Warranty");
 	}
 
 	private async Task GoToAsyncSafe(NavigationTab tab)

@@ -32,6 +32,9 @@ public partial class DashboardPage : ContentPage
 		_vm.RecommendationTapped -= OnRecommendationTapped;
 	}
 
+	private static Task NavigateToAsync(string route)
+		=> Shell.Current is null ? Task.CompletedTask : Shell.Current.GoToAsync(route);
+
 	private async void OnNavigateRequested(object? sender, string route)
 	{
 		try
@@ -39,7 +42,7 @@ public partial class DashboardPage : ContentPage
 			if (string.IsNullOrWhiteSpace(route))
 				return;
 
-			await Shell.Current.GoToAsync($"//{route}");
+			await NavigateToAsync($"//{route}");
 		}
 		catch (Exception ex)
 		{
@@ -51,7 +54,7 @@ public partial class DashboardPage : ContentPage
 	{
 		try
 		{
-			await Shell.Current.GoToAsync("//AIAdvisor");
+			await NavigateToAsync("//AIAdvisor");
 		}
 		catch (Exception ex)
 		{
@@ -95,7 +98,7 @@ public partial class DashboardPage : ContentPage
 	{
 		try
 		{
-			await Shell.Current.GoToAsync("//Scan");
+			await NavigateToAsync("//Scan");
 		}
 		catch (Exception ex)
 		{
@@ -107,7 +110,7 @@ public partial class DashboardPage : ContentPage
 	{
 		try
 		{
-			await Shell.Current.GoToAsync("//Warranty");
+			await NavigateToAsync("//Warranty");
 		}
 		catch (Exception ex)
 		{
@@ -119,7 +122,7 @@ public partial class DashboardPage : ContentPage
 	{
 		try
 		{
-			await Shell.Current.GoToAsync("//Warranty");
+			await NavigateToAsync("//AIAdvisor");
 		}
 		catch (Exception ex)
 		{

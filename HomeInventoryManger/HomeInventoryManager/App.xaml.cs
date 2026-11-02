@@ -1,5 +1,4 @@
-﻿using HomeInventoryManager.Views;
-using Microsoft.Extensions.DependencyInjection;
+using HomeInventoryManager.Views;
 
 namespace HomeInventoryManager
 {
@@ -12,7 +11,7 @@ namespace HomeInventoryManager
 
 		protected override Window CreateWindow(IActivationState? activationState)
 		{
-			return new Window(new DashboardPage());
+			return new Window(new AppShell());
 		}
 	}
 }

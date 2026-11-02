@@ -42,11 +42,12 @@ public partial class InventoryPage : ContentPage
 		}
 	}
 
-	private void RequestScan_Clicked(object sender, EventArgs e)
+	private async void RequestScan_Clicked(object sender, EventArgs e)
 	{
 		try
 		{
-			Application.Current.Windows[0].Page = new ScanPage();
+			if (Shell.Current is not null)
+				await Shell.Current.GoToAsync("//Scan");
 		}
 		catch (Exception ex)
 		{
