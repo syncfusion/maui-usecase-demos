@@ -1,4 +1,3 @@
-using System.Collections.Specialized;
 using System.ComponentModel;
 using DiagramBuilder.Controls;
 using DiagramBuilder.Services;
@@ -47,11 +46,13 @@ public partial class DiagramDesignerPage : ContentPage
         WireWorkspace(WorkspaceFullBleed);
 
         // Mirror the shared Stencil VM palette groups into the native SymbolPalette
-        // (Shapes panel). Syncfusion handles drag-and-drop from there to the
-        // SfDiagram, which is the direct Grid sibling it expects.
-        CopyPaletteGroups(viewModel.Stencil.PaletteGroups, ShapesPalette.Palettes);
+        // (Shapes panel). Syncfusion's JS bridge caches the Palettes reference at
+        // initialisation, so the collection must be ASSIGNED to SymbolPalette.Palettes
+        // rather than mutated via Clear()/Add() — per the Syncfusion diagram-sdk
+        // MAUI getting-started docs.
+        ShapesPalette.Palettes = viewModel.Stencil.PaletteGroups;
         ((INotifyCollectionChanged)viewModel.Stencil.PaletteGroups).CollectionChanged +=
-            (_, _) => CopyPaletteGroups(viewModel.Stencil.PaletteGroups, ShapesPalette.Palettes);
+            (_, _) => ShapesPalette.Palettes = viewModel.Stencil.PaletteGroups;
 
         // Wire panel-header chevrons to the show/hide relay commands.
         ShapesHeader.ToggleCommand = new Command(() => viewModel.ShowStencil = !viewModel.ShowStencil);
@@ -97,17 +98,6 @@ public partial class DiagramDesignerPage : ContentPage
         workspace.GeometryChangedCommand = _viewModel.GeometryChangedCommand;
         workspace.AnnotationEditedCommand = _viewModel.AnnotationEditedCommand;
         workspace.CollectionChangedCommand = _viewModel.CollectionChangedCommand;
-    }
-
-    private static void CopyPaletteGroups(
-        System.Collections.ObjectModel.ObservableCollection<object> source,
-        System.Collections.IList target)
-    {
-        target.Clear();
-        foreach (var palette in source.OfType<Syncfusion.Maui.Diagram.Palette>())
-        {
-            target.Add(palette);
-        }
     }
 
     private void OnZoomPropertyChanged(object? sender, PropertyChangedEventArgs args)
