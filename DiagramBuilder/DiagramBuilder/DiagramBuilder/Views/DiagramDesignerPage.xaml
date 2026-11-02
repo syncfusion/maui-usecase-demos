@@ -1,17 +1,28 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DiagramBuilder.Views.DiagramDesignerPage"
              xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
              xmlns:behaviors="clr-namespace:DiagramBuilder.Behaviors;assembly=DiagramBuilder"
+             xmlns:diagram="clr-namespace:Syncfusion.Maui.Diagram;assembly=Syncfusion.Maui.Diagram"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
              x:Name="RootPage"
              Title="{Binding DocumentTitle}"
              BackgroundColor="{DynamicResource WindowBackground}">
 
-    <!-- 3-column designer frame per ui-spec.md §1:
-         rows: title / menu / toolbar / content / status; columns: 280 /* / 320.
-         Panels collapse to 0 width via WINDOW menu toggles (designer VM observables). -->
+    <!--
+      3-column designer frame per ui-spec.md §1: Shapes | Canvas | Properties.
+      Rows: title / menu / toolbar / content / status; columns: 280 /* / 320.
+      Panels collapse to 0 width via WINDOW menu toggles.
+
+      The Shapes panel uses the native Syncfusion SymbolPalette (not the custom
+      StencilPanelControl) so drag-and-drop to the canvas works out of the box.
+      The SymbolPalette and the SfDiagram live as direct Grid siblings of the
+      row-level content Grid (architecture.md §3.3) — that is the
+      shape Syncfusion's "SymbolPalette must be a sibling of SfDiagram" rule
+      requires.
+    -->
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto"
           ColumnDefinitions="Auto,*,Auto"
           Padding="8"
@@ -47,18 +58,48 @@
                                  SetZoomCommand="{Binding Zoom.SetZoomLevelCommand}"
                                  ShowPropertiesCommand="{Binding TogglePropertiesCommand}" />
 
-        <!-- Row 3: content — 3 columns (stencil / canvas / properties) -->
-        <!-- Stencil (left, 280 px, collapsible) -->
-        <controls:StencilPanelControl x:Name="StencilPanel"
-                                      Grid.Row="3" Grid.Column="0"
-                                      BindingContext="{Binding Stencil}"
-                                      WidthRequest="280"
-                                      IsVisible="{Binding Source={x:Reference RootPage}, Path=BindingContext.ShowStencil}" />
+        <!-- Row 3: content area. The Shapes panel lives in its own Border (left)
+             so the SymbolPalette can sit in column 0 of the inner Grid, and the
+             SfDiagram can sit in column 1 — they're direct Grid siblings, which
+             is what Syncfusion needs for native drag-and-drop. The same Border
+             also wraps the diagram so the canvas has the matching rounded edge.
+             The whole Row-3 area is hidden when the shapes toggle is off and a
+             full-bleed Workspace takes over. -->
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+              ColumnDefinitions="280,*" ColumnSpacing="8"
+              IsVisible="{Binding ShowStencil}">
+            <Border Grid.Column="0"
+                    Stroke="{DynamicResource PanelBorderBrush}"
+                    StrokeThickness="1"
+                    BackgroundColor="{DynamicResource PanelBackground}">
+                <Border.StrokeShape>
+                    <shapes:RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,*">
+                    <controls:PanelHeaderControl x:Name="ShapesHeader"
+                                                 Grid.Row="0"
+                                                 Title="Shapes" />
+                    <diagram:SymbolPalette x:Name="ShapesPalette"
+                                           Grid.Row="1"
+                                           VerticalOptions="Fill"
+                                           HorizontalOptions="Fill"
+                                           Margin="8"
+                                           SymbolWidth="64"
+                                           SymbolHeight="64"
+                                           EnableSearch="True"
+                                           ExpandMode="Multiple" />
+                </Grid>
+            </Border>
+            <controls:DiagramWorkspaceControl x:Name="WorkspaceWithShapes"
+                                               Grid.Column="1"
+                                               Margin="0" />
+        </Grid>
 
-        <!-- Canvas (center, fill) -->
-        <controls:DiagramWorkspaceControl x:Name="Workspace"
-                                           Grid.Row="3" Grid.Column="1"
-                                           PaletteGroups="{Binding Stencil.PaletteGroups}" />
+        <!-- Full-bleed canvas when shapes panel is hidden (fills columns 0–1). -->
+        <controls:DiagramWorkspaceControl x:Name="WorkspaceFullBleed"
+                                           Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                           Margin="0"
+                                           IsVisible="{Binding ShowStencil, Converter={StaticResource InvertBoolConverter}}" />
 
         <!-- Properties (right, 320 px, collapsible) -->
         <controls:PropertyPanelControl x:Name="PropertyPanel"

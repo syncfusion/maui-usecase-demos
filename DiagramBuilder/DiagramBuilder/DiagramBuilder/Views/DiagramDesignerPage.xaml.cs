@@ -1,6 +1,9 @@
+using System.Collections.Specialized;
+using System.ComponentModel;
 using DiagramBuilder.Controls;
 using DiagramBuilder.Services;
 using DiagramBuilder.ViewModels;
+using Syncfusion.Maui.Diagram;
 
 namespace DiagramBuilder.Views;
 
@@ -12,6 +15,7 @@ public partial class DiagramDesignerPage : ContentPage
     private readonly CreateDiagramPage _createDiagramPage;
     private readonly Views.Dialogs.ExportDialog _exportDialog;
     private readonly ContentPage _exportDialogHost;
+    private readonly System.ComponentModel.PropertyChangedEventHandler _zoomSubscription;
     private bool _dialogShown;
 
     public DiagramDesignerPage(
@@ -35,60 +39,84 @@ public partial class DiagramDesignerPage : ContentPage
             Content = _exportDialog
         };
 
-        // Binding-context resolution + data mapping only (no business logic):
-        // the palette is now bound through the VM (StencilViewModel.PaletteGroups).
         MenuBar.IsChecked = viewModel.MenuBar.IsChecked;
 
-        // Wire diagram surface relay commands (control → VM, one-way).
-        Workspace.ReadyCommand = new Command(() => viewModel.SetStatus(Constants.AppStrings.StatusReady));
-        Workspace.SelectionChangedCommand = new Command(payload =>
-        {
-            if (payload is DiagramBuilder.Behaviors.DiagramSurfaceBehavior.SelectionPayload sp)
-            {
-                viewModel.ApplySelection(sp.NodeIds, sp.ConnectorIds);
-            }
-        });
-        // CommunityToolkit.Mvvm strips the leading "On" when generating [RelayCommand] names,
-        // so OnGeometryChanged / OnAnnotationEdited / OnCollectionChanged produce commands
-        // named GeometryChangedCommand / AnnotationEditedCommand / CollectionChangedCommand.
-        Workspace.GeometryChangedCommand = viewModel.GeometryChangedCommand;
-        Workspace.AnnotationEditedCommand = viewModel.AnnotationEditedCommand;
-        Workspace.CollectionChangedCommand = viewModel.CollectionChangedCommand;
+        // Wire both Workspace instances so the same commands work whether the
+        // shapes panel is visible or the canvas is full-bleed.
+        WireWorkspace(WorkspaceWithShapes);
+        WireWorkspace(WorkspaceFullBleed);
+
+        // Mirror the shared Stencil VM palette groups into the native SymbolPalette
+        // (Shapes panel). Syncfusion handles drag-and-drop from there to the
+        // SfDiagram, which is the direct Grid sibling it expects.
+        CopyPaletteGroups(viewModel.Stencil.PaletteGroups, ShapesPalette.Palettes);
+        ((INotifyCollectionChanged)viewModel.Stencil.PaletteGroups).CollectionChanged +=
+            (_, _) => CopyPaletteGroups(viewModel.Stencil.PaletteGroups, ShapesPalette.Palettes);
 
         // Wire panel-header chevrons to the show/hide relay commands.
-        StencilPanel.Header.ToggleCommand = new Command(() => viewModel.ShowStencil = !viewModel.ShowStencil);
+        ShapesHeader.ToggleCommand = new Command(() => viewModel.ShowStencil = !viewModel.ShowStencil);
         PropertyPanel.Header.ToggleCommand = new Command(() => viewModel.ShowProperties = !viewModel.ShowProperties);
 
         // Wire surface request relays (VM → control, one-way; the VM stays
         // control-agnostic — each delegate only awaits a behavior method).
-        viewModel.UndoRequested = () => Workspace.Behavior.UndoAsync();
-        viewModel.RedoRequested = () => Workspace.Behavior.RedoAsync();
-        viewModel.CutRequested = () => Workspace.Behavior.CutAsync();
-        viewModel.CopyRequested = () => Workspace.Behavior.CopyAsync();
-        viewModel.PasteRequested = () => Workspace.Behavior.PasteAsync();
-        viewModel.DeleteRequested = () => Workspace.Behavior.DeleteSelectionAsync();
-        viewModel.PrintRequested = () => Workspace.Behavior.PrintAsync();
-        viewModel.Zoom.FitToPageRequested = new Command(() => _ = Workspace.Behavior.FitToPageAsync());
+        viewModel.UndoRequested = () => ActiveWorkspace().Behavior.UndoAsync();
+        viewModel.RedoRequested = () => ActiveWorkspace().Behavior.RedoAsync();
+        viewModel.CutRequested = () => ActiveWorkspace().Behavior.CutAsync();
+        viewModel.CopyRequested = () => ActiveWorkspace().Behavior.CopyAsync();
+        viewModel.PasteRequested = () => ActiveWorkspace().Behavior.PasteAsync();
+        viewModel.DeleteRequested = () => ActiveWorkspace().Behavior.DeleteSelectionAsync();
+        viewModel.PrintRequested = () => ActiveWorkspace().Behavior.PrintAsync();
+        viewModel.Zoom.FitToPageRequested = new Command(() => _ = ActiveWorkspace().Behavior.FitToPageAsync());
 
-        // Zoom state passthrough: ZoomViewModel.CurrentZoom → behavior ZoomFactor →
-        // SfDiagram.Zoom (data mapping relay only, no business logic).
         _zoomSubscription = OnZoomPropertyChanged;
-        Workspace.SurfaceBehaviorZoomFactor = viewModel.Zoom.CurrentZoom;
+        WorkspaceWithShapes.SurfaceBehaviorZoomFactor = viewModel.Zoom.CurrentZoom;
+        WorkspaceFullBleed.SurfaceBehaviorZoomFactor = viewModel.Zoom.CurrentZoom;
 
-        // Event subscriptions are made in OnAppearing / removed in OnDisappearing
-        // only (symmetric pairs — see those handlers).
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
     }
 
-    private readonly System.ComponentModel.PropertyChangedEventHandler _zoomSubscription;
+    /// <summary>
+    /// Routes diagram-surface relay commands to the visible workspace. There are
+    /// two Workspace instances in the visual tree (one in each layout mode), so
+    /// commands dispatch to whichever is currently shown.
+    /// </summary>
+    private DiagramWorkspaceControl ActiveWorkspace() =>
+        _viewModel.ShowStencil ? WorkspaceWithShapes : WorkspaceFullBleed;
 
-    private void OnZoomPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
+    private void WireWorkspace(DiagramWorkspaceControl workspace)
     {
-        if (args.PropertyName == nameof(ViewModels.ZoomViewModel.CurrentZoom)
-            && sender is ViewModels.ZoomViewModel zoom)
+        workspace.ReadyCommand = new Command(() => _viewModel.SetStatus(Constants.AppStrings.StatusReady));
+        workspace.SelectionChangedCommand = new Command(payload =>
         {
-            Workspace.SurfaceBehaviorZoomFactor = zoom.CurrentZoom;
+            if (payload is DiagramBuilder.Behaviors.DiagramSurfaceBehavior.SelectionPayload sp)
+            {
+                _viewModel.ApplySelection(sp.NodeIds, sp.ConnectorIds);
+            }
+        });
+        workspace.GeometryChangedCommand = _viewModel.GeometryChangedCommand;
+        workspace.AnnotationEditedCommand = _viewModel.AnnotationEditedCommand;
+        workspace.CollectionChangedCommand = _viewModel.CollectionChangedCommand;
+    }
+
+    private static void CopyPaletteGroups(
+        System.Collections.ObjectModel.ObservableCollection<object> source,
+        System.Collections.IList target)
+    {
+        target.Clear();
+        foreach (var palette in source.OfType<Syncfusion.Maui.Diagram.Palette>())
+        {
+            target.Add(palette);
+        }
+    }
+
+    private void OnZoomPropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == nameof(ZoomViewModel.CurrentZoom)
+            && sender is ZoomViewModel zoom)
+        {
+            WorkspaceWithShapes.SurfaceBehaviorZoomFactor = zoom.CurrentZoom;
+            WorkspaceFullBleed.SurfaceBehaviorZoomFactor = zoom.CurrentZoom;
         }
     }
 
@@ -100,18 +128,18 @@ public partial class DiagramDesignerPage : ContentPage
     /// <summary>Document loaded by service → push to live SfDiagram (template load).</summary>
     private void OnDocumentLoaded(object? sender, Models.DiagramDocument document)
     {
-        Workspace.LoadTemplate(document);
+        // Mirror the template into both workspaces so the visible one shows it.
+        WorkspaceWithShapes.LoadTemplate(document);
+        WorkspaceFullBleed.LoadTemplate(document);
         _viewModel.SetDocumentTitle(document.Title);
         _viewModel.SetStatus(string.Format(Constants.AppStrings.StatusOpenedFormat, document.Title));
     }
 
-    /// <summary>VM request → modal push relay (no business logic).</summary>
     private async void OnExportDialogRequested(object? sender, EventArgs e)
     {
         await Shell.Current.Navigation.PushModalAsync(_exportDialogHost);
     }
 
-    /// <summary>FILE ▸ New → push the create-diagram modal (same flow as launch).</summary>
     private async void OnCreateDialogRequested(object? sender, EventArgs e)
     {
         await Shell.Current.Navigation.PushModalAsync(_createDiagramPage);
@@ -119,14 +147,32 @@ public partial class DiagramDesignerPage : ContentPage
 
     private async void OnAppearing(object? sender, EventArgs e)
     {
-        // Re-establish subscriptions torn down in OnDisappearing — pushing the
-        // create/export modals triggers Disappearing on this page, and the
-        // document loaded on return must still reach the canvas.
+        // The diagram service is a singleton whose DocumentLoaded event fires from
+        // the CreateDiagram modal. Pushing the modal triggers OnDisappearing on
+        // this page (per MAUI Shell modal lifecycle), which would tear the
+        // subscription down before the user picks a template — leaving the event
+        // with no listener. We keep the service-level subscription alive for the
+        // lifetime of the page (the page is transient so the handler is GC'd with
+        // it), and only re-establish the page-scoped UI subscriptions each time.
+        // Idempotent subscribe: -= first, then += to avoid double-subscription
+        // when OnAppearing fires multiple times (e.g. after a modal pops).
+        _diagramService.DocumentLoaded -= OnDocumentLoaded;
         _diagramService.DocumentLoaded += OnDocumentLoaded;
+
+        _viewModel.ExportDialogRequested -= OnExportDialogRequested;
         _viewModel.ExportDialogRequested += OnExportDialogRequested;
+
+        _viewModel.CreateDialogRequested -= OnCreateDialogRequested;
         _viewModel.CreateDialogRequested += OnCreateDialogRequested;
+
+        _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
         _viewModel.Zoom.PropertyChanged += _zoomSubscription;
-        Workspace.TemplateLoaded += OnTemplateLoaded;
+
+        WorkspaceWithShapes.TemplateLoaded -= OnTemplateLoaded;
+        WorkspaceWithShapes.TemplateLoaded += OnTemplateLoaded;
+
+        WorkspaceFullBleed.TemplateLoaded -= OnTemplateLoaded;
+        WorkspaceFullBleed.TemplateLoaded += OnTemplateLoaded;
 
         if (_dialogShown)
         {
@@ -140,13 +186,11 @@ public partial class DiagramDesignerPage : ContentPage
 
     private void OnDisappearing(object? sender, EventArgs e)
     {
-        // Symmetric teardown — transient page outlives the singleton VMs, so its
-        // subscriptions must be removed to avoid duplicate-handler leaks across
-        // page instances (validation.md §2).
-        _diagramService.DocumentLoaded -= OnDocumentLoaded;
-        _viewModel.ExportDialogRequested -= OnExportDialogRequested;
-        _viewModel.CreateDialogRequested -= OnCreateDialogRequested;
+        // Symmetric teardown for page-scoped UI subscriptions only. Service-level
+        // subscriptions are kept (see OnAppearing for the rationale) so a
+        // DocumentLoaded event fired while the modal is up still reaches the page.
+        WorkspaceWithShapes.TemplateLoaded -= OnTemplateLoaded;
+        WorkspaceFullBleed.TemplateLoaded -= OnTemplateLoaded;
         _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
-        Workspace.TemplateLoaded -= OnTemplateLoaded;
     }
 }

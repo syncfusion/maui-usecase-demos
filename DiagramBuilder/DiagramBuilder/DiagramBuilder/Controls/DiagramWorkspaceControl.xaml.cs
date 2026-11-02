@@ -8,12 +8,10 @@ using Syncfusion.Maui.Diagram;
 namespace DiagramBuilder.Controls;
 
 /// <summary>
-/// Workspace canvas (ui-spec.md §5). Hosts the SfDiagram and the shared
-/// <see cref="Syncfusion.Maui.Diagram.SymbolPalette"/> as direct Grid siblings
-/// (architecture.md §3.3 — sibling discovery walks immediate children only).
-/// Attaches <see cref="DiagramBuilder.Behaviors.DiagramSurfaceBehavior"/> declaratively
-/// to the SfDiagram. Status strip below shows selection summary and
-/// <see cref="ZoomIndicatorControl"/>.
+/// Workspace canvas (ui-spec.md §5). Hosts the SfDiagram; the SymbolPalette
+/// lives on the host page as a direct Grid sibling (architecture.md §3.3).
+/// Attaches <see cref="Behaviors.DiagramSurfaceBehavior"/> declaratively to
+/// the SfDiagram.
 /// </summary>
 public partial class DiagramWorkspaceControl : ContentView
 {
@@ -72,18 +70,8 @@ public partial class DiagramWorkspaceControl : ContentView
         set => SetValue(CollectionChangedCommandProperty, value);
     }
 
-    public static readonly BindableProperty PaletteGroupsProperty =
-        BindableProperty.Create(nameof(PaletteGroups), typeof(IEnumerable), typeof(DiagramWorkspaceControl),
-            propertyChanged: OnPaletteGroupsChanged);
-
     public static readonly BindableProperty SurfaceBehaviorZoomFactorProperty =
         BindableProperty.Create(nameof(SurfaceBehaviorZoomFactor), typeof(double), typeof(DiagramWorkspaceControl), 1.0d);
-
-    public IEnumerable? PaletteGroups
-    {
-        get => (IEnumerable?)GetValue(PaletteGroupsProperty);
-        set => SetValue(PaletteGroupsProperty, value);
-    }
 
     public double SurfaceBehaviorZoomFactor
     {
@@ -94,8 +82,6 @@ public partial class DiagramWorkspaceControl : ContentView
     public DiagramSurfaceBehavior Behavior => SurfaceBehavior;
 
     public SfDiagram DiagramControl => Diagram;
-
-    public SymbolPalette PaletteControl => Palette;
 
     public DiagramWorkspaceControl()
     {
@@ -142,62 +128,78 @@ public partial class DiagramWorkspaceControl : ContentView
         }
     }
 
-    private static void OnPaletteGroupsChanged(BindableObject bindable, object oldValue, object newValue)
-    {
-        if (bindable is DiagramWorkspaceControl ws)
-        {
-            if (newValue is IEnumerable groups && groups.OfType<Palette>().Any())
-            {
-                ws.Palette.Palettes.Clear();
-                foreach (var palette in groups.OfType<Palette>())
-                {
-                    ws.Palette.Palettes.Add(palette);
-                }
-            }
-
-            // The SymbolPalette stays hidden: the standalone StencilPanelControl is
-            // the Shapes panel in the designer layout, so the canvas shows no extra
-            // left column. The palette is still populated above so the symbol
-            // palette host remains available to the surface behavior.
-            ws.Palette.IsVisible = false;
-        }
-    }
-
     /// <summary>
     /// Loads a domain template's nodes and connectors into the live SfDiagram.
     /// Tracking for the property panel happens via <see cref="DiagramModelAdapter"/>.
     /// </summary>
     public void LoadTemplate(Models.DiagramDocument document)
     {
-        Diagram.Nodes.Clear();
-        Diagram.Connectors.Clear();
-
-        var createdNodes = new List<object>();
-        var createdConnectors = new List<object>();
-
-        foreach (var shape in document.Items.OfType<Models.ShapeItem>())
+        try
         {
-            var node = DiagramModelAdapter.ToNode(shape);
-            createdNodes.Add(node);
-            Diagram.Nodes.Add(node);
-        }
+            Diagram.Nodes.Clear();
+            Diagram.Connectors.Clear();
 
-        foreach (var connector in document.Connectors)
+            var createdNodes = new List<object>();
+            var createdConnectors = new List<object>();
+
+            foreach (var shape in document.Items.OfType<Models.ShapeItem>())
+            {
+                var node = DiagramModelAdapter.ToNode(shape);
+                createdNodes.Add(node);
+                Diagram.Nodes.Add(node);
+            }
+
+            foreach (var connector in document.Connectors)
+            {
+                var c = DiagramModelAdapter.ToConnector(connector);
+                createdConnectors.Add(c);
+                Diagram.Connectors.Add(c);
+            }
+
+            // Inform any registered property service of the new live nodes/connectors
+            // so the property panel can read live state for the selected element.
+            TemplateLoaded?.Invoke(this, new TemplateLoadPayload(createdNodes, createdConnectors));
+        }
+        finally
         {
-            var c = DiagramModelAdapter.ToConnector(connector);
-            createdConnectors.Add(c);
-            Diagram.Connectors.Add(c);
+            // Always try to fit-to-page after loading; SafeFitToPageAsync waits for
+            // the diagram to be ready and swallows any errors so loading can't be
+            // blocked by a not-yet-initialized diagram.
+            _ = SafeFitToPageAsync();
         }
-
-        // Inform any registered property service of the new live nodes/connectors
-        // so the property panel can read live state for the selected element.
-        TemplateLoaded?.Invoke(this, new TemplateLoadPayload(createdNodes, createdConnectors));
-
-        // After loading, fit to page so all content is visible. The call is fire-and-forget.
-        _ = Diagram.FitToPage();
     }
 
     public event EventHandler<TemplateLoadPayload>? TemplateLoaded;
 
     public sealed record TemplateLoadPayload(IReadOnlyList<object> Nodes, IReadOnlyList<object> Connectors);
+
+    /// <summary>
+    /// Fits the diagram content to the viewport. Waits for the SfDiagram's JS
+    /// bridge to report its <c>Created</c> event before invoking FitToPage, so
+    /// the call lands on an initialized renderer (otherwise some platforms
+    /// silently drop the call or throw).
+    /// </summary>
+    private async Task SafeFitToPageAsync()
+    {
+        try
+        {
+            // Poll until the diagram reports ready or a short deadline elapses.
+            // The template-load race (nodes added before Created) needs both:
+            //   1. the JS bridge initialised, and
+            //   2. the node/connector changes flushed through.
+            for (var i = 0; i < 40 && !SurfaceBehavior.IsReady; i++)
+            {
+                await Task.Delay(25);
+            }
+
+            if (SurfaceBehavior.IsReady)
+            {
+                await Diagram.FitToPage();
+            }
+        }
+        catch
+        {
+            // Swallow — the user can still press VIEW ▸ Fit To Screen manually.
+        }
+    }
 }
