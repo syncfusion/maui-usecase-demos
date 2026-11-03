@@ -10,7 +10,7 @@
     <Grid HeightRequest="{StaticResource HeaderHeight}"
           Padding="8,0,16,0"
           ColumnDefinitions="Auto,*,Auto"
-          BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}">
+          BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
         <Grid.Shadow>
             <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="0.10" />
         </Grid.Shadow>
@@ -41,23 +41,21 @@
 
         <!-- Search pill -->
         <Border Grid.Column="1"
-                WidthRequest="{OnIdiom Phone=180, Default=460}"
-                HeightRequest="44"
-                Margin="0"
+                WidthRequest="{OnIdiom Phone=180, Default=460}" 
+                Margin="0,8"
                 Padding="0"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 BackgroundColor="Transparent"
                 StrokeThickness="0"
-                StrokeShape="RoundRectangle 22">
+                StrokeShape="RoundRectangle 8">
             <syncfusionCore:SfTextInputLayout Hint="Search"
                                               ContainerType="Outlined"
                                               ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
-                                              OutlineCornerRadius="28"
+                                              OutlineCornerRadius="8"
                                               HorizontalOptions="End"
                                               FocusedStrokeThickness="1"
-                                              UnfocusedStrokeThickness="1"
-                                              WidthRequest="220"
+                                              UnfocusedStrokeThickness="1" 
                                               ReserveSpaceForAssistiveLabels="False"
                                               InputViewPadding="16,0,16,0"
                                               EnableFloating="False"
@@ -66,14 +64,14 @@
                                               ShowHint="True"
                                               Stroke="Transparent"
                                               VerticalOptions="Fill">
-                <syncfusionCore:SfTextInputLayout.LeadingView>
+                <syncfusionCore:SfTextInputLayout.TrailingView>
                     <Image Source="search.png"
                            WidthRequest="18"
                            HeightRequest="18"
                            VerticalOptions="Center"
                            Margin="0,5,0,0"
                            SemanticProperties.Description="Search notes" />
-                </syncfusionCore:SfTextInputLayout.LeadingView>
+                </syncfusionCore:SfTextInputLayout.TrailingView>
                 <syncfusionCore:SfTextInputLayout.HintLabelStyle>
                     <syncfusionCore:LabelStyle FontSize="14"
                                                FontFamily="{StaticResource FontFamilyRegular}"

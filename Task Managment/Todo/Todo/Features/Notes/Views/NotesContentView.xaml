@@ -338,7 +338,7 @@
                     </expander:SfExpander.Header>
                     <expander:SfExpander.Content>
                         <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}"
-                                               ItemSpacing="0" ItemSize="76"
+                                               ItemSpacing="0" ItemSize="80"
                                                BackgroundColor="Transparent"
                                                SelectionMode="SingleDeselect">
                             <syncfusion:SfListView.ItemTemplate>
@@ -355,7 +355,7 @@
                                             <CheckBox Grid.Column="0"
                                                       IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
-                                                      VerticalOptions="Center" />
+                                                      VerticalOptions="Start" />
                                             <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                                                 <Label Text="{Binding Title}"
                                                        Style="{StaticResource NoteTitleStyle}"
@@ -407,40 +407,11 @@
             <!-- Bottom input bar -->
             <Border Grid.Row="2"
                     Margin="16,12,16,16"
-                    Padding="10,8"
+                    Padding="8"
                     BackgroundColor="White"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
-                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" VerticalOptions="Center">
-                    <FlexLayout Grid.Row="0"
-                                IsVisible="True"
-                                Direction="Row"
-                                Wrap="Wrap"
-                                JustifyContent="Start"
-                                AlignItems="Center"
-                                Padding="4,0,0,6">
-                        <Border IsVisible="{Binding HasDraftDueDate}" Margin="0,0,6,0" StrokeThickness="1" Stroke="#D6D0E2" StrokeShape="RoundRectangle 14" BackgroundColor="#F7F5FB" Padding="8,4">
-                            <HorizontalStackLayout Spacing="4">
-                                <Image Source="calendaricon.png" WidthRequest="13" HeightRequest="13" />
-                                <Label Text="{Binding DraftDueDateText}" FontSize="11" TextColor="#4E4A57" />
-                                <buttons:SfButton Text="×" WidthRequest="18" HeightRequest="18" Padding="0" FontSize="12" TextColor="#77727F" Background="Transparent" Command="{Binding RemoveDraftDueDateCommand}" />
-                            </HorizontalStackLayout>
-                        </Border>
-                        <Border IsVisible="{Binding HasDraftRepeat}" Margin="0,0,6,0" StrokeThickness="1" Stroke="#D6D0E2" StrokeShape="RoundRectangle 14" BackgroundColor="#F7F5FB" Padding="8,4">
-                            <HorizontalStackLayout Spacing="4">
-                                <Image Source="dateicon.png" WidthRequest="13" HeightRequest="13" />
-                                <Label Text="{Binding DraftRepeatText}" FontSize="11" TextColor="#4E4A57" />
-                                <buttons:SfButton Text="×" WidthRequest="18" HeightRequest="18" Padding="0" FontSize="12" TextColor="#77727F" Background="Transparent" Command="{Binding RemoveDraftRepeatCommand}" />
-                            </HorizontalStackLayout>
-                        </Border>
-                        <Border IsVisible="{Binding HasDraftReminder}" Margin="0,0,6,0" StrokeThickness="1" Stroke="#D6D0E2" StrokeShape="RoundRectangle 14" BackgroundColor="#F7F5FB" Padding="8,4">
-                            <HorizontalStackLayout Spacing="4">
-                                <Image Source="bellicon.png" WidthRequest="13" HeightRequest="13" />
-                                <Label Text="{Binding DraftReminderDateText}" FontSize="11" TextColor="#4E4A57" />
-                                <buttons:SfButton Text="×" WidthRequest="18" HeightRequest="18" Padding="0" FontSize="12" TextColor="#77727F" Background="Transparent" Command="{Binding RemoveDraftReminderCommand}" />
-                            </HorizontalStackLayout>
-                        </Border>
-                    </FlexLayout>
+                <Grid RowDefinitions="Auto" ColumnDefinitions="*" VerticalOptions="Center"> 
                     <syncfusionCore:SfTextInputLayout Grid.Row="1" Grid.Column="0"
                                                      Hint="Add a note"
                                                      ContainerType="Outlined"
@@ -454,16 +425,13 @@
                                                      ReserveSpaceForAssistiveLabels="False"
                                                      InputViewPadding="14,0,150,0"
                                                      VerticalOptions="Center">
-                        <syncfusionCore:SfTextInputLayout.LeadingView>
-                            <Image Source="notesicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" Margin="0,4,0,0" />
-                        </syncfusionCore:SfTextInputLayout.LeadingView>
                         <syncfusionCore:SfTextInputLayout.HintLabelStyle>
                             <syncfusionCore:LabelStyle FontSize="14"
                                                        FontFamily="{StaticResource FontFamilyRegular}"
                                                        TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
                         </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                         <syncfusionCore:SfTextInputLayout.TrailingView>
-                            <Grid ColumnDefinitions="36,36,36,36" VerticalOptions="Center" HorizontalOptions="Fill" WidthRequest="150">
+                            <Grid ColumnDefinitions="36,36,36,36" VerticalOptions="Center" HorizontalOptions="Fill" WidthRequest="150" Margin="0,8,0,0">
                                 <buttons:SfButton Grid.Column="0" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnDueDateClicked"
                                                   SemanticProperties.Description="Set due date">

@@ -11,7 +11,7 @@
              x:Class="Todo.Features.Notes.Views.SidebarView"
              x:Name="SidebarRoot"
              x:DataType="vm:NotesListViewModel"
-             BackgroundColor="{AppThemeBinding Light={StaticResource SidebarBackgroundColor}, Dark={StaticResource SidebarBackgroundDarkColor}}">
+             BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
 
     <Grid RowDefinitions="192,Auto,*,Auto" Padding="0,12,0,16">
         <syncfusion:SfListView Grid.Row="0"
