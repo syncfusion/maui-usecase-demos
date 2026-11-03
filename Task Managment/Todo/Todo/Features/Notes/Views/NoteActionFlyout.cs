@@ -18,6 +18,8 @@ public sealed class NoteActionFlyout : ContentView
     private VerticalStackLayout? _destinationsLayout;
     private Border? _surface;
     private SfButton? _completionButton;
+    private SfButton? _editButton;
+    private SfButton? _moveButton;
     private SfButton? _restoreButton;
     private SfButton? _deleteButton;
     private BoxView? _deleteSeparator;
@@ -95,8 +97,10 @@ public sealed class NoteActionFlyout : ContentView
 
         _completionButton = CreateButton("   Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion));
         _actionsLayout.Children.Add(_completionButton);
-        _actionsLayout.Children.Add(CreateButton("   Edit note", () => RaiseAction(NoteActionKind.Edit)));
-        _actionsLayout.Children.Add(CreateButton("   Move notes to", ShowDestinations));
+        _editButton = CreateButton("   Edit note", () => RaiseAction(NoteActionKind.Edit));
+        _actionsLayout.Children.Add(_editButton);
+        _moveButton = CreateButton("   Move notes to", ShowDestinations);
+        _actionsLayout.Children.Add(_moveButton);
         _restoreButton = CreateButton("↺   Restore note", () => RaiseAction(NoteActionKind.Restore));
         _actionsLayout.Children.Add(_restoreButton);
         _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 6), Color = Color.FromArgb("#ECE8F1") };
@@ -173,11 +177,14 @@ public sealed class NoteActionFlyout : ContentView
 
     private void UpdateMenu()
     {
-        if (_selectedNote is null || _completionButton is null || _restoreButton is null || _deleteButton is null || _deleteSeparator is null) return;
-        _completionButton.Text = _selectedNote.IsCompleted ? "✓   Mark as not completed" : "✓   Mark as completed";
-        _restoreButton.IsVisible = _selectedNote.DeletedAt is not null;
-        _deleteSeparator.IsVisible = _selectedNote.DeletedAt is not null;
-        _deleteButton.Text = _selectedNote.DeletedAt is null ? "🗑   Delete task" : "🗑   Delete permanently";
+        if (_selectedNote is null || _completionButton is null || _editButton is null || _moveButton is null || _restoreButton is null || _deleteButton is null || _deleteSeparator is null) return;
+        var isDeleted = _selectedNote.DeletedAt is not null;
+        _completionButton.IsVisible = !isDeleted;
+        _editButton.IsVisible = !isDeleted;
+        _moveButton.IsVisible = !isDeleted;
+        _restoreButton.IsVisible = isDeleted;
+        _deleteSeparator.IsVisible = isDeleted;
+        _deleteButton.Text = isDeleted ? "🗑   Delete permanently" : "🗑   Delete task";
     }
 
     private void ShowDestinations() { if (_actionsLayout is not null) _actionsLayout.IsVisible = false; if (_destinationsLayout is not null) _destinationsLayout.IsVisible = true; }

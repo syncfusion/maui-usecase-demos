@@ -266,7 +266,7 @@
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                             <Border IsVisible="{Binding HasRepeat}"
                                                     Padding="8,4"
@@ -274,7 +274,7 @@
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                             <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}"
                                                     Padding="8,4"
@@ -282,7 +282,7 @@
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
@@ -370,13 +370,13 @@
                                                 </Label>
                                                 <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
                                                     <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" /></HorizontalStackLayout>
                                                     </Border>
                                                     <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" /></HorizontalStackLayout>
                                                     </Border>
                                                     <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" /></HorizontalStackLayout>
                                                     </Border>
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
@@ -422,8 +422,8 @@
                                 BackgroundColor="{StaticResource ChipBackgroundColor}">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                 <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" />
-                                <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="#66616F" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="#66616F" Command="{Binding RemoveDraftDueDateCommand}" />
+                                <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
                             </HorizontalStackLayout>
                         </Border>
                         <Border Margin="0,0,8,8"
@@ -435,8 +435,8 @@
                                 BackgroundColor="{StaticResource ChipBackgroundColor}">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                 <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" />
-                                <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="#66616F" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="#66616F" Command="{Binding RemoveDraftRepeatCommand}" />
+                                <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
                             </HorizontalStackLayout>
                         </Border>
                         <Border Margin="0,0,8,8"
@@ -448,8 +448,8 @@
                                 BackgroundColor="{StaticResource ChipBackgroundColor}">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                 <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" />
-                                <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="#66616F" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="#66616F" Command="{Binding RemoveDraftReminderCommand}" />
+                                <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftReminderCommand}" />
                             </HorizontalStackLayout>
                         </Border>
                     </FlexLayout>

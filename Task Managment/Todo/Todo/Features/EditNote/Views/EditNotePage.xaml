@@ -28,7 +28,7 @@
                     <Label Text="{Binding DialogTitle}"
                            FontFamily="{StaticResource FontFamilySemibold}"
                            FontSize="18"
-                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                           TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
                                       Text="&#xe5cd;"
@@ -65,7 +65,7 @@
                                        BackgroundColor="Transparent"
                                        VerticalTextAlignment="Center"
                                        Margin="0"
-                                       TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                                       TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
                             </Border>
                             <buttons:SfButton Grid.Column="2"
                                               Text="★"
@@ -94,13 +94,14 @@
                                             BackgroundColor="{StaticResource ChipBackgroundColor}">
                                         <Label Text="{Binding DueDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=date}"
                                                FontSize="13"
-                                               TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                                               TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                                                VerticalTextAlignment="Center" />
                                     </Border>
                                 </Grid>
                             </Border>
                             <picker:SfDateTimePicker IsVisible="{Binding IsDueDatePickerVisible}"
                                                  SelectedDate="{Binding DueDateSelection, Mode=TwoWay}"
+                                                 DateFormat="dd_MMM_yyyy"
                                                  HeightRequest="220" />
 
                             <Border Padding="0"
@@ -119,7 +120,7 @@
                                             BackgroundColor="{StaticResource ChipBackgroundColor}">
                                         <Label Text="{Binding RepeatFrequency, Converter={StaticResource EnumDisplayNameConverter}}"
                                                FontSize="13"
-                                               TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                                               TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                                                VerticalTextAlignment="Center" />
                                     </Border>
                                 </Grid>
@@ -129,7 +130,7 @@
                                     SelectedItem="{Binding RepeatFrequency, Mode=TwoWay}"
                                     HeightRequest="44"
                                     BackgroundColor="Transparent"
-                                    TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                                    TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
 
                             <Border Padding="0"
                                     StrokeThickness="0"
@@ -147,16 +148,16 @@
                                             BackgroundColor="{StaticResource ChipBackgroundColor}">
                                         <Label Text="{Binding ReminderDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=datetime}"
                                                FontSize="13"
-                                               TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
+                                               TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                                                VerticalTextAlignment="Center" />
                                     </Border>
                                 </Grid>
                             </Border>
                             <VerticalStackLayout IsVisible="{Binding IsReminderPickerVisible}" Spacing="6">
-                                <picker:SfDateTimePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
+                                <picker:SfDateTimePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}" DateFormat="dd_MMM_yyyy" HeightRequest="220" />
                                 <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}"
                                             BackgroundColor="Transparent"
-                                            TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
                             </VerticalStackLayout>
                         </VerticalStackLayout>
                     </VerticalStackLayout>

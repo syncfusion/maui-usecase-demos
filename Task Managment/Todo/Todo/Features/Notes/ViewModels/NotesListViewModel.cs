@@ -662,8 +662,8 @@ public partial class NotesListViewModel : ViewModelBase
     public bool HasDraftReminder => DraftReminderDate.HasValue;
     public bool HasDraftRepeat => DraftRepeatFrequency != NoteRepeatFrequency.Never;
 
-    public string DraftDueDateText => DraftDueDate?.ToString("ddd d MMM, HH:mm") ?? string.Empty;
-    public string DraftReminderDateText => DraftReminderDate?.ToString("ddd d MMM, HH:mm") ?? string.Empty;
+    public string DraftDueDateText => DraftDueDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
+    public string DraftReminderDateText => DraftReminderDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
     public string DraftRepeatText => DraftRepeatFrequency == NoteRepeatFrequency.Never ? string.Empty : DraftRepeatFrequency.ToString();
 
     partial void OnNewNoteTitleChanged(string value) => AddNoteCommand.NotifyCanExecuteChanged();

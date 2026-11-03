@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using Todo.Common;
 using Todo.Features.CustomLists.Models;
 using Todo.Features.Notes.Models;
@@ -17,6 +16,7 @@ public sealed class InMemoryNoteService : INoteService
     public InMemoryNoteService()
     {
         _notes = new ObservableCollection<Note>(SampleData.SeedNotes().Select(Clone));
+        RemoveExpiredDeletedNotes();
         Notes = new ReadOnlyObservableCollection<Note>(_notes);
     }
 
@@ -40,6 +40,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task<Note> CreateAsync(string title, DateTime? dueDate = null, DateTime? reminderDate = null, string? listId = null, NoteRepeatFrequency repeatFrequency = NoteRepeatFrequency.Never)
     {
+        RemoveExpiredDeletedNotes();
         var now = DateTime.Now;
         var nextOrder = _notes.Count == 0 ? 0 : _notes.Max(n => n.DisplayOrder) + 1;
         var note = new Note
@@ -60,6 +61,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task UpdateAsync(Note note)
     {
+        RemoveExpiredDeletedNotes();
         if (note.ReminderDate.HasValue)
         {
             // Reminder is a destination category, not an additional tag.
@@ -68,13 +70,12 @@ public sealed class InMemoryNoteService : INoteService
         }
 
         note.UpdatedAt = DateTime.Now;
-        // ObservableCollection replaces items in-place; binding systems
-        // observe property-level notifications on Note itself.
         return Task.CompletedTask;
     }
 
     public Task SoftDeleteAsync(string id)
     {
+        RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
         if (existing is null)
             return Task.CompletedTask;
@@ -86,6 +87,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task RestoreAsync(string id)
     {
+        RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
         if (existing is null)
             return Task.CompletedTask;
@@ -97,6 +99,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task DeletePermanentlyAsync(string id)
     {
+        RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
         if (existing is not null)
             _notes.Remove(existing);
@@ -105,6 +108,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task ToggleCompleteAsync(string id)
     {
+        RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
         if (existing is null)
             return Task.CompletedTask;
@@ -116,6 +120,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task ToggleImportantAsync(string id)
     {
+        RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
         if (existing is null)
             return Task.CompletedTask;
@@ -127,21 +132,15 @@ public sealed class InMemoryNoteService : INoteService
 
     public IReadOnlyList<Note> GetForCategory(NotesListCategory category)
     {
+        RemoveExpiredDeletedNotes();
         IEnumerable<Note> query = _notes;
         query = category switch
         {
             NotesListCategory.MyNotes => query.Where(n => n.DeletedAt is null
                                                            && n.ListId is null
                                                            && n.ReminderDate is null),
-
-            // Important is an additional view of active starred notes.
             NotesListCategory.Important => query.Where(n => n.DeletedAt is null && n.IsImportant),
-
-            // Reminder shows every active note with a reminder date.
-            // that has a reminder date set, regardless of soft-delete.
             NotesListCategory.Reminder => query.Where(n => n.DeletedAt is null && n.ReminderDate.HasValue),
-
-            // Bin shows every soft-deleted note.
             NotesListCategory.Bin => query.Where(n => n.DeletedAt is not null),
             _ => query
         };
@@ -154,6 +153,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public IReadOnlyList<Note> GetForList(string listId, NoteListSortOrder sortOrder = NoteListSortOrder.Custom)
     {
+        RemoveExpiredDeletedNotes();
         IEnumerable<Note> notes = _notes.Where(n => n.DeletedAt is null && n.ListId == listId);
         return sortOrder switch
         {
@@ -167,11 +167,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task ReorderAsync(string targetListId, int oldIndex, int newIndex)
     {
-        // Reorder only the notes that match the active filter so that
-        // a drop in the My Notes view does not collide with Important
-        // or Bin notes. `GetForCategory` / `GetForList` are the same
-        // ordering the user sees on screen, so the index from the
-        // view maps directly onto the source list.
+        RemoveExpiredDeletedNotes();
         var ordered = !string.IsNullOrEmpty(targetListId)
             ? _notes
                 .Where(n => n.DeletedAt is null && n.ListId == targetListId)
@@ -185,7 +181,6 @@ public sealed class InMemoryNoteService : INoteService
                 .ToList();
 
         if (oldIndex < 0 || oldIndex >= ordered.Count) return Task.CompletedTask;
-        // Clamp newIndex to the last valid insertion point.
         newIndex = Math.Clamp(newIndex, 0, ordered.Count - 1);
         if (oldIndex == newIndex) return Task.CompletedTask;
 
@@ -193,8 +188,6 @@ public sealed class InMemoryNoteService : INoteService
         ordered.RemoveAt(oldIndex);
         ordered.Insert(newIndex, moved);
 
-        // Rewrite DisplayOrder so the new ordering is durable across
-        // every subsequent re-filter / restart.
         for (var i = 0; i < ordered.Count; i++)
         {
             ordered[i].DisplayOrder = i;
@@ -205,6 +198,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task MoveToListAsync(string noteId, string? targetListId)
     {
+        RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == noteId);
         if (existing is null) return Task.CompletedTask;
 
@@ -214,8 +208,6 @@ public sealed class InMemoryNoteService : INoteService
         existing.ReminderDate = null;
         existing.UpdatedAt = DateTime.Now;
 
-        // Append the moved note to the end of its new list so the user
-        // can find it in the destination sidebar entry.
         if (existing.DeletedAt is null)
         {
             var sameScope = _notes
@@ -231,6 +223,7 @@ public sealed class InMemoryNoteService : INoteService
 
     public Task MoveToCategoryAsync(string noteId, NotesListCategory category)
     {
+        RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == noteId);
         if (existing is null) return Task.CompletedTask;
 
@@ -242,5 +235,13 @@ public sealed class InMemoryNoteService : INoteService
         existing.DeletedAt = category == NotesListCategory.Bin ? DateTime.Now : null;
         existing.UpdatedAt = DateTime.Now;
         return Task.CompletedTask;
+    }
+
+    private void RemoveExpiredDeletedNotes()
+    {
+        var cutoff = DateTime.Now.AddDays(-30);
+        var expired = _notes.Where(note => note.DeletedAt is not null && note.DeletedAt < cutoff).ToList();
+        foreach (var note in expired)
+            _notes.Remove(note);
     }
 }

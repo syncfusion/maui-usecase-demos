@@ -13,12 +13,12 @@ public sealed class TaskSchedulingFlyout : ContentView
     private readonly SfPopup _customPopup;
     private NotesListViewModel? _viewModel;
     private View? _repeatAnchor;
-    private DateTime _selectedDateTime = DateTime.Today.AddHours(12);
+    private DateTime _selectedDateTime = DateTime.Now;
     private bool _isReminder;
 
     public TaskSchedulingFlyout()
     {
-        _datePopup = CreatePopup(372, 454, CreateDateSurface);
+        _datePopup = CreatePopup(372, 476, CreateDateSurface);
         _repeatPopup = CreatePopup(238, 312, CreateRepeatSurface);
         _customPopup = CreatePopup(330, 214, CreateCustomSurface);
         foreach (var popup in new[] { _datePopup, _repeatPopup, _customPopup })
@@ -47,7 +47,7 @@ public sealed class TaskSchedulingFlyout : ContentView
     {
         _viewModel = viewModel;
         _isReminder = isReminder;
-        _selectedDateTime = isReminder ? viewModel.DraftReminderDate ?? DateTime.Today.AddHours(12) : viewModel.DraftDueDate ?? DateTime.Today.AddHours(12);
+        _selectedDateTime = isReminder ? viewModel.DraftReminderDate ?? DateTime.Now : viewModel.DraftDueDate ?? DateTime.Now;
         _datePopup.ShowRelativeToView(anchor, PopupRelativePosition.AlignTopRight);
     }
 
@@ -69,39 +69,26 @@ public sealed class TaskSchedulingFlyout : ContentView
         };
 
         var closeButton = CreateIconButton("\ue5cd", () => _datePopup.Dismiss());
-
         var picker = new SfDateTimePicker
         {
             SelectedDate = _selectedDateTime,
+            DateFormat = "dd_MMM_yyyy",
             HeightRequest = 280,
             BackgroundColor = Colors.Transparent
         };
-        picker.SetBinding(SfDateTimePicker.SelectedDateProperty, new Binding(
-            _isReminder ? nameof(NotesListViewModel.DraftReminderDate) : nameof(NotesListViewModel.DraftDueDate),
-            mode: BindingMode.TwoWay,
-            source: _viewModel));
-        picker.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName != nameof(SfDateTimePicker.SelectedDate) || _viewModel is null)
-                return;
 
-            var value = picker.SelectedDate;
-            if (value is null)
-                return;
-
-            _selectedDateTime = value.Value;
-            Dispatcher.Dispatch(() => _datePopup.Dismiss());
-        };
-
-        var clearButton = CreateActionButton("Remove", () =>
+        var cancelButton = CreateActionButton("Cancel", () => _datePopup.Dismiss());
+        var saveButton = CreateActionButton("Save", () =>
         {
             if (_viewModel is null)
                 return;
 
+            var value = picker.SelectedDate ?? _selectedDateTime;
             if (_isReminder)
-                _viewModel.RemoveDraftReminderCommand.Execute(null);
+                _viewModel.SetDraftReminderDate(value);
             else
-                _viewModel.RemoveDraftDueDateCommand.Execute(null);
+                _viewModel.SetDraftDueDate(value);
+
             _datePopup.Dismiss();
         });
 
@@ -123,10 +110,22 @@ public sealed class TaskSchedulingFlyout : ContentView
         Grid.SetRow(divider, 1);
         content.Children.Add(picker);
         Grid.SetRow(picker, 2);
-        content.Children.Add(clearButton);
-        Grid.SetRow(clearButton, 3);
 
-        return CreateBorder(372, 454, content);
+        var buttons = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Auto) },
+            ColumnSpacing = 8,
+            Padding = new Thickness(0, 12, 0, 0),
+            HeightRequest = 44
+        };
+        buttons.Children.Add(cancelButton);
+        buttons.Children.Add(saveButton);
+        Grid.SetColumn(cancelButton, 1);
+        Grid.SetColumn(saveButton, 2);
+        content.Children.Add(buttons);
+        Grid.SetRow(buttons, 3);
+
+        return CreateBorder(372, 476, content);
     }
 
     private View CreateRepeatSurface()
@@ -187,7 +186,9 @@ public sealed class TaskSchedulingFlyout : ContentView
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
             BackgroundColor = Color.FromArgb("#F7F5FA"),
             Content = new Label { Text = "11", FontSize = 14, HorizontalTextAlignment = TextAlignment.Center, VerticalTextAlignment = TextAlignment.Center }
-        }; Grid.SetColumn(count, 1); frequency.Children.Add(count);
+        };
+        Grid.SetColumn(count, 1);
+        frequency.Children.Add(count);
         var interval = new Border
         {
             HeightRequest = 36,
@@ -196,7 +197,9 @@ public sealed class TaskSchedulingFlyout : ContentView
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
             BackgroundColor = Color.FromArgb("#F7F5FA"),
             Content = new Picker { ItemsSource = new[] { "Days", "Weeks", "Months", "Years" }, SelectedIndex = 1, FontSize = 13, Margin = new Thickness(8, 0) }
-        }; Grid.SetColumn(interval, 2); frequency.Children.Add(interval);
+        };
+        Grid.SetColumn(interval, 2);
+        frequency.Children.Add(interval);
 
         var days = new HorizontalStackLayout { Spacing = 7, HorizontalOptions = LayoutOptions.Center, Padding = new Thickness(0, 10, 0, 10) };
         for (var index = 0; index < dayNames.Length; index++)
@@ -216,7 +219,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             days.Children.Add(button);
         }
 
-        var buttons = new Grid { ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Auto) }, ColumnSpacing = 4, Padding = new Thickness(16, 4), HeightRequest = 50 };
+        var buttons = new Grid { ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Auto) }, ColumnSpacing = 8, Padding = new Thickness(16, 4), HeightRequest = 50 };
         var cancel = CreateActionButton("Cancel", () => _customPopup.Dismiss());
         var save = CreateActionButton("Save", () => { _viewModel?.SetDraftRepeatFrequency(NoteRepeatFrequency.Custom); _customPopup.Dismiss(); });
         buttons.Children.Add(cancel); Grid.SetColumn(cancel, 1); buttons.Children.Add(save); Grid.SetColumn(save, 2);

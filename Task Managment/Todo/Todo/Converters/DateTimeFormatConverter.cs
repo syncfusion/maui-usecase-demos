@@ -10,9 +10,9 @@ namespace Todo.Converters;
 /// Output format is selected via the <c>parameter</c> on the binding:
 /// </para>
 /// <list type="bullet">
-///   <item><c>date</c> (default) – <c>ddd d MMM</c> (e.g. "Wed 18 Feb")</item>
+///   <item><c>date</c> (default) – <c>dd_MMM_yyyy</c> (e.g. "18_Feb_2027")</item>
 ///   <item><c>time</c> – <c>HH:mm</c> (e.g. "10:00")</item>
-///   <item><c>datetime</c> – <c>ddd d MMM, HH:mm</c> (e.g. "Wed 18 Feb, 10:00")</item>
+///   <item><c>datetime</c> – <c>dd_MMM_yyyy, HH:mm</c> (e.g. "18_Feb_2027, 10:00")</item>
 /// </list>
 /// </summary>
 public sealed class DateTimeFormatConverter : IValueConverter
@@ -26,8 +26,8 @@ public sealed class DateTimeFormatConverter : IValueConverter
         return mode switch
         {
             "time"     => dt.ToString("HH:mm", culture),
-            "datetime" => dt.ToString("ddd d MMM, HH:mm", culture),
-            _          => dt.ToString("ddd d MMM", culture)
+            "datetime" => dt.ToString("dd_MMM_yyyy, HH:mm", culture),
+            _          => dt.ToString("dd_MMM_yyyy", culture)
         };
     }
 
