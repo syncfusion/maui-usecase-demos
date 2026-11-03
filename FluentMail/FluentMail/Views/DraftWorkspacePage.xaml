@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:vm="clr-namespace:FluentMail.ViewModels"
              x:Class="FluentMail.Views.DraftWorkspacePage"
-             Title="DraftWorkspace">
-    <Grid Padding="24">
-        <Label Text="DraftWorkspacePage placeholder for M0" HorizontalOptions="Center" VerticalOptions="Center" />
+             x:DataType="vm:DraftWorkspaceViewModel"
+             Title="Drafts">
+    <ContentPage.BindingContext>
+        <vm:DraftWorkspaceViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="300,*" Padding="16" ColumnSpacing="16">
+        <Label Grid.ColumnSpan="2" Text="Draft workspace" FontSize="24" FontAttributes="Bold" />
+        <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
+            <listview:SfListView ItemsSource="{Binding Drafts}" SelectedItem="{Binding SelectedDraft, Mode=TwoWay}" SelectionMode="Single" />
+        </Border>
+        <ScrollView Grid.Row="1" Grid.Column="1">
+            <VerticalStackLayout Spacing="12">
+                <Entry Text="{Binding Recipient}" Placeholder="Recipients" />
+                <Entry Text="{Binding Subject}" Placeholder="Subject" />
+                <Editor Text="{Binding Body}" AutoSize="TextChanges" HeightRequest="220" />
+                <HorizontalStackLayout Spacing="12">
+                    <Button Text="Save" Command="{Binding SaveCommand}" />
+                    <Label Text="{Binding SaveStatus}" VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 </ContentPage>

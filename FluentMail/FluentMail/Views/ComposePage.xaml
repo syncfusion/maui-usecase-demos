@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:vm="clr-namespace:FluentMail.ViewModels"
              x:Class="FluentMail.Views.ComposePage"
+             x:DataType="vm:ComposeViewModel"
              Title="Compose">
-    <Grid Padding="24">
-        <Label Text="ComposePage placeholder for M0" HorizontalOptions="Center" VerticalOptions="Center" />
-    </Grid>
+    <ContentPage.BindingContext>
+        <vm:ComposeViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Label Text="Compose mail" FontSize="24" FontAttributes="Bold" />
+            <Picker ItemsSource="{Binding Accounts}" SelectedItem="{Binding FromAccount}" />
+            <inputs:SfAutocomplete Text="{Binding RecipientSearch}" ItemsSource="{Binding RecipientSuggestions}" SuggestionMode="Contains" DisplayMemberPath="Name" />
+            <listview:SfListView ItemsSource="{Binding RecipientChips}" HeightRequest="90" />
+            <Entry Text="{Binding Subject}" Placeholder="Subject" />
+            <Editor Text="{Binding Body}" AutoSize="TextChanges" HeightRequest="180" />
+            <listview:SfListView ItemsSource="{Binding Attachments}" HeightRequest="120" />
+            <HorizontalStackLayout Spacing="12">
+                <Button Text="Send" Command="{Binding SendCommand}" />
+                <Label Text="{Binding StatusMessage}" VerticalTextAlignment="Center" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
