@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Todo.Features.Notes.ViewModels"
+             xmlns:common="clr-namespace:Todo.Common"
              xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="Todo.Features.Notes.Views.HeaderView"
@@ -20,15 +21,20 @@
                                VerticalOptions="Center">
             <!-- Hamburger menu: collapses / expands the sidebar.
                  Module-08 task 8-2: 48x48 touch target per the spec. -->
-            <buttons:SfButton  
-                    WidthRequest="18" 
+            <buttons:SfButton
+                    WidthRequest="18"
                     HeightRequest="18" Margin="10,0" CornerRadius="0"
-                    Padding="0" ImageSource="humburger.png" Background="Transparent"    
+                    Padding="0" Background="Transparent"
                     Command="{Binding ToggleSidebarCommand}"
                     SemanticProperties.Description="Toggle navigation menu">
                 <buttons:SfButton.Content>
                     <DataTemplate>
-                        <Image Source="humburger.png"/>
+                        <Label Text="{x:Static common:FontIcons.Menu}"
+                               FontFamily="FontIcons"
+                               FontSize="18"
+                               TextColor="{Binding HeaderForegroundColor}"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center" />
                     </DataTemplate>
                 </buttons:SfButton.Content>
             </buttons:SfButton>
@@ -65,9 +71,10 @@
                                               Stroke="Transparent"
                                               VerticalOptions="Fill">
                 <syncfusionCore:SfTextInputLayout.TrailingView>
-                    <Image Source="search.png"
-                           WidthRequest="18"
-                           HeightRequest="18"
+                    <Label Text="{x:Static common:FontIcons.Search}"
+                           FontFamily="FontIcons"
+                           FontSize="18"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                            VerticalOptions="Center"
                            Margin="0,5,0,0"
                            SemanticProperties.Description="Search notes" />
@@ -99,8 +106,12 @@
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 17"
                 VerticalOptions="Center">
-            <Image Source="profile.png"
-                   Aspect="AspectFill"
+            <Label Text="{x:Static common:FontIcons.AccountCircle}"
+                   FontFamily="FontIcons"
+                   FontSize="34"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                    SemanticProperties.Description="Open theme settings" />
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />

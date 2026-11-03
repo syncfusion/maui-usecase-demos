@@ -42,23 +42,31 @@
                 <HorizontalStackLayout Grid.Column="0"
                                        Spacing="10"
                                        VerticalOptions="Center">
-                    <Image WidthRequest="20" HeightRequest="20" Aspect="AspectFit"
-                           VerticalOptions="Center">
-                        <Image.Triggers>
-                            <DataTrigger TargetType="Image" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.MyNotes}">
-                                <Setter Property="Source" Value="profileiconmain.png" />
+                    <Label WidthRequest="20" HeightRequest="20"
+                           FontFamily="FontIcons"
+                           FontSize="20"
+                           VerticalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.MyNotes}">
+                                <Setter Property="Text" Value="{x:Static common:FontIcons.AccountCircle}" />
+                                <Setter Property="TextColor" Value="{StaticResource MyNotesIconColor}" />
                             </DataTrigger>
-                            <DataTrigger TargetType="Image" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Important}">
-                                <Setter Property="Source" Value="importanticon.png" />
+                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Important}">
+                                <Setter Property="Text" Value="{x:Static common:FontIcons.Notes}" />
+                                <Setter Property="TextColor" Value="{StaticResource ImportantIconColor}" />
                             </DataTrigger>
-                            <DataTrigger TargetType="Image" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Reminder}">
-                                <Setter Property="Source" Value="belliconsidebar.png" />
+                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Reminder}">
+                                <Setter Property="Text" Value="{x:Static common:FontIcons.Notifications}" />
+                                <Setter Property="TextColor" Value="{StaticResource ReminderIconColor}" />
                             </DataTrigger>
-                            <DataTrigger TargetType="Image" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Bin}">
-                                <Setter Property="Source" Value="binicon.png" />
+                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Bin}">
+                                <Setter Property="Text" Value="{x:Static common:FontIcons.Delete}" />
+                                <Setter Property="TextColor" Value="{StaticResource BinIconColor}" />
                             </DataTrigger>
-                        </Image.Triggers>
-                    </Image>
+                        </Label.Triggers>
+                    </Label>
                     <Label Text="{Binding HeaderTitle}"
                            FontSize="20"
                            FontAttributes="Bold"
@@ -81,11 +89,12 @@
                     </Label>
                 </HorizontalStackLayout>
                 <buttons:SfButton Grid.Column="2"
-                        Text="&#8943;"
+                        Text="{x:Static common:FontIcons.MoreVert}"
+                        FontFamily="FontIcons"
                         FontSize="22"
                         WidthRequest="40"
                         HeightRequest="40"
-                        Padding="0" Rotation="90"
+                        Padding="0"
                         Background="Transparent"
                         TextColor="{Binding HeaderForegroundColor}"
                         Clicked="OnListOptionsClicked"
@@ -100,11 +109,12 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="12">
-                    <Image Source="notesicon.png"
-                           WidthRequest="56"
-                           HeightRequest="56"
-                           Aspect="AspectFit"
-                           HorizontalOptions="Center" />
+                    <Label Text="{x:Static common:FontIcons.Notes}"
+                           FontFamily="FontIcons"
+                           FontSize="56"
+                           TextColor="{Binding HeaderForegroundColor}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" />
                     <Label Text="{Binding EmptyStateTitle}"
                            Style="{StaticResource EmptyStateMessageStyle}"
                            TextColor="{Binding HeaderForegroundColor}"
@@ -266,7 +276,7 @@
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Image Source="calendaricon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="{x:Static common:FontIcons.CalendarToday}" FontFamily="FontIcons" FontSize="12" TextColor="#66616F" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                             <Border IsVisible="{Binding HasRepeat}"
                                                     Padding="8,4"
@@ -274,7 +284,7 @@
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Image Source="dateicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="{x:Static common:FontIcons.EventRepeat}" FontFamily="FontIcons" FontSize="12" TextColor="#66616F" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                             <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}"
                                                     Padding="8,4"
@@ -282,7 +292,7 @@
                                                     StrokeThickness="1"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Image Source="bellicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="{x:Static common:FontIcons.Notifications}" FontFamily="FontIcons" FontSize="12" TextColor="#66616F" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
@@ -303,9 +313,9 @@
 
                                     <!-- More menu (three-dot) -->
                                     <buttons:SfButton Grid.Column="3"
-                                            Text="&#8943;"
+                                            Text="{x:Static common:FontIcons.MoreVert}"
+                                            FontFamily="FontIcons"
                                             FontSize="22"
-                                            Rotation="90"
                                             Background="Transparent"
                                             TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                             WidthRequest="40"
@@ -370,13 +380,13 @@
                                                 </Label>
                                                 <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
                                                     <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Image Source="calendaricon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                        <HorizontalStackLayout Spacing="4"><Label Text="{x:Static common:FontIcons.CalendarToday}" FontFamily="FontIcons" FontSize="12" TextColor="#66616F" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
                                                     </Border>
                                                     <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Image Source="dateicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                        <HorizontalStackLayout Spacing="4"><Label Text="{x:Static common:FontIcons.EventRepeat}" FontFamily="FontIcons" FontSize="12" TextColor="#66616F" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
                                                     </Border>
                                                     <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Image Source="bellicon.png" WidthRequest="12" HeightRequest="12" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
+                                                        <HorizontalStackLayout Spacing="4"><Label Text="{x:Static common:FontIcons.Notifications}" FontFamily="FontIcons" FontSize="12" TextColor="#66616F" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="#66616F" /></HorizontalStackLayout>
                                                     </Border>
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
@@ -435,22 +445,47 @@
                                 <buttons:SfButton Grid.Column="0" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnDueDateClicked"
                                                   SemanticProperties.Description="Set due date">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content><DataTemplate><Label Text="{x:Static common:FontIcons.CalendarToday}" FontFamily="FontIcons" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="1" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnRepeatClicked"
                                                   SemanticProperties.Description="Set repeat frequency">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content><DataTemplate><Label Text="{x:Static common:FontIcons.EventRepeat}" FontFamily="FontIcons" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="2" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnReminderClicked"
                                                   SemanticProperties.Description="Set reminder date and time">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content><DataTemplate><Label Text="{x:Static common:FontIcons.Notifications}" FontFamily="FontIcons" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
                                                   SemanticProperties.Description="Save note">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="tickicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content>
+                                        <DataTemplate>
+                                            <Label Text="{x:Static common:FontIcons.CheckCircle}"
+                                                   FontFamily="FontIcons"
+                                                   FontSize="18"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label"
+                                                                 Binding="{Binding NewNoteTitle, Converter={StaticResource StringNotEmptyToBoolConverter}}"
+                                                                 Value="True">
+                                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OnPrimaryColor}, Dark={StaticResource OnPrimaryColor}}" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </DataTemplate>
+                                    </buttons:SfButton.Content>
+                                    <buttons:SfButton.Triggers>
+                                        <DataTrigger TargetType="buttons:SfButton"
+                                                     Binding="{Binding NewNoteTitle, Converter={StaticResource StringNotEmptyToBoolConverter}}"
+                                                     Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+                                            <Setter Property="CornerRadius" Value="18" />
+                                        </DataTrigger>
+                                    </buttons:SfButton.Triggers>
                                 </buttons:SfButton>
                             </Grid>
                         </syncfusionCore:SfTextInputLayout.TrailingView>

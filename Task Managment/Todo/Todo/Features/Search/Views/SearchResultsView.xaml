@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:Todo.Features.Search.ViewModels"
              xmlns:models="clr-namespace:Todo.Features.Notes.Models"
              xmlns:noteViews="clr-namespace:Todo.Features.Notes.Views"
+             xmlns:common="clr-namespace:Todo.Common"
              xmlns:conv="clr-namespace:Todo.Converters"
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
@@ -49,11 +50,9 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="12">
-                    <Image Source="notesicon.png"
-                           WidthRequest="32"
-                           HeightRequest="32"
-                           Aspect="AspectFit"
-                           HorizontalOptions="Center" />
+                    <Label Text="{x:Static common:FontIcons.Notes}" FontFamily="FontIcons" FontSize="32"
+                           TextColor="{StaticResource TextSecondaryColor}" HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                     <Label Text="Type a word or phrase to search your notes."
                            FontSize="16"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
@@ -64,11 +63,9 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="8">
-                    <Image Source="notesicon.png"
-                           WidthRequest="32"
-                           HeightRequest="32"
-                           Aspect="AspectFit"
-                           HorizontalOptions="Center" />
+                    <Label Text="{x:Static common:FontIcons.Notes}" FontFamily="FontIcons" FontSize="32"
+                           TextColor="{StaticResource TextSecondaryColor}" HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                     <Label Text="{Binding NoResultsMessage}"
                            FontSize="16"
                            TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
@@ -139,16 +136,16 @@
                                                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Image Source="calendaricon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="{x:Static common:FontIcons.CalendarToday}" FontFamily="FontIcons" FontSize="14" TextColor="{StaticResource TextSecondaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
                                                         <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
-                                                        <Image Source="dateicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="{x:Static common:FontIcons.EventRepeat}" FontFamily="FontIcons" FontSize="14" TextColor="{StaticResource TextSecondaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
                                                         <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Image Source="bellicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="{x:Static common:FontIcons.Notifications}" FontFamily="FontIcons" FontSize="14" TextColor="{StaticResource TextSecondaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
                                                         <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
                                                     </HorizontalStackLayout>
                                                 </HorizontalStackLayout>
@@ -168,9 +165,9 @@
                                                     SemanticProperties.Description="Toggle important" />
 
                                             <buttons:SfButton Grid.Column="3"
-                                                    Text="&#8943;"
+                                                    Text="{x:Static common:FontIcons.MoreVert}"
+                                                    FontFamily="FontIcons"
                                                     FontSize="22"
-                                                    Rotation="90"
                                                     Background="Transparent"
                                                     TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                                     WidthRequest="40"

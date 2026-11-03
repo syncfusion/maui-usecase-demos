@@ -5,6 +5,7 @@
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:common="clr-namespace:Todo.Common"
              x:Class="Todo.Features.EditNote.Views.EditNotePage"
              x:DataType="vm:EditNoteViewModel"
              Shell.NavBarIsVisible="False"
@@ -31,14 +32,23 @@
                            TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
-                                      Text="✕"
                                       WidthRequest="40"
                                       HeightRequest="40"
                                       Padding="0"
                                       BackgroundColor="Transparent"
                                       TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
                                       FontSize="18"
-                                      Command="{Binding CancelCommand}" />
+                                      Command="{Binding CancelCommand}">
+                        <buttons:SfButton.Content>
+                            <DataTemplate>
+                                <Label Text="{x:Static common:FontIcons.Close}"
+                                       FontFamily="FontIcons"
+                                       FontSize="18"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center" />
+                            </DataTemplate>
+                        </buttons:SfButton.Content>
+                    </buttons:SfButton>
                 </Grid>
 
                 <BoxView Grid.Row="1"
@@ -84,7 +94,7 @@
                                     <TapGestureRecognizer Command="{Binding ToggleDueDatePickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                    <Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Label Text="{x:Static common:FontIcons.CalendarToday}" FontFamily="FontIcons" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                     <Border Grid.Column="1"
                                             Padding="12,8"
                                             Stroke="{StaticResource ChipStrokeColor}"
@@ -109,7 +119,7 @@
                                     <TapGestureRecognizer Command="{Binding ToggleRepeatPickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                    <Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Label Text="{x:Static common:FontIcons.EventRepeat}" FontFamily="FontIcons" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                     <Border Grid.Column="1"
                                             Padding="12,8"
                                             Stroke="{StaticResource ChipStrokeColor}"
@@ -137,7 +147,7 @@
                                     <TapGestureRecognizer Command="{Binding ToggleReminderPickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                    <Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Label Text="{x:Static common:FontIcons.Notifications}" FontFamily="FontIcons" FontSize="18" TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                     <Border Grid.Column="1"
                                             Padding="12,8"
                                             Stroke="{StaticResource ChipStrokeColor}"
@@ -173,13 +183,22 @@
                            TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
-                                      Text="🗑"
                                       WidthRequest="40"
                                       HeightRequest="40"
                                       Padding="0"
                                       BackgroundColor="Transparent"
                                       TextColor="{StaticResource DestructiveColor}"
-                                      Command="{Binding DeleteCommand}" />
+                                      Command="{Binding DeleteCommand}">
+                        <buttons:SfButton.Content>
+                            <DataTemplate>
+                                <Label Text="{x:Static common:FontIcons.Delete}"
+                                       FontFamily="FontIcons"
+                                       FontSize="18"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center" />
+                            </DataTemplate>
+                        </buttons:SfButton.Content>
+                    </buttons:SfButton>
                 </Grid>
             </Grid>
         </Border>

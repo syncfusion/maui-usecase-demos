@@ -19,11 +19,16 @@
     <!-- Category accent colors                                       -->
     <!-- (tinted sidebar icons + cards)                               -->
     <!-- ============================================================ -->
-    <Color x:Key="MyNotesColor">#757575</Color>
-    <Color x:Key="ImportantColor">#FFC107</Color>
-    <Color x:Key="ImportantSoftColor">#9C27B0</Color>
-    <Color x:Key="ReminderColor">#2196F3</Color>
-    <Color x:Key="BinColor">#F44336</Color>
+    <Color x:Key="MyNotesColor">#0D7D12</Color>
+    <Color x:Key="ImportantColor">#2667A3</Color>
+    <Color x:Key="ImportantSoftColor">#2667A3</Color>
+    <Color x:Key="ReminderColor">#7D5294</Color>
+    <Color x:Key="BinColor">#ED4B42</Color>
+
+    <Color x:Key="MyNotesIconColor">#0D7D12</Color>
+    <Color x:Key="ImportantIconColor">#2667A3</Color>
+    <Color x:Key="ReminderIconColor">#7D5294</Color>
+    <Color x:Key="BinIconColor">#ED4B42</Color>
 
     <SolidColorBrush x:Key="ImportantBrush" Color="{StaticResource ImportantColor}" />
     <SolidColorBrush x:Key="ReminderBrush" Color="{StaticResource ReminderColor}" />

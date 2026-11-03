@@ -23,6 +23,7 @@ public partial class EditNoteViewModel : ViewModelBase
     private readonly INavigationService _navigation;
     private readonly Note? _existing;
     private readonly string? _listId;
+    private bool _isInitializing;
 
     /// <summary>The note currently being edited, or <c>null</c> when
     /// creating a new note.</summary>
@@ -80,6 +81,7 @@ public partial class EditNoteViewModel : ViewModelBase
         _navigation = navigation;
         _existing = existing;
         _listId = listId;
+        _isInitializing = true;
 
         if (existing is not null)
         {
@@ -102,38 +104,71 @@ public partial class EditNoteViewModel : ViewModelBase
             OnPropertyChanged(nameof(CreatedAgeText));
             OnPropertyChanged(nameof(HasCreatedInfo));
         }
+
+        _isInitializing = false;
     }
 
-    partial void OnTitleChanged(string value) => SaveCommand.NotifyCanExecuteChanged();
-    partial void OnHasDueDateChanged(bool value) => IsDueDatePickerVisible = value;
-    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value) => IsRepeatPickerVisible = value != NoteRepeatFrequency.Never;
-    partial void OnHasReminderChanged(bool value) => IsReminderPickerVisible = value;
+    partial void OnTitleChanged(string value)
+    {
+        SaveCommand.NotifyCanExecuteChanged();
+        _ = AutoSaveAsync();
+    }
+
+    partial void OnHasDueDateChanged(bool value)
+    {
+        IsDueDatePickerVisible = value;
+        _ = AutoSaveAsync();
+    }
+
+    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value)
+    {
+        IsRepeatPickerVisible = value != NoteRepeatFrequency.Never;
+        _ = AutoSaveAsync();
+    }
+
+    partial void OnHasReminderChanged(bool value)
+    {
+        IsReminderPickerVisible = value;
+        _ = AutoSaveAsync();
+    }
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
     {
-        var trimmed = (Title ?? string.Empty).Trim();
-        if (string.IsNullOrEmpty(trimmed)) return;
-
-        DateTime? dueDate = HasDueDate ? DueDateSelection.Date : null;
-        DateTime? reminderDate = HasReminder
-            ? ReminderDateSelection.Date.Add(ReminderTimeSelection)
-            : null;
-
         if (_existing is null)
         {
+            var trimmed = (Title ?? string.Empty).Trim();
+            if (string.IsNullOrEmpty(trimmed)) return;
+
+            var dueDate = HasDueDate ? DueDateSelection.Date : null;
+            var reminderDate = HasReminder
+                ? ReminderDateSelection.Date.Add(ReminderTimeSelection)
+                : null;
+
             await _noteService.CreateAsync(trimmed, dueDate, reminderDate, listId: _listId, repeatFrequency: RepeatFrequency);
         }
         else
         {
-            _existing.Title = trimmed;
-            _existing.DueDate = dueDate;
-            _existing.ReminderDate = reminderDate;
-            _existing.RepeatFrequency = RepeatFrequency;
-            await _noteService.UpdateAsync(_existing);
+            await AutoSaveAsync(force: true);
         }
 
         await _navigation.PopModalAsync(true);
+    }
+
+    private async Task AutoSaveAsync(bool force = false)
+    {
+        if (_existing is null || _isInitializing) return;
+
+        var trimmed = (Title ?? string.Empty).Trim();
+        if (!force && trimmed.Length == 0) return;
+
+        _existing.Title = trimmed;
+        _existing.DueDate = HasDueDate ? DueDateSelection.Date : null;
+        _existing.ReminderDate = HasReminder
+            ? ReminderDateSelection.Date.Add(ReminderTimeSelection)
+            : null;
+        _existing.RepeatFrequency = RepeatFrequency;
+        await _noteService.UpdateAsync(_existing);
     }
 
     [RelayCommand]
@@ -150,6 +185,10 @@ public partial class EditNoteViewModel : ViewModelBase
 
     [RelayCommand]
     private void ToggleReminderPicker() => IsReminderPickerVisible = !IsReminderPickerVisible;
+
+    partial void OnDueDateSelectionChanged(DateTime value) => _ = AutoSaveAsync();
+    partial void OnReminderDateSelectionChanged(DateTime value) => _ = AutoSaveAsync();
+    partial void OnReminderTimeSelectionChanged(TimeSpan value) => _ = AutoSaveAsync();
 
     [RelayCommand]
     private async Task DeleteAsync()
