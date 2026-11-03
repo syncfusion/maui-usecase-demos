@@ -140,8 +140,8 @@ public partial class EditNoteViewModel : ViewModelBase
             var trimmed = (Title ?? string.Empty).Trim();
             if (string.IsNullOrEmpty(trimmed)) return;
 
-            var dueDate = HasDueDate ? DueDateSelection.Date : null;
-            var reminderDate = HasReminder
+            DateTime? dueDate = HasDueDate ? DueDateSelection.Date : null;
+            DateTime? reminderDate = HasReminder
                 ? ReminderDateSelection.Date.Add(ReminderTimeSelection)
                 : null;
 
