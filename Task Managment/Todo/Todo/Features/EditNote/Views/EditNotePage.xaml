@@ -100,7 +100,7 @@
                                 </Grid>
                             </Border>
                             <picker:SfDateTimePicker IsVisible="{Binding IsDueDatePickerVisible}"
-                                                 Date="{Binding DueDateSelection, Mode=TwoWay}"
+                                                 SelectedDate="{Binding DueDateSelection, Mode=TwoWay}"
                                                  HeightRequest="220" />
 
                             <Border Padding="0"
@@ -153,7 +153,7 @@
                                 </Grid>
                             </Border>
                             <VerticalStackLayout IsVisible="{Binding IsReminderPickerVisible}" Spacing="6">
-                                <picker:SfDateTimePicker Date="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
+                                <picker:SfDateTimePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
                                 <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}"
                                             BackgroundColor="Transparent"
                                             TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
