@@ -38,10 +38,23 @@ public partial class ToolbarControl : ContentView
     public static readonly BindableProperty ShowPropertiesCommandProperty =
         BindableProperty.Create(nameof(ShowPropertiesCommand), typeof(ICommand), typeof(ToolbarControl));
 
+    // Reactive highlight: when the active tool changes (pan/select), re-apply the
+    // active/normal icon style to the toggle buttons. Without this, the selection
+    // tool's blue "active" box is baked at build time and never moves to Pan (spec §3).
+    public static readonly BindableProperty ActiveToolIdProperty =
+        BindableProperty.Create(nameof(ActiveToolId), typeof(string), typeof(ToolbarControl),
+            string.Empty, propertyChanged: OnActiveToolIdChanged);
+
     public IEnumerable? ItemsSource
     {
         get => (IEnumerable?)GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
+    }
+
+    public string ActiveToolId
+    {
+        get => (string)GetValue(ActiveToolIdProperty);
+        set => SetValue(ActiveToolIdProperty, value);
     }
 
     public ICommand? ToolCommand
@@ -80,6 +93,9 @@ public partial class ToolbarControl : ContentView
         set => SetValue(ShowPropertiesCommandProperty, value);
     }
 
+    // Toggle buttons that carry the active-tool highlight (Pan / Selection), keyed by item id.
+    private readonly System.Collections.Generic.Dictionary<string, Button> _toggleButtons = new();
+
     public ToolbarControl()
     {
         InitializeComponent();
@@ -90,6 +106,24 @@ public partial class ToolbarControl : ContentView
         if (bindable is ToolbarControl tb)
         {
             tb.Rebuild();
+        }
+    }
+
+    private static void OnActiveToolIdChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is ToolbarControl tb)
+        {
+            tb.ApplyActiveToolHighlight();
+        }
+    }
+
+    private void ApplyActiveToolHighlight()
+    {
+        var active = (Style)Application.Current!.Resources["ToolbarIconActiveStyle"];
+        var normal = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"];
+        foreach (var (id, button) in _toggleButtons)
+        {
+            button.Style = string.Equals(id, ActiveToolId, StringComparison.Ordinal) ? active : normal;
         }
     }
 
@@ -104,6 +138,7 @@ public partial class ToolbarControl : ContentView
     private void Rebuild()
     {
         GroupsBar.Children.Clear();
+        _toggleButtons.Clear();
         if (ItemsSource is null)
         {
             return;
@@ -252,9 +287,16 @@ public partial class ToolbarControl : ContentView
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
         };
         AutomationProperties.SetHelpText(btn, item.TooltipKey);
-        if (item.IsChecked)
+
+        // Pan/Selection are the mutually-exclusive tool toggles: register them so the
+        // active-tool highlight follows ActiveToolId reactively (spec §3).
+        if (item.IsToggle && item.Id != AppConstants.CmdShowProperties)
         {
-            btn.Style = (Style)Application.Current!.Resources["ToolbarIconActiveStyle"];
+            _toggleButtons[item.Id] = btn;
+            var isActive = string.Equals(item.Id, ActiveToolId, StringComparison.Ordinal);
+            btn.Style = isActive
+                ? (Style)Application.Current!.Resources["ToolbarIconActiveStyle"]
+                : (Style)Application.Current!.Resources["ToolbarIconButtonStyle"];
         }
 
         // Wire to either ToolCommand or the dedicated properties toggle.

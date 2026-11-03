@@ -195,31 +195,59 @@ public static class DiagramModelAdapter
     };
 
     /// <summary>
-    /// Palette symbol for a connector stencil entry: a straight/orthogonal segment with an arrowhead,
-    /// sized to the symbol cell. The wire format only distinguishes "Straight" and "Orthogonal"
-    /// (ConnectorSegmentType), so a Bezier entry previews as a straight segment too.
+    /// Palette symbol for a connector stencil entry. Each kind gets a **distinct** source/target
+    /// geometry within the 64×64 symbol cell so the previews are visually different:
+    /// <list type="bullet">
+    ///   <item>Straight → horizontal line with arrowhead</item>
+    ///   <item>Orthogonal → L-shaped path (Type=Orthogonal forces right-angle routing)</item>
+    ///   <item>Bezier → diagonal line (Type=Straight, since the SDK only supports Straight/Orthogonal;
+    ///     diagonal direction visually suggests a curved connector)</item>
+    /// </list>
     /// </summary>
     private static Connector ToSymbolConnector(StencilItem item, ConnectorKind connectorKind)
     {
-        var connector = new Connector
+        Microsoft.Maui.Graphics.Point source, target;
+        ConnectorSegmentType segment;
+
+        switch (connectorKind)
         {
-            Id = item.Id,
-            Type = connectorKind switch
-            {
-                ConnectorKind.Orthogonal => ConnectorSegmentType.Orthogonal,
-                _ => ConnectorSegmentType.Straight,
-            },
-            // Points in the symbol's 64x64 cell (centered vertically, spanning most of the width).
-            SourcePoint = new Microsoft.Maui.Graphics.Point(8, 32),
-            TargetPoint = new Microsoft.Maui.Graphics.Point(56, 32),
-            Style = new ShapeStyle
-            {
-                StrokeColor = ResourceLookup.Color(ResourceKeys.TextPrimary),
-                StrokeWidth = 2,
-            },
+            case ConnectorKind.Orthogonal:
+                // L-shaped: the Orthogonal segment type routes this diagonal as right angles.
+                source = new Microsoft.Maui.Graphics.Point(20, 14);
+                target = new Microsoft.Maui.Graphics.Point(44, 50);
+                segment = ConnectorSegmentType.Orthogonal;
+                break;
+            case ConnectorKind.Bezier:
+                // The SDK wire format only has Straight/Orthogonal; a diagonal reads as the
+                // curved-connector preview distinct from the two above.
+                source = new Microsoft.Maui.Graphics.Point(14, 50);
+                target = new Microsoft.Maui.Graphics.Point(50, 14);
+                segment = ConnectorSegmentType.Straight;
+                break;
+            case ConnectorKind.Straight:
+            default:
+                source = new Microsoft.Maui.Graphics.Point(8, 32);
+                target = new Microsoft.Maui.Graphics.Point(56, 32);
+                segment = ConnectorSegmentType.Straight;
+                break;
+        }
+
+        var stroke = new ShapeStyle
+        {
+            StrokeColor = ResourceLookup.Color(ResourceKeys.TextPrimary),
+            StrokeWidth = 2,
         };
 
-        return connector;
+        return new Connector
+        {
+            Id = item.Id,
+            Type = segment,
+            SourcePoint = source,
+            TargetPoint = target,
+            Style = stroke,
+            SourceDecorator = new DecoratorSettings { Shape = DecoratorShape.None },
+            TargetDecorator = new DecoratorSettings { Shape = DecoratorShape.Arrow, Style = stroke },
+        };
     }
 
     private static Syncfusion.Maui.Diagram.HorizontalAlignment ToHorizontalAlignment(string value) => value switch

@@ -170,7 +170,7 @@
 
     <!-- ============ Named styles (referenced via ResourceKeys) ============ -->
 
-    <!-- 36x36 transparent icon button for the toolbar; hover #EFEFEF, disabled 40% opacity. -->
+    <!-- 36x36 transparent icon button for the toolbar; hover #EFEFEF, pressed #E0E0E0, disabled 40% opacity. -->
     <Style x:Key="ToolbarIconButtonStyle" TargetType="Button">
         <Setter Property="WidthRequest" Value="36" />
         <Setter Property="HeightRequest" Value="36" />
@@ -189,6 +189,11 @@
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
                             <Setter Property="BackgroundColor" Value="{DynamicResource HoverBackground}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E0E0E0" />
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -211,7 +216,12 @@
                     <VisualState x:Name="Normal" />
                     <VisualState x:Name="PointerOver">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="{DynamicResource SelectionBlue}" />
+                            <Setter Property="BackgroundColor" Value="#1E88E5" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#1565C0" />
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -315,6 +325,69 @@
                 <Shadow Radius="8" Offset="2,4" Opacity="0.2" />
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- Menu bar root (File/Edit/View/Arrange/Window). White mixed-case on the blue chrome;
+         hover = translucent white; the open root is set to a solid white pill + blue text by
+         code-behind (tracked via SfPopup.Opened/Closed, since "active" is not a built-in state). -->
+    <Style x:Key="MenuRootStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="Margin" Value="2,4" />
+        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#1AFFFFFF" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#33FFFFFF" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <!-- Open/active root: solid white pill, blue label (set by MenuBarControl). -->
+                    <VisualState x:Name="Selected">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White" />
+                            <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Active (open) menu root: solid white pill, blue label. Swapped in by code-behind via
+         SfPopup.Opened/Closed (the "open root" is not a built-in Button state in .NET 9). -->
+    <Style x:Key="MenuRootActiveStyle" TargetType="Button" BasedOn="{StaticResource MenuRootStyle}">
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
+    </Style>
+
+    <!-- Menu flyout row (icon/check + label + shortcut). This MAUI build has no Pointer events
+         on a Grid, so pressed feedback is driven by code-behind (PressedGesture); hover/pressed
+         live on the root menu buttons and toolbar buttons instead. -->
+    <Style x:Key="MenuFlyoutRowStyle" TargetType="Grid">
+        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+    </Style>
+
+    <!-- Menu flyout section header (e.g. ARRANGE "Align Objects"). -->
+    <Style x:Key="MenuFlyoutHeaderStyle" TargetType="Grid">
+        <Setter Property="HeightRequest" Value="28" />
+        <Setter Property="ColumnSpacing" Value="8" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="Margin" Value="0,2" />
     </Style>
 
     <!-- Zoom chip: 28 px pill; active state = PrimaryColor background, white text. -->
