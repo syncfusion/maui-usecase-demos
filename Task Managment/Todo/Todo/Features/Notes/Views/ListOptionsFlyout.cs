@@ -186,7 +186,7 @@ public sealed class ListOptionsFlyout : ContentView
     private View CreateSortSurface()
     {
         var actions = new VerticalStackLayout { Spacing = 0 };
-        var currentSort = _selectedList?.SortOrder ?? _viewModel?.CurrentSortOrder ?? NoteListSortOrder.Custom;
+        var currentSort = _selectedList?.SortOrder ?? NoteListSortOrder.Custom;
         actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important), currentSort == NoteListSortOrder.Important));
         actions.Children.Add(CreateMenuButton("Reminder", () => ApplySort(NoteListSortOrder.Reminder), currentSort == NoteListSortOrder.Reminder));
         actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate), currentSort == NoteListSortOrder.DueDate));
