@@ -40,23 +40,29 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" VerticalOptions="Center">
-                                    <Image Grid.Column="0" WidthRequest="20" HeightRequest="20"
-                                           Aspect="AspectFit" VerticalOptions="Center">
-                                        <Image.Triggers>
-                                            <DataTrigger TargetType="Image" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.MyNotes}">
-                                                <Setter Property="Source" Value="profileicon.png" />
+                                    <Label Grid.Column="0" WidthRequest="20" HeightRequest="20"
+                                           FontSize="18" FontFamily="MaterialIconRegular"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.MyNotes}">
+                                                <Setter Property="Text" Value="&#xe8a6;" />
+                                                <Setter Property="TextColor" Value="#0D7D12" />
                                             </DataTrigger>
-                                            <DataTrigger TargetType="Image" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Important}">
-                                                <Setter Property="Source" Value="importanticon.png" />
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Important}">
+                                                <Setter Property="Text" Value="&#xe83a;" />
+                                                <Setter Property="TextColor" Value="#2667A3" />
                                             </DataTrigger>
-                                            <DataTrigger TargetType="Image" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Reminder}">
-                                                <Setter Property="Source" Value="belliconsidebar.png" />
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Reminder}">
+                                                <Setter Property="Text" Value="&#xe7f5;" />
+                                                <Setter Property="TextColor" Value="#7D5294" />
                                             </DataTrigger>
-                                            <DataTrigger TargetType="Image" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Bin}">
-                                                <Setter Property="Source" Value="binicon.png" />
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Bin}">
+                                                <Setter Property="Text" Value="&#xe92e;" />
+                                                <Setter Property="TextColor" Value="#ED4B42" />
                                             </DataTrigger>
-                                        </Image.Triggers>
-                                    </Image>
+                                        </Label.Triggers>
+                                    </Label>
                                     <Label Grid.Column="1"
                                            Text="{Binding ., Converter={StaticResource EnumDisplayNameConverter}, FallbackValue=''}"
                                            Style="{StaticResource SidebarItemLabelStyle}"

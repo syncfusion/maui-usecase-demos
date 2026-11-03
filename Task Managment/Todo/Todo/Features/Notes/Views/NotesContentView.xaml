@@ -435,22 +435,30 @@
                                 <buttons:SfButton Grid.Column="0" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnDueDateClicked"
                                                   SemanticProperties.Description="Set due date">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content>
+                                        <DataTemplate>
+                                            <Label Text="&#xe24f;"  HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="1" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnRepeatClicked"
                                                   SemanticProperties.Description="Set repeat frequency">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content>
+                                        <DataTemplate>
+                                            <Label Text="&#xe040;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="2" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnReminderClicked"
                                                   SemanticProperties.Description="Set reminder date and time">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content>
+                                        <DataTemplate>
+                                            <Label Text="&#xe7f5;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
                                                   SemanticProperties.Description="Save note">
-                                    <buttons:SfButton.Content><DataTemplate><Image Source="tickicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
+                                    <buttons:SfButton.Content>
+                                        <DataTemplate>
+                                            <Label Text="&#xe876;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                             </Grid>
                         </syncfusionCore:SfTextInputLayout.TrailingView>

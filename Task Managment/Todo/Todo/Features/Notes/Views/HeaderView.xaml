@@ -28,7 +28,7 @@
                     SemanticProperties.Description="Toggle navigation menu">
                 <buttons:SfButton.Content>
                     <DataTemplate>
-                        <Image Source="humburger.png"/>
+                        <Label Text="&#xe3c7;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular"/>
                     </DataTemplate>
                 </buttons:SfButton.Content>
             </buttons:SfButton>
