@@ -74,13 +74,13 @@
                                                       CornerRadius="2"
                                                       HeightRequest="44"
                                                       HorizontalOptions="Fill"
-                                                      HorizontalContentAlignment="Start"
+                                                      HorizontalTextAlignment="Start"
                                                       FontSize="15"
                                                       Background="Transparent"
                                                       StrokeThickness="0"
                                                       EnableRippleEffect="True"
                                                       TextColor="{DynamicResource TextPrimary}">
-                                        <buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                        <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroupList>
                                                 <VisualStateGroup x:Name="CommonStates">
                                                     <VisualState x:Name="Normal" />
@@ -91,7 +91,7 @@
                                                     </VisualState>
                                                 </VisualStateGroup>
                                             </VisualStateGroupList>
-                                        </buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                        </VisualStateManager.VisualStateGroups>
                                     </buttons:SfButton>
                                 </DataTemplate>
                             </listView:SfListView.ItemTemplate>
@@ -103,14 +103,14 @@
                                                       CornerRadius="2"
                                                       HeightRequest="44"
                                                       HorizontalOptions="Fill"
-                                                      HorizontalContentAlignment="Start"
+                                                      HorizontalTextAlignment="Start"
                                                       FontSize="15"
                                                       FontAttributes="Bold"
                                                       Background="#E3F2FD"
                                                       StrokeThickness="0"
                                                       EnableRippleEffect="True"
                                                       TextColor="{DynamicResource PrimaryColor}">
-                                        <buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                        <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroupList>
                                                 <VisualStateGroup x:Name="CommonStates">
                                                     <VisualState x:Name="Normal" />
@@ -121,7 +121,7 @@
                                                     </VisualState>
                                                 </VisualStateGroup>
                                             </VisualStateGroupList>
-                                        </buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                        </VisualStateManager.VisualStateGroups>
                                     </buttons:SfButton>
                                 </DataTemplate>
                             </listView:SfListView.SelectedItemTemplate>
