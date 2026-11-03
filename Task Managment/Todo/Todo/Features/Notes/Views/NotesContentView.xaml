@@ -46,7 +46,7 @@
                            VerticalTextAlignment="Center" HorizontalTextAlignment="Center">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.MyNotes}">
-                                <Setter Property="Text" Value="&#xe7f5;" />
+                                <Setter Property="Text" Value="&#xe8a6;" />
                                 <Setter Property="TextColor" Value="#0D7D12" />
                             </DataTrigger>
                             <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Important}">
@@ -104,7 +104,7 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="12">
-                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="56" TextColor="{Binding HeaderForegroundColor}" HorizontalTextAlignment="Center" />
+                    <Label Text="&#xe8a6;" FontFamily="MaterialIconRegular" FontSize="56" TextColor="{Binding HeaderForegroundColor}" HorizontalTextAlignment="Center" />
                     <Label Text="{Binding EmptyStateTitle}"
                            Style="{StaticResource EmptyStateMessageStyle}"
                            TextColor="{Binding HeaderForegroundColor}"

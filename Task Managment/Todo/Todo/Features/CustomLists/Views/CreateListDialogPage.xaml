@@ -67,7 +67,7 @@
                             MinimumWidthRequest="96" />
                     <buttons:SfButton Grid.Column="2"
                             Text="{Binding PrimaryButtonText}"
-                            Style="{StaticResource PrimaryButtonStyle}"
+                            Style="{StaticResource AL_ApplyButton}"
                             Command="{Binding CreateCommand}"
                             MinimumWidthRequest="96" />
                 </Grid>

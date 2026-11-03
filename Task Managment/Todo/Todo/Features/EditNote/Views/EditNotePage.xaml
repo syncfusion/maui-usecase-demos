@@ -168,13 +168,18 @@
                          Color="{AppThemeBinding Light={StaticResource PopupDividerColor}, Dark={StaticResource PopupDividerDarkColor}}"
                          Margin="0,16" />
 
-                <Grid Grid.Row="4" ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                    <Label Text="{Binding CreatedAgeText}"
+                <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                    <buttons:SfButton Grid.Column="0"
+                                      Text="Cancel"
+                                      Style="{StaticResource TextButtonStyle}"
+                                      Command="{Binding CancelCommand}" />
+                    <Label Grid.Column="1"
+                           Text="{Binding CreatedAgeText}"
                            IsVisible="{Binding HasCreatedInfo}"
                            FontSize="12"
                            TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
                            VerticalOptions="Center" />
-                    <buttons:SfButton Grid.Column="1"
+                    <buttons:SfButton Grid.Column="2"
                                       Text="&#xe872;"
                                       FontFamily="MaterialIconRegular"
                                       WidthRequest="40"
@@ -183,6 +188,10 @@
                                       BackgroundColor="Transparent"
                                       TextColor="{StaticResource DestructiveColor}"
                                       Command="{Binding DeleteCommand}" />
+                    <buttons:SfButton Grid.Column="3"
+                                      Text="{Binding PrimaryButtonText}"
+                                      Style="{StaticResource AL_ApplyButton}"
+                                      Command="{Binding SaveCommand}" />
                 </Grid>
             </Grid>
         </Border>
