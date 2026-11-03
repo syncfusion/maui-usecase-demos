@@ -16,6 +16,9 @@ public partial class DeletedItemsViewModel : ObservableObject
     [ObservableProperty]
     private bool isEmpty;
 
+    [ObservableProperty]
+    private string retentionText = "Messages automatically removed after 30 days.";
+
     public DeletedItemsViewModel()
     {
         Reload();

@@ -44,7 +44,7 @@ public partial class ComposeViewModel : ObservableObject
     }
 
     partial void OnRecipientSearchChanged(string value) => UpdateSuggestions();
-    partial void OnSubjectChanged(string value) => StatusMessage = string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(Body) ? "Unsaved Changes" : "Unsaved Changes";
+    partial void OnSubjectChanged(string value) => StatusMessage = "Unsaved Changes";
     partial void OnBodyChanged(string value) => StatusMessage = "Unsaved Changes";
 
     [RelayCommand]
@@ -82,9 +82,15 @@ public partial class ComposeViewModel : ObservableObject
     [RelayCommand]
     void Send()
     {
-        if (RecipientChips.Count == 0 || string.IsNullOrWhiteSpace(Subject))
+        if (RecipientChips.Count == 0)
         {
-            StatusMessage = "Validation failed";
+            StatusMessage = "Add at least one recipient.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Subject))
+        {
+            StatusMessage = "Enter a subject.";
             return;
         }
 

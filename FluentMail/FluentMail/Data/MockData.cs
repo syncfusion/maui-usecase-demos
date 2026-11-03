@@ -40,10 +40,10 @@ public static class MockData
             mailbox.Drafts.Add(new MailMessage { Id = $"draft-{i}", Folder = "Drafts", Sender = "Me", SenderEmail = "me@contoso.com", Subject = $"Draft {i}", Preview = $"Draft preview {i}.", Body = $"Draft body {i}.", Recipients = $"contact{i % 10 + 1}@contoso.com", Status = i % 2 == 0 ? "Saved" : "Unsaved Changes", HasAttachments = i % 4 == 0 });
 
         for (var i = 1; i <= 30; i++)
-            mailbox.Archive.Add(new MailMessage { Id = $"archive-{i}", Folder = "Archive", Sender = $"Archived Sender {i}", SenderEmail = $"archived{i}@contoso.com", Subject = $"Archived thread {i}", Preview = $"Archived preview {i}.", Body = $"Archived body {i}.", Recipients = $"contact{i % 15 + 1}@contoso.com", Status = "Archived", HasAttachments = i % 3 == 0, IsFlagged = i % 6 == 0 });
+            mailbox.Archive.Add(new MailMessage { Id = $"archive-{i}", Folder = "Archive", Sender = $"Archived Sender {i}", SenderEmail = $"archived{i}@contoso.com", Subject = $"Archived thread {i}", Preview = $"Archived preview {i}.", Body = $"Archived body {i}.", Recipients = $"contact{i % 15 + 1}@contoso.com", Status = "Archived", HasAttachments = i % 3 == 0, IsFlagged = i % 6 == 0, ArchivedOn = DateTime.Today.AddDays(-i) });
 
         for (var i = 1; i <= 15; i++)
-            mailbox.Deleted.Add(new MailMessage { Id = $"deleted-{i}", Folder = "Deleted", Sender = $"Deleted Sender {i}", SenderEmail = $"deleted{i}@contoso.com", Subject = $"Deleted thread {i}", Preview = $"Deleted preview {i}.", Body = $"Deleted body {i}.", Recipients = $"contact{i % 10 + 1}@contoso.com", Status = "Deleted", HasAttachments = i % 3 == 0 });
+            mailbox.Deleted.Add(new MailMessage { Id = $"deleted-{i}", Folder = "Deleted", Sender = $"Deleted Sender {i}", SenderEmail = $"deleted{i}@contoso.com", Subject = $"Deleted thread {i}", Preview = $"Deleted preview {i}.", Body = $"Deleted body {i}.", Recipients = $"contact{i % 10 + 1}@contoso.com", Status = "Deleted", HasAttachments = i % 3 == 0, DeletedOn = DateTime.Today.AddDays(-i) });
 
         mailbox.Attachments.Add(new AttachmentInfo { FileName = "Proposal.pdf", FileType = "PDF", FileSize = 218000 });
         mailbox.RefreshCounts();

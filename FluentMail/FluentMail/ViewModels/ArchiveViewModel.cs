@@ -35,7 +35,7 @@ public partial class ArchiveViewModel : ObservableObject
         {
             "Has Files" => items.Where(x => x.HasAttachments),
             "Flagged" => items.Where(x => x.IsFlagged),
-            "This Year" => items,
+            "This Year" => items.Where(x => x.ArchivedOn.Year == DateTime.Today.Year),
             _ => items
         });
         IsEmpty = VisibleItems.Count == 0;

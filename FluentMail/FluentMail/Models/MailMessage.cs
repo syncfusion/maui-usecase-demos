@@ -15,4 +15,6 @@ public class MailMessage
     public bool HasAttachments { get; set; }
     public bool IsRead { get; set; }
     public bool IsFlagged { get; set; }
+    public DateTime ArchivedOn { get; set; }
+    public DateTime DeletedOn { get; set; }
 }
