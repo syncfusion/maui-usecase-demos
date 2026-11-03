@@ -202,7 +202,24 @@ public partial class MenuBarControl : ContentView
         // The menu row is a single Syncfusion SfButton. Its native handler drives Normal /
         // Pressed / Checked visual states from Android touch events, so the touch overlay
         // is reliable (MAUI Button's VSM press is unreliable on this MAUI build). The row's
-        // check + label + shortcut are hosted inside SfButton.Content as a DataTemplate.
+        // check + label + shortcut are hosted inside SfButton.Content as a DataTemplate —
+        // the factory builds a NEW grid per expansion, as MAUI templates require.
+        var row = new Syncfusion.Maui.Buttons.SfButton
+        {
+            Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+            Content = new DataTemplate(() => BuildRowLayout(item, indent)),
+            IsCheckable = item.IsCheckable,
+            IsChecked = item.IsCheckable && IsCheckedSafe(item.Id),
+            IsEnabled = item.IsEnabled,
+            CommandParameter = item.Id,
+            Command = new Command<string?>(id => MenuCommand?.Execute(id)),
+        };
+        return row;
+    }
+
+    /// <summary>Check mark + label + shortcut layout hosted inside the row's SfButton.Content.</summary>
+    private Grid BuildRowLayout(MenuCommandItem item, int indent)
+    {
         var grid = new Grid
         {
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
@@ -247,18 +264,7 @@ public partial class MenuBarControl : ContentView
         Grid.SetColumn(checkGlyph, 0);
         Grid.SetColumn(label, 1);
         Grid.SetColumn(shortcut, 2);
-
-        var row = new Syncfusion.Maui.Buttons.SfButton
-        {
-            Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
-            Content = new DataTemplate(() => grid),
-            IsCheckable = item.IsCheckable,
-            IsChecked = item.IsCheckable && IsCheckedSafe(item.Id),
-            IsEnabled = item.IsEnabled,
-            CommandParameter = item.Id,
-            Command = new Command<string?>(id => MenuCommand?.Execute(id)),
-        };
-        return row;
+        return grid;
     }
 
     private View BuildSubmenuHeaderRow(MenuCommandItem item, int indent)
