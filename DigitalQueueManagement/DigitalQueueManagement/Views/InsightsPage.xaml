@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:DigitalQueueManagement.Model"
+             xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
+             x:Class="DigitalQueueManagement.Views.InsightsPage"
+             x:DataType="vm:QueueInsightsViewModel">
+    <VerticalStackLayout x:Name="PageContentLayout"
+                         BindingContext="{Binding QueueSession}"
+                         x:DataType="vm:QueueSessionViewModel"
+                         Padding="28,22,28,36"
+                         Spacing="14">
+        <Border x:Name="MobileOverviewCard"
+                IsVisible="False"
+                Padding="16"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12">
+            <VerticalStackLayout Spacing="12">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="QUEUE OVERVIEW" FontSize="11" FontAttributes="Bold" TextColor="#444653" VerticalOptions="Center" />
+                    <Border Grid.Column="1" Padding="9,5" BackgroundColor="#E9F5F2" StrokeThickness="0" StrokeShape="RoundRectangle 14">
+                        <HorizontalStackLayout Spacing="5">
+                            <BoxView WidthRequest="6" HeightRequest="6" Color="#08796D" CornerRadius="3" VerticalOptions="Center" />
+                            <Label Text="Local sample" FontSize="10" FontAttributes="Bold" TextColor="#08796D" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+                <Grid ColumnDefinitions="*,1,*,1,*" ColumnSpacing="10">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Waiting" FontSize="11" FontAttributes="Bold" TextColor="#334155" />
+                        <Label Text="{Binding WaitingTokenCount}" FontSize="26" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Label Text="In line" FontSize="11" TextColor="#183E91" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="1" WidthRequest="1" Color="#E2E8F0" VerticalOptions="Fill" />
+                    <VerticalStackLayout Grid.Column="2" Spacing="4">
+                        <Label Text="Completed" FontSize="11" FontAttributes="Bold" TextColor="#334155" />
+                        <Label Text="{Binding CompletedTokenCount}" FontSize="26" FontAttributes="Bold" TextColor="#08796D" />
+                        <Label Text="Today" FontSize="11" TextColor="#08796D" />
+                    </VerticalStackLayout>
+                    <BoxView Grid.Column="3" WidthRequest="1" Color="#E2E8F0" VerticalOptions="Fill" />
+                    <VerticalStackLayout Grid.Column="4" Spacing="4">
+                        <Label Text="Counters" FontSize="11" FontAttributes="Bold" TextColor="#334155" />
+                        <Label Text="{Binding OnlineCounterCount}" FontSize="26" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Label Text="Active" FontSize="11" TextColor="#334155" />
+                    </VerticalStackLayout>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+        <Grid x:Name="MetricGrid"
+              ColumnDefinitions="*,*,*,*"
+              RowDefinitions="Auto"
+              ColumnSpacing="12"
+              RowSpacing="12">
+            <Border Grid.Column="0" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="IN LINE" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
+                        <Border Grid.Column="1" WidthRequest="32" HeightRequest="32" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                            <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                        <Label Text="8" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Label Grid.Column="1" Text="Tokens" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                    </Grid>
+                    <Label Grid.Row="2" Text="●  Across all services" FontSize="9" TextColor="#183E91" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="COMPLETED" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
+                        <Border Grid.Column="1" WidthRequest="32" HeightRequest="32" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                            <Label Text="verified_user" FontFamily="MaterialIcons" FontSize="17" TextColor="#159B85" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                        <Label Text="42" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Label Grid.Column="1" Text="Today" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                    </Grid>
+                    <Label Grid.Row="2" Text="●  +18.5% vs. avg" FontSize="9" TextColor="#159B85" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="2" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="COUNTERS" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
+                        <Border Grid.Column="1" WidthRequest="32" HeightRequest="32" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                            <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                        <Label Text="3" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Label Grid.Column="1" Text="Active" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                    </Grid>
+                    <Label Grid.Row="2" Text="●  100% capacity" FontSize="9" TextColor="#183E91" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="3" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="AVERAGE WAIT" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
+                        <Border Grid.Column="1" WidthRequest="32" HeightRequest="32" BackgroundColor="#FFF6E8" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                            <Label Text="schedule" FontFamily="MaterialIcons" FontSize="17" TextColor="#D18A16" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                        <Label Text="6.4m" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Label Grid.Column="1" Text="Within SLA" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                    </Grid>
+                    <Label Grid.Row="2" Text="●  Target under 10m" FontSize="9" TextColor="#D18A16" />
+                </Grid>
+            </Border>
+        </Grid>
+        <Grid x:Name="ChartGrid"
+              ColumnDefinitions="*,*"
+              RowDefinitions="Auto,Auto"
+              ColumnSpacing="14"
+              RowSpacing="14">
+            <Border x:Name="ServiceCard"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="8">
+                        <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" VerticalOptions="Start" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                            <Label Text="Tokens by service type" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="Distribution across customer categories" FontSize="10" TextColor="#64748B" />
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" Padding="9,5" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Label Text="50 tokens" FontSize="9" FontAttributes="Bold" TextColor="#183E91" />
+                        </Border>
+                    </Grid>
+                    <ContentView x:Name="MobileServiceChartHost" HeightRequest="180" IsVisible="False" />
+                    <HorizontalStackLayout x:Name="MobileServiceLegend"
+                                           IsVisible="False"
+                                           BindableLayout.ItemsSource="{Binding ServiceAnalytics}"
+                                           Spacing="6">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:QueueAnalyticsPoint">
+                                <VerticalStackLayout WidthRequest="80" Spacing="3">
+                                    <HorizontalStackLayout Spacing="5">
+                                        <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="{Binding ChartColor}" VerticalOptions="Center" />
+                                        <Label Text="{Binding Category}" FontSize="9" TextColor="#334155" LineBreakMode="TailTruncation" />
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding ShareText}" FontSize="9" TextColor="#64748B" Margin="13,0,0,0" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                    <Border x:Name="DesktopServiceDistributionBar"
+                            Padding="0"
+                            HeightRequest="12"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 6"
+                            BackgroundColor="#F1F5F9">
+                        <Grid ColumnDefinitions="44*,36*,20*">
+                            <BoxView Grid.Column="0" Color="#183E91" />
+                            <BoxView Grid.Column="1" Color="#159B85" />
+                            <BoxView Grid.Column="2" Color="#7589D4" />
+                        </Grid>
+                    </Border>
+                    <VerticalStackLayout x:Name="DesktopServiceBreakdown"
+                                         Spacing="8"
+                                         BindableLayout.ItemsSource="{Binding ServiceAnalytics}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:QueueAnalyticsPoint">
+                                <Grid ColumnDefinitions="*,Auto,44" ColumnSpacing="10">
+                                    <HorizontalStackLayout Spacing="7">
+                                        <BoxView WidthRequest="7"
+                                                 HeightRequest="7"
+                                                 CornerRadius="4"
+                                                 Color="{Binding ChartColor}"
+                                                 VerticalOptions="Center" />
+                                        <Label Text="{Binding Category}" FontSize="10" TextColor="#334155" />
+                                    </HorizontalStackLayout>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Value, StringFormat='{0:0} tokens'}"
+                                           FontSize="10"
+                                           TextColor="#64748B" />
+                                    <Label Grid.Column="2"
+                                           Text="{Binding ShareText}"
+                                           FontSize="10"
+                                           FontAttributes="Bold"
+                                           TextColor="#0F172A" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Grid x:Name="DesktopServiceTotal" ColumnDefinitions="*,Auto" Margin="0,3,0,0">
+                        <Label Text="CATEGORY TOTAL" FontSize="8" FontAttributes="Bold" TextColor="#94A3B8" />
+                        <Label Grid.Column="1" Text="100% (50 issued)" FontSize="9" FontAttributes="Bold" TextColor="#334155" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border x:Name="WaitCard"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="16">
+                    <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="8">
+                        <Label Text="schedule" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" VerticalOptions="Start" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                            <Label Text="Average wait time" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="Average customer queue duration by service" FontSize="10" TextColor="#64748B" />
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" Padding="9,5" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Label Text="Scale: 15m max" FontSize="9" FontAttributes="Bold" TextColor="#183E91" />
+                        </Border>
+                    </Grid>
+                    <VerticalStackLayout Spacing="14"
+                                         BindableLayout.ItemsSource="{Binding AverageWaitAnalytics}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:QueueAnalyticsPoint">
+                                <VerticalStackLayout Spacing="5">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="{Binding Category}" FontSize="11" TextColor="#334155" />
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Value, StringFormat='{0:0.#}m'}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="#0F172A" />
+                                    </Grid>
+                                    <ProgressBar Progress="{Binding Progress}"
+                                                 ProgressColor="{Binding ChartColor}"
+                                                 BackgroundColor="#F1F5F9"
+                                                 HeightRequest="8" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Grid ColumnDefinitions="*,*,*,*" Margin="0,-5,0,0">
+                        <Label Text="0m" FontSize="8" TextColor="#94A3B8" />
+                        <Label Grid.Column="1" Text="5m target" FontSize="8" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="2" Text="10m SLA" FontSize="8" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="3" Text="15m max" FontSize="8" TextColor="#94A3B8" HorizontalTextAlignment="End" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border x:Name="FulfillmentCard"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="8">
+                        <Label Text="monitor_heart" FontFamily="MaterialIcons" FontSize="16" TextColor="#159B85" VerticalOptions="Start" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                            <Label Text="Completed vs pending" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="Session fulfillment status" FontSize="10" TextColor="#64748B" />
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" Padding="9,5" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Label Text="Healthy" FontSize="9" FontAttributes="Bold" TextColor="#159B85" />
+                        </Border>
+                    </Grid>
+                    <Grid ColumnDefinitions="160,*"
+                          ColumnSpacing="14"
+                          HeightRequest="170">
+                        <Grid Grid.Column="0"
+                              WidthRequest="160"
+                              HeightRequest="160">
+                            <ContentView x:Name="FulfillmentChartHost"
+                                         WidthRequest="160"
+                                         HeightRequest="160" />
+                            <VerticalStackLayout HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="1"
+                                                 InputTransparent="True">
+                                <Label Text="84%"
+                                       FontSize="23"
+                                       FontAttributes="Bold"
+                                       TextColor="#0F172A"
+                                       HorizontalTextAlignment="Center" />
+                                <Label Text="DONE"
+                                       FontSize="9"
+                                       TextColor="#64748B"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <VerticalStackLayout Grid.Column="1"
+                                             VerticalOptions="Center"
+                                             Spacing="10">
+                            <Border Padding="10,9"
+                                    BackgroundColor="#E9FBF4"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                    <HorizontalStackLayout Spacing="6">
+                                        <BoxView WidthRequest="7" HeightRequest="7" CornerRadius="4" Color="#159B85" VerticalOptions="Center" />
+                                        <Label Text="Completed" FontSize="10" FontAttributes="Bold" TextColor="#334155" />
+                                    </HorizontalStackLayout>
+                                    <Label Grid.Column="1" Text="42" FontSize="11" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Grid.Row="1" Text="Processed &amp; cleared" FontSize="9" TextColor="#64748B" />
+                                    <Label Grid.Row="1" Grid.Column="1" Text="84%" FontSize="9" TextColor="#64748B" />
+                                </Grid>
+                            </Border>
+                            <Border Padding="10,9"
+                                    BackgroundColor="#F0F6FF"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                    <HorizontalStackLayout Spacing="6">
+                                        <BoxView WidthRequest="7" HeightRequest="7" CornerRadius="4" Color="#93B4E2" VerticalOptions="Center" />
+                                        <Label Text="Pending" FontSize="10" FontAttributes="Bold" TextColor="#334155" />
+                                    </HorizontalStackLayout>
+                                    <Label Grid.Column="1" Text="8" FontSize="11" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Grid.Row="1" Text="Waiting dispatch" FontSize="9" TextColor="#64748B" />
+                                    <Label Grid.Row="1" Grid.Column="1" Text="16%" FontSize="9" TextColor="#64748B" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border x:Name="CounterCard"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E2E8F0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="8">
+                        <Label Text="bar_chart" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" VerticalOptions="Start" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="3">
+                            <Label Text="Counter performance" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="Completed tokens handled per desk" FontSize="10" TextColor="#64748B" />
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2" Padding="9,5" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                            <Label Text="100% operational" FontSize="9" FontAttributes="Bold" TextColor="#183E91" />
+                        </Border>
+                    </Grid>
+                    <Border Padding="8,5"
+                            BackgroundColor="#F4F7FD"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 10">
+                        <ContentView x:Name="CounterChartHost" HeightRequest="180" />
+                    </Border>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <HorizontalStackLayout Spacing="5">
+                            <Label Text="monitor_heart" FontFamily="MaterialIcons" FontSize="11" TextColor="#64748B" />
+                            <Label Text="Total completed:" FontSize="9" TextColor="#64748B" />
+                            <Label Text="42 tokens" FontSize="9" FontAttributes="Bold" TextColor="#334155" />
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="Desk throughput: ~14 tokens/desk" FontSize="9" TextColor="#64748B" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </VerticalStackLayout>
+</ContentView>

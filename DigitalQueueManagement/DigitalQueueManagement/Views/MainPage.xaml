@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:dialogs="clr-namespace:DigitalQueueManagement.Views.Dialogs"
+             x:Class="DigitalQueueManagement.Views.MainPage"
+             x:DataType="vm:AppShellViewModel"
+             BackgroundColor="{StaticResource Canvas}"
+             Shell.NavBarIsVisible="False">
+    <Grid x:Name="PageRoot"
+          RowDefinitions="68,*,Auto"
+          BackgroundColor="{StaticResource Canvas}">
+        <Grid x:Name="DesktopHeader"
+              Grid.Row="0"
+              BackgroundColor="White">
+            <Grid x:Name="HeaderLayout"
+                  ColumnDefinitions="*,Auto,*"
+                  MaximumWidthRequest="1440"
+                  HorizontalOptions="Start"
+                  Padding="28,0">
+                <Grid Grid.Column="0"
+                      ColumnDefinitions="40,*"
+                      ColumnSpacing="12"
+                      VerticalOptions="Center">
+                    <Border WidthRequest="40"
+                            HeightRequest="40"
+                            BackgroundColor="#183E91"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12">
+                        <Label Text="key"
+                               FontFamily="MaterialIcons"
+                               FontSize="20"
+                               TextColor="White"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               SemanticProperties.Description="Queue key" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1"
+                                         Spacing="1"
+                                         VerticalOptions="Center">
+                        <Label Text="{Binding QueueSession.ActiveHeaderTitle}"
+                               FontSize="17"
+                               FontAttributes="Bold"
+                               TextColor="#0F172A" />
+                        <HorizontalStackLayout Spacing="5">
+                            <Label Text="monitor_heart"
+                                   FontFamily="MaterialIcons"
+                                   FontSize="12"
+                                   TextColor="#64748B"
+                                   VerticalTextAlignment="Center" />
+                            <Label Text="Monday, Oct 24"
+                                   FontSize="11"
+                                   TextColor="#64748B" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+                <Border Grid.Column="1"
+                        Padding="4"
+                        BackgroundColor="#F8FAFC"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 10"
+                        VerticalOptions="Center">
+                    <buttons:SfSegmentedControl x:Name="HeaderTabs"
+                                               WidthRequest="248"
+                                               SegmentHeight="34"
+                                               StrokeThickness="0"
+                                               ShowSeparator="False"
+                                               SegmentBackground="Transparent"
+                                               SelectedIndex="{Binding QueueSession.HeaderTabIndex, Mode=TwoWay}">
+                        <buttons:SfSegmentedControl.TextStyle>
+                            <buttons:SegmentTextStyle FontSize="12" TextColor="#64748B" />
+                        </buttons:SfSegmentedControl.TextStyle>
+                        <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                            <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
+                                                                Background="White"
+                                                                TextColor="#183E91" />
+                        </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                    </buttons:SfSegmentedControl>
+                </Border>
+                <Button Grid.Column="2"
+                        Text="more_horiz"
+                        FontFamily="MaterialIcons"
+                        FontSize="19"
+                        TextColor="#64748B"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Clicked="OnOptionsClicked"
+                        SemanticProperties.Description="More options and reset queue" />
+            </Grid>
+            <BoxView HeightRequest="1"
+                     Color="#E2E8F0"
+                     VerticalOptions="End" />
+        </Grid>
+        <Grid x:Name="MobileHeader"
+              Grid.Row="0"
+              IsVisible="False"
+              Padding="20,8"
+              ColumnDefinitions="*,Auto,Auto"
+              BackgroundColor="{StaticResource Canvas}">
+            <VerticalStackLayout VerticalOptions="Center" Spacing="1">
+                <Label x:Name="MobileHeaderTitle"
+                       Text="Queue Overview"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="#0F172A" />
+                <Label x:Name="MobileHeaderDate"
+                       Text="Monday, Oct 24"
+                       FontSize="12"
+                       TextColor="#475569" />
+            </VerticalStackLayout>
+            <Button x:Name="MobileHeaderCreateTokenButton"
+                    Grid.Column="1"
+                    Text="add"
+                    FontFamily="MaterialIcons"
+                    FontSize="20"
+                    TextColor="#183E91"
+                    BackgroundColor="Transparent"
+                    Padding="8"
+                    IsVisible="False"
+                    Clicked="OnCreateTokenClicked"
+                    SemanticProperties.Description="Create token" />
+            <Button Grid.Column="2"
+                    Text="more_vert"
+                    FontFamily="MaterialIcons"
+                    FontSize="20"
+                    TextColor="#475569"
+                    BackgroundColor="Transparent"
+                    Padding="8"
+                    Clicked="OnOptionsClicked"
+                    SemanticProperties.Description="More options and reset queue" />
+        </Grid>
+        <ContentView Grid.Row="1"
+                     x:Name="PageHost"
+                     HorizontalOptions="Start"
+                     MaximumWidthRequest="1440" />
+        <Grid x:Name="MobileBottomNavigation"
+              Grid.Row="2"
+              IsVisible="False"
+              HeightRequest="68"
+              ColumnDefinitions="*,*"
+              BackgroundColor="White">
+            <BoxView HeightRequest="1"
+                     Color="#E2E8F0"
+                     VerticalOptions="Start"
+                     Grid.ColumnSpan="2" />
+            <Button x:Name="MobileOverviewButton"
+                    Grid.Column="0"
+                    Text="Overview"
+                    FontSize="11"
+                    FontAttributes="Bold"
+                    BackgroundColor="Transparent"
+                    Padding="0,6"
+                    ContentLayout="Top,2"
+                    Clicked="OnMobileOverviewClicked" />
+            <Button x:Name="MobileManageButton"
+                    Grid.Column="1"
+                    Text="Manage"
+                    FontSize="11"
+                    FontAttributes="Bold"
+                    BackgroundColor="Transparent"
+                    Padding="0,6"
+                    ContentLayout="Top,2"
+                    Clicked="OnMobileManageClicked" />
+        </Grid>
+        <dialogs:DesktopPopupHost x:Name="DesktopPopupHost"
+                                  Grid.RowSpan="3"
+                                  IsVisible="False" />
+        <dialogs:MobileBottomSheetHost x:Name="MobileBottomSheetHost"
+                                       Grid.RowSpan="3"
+                                       IsVisible="False" />
+    </Grid>
+</ContentPage>

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:DigitalQueueManagement.Model"
+             xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:badge="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:gauge="clr-namespace:Syncfusion.Maui.Gauges;assembly=Syncfusion.Maui.Gauges"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             x:Class="DigitalQueueManagement.Views.OverviewPage"
+             x:DataType="vm:QueueOverviewViewModel">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout x:Name="PageContentLayout"
+                             BindingContext="{Binding QueueSession}"
+                             x:DataType="vm:QueueSessionViewModel"
+                             Padding="28,22,28,36"
+                             Spacing="18">
+            <Grid x:Name="MetricGrid"
+                  ColumnDefinitions="*,*,*,*"
+                  RowDefinitions="Auto"
+                  ColumnSpacing="12"
+                  RowSpacing="12">
+                <Border Grid.Column="0" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Now Serving" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="confirmation_number" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" />
+                        </Grid>
+                        <Label Grid.Row="1" Text="{Binding NowServingTokenId}" FontSize="28" FontAttributes="Bold" TextColor="#183E91" />
+                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding NowServingCounterName}" FontSize="10" TextColor="#64748B" VerticalOptions="Center" />
+                            <Border Grid.Column="1" Padding="8,4" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                <Label Text="In Progress" FontSize="9" FontAttributes="Bold" TextColor="#159B85" />
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="1" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Waiting Tokens" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="show_chart" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" />
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding WaitingTokenCount}" FontSize="28" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Tokens" FontSize="10" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                            <Label Text="In Queue" FontSize="10" TextColor="#64748B" />
+                            <Label Grid.Column="1" Text="{Binding EstimatedWaitText, StringFormat='{0} est. avg'}" FontSize="9" TextColor="#64748B" />
+                        </Grid>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="2" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Completed Tokens" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="check_circle" FontFamily="MaterialIcons" FontSize="16" TextColor="#159B85" />
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding CompletedTokenCount}" FontSize="28" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Tokens" FontSize="10" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                            <Label Text="Today" FontSize="10" TextColor="#64748B" />
+                            <Label Grid.Column="1" Text="Today" FontSize="9" TextColor="#64748B" />
+                        </Grid>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="3" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Average Wait" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="schedule" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" />
+                        </Grid>
+                        <Label Grid.Row="1" Text="{Binding AverageWaitText}" FontSize="28" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                            <Label Text="Within SLA" FontSize="10" TextColor="#64748B" />
+                            <Label Grid.Column="1" Text="Queue estimate" FontSize="9" TextColor="#64748B" />
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Grid x:Name="MainContentGrid"
+                  ColumnDefinitions="0.9*,1.2*"
+                  RowDefinitions="Auto"
+                  ColumnSpacing="18"
+                  RowSpacing="16">
+                <VerticalStackLayout Grid.Column="0" Spacing="16">
+                    <Border Padding="20" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="16">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Queue Load" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Text="Current load capacity metric" FontSize="10" TextColor="#64748B" />
+                                </VerticalStackLayout>
+                                <Border Grid.Column="1" Padding="9,5" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 12" VerticalOptions="Start">
+                                    <Label Text="Optimal" FontSize="9" FontAttributes="Bold" TextColor="#159B85" />
+                                </Border>
+                            </Grid>
+                            <Grid ColumnDefinitions="80,*" ColumnSpacing="16">
+                                <Grid WidthRequest="76" HeightRequest="76">
+                                    <gauge:SfRadialGauge>
+                                        <gauge:SfRadialGauge.Axes>
+                                            <gauge:RadialAxis Minimum="0"
+                                                              Maximum="100"
+                                                              Interval="20"
+                                                              ShowLabels="False"
+                                                              ShowTicks="False">
+                                                <gauge:RadialAxis.AxisLineStyle>
+                                                    <gauge:RadialLineStyle Fill="#DCE6F5" Thickness="8" />
+                                                </gauge:RadialAxis.AxisLineStyle>
+                                                <gauge:RadialAxis.Pointers>
+                                                    <gauge:RangePointer Value="{Binding QueueLoad}"
+                                                                        PointerWidth="8"
+                                                                        WidthUnit="Pixel"
+                                                                        Fill="#183E91" />
+                                                </gauge:RadialAxis.Pointers>
+                                            </gauge:RadialAxis>
+                                        </gauge:SfRadialGauge.Axes>
+                                    </gauge:SfRadialGauge>
+                                    <VerticalStackLayout Spacing="0" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <Label Text="{Binding QueueLoad, StringFormat='{0}%'}"
+                                               FontSize="17"
+                                               FontAttributes="Bold"
+                                               TextColor="#0F172A"
+                                               HorizontalTextAlignment="Center" />
+                                        <Label Text="LOAD" FontSize="7" FontAttributes="Bold" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                                <VerticalStackLayout Grid.Column="1" Spacing="12" VerticalOptions="Center">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="Waiting Tokens" FontSize="9" TextColor="#64748B" />
+                                        <Label Grid.Column="1" Text="{Binding WaitingTokenCount, StringFormat='{0} waiting'}" FontSize="9" FontAttributes="Bold" TextColor="#0F172A" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="Active Terminals" FontSize="9" TextColor="#64748B" />
+                                        <Label Grid.Column="1" Text="{Binding OnlineCounterSummary}" FontSize="9" FontAttributes="Bold" TextColor="#159B85" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Padding="20" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Counter Status" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Text="Local terminal assignment" FontSize="10" TextColor="#64748B" />
+                                </VerticalStackLayout>
+                                <Border Grid.Column="1" Padding="9,5" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 12" VerticalOptions="Center">
+                                    <Label Text="{Binding OnlineCounterCount, StringFormat='{0} Desks Online'}" FontSize="9" FontAttributes="Bold" TextColor="#183E91" />
+                                </Border>
+                            </Grid>
+                            <Grid>
+                                <listview:SfListView ItemsSource="{Binding CounterSummaries}"
+                                                     ItemSize="56"
+                                                     SelectionMode="None"
+                                                     HeightRequest="188"
+                                                     IsVisible="{Binding HasCounters}">
+                                    <listview:SfListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:QueueCounterSummary">
+                                            <Border Margin="0,3" Padding="8,7" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                                                <Grid ColumnDefinitions="30,*,Auto" ColumnSpacing="10">
+                                                    <Border WidthRequest="28" HeightRequest="28" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 7" VerticalOptions="Center">
+                                                        <Label Text="{Binding CounterNumber}" FontSize="10" FontAttributes="Bold" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                    </Border>
+                                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                                        <HorizontalStackLayout Spacing="4">
+                                                            <Label Text="{Binding Name}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" />
+                                                            <Label Text="·" FontSize="10" TextColor="#64748B" />
+                                                            <Label Text="{Binding TokenId}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" />
+                                                        </HorizontalStackLayout>
+                                                        <Label Text="{Binding Service}" FontSize="9" TextColor="#64748B" />
+                                                    </VerticalStackLayout>
+                                                    <Border Grid.Column="2" Padding="8,4" BackgroundColor="{Binding AvailabilityBackgroundColor}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                                        <Label Text="{Binding AvailabilityText}" FontSize="8" FontAttributes="Bold" TextColor="{Binding AvailabilityColor}" />
+                                                    </Border>
+                                                </Grid>
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OnCounterClicked" />
+                                                </Border.GestureRecognizers>
+                                            </Border>
+                                        </DataTemplate>
+                                    </listview:SfListView.ItemTemplate>
+                                </listview:SfListView>
+                                <VerticalStackLayout IsVisible="{Binding HasNoCounters}" Spacing="4" Padding="10">
+                                    <Label Text="No counters available" FontSize="12" FontAttributes="Bold" TextColor="#334155" />
+                                    <Label Text="Create a counter to begin serving tokens." FontSize="10" TextColor="#64748B" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <Border x:Name="UpcomingCard"
+                        Grid.Column="1"
+                        Padding="20"
+                        BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Spacing="4">
+                            <Label Text="Upcoming Tokens" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="Next in line across all counters" FontSize="10" TextColor="#64748B" />
+                            </VerticalStackLayout>
+                        <Border Grid.Column="1" Padding="3" BackgroundColor="#F8FAFC" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 9" VerticalOptions="Center">
+                            <buttons:SfSegmentedControl x:Name="UpcomingFilterControl"
+                                                       WidthRequest="170"
+                                                       SegmentWidth="60"
+                                                       SegmentHeight="30"
+                                                       StrokeThickness="0"
+                                                       ShowSeparator="False"
+                                                       SegmentBackground="Transparent">
+                                <buttons:SfSegmentedControl.TextStyle>
+                                    <buttons:SegmentTextStyle FontSize="10" TextColor="#64748B" />
+                                </buttons:SfSegmentedControl.TextStyle>
+                            <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                                <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
+                                                                    Background="White"
+                                                                    TextColor="#183E91" />
+                            </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                            </buttons:SfSegmentedControl>
+                        </Border>
+                    </Grid>
+                    <Grid>
+                        <listview:SfListView ItemsSource="{Binding UpcomingTokens}"
+                                             ItemSize="60"
+                                             SelectionMode="None"
+                                             HeightRequest="300"
+                                             IsVisible="{Binding HasUpcomingTokens}">
+                            <listview:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:QueueToken">
+                                    <Border Margin="0,4" Padding="10,8" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                                        <Grid ColumnDefinitions="56,1,*,Auto,48" ColumnSpacing="10">
+                                            <Label Text="{Binding Id}" FontSize="12" FontAttributes="Bold" TextColor="#183E91" VerticalOptions="Center" />
+                                            <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="32" Color="#E2E8F0" VerticalOptions="Center" />
+                                            <VerticalStackLayout Grid.Column="2" Spacing="3" VerticalOptions="Center">
+                                                <Label Text="{Binding Service}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" LineBreakMode="TailTruncation" />
+                                                <Label Text="{Binding CounterName}" FontSize="9" TextColor="#64748B" />
+                                            </VerticalStackLayout>
+                                            <Border x:Name="PriorityBadge" Grid.Column="3" Padding="8,4" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                                <Label Text="{Binding Priority}" FontSize="8" FontAttributes="Bold" TextColor="#475569">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Priority}">
+                                                            <Setter Property="TextColor" Value="#BE123C" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                                <Border.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Priority}">
+                                                        <Setter Property="BackgroundColor" Value="#FEE2E2" />
+                                                    </DataTrigger>
+                                                </Border.Triggers>
+                                            </Border>
+                                            <Label Grid.Column="4" Text="{Binding Wait}" FontSize="9" TextColor="#64748B" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                                        </Grid>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnTokenClicked" />
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </DataTemplate>
+                            </listview:SfListView.ItemTemplate>
+                        </listview:SfListView>
+                        <VerticalStackLayout IsVisible="{Binding HasNoUpcomingTokens}" Spacing="4" Padding="10">
+                            <Label Text="No waiting tokens" FontSize="12" FontAttributes="Bold" TextColor="#334155" />
+                            <Label Text="New queue entries will appear here." FontSize="10" TextColor="#64748B" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="#EEF2F7" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                            <BoxView WidthRequest="6" HeightRequest="6" Color="#10B981" CornerRadius="3" VerticalOptions="Center" />
+                            <Label Text="Local queue" FontSize="9" TextColor="#64748B" />
+                        </HorizontalStackLayout>
+                        <Label Grid.Column="1" Text="{Binding UpcomingTokens.Count, StringFormat='{0} tokens shown'}" FontSize="9" TextColor="#64748B" VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnViewAllTokensClicked" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentView>

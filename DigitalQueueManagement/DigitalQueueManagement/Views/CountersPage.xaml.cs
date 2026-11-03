@@ -1,0 +1,207 @@
+using DigitalQueueManagement.Model;
+using DigitalQueueManagement.ViewModel;
+
+namespace DigitalQueueManagement.Views;
+
+public partial class CountersPage : ContentView
+{
+    private readonly QueueSessionViewModel _viewModel;
+    private readonly Action _manageCounters;
+    private readonly Action<QueueToken> _openToken;
+    private readonly Action<Func<QueueToken?>> _runTokenAction;
+    private readonly Action<Func<bool>> _runBooleanAction;
+    private readonly Action<string> _openTransfer;
+
+    public CountersPage(
+        CounterOperationsViewModel viewModel,
+        Action manageCounters,
+        Action<QueueToken> openToken,
+        Action<Func<QueueToken?>> runTokenAction,
+        Action<Func<bool>> runBooleanAction,
+        Action<string> openTransfer)
+    {
+        BindingContext = viewModel;
+        InitializeComponent();
+
+        _viewModel = viewModel.QueueSession;
+        _manageCounters = manageCounters;
+        _openToken = openToken;
+        _runTokenAction = runTokenAction;
+        _runBooleanAction = runBooleanAction;
+        _openTransfer = openTransfer;
+
+        SizeChanged += OnSizeChanged;
+    }
+
+    private void OnCounterTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is Border { BindingContext: QueueCounterSummary summary })
+        {
+            _viewModel.SelectCounter(summary.Name);
+        }
+    }
+
+    private void OnManageCountersClicked(object? sender, EventArgs e) =>
+        _manageCounters();
+
+    private void OnViewTokenClicked(object? sender, EventArgs e)
+    {
+        if (_viewModel.SelectedCounterToken is { } token)
+        {
+            _openToken(token);
+        }
+    }
+
+    private void OnCallNextClicked(object? sender, EventArgs e)
+    {
+        if (_viewModel.SelectedCounter is { } counter)
+        {
+            _runTokenAction(() => _viewModel.CallNext(counter.Name));
+        }
+    }
+
+    private void OnCompleteClicked(object? sender, EventArgs e)
+    {
+        if (_viewModel.SelectedCounter is { } counter)
+        {
+            _runBooleanAction(() => _viewModel.CompleteCurrent(counter.Name));
+        }
+    }
+
+    private void OnSkipClicked(object? sender, EventArgs e)
+    {
+        if (_viewModel.SelectedCounter is { } counter)
+        {
+            _runBooleanAction(() => _viewModel.SkipCurrent(counter.Name));
+        }
+    }
+
+    private void OnRecallClicked(object? sender, EventArgs e)
+    {
+        if (_viewModel.SelectedCounter is { } counter)
+        {
+            _runBooleanAction(() => _viewModel.RecallCurrent(counter.Name));
+        }
+    }
+
+    private void OnTransferClicked(object? sender, EventArgs e)
+    {
+        if (_viewModel.SelectedCounter is { } counter)
+        {
+            _openTransfer(counter.Name);
+        }
+    }
+
+    private void OnViewAllWaitingClicked(object? sender, EventArgs e)
+    {
+        _viewModel.SetStatusFilter("Waiting");
+        _viewModel.SetManageTab("Tokens");
+    }
+
+    private void OnSizeChanged(object? sender, EventArgs e)
+    {
+        if (Width <= 0)
+        {
+            return;
+        }
+
+        var compact = Width < 768;
+        var wide = Width >= 1100;
+        var tablet = Width >= 768;
+        MetricGrid.IsVisible = !compact;
+        MetricGrid.ColumnDefinitions = wide
+            ? new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star), new(GridLength.Star), new(GridLength.Star) }
+            : tablet
+                ? new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star) }
+                : new ColumnDefinitionCollection { new(GridLength.Star) };
+        MetricGrid.RowDefinitions = wide
+            ? new RowDefinitionCollection { new(GridLength.Auto) }
+            : tablet
+                ? new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) }
+                : new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto), new(GridLength.Auto), new(GridLength.Auto) };
+
+        for (var index = 0; index < MetricGrid.Children.Count; index++)
+        {
+            MetricGrid.SetColumn(MetricGrid.Children[index], wide ? index : tablet ? index % 2 : 0);
+            MetricGrid.SetRow(MetricGrid.Children[index], wide ? 0 : tablet ? index / 2 : index);
+        }
+
+        WorkspaceGrid.ColumnDefinitions = wide
+            ? new ColumnDefinitionCollection { new(320), new(GridLength.Star) }
+            : new ColumnDefinitionCollection { new(GridLength.Star) };
+        WorkspaceGrid.RowDefinitions = wide
+            ? new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) }
+            : compact
+                ? new RowDefinitionCollection
+                {
+                    new(GridLength.Auto),
+                    new(GridLength.Auto),
+                    new(GridLength.Auto),
+                    new(GridLength.Auto)
+                }
+                : new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto), new(GridLength.Auto) };
+        WorkspaceGrid.SetColumn(CounterListPanel, 0);
+        WorkspaceGrid.SetRow(CounterListPanel, 0);
+        CounterListPanel.IsVisible = !compact;
+        MobileCounterSelectorPanel.IsVisible = compact;
+        WorkspaceGrid.SetColumn(MobileCounterSelectorPanel, 0);
+        WorkspaceGrid.SetRow(MobileCounterSelectorPanel, 0);
+        MobileQueueSummaryPanel.IsVisible = compact;
+        WorkspaceGrid.SetColumn(MobileQueueSummaryPanel, 0);
+        WorkspaceGrid.SetRow(MobileQueueSummaryPanel, 2);
+        WorkspaceGrid.SetColumn(OperationsPanel, wide ? 1 : 0);
+        WorkspaceGrid.SetRow(OperationsPanel, wide ? 0 : 1);
+        WorkspaceGrid.SetColumn(QueuePreviewPanel, wide ? 1 : 0);
+        WorkspaceGrid.SetRow(QueuePreviewPanel, wide ? 1 : compact ? 3 : 2);
+        PageContentLayout.Spacing = compact ? 14 : 18;
+        PageContentLayout.Padding = compact
+            ? new Thickness(16, 16, 16, 24)
+            : new Thickness(wide ? 28 : 18, 22, wide ? 28 : 18, 36);
+        OperationsPanel.Padding = compact ? 0 : 22;
+        OperationsPanel.BackgroundColor = compact ? Colors.Transparent : Colors.White;
+        OperationsPanel.StrokeThickness = compact ? 0 : 1;
+        MobileCurrentTokenPanel.Padding = compact ? 16 : 0;
+        MobileCurrentTokenPanel.BackgroundColor = compact ? Colors.White : Colors.Transparent;
+        MobileCurrentTokenPanel.Stroke = compact ? Color.FromArgb("#DCE7F5") : Colors.Transparent;
+        MobileCurrentTokenPanel.StrokeThickness = compact ? 1 : 0;
+        MobileCounterActionsPanel.Padding = compact ? 14 : 0;
+        MobileCounterActionsPanel.BackgroundColor = compact ? Colors.White : Colors.Transparent;
+        MobileCounterActionsPanel.Stroke = compact ? Color.FromArgb("#DCE7F5") : Colors.Transparent;
+        MobileCounterActionsPanel.StrokeThickness = compact ? 1 : 0;
+        CounterActionsDivider.IsVisible = compact;
+        SelectedTokenIdLabel.TextColor = compact ? Color.FromArgb("#102A8C") : Color.FromArgb("#0F172A");
+        SelectedTokenIdLabel.FontSize = compact ? 58 : 54;
+        ServingDurationLabel.Text = compact ? "02:48" : "04:58";
+        InitialWaitLabel.Text = compact ? _viewModel.SelectedCounterTokenWait : "3m 12s";
+        CallNextButton.Text = compact ? "Call Next" : "↗  Call next";
+        CallNextButton.FontSize = compact ? 14 : 10;
+        CallNextButton.MinimumHeightRequest = compact ? 76 : -1;
+        CallNextButton.BackgroundColor = compact ? Color.FromArgb("#102A8C") : Color.FromArgb("#153F9A");
+        CallNextButton.ImageSource = compact
+            ? new FontImageSource { Glyph = "volume_up", FontFamily = "MaterialIcons", Color = Colors.White, Size = 18 }
+            : null;
+        CompleteButton.Text = compact ? "Complete\nService" : "Complete service";
+        CompleteButton.FontSize = compact ? 14 : 10;
+        CompleteButton.MinimumHeightRequest = compact ? 76 : -1;
+        CompleteButton.BackgroundColor = compact ? Color.FromArgb("#00796F") : Color.FromArgb("#94A3B8");
+        CompleteButton.ImageSource = compact
+            ? new FontImageSource { Glyph = "check_circle", FontFamily = "MaterialIcons", Color = Colors.White, Size = 18 }
+            : null;
+        SkipButton.Text = compact ? "Skip Token" : "Skip token";
+        RecallButton.Text = compact ? "Recall Token" : "Recall token";
+        TransferButton.Text = compact ? "Transfer Token" : "Transfer token";
+        SkipButton.FontSize = compact ? 10 : 9;
+        RecallButton.FontSize = compact ? 10 : 9;
+        TransferButton.FontSize = compact ? 10 : 9;
+        SkipButton.ImageSource = compact
+            ? new FontImageSource { Glyph = "fast_forward", FontFamily = "MaterialIcons", Color = Color.FromArgb("#C62828"), Size = 16 }
+            : null;
+        RecallButton.ImageSource = compact
+            ? new FontImageSource { Glyph = "campaign", FontFamily = "MaterialIcons", Color = Color.FromArgb("#183E91"), Size = 16 }
+            : null;
+        TransferButton.ImageSource = compact
+            ? new FontImageSource { Glyph = "swap_horiz", FontFamily = "MaterialIcons", Color = Color.FromArgb("#9A5A00"), Size = 16 }
+            : null;
+        QueuePreviewPanel.Padding = compact ? 14 : 16;
+    }
+}
