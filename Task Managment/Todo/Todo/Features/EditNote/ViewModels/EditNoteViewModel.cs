@@ -104,10 +104,34 @@ public partial class EditNoteViewModel : ViewModelBase
         }
     }
 
-    partial void OnTitleChanged(string value) => SaveCommand.NotifyCanExecuteChanged();
-    partial void OnHasDueDateChanged(bool value) => IsDueDatePickerVisible = value;
-    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value) => IsRepeatPickerVisible = value != NoteRepeatFrequency.Never;
-    partial void OnHasReminderChanged(bool value) => IsReminderPickerVisible = value;
+    partial void OnTitleChanged(string value)
+    {
+        SaveCommand.NotifyCanExecuteChanged();
+        _ = PersistChangesAsync();
+    }
+
+    partial void OnHasDueDateChanged(bool value)
+    {
+        IsDueDatePickerVisible = value;
+        _ = PersistChangesAsync();
+    }
+
+    partial void OnDueDateSelectionChanged(DateTime value) => _ = PersistChangesAsync();
+
+    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value)
+    {
+        IsRepeatPickerVisible = value != NoteRepeatFrequency.Never;
+        _ = PersistChangesAsync();
+    }
+
+    partial void OnHasReminderChanged(bool value)
+    {
+        IsReminderPickerVisible = value;
+        _ = PersistChangesAsync();
+    }
+
+    partial void OnReminderDateSelectionChanged(DateTime value) => _ = PersistChangesAsync();
+    partial void OnReminderTimeSelectionChanged(TimeSpan value) => _ = PersistChangesAsync();
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
@@ -150,6 +174,21 @@ public partial class EditNoteViewModel : ViewModelBase
 
     [RelayCommand]
     private void ToggleReminderPicker() => IsReminderPickerVisible = !IsReminderPickerVisible;
+
+    private async Task PersistChangesAsync()
+    {
+        if (_existing is null)
+            return;
+
+        var trimmed = (Title ?? string.Empty).Trim();
+        _existing.Title = trimmed;
+        _existing.DueDate = HasDueDate ? DueDateSelection.Date : null;
+        _existing.RepeatFrequency = RepeatFrequency;
+        _existing.ReminderDate = HasReminder
+            ? ReminderDateSelection.Date.Add(ReminderTimeSelection)
+            : null;
+        await _noteService.UpdateAsync(_existing);
+    }
 
     [RelayCommand]
     private async Task DeleteAsync()

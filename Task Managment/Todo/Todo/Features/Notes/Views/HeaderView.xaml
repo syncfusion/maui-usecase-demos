@@ -23,12 +23,15 @@
             <buttons:SfButton  
                     WidthRequest="18" 
                     HeightRequest="18" Margin="10,0" CornerRadius="0"
-                    Padding="0" ImageSource="humburger.png" Background="Transparent"    
+                    Padding="0" Background="Transparent"    
                     Command="{Binding ToggleSidebarCommand}"
                     SemanticProperties.Description="Toggle navigation menu">
                 <buttons:SfButton.Content>
                     <DataTemplate>
-                        <Image Source="humburger.png"/>
+                        <Label Text="&#9776;"
+                               FontFamily="{StaticResource FontFamilyRegular}"
+                               FontSize="18"
+                               TextColor="{StaticResource NotesIconColor}" />
                     </DataTemplate>
                 </buttons:SfButton.Content>
             </buttons:SfButton>
@@ -67,11 +70,12 @@
                                               Stroke="Transparent"
                                               VerticalOptions="Fill">
                 <syncfusionCore:SfTextInputLayout.LeadingView>
-                    <Image Source="search.png"
-                           WidthRequest="18"
-                           HeightRequest="18"
+                    <Label Text="&#128269;"
+                           FontSize="18"
+                           FontFamily="{StaticResource FontFamilyRegular}"
+                           TextColor="{StaticResource SearchIconColor}"
                            VerticalOptions="Center"
-                           Margin="0,5,0,0"
+                           Margin="0,3,0,0"
                            SemanticProperties.Description="Search notes" />
                 </syncfusionCore:SfTextInputLayout.LeadingView>
                 <syncfusionCore:SfTextInputLayout.HintLabelStyle>
