@@ -23,6 +23,7 @@ public partial class EditNoteViewModel : ViewModelBase
     private readonly INavigationService _navigation;
     private readonly Note? _existing;
     private readonly string? _listId;
+    private bool _suppressAutoSave;
 
     /// <summary>The note currently being edited, or <c>null</c> when
     /// creating a new note.</summary>
@@ -81,18 +82,19 @@ public partial class EditNoteViewModel : ViewModelBase
         _existing = existing;
         _listId = listId;
 
+        _suppressAutoSave = true;
         if (existing is not null)
         {
             IsExisting = true;
             Title = existing.Title ?? string.Empty;
             HasDueDate = existing.DueDate.HasValue;
             IsDueDatePickerVisible = HasDueDate;
-            DueDateSelection = existing.DueDate?.Date ?? DateTime.Today;
+            DueDateSelection = existing.DueDate ?? DateTime.Today;
             RepeatFrequency = existing.RepeatFrequency;
             IsRepeatPickerVisible = RepeatFrequency != NoteRepeatFrequency.Never;
             HasReminder = existing.ReminderDate.HasValue;
             IsReminderPickerVisible = HasReminder;
-            ReminderDateSelection = existing.ReminderDate?.Date ?? DateTime.Today;
+            ReminderDateSelection = existing.ReminderDate ?? DateTime.Today;
             ReminderTimeSelection = existing.ReminderDate?.TimeOfDay ?? new TimeSpan(9, 0, 0);
             var age = DateTime.Now - existing.CreatedAt;
             CreatedAgeText = age.TotalMinutes < 1 ? "Created just now" :
@@ -102,38 +104,68 @@ public partial class EditNoteViewModel : ViewModelBase
             OnPropertyChanged(nameof(CreatedAgeText));
             OnPropertyChanged(nameof(HasCreatedInfo));
         }
+        _suppressAutoSave = false;
     }
 
-    partial void OnTitleChanged(string value) => SaveCommand.NotifyCanExecuteChanged();
-    partial void OnHasDueDateChanged(bool value) => IsDueDatePickerVisible = value;
-    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value) => IsRepeatPickerVisible = value != NoteRepeatFrequency.Never;
-    partial void OnHasReminderChanged(bool value) => IsReminderPickerVisible = value;
-
-    [RelayCommand(CanExecute = nameof(CanSave))]
-    private async Task SaveAsync()
+    partial void OnTitleChanged(string value)
     {
-        var trimmed = (Title ?? string.Empty).Trim();
-        if (string.IsNullOrEmpty(trimmed)) return;
+        SaveCommand.NotifyCanExecuteChanged();
+        TriggerAutoSave();
+    }
+    partial void OnHasDueDateChanged(bool value)
+    {
+        IsDueDatePickerVisible = value;
+        TriggerAutoSave();
+    }
+    partial void OnDueDateSelectionChanged(DateTime value)
+    {
+        IsDueDatePickerVisible = false;
+        TriggerAutoSave();
+    }
+    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value)
+    {
+        IsRepeatPickerVisible = false;
+        TriggerAutoSave();
+    }
+    partial void OnHasReminderChanged(bool value)
+    {
+        IsReminderPickerVisible = value;
+        TriggerAutoSave();
+    }
+    partial void OnReminderDateSelectionChanged(DateTime value)
+    {
+        IsReminderPickerVisible = false;
+        TriggerAutoSave();
+    }
+    partial void OnReminderTimeSelectionChanged(TimeSpan value)
+    {
+        IsReminderPickerVisible = false;
+        TriggerAutoSave();
+    }
 
-        DateTime? dueDate = HasDueDate ? DueDateSelection.Date : null;
-        DateTime? reminderDate = HasReminder
+    private void TriggerAutoSave()
+    {
+        if (_suppressAutoSave || _existing is null)
+            return;
+
+        _ = SaveChangesAsync();
+    }
+
+    private async Task SaveChangesAsync()
+    {
+        if (_existing is null)
+            return;
+
+        var trimmed = (Title ?? string.Empty).Trim();
+        _suppressAutoSave = true;
+        _existing.Title = trimmed;
+        _existing.DueDate = HasDueDate ? DueDateSelection : null;
+        _existing.ReminderDate = HasReminder
             ? ReminderDateSelection.Date.Add(ReminderTimeSelection)
             : null;
-
-        if (_existing is null)
-        {
-            await _noteService.CreateAsync(trimmed, dueDate, reminderDate, listId: _listId, repeatFrequency: RepeatFrequency);
-        }
-        else
-        {
-            _existing.Title = trimmed;
-            _existing.DueDate = dueDate;
-            _existing.ReminderDate = reminderDate;
-            _existing.RepeatFrequency = RepeatFrequency;
-            await _noteService.UpdateAsync(_existing);
-        }
-
-        await _navigation.PopModalAsync(true);
+        _existing.RepeatFrequency = RepeatFrequency;
+        await _noteService.UpdateAsync(_existing);
+        _suppressAutoSave = false;
     }
 
     [RelayCommand]
@@ -159,5 +191,4 @@ public partial class EditNoteViewModel : ViewModelBase
         await _navigation.PopModalAsync(true);
     }
 
-    private bool CanSave() => !string.IsNullOrWhiteSpace(Title);
 }

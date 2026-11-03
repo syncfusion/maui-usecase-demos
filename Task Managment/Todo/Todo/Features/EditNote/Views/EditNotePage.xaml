@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:Todo.Features.EditNote.ViewModels"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="Todo.Features.EditNote.Views.EditNotePage"
              x:DataType="vm:EditNoteViewModel"
@@ -31,7 +32,8 @@
                            TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}"
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
-                                      Text="✕"
+                                      Text="&#xe5cd;"
+                                      FontFamily="MaterialIconRegular"
                                       WidthRequest="40"
                                       HeightRequest="40"
                                       Padding="0"
@@ -84,7 +86,7 @@
                                     <TapGestureRecognizer Command="{Binding ToggleDueDatePickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                    <Image Source="calendaricon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="18" TextColor="{StaticResource PrimaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="18" HeightRequest="18" />
                                     <Border Grid.Column="1"
                                             Padding="12,8"
                                             Stroke="{StaticResource ChipStrokeColor}"
@@ -98,8 +100,8 @@
                                     </Border>
                                 </Grid>
                             </Border>
-                            <picker:SfDatePicker IsVisible="{Binding IsDueDatePickerVisible}"
-                                                 SelectedDate="{Binding DueDateSelection, Mode=TwoWay}"
+                            <picker:SfDateTimePicker IsVisible="{Binding IsDueDatePickerVisible}"
+                                                 SelectedDateTime="{Binding DueDateSelection, Mode=TwoWay}"
                                                  HeightRequest="220" />
 
                             <Border Padding="0"
@@ -109,7 +111,7 @@
                                     <TapGestureRecognizer Command="{Binding ToggleRepeatPickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                    <Image Source="dateicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="18" TextColor="{StaticResource PrimaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="18" HeightRequest="18" />
                                     <Border Grid.Column="1"
                                             Padding="12,8"
                                             Stroke="{StaticResource ChipStrokeColor}"
@@ -137,7 +139,7 @@
                                     <TapGestureRecognizer Command="{Binding ToggleReminderPickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="28,*" ColumnSpacing="10" VerticalOptions="Center">
-                                    <Image Source="bellicon.png" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
+                                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="18" TextColor="{StaticResource PrimaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="18" HeightRequest="18" />
                                     <Border Grid.Column="1"
                                             Padding="12,8"
                                             Stroke="{StaticResource ChipStrokeColor}"
@@ -152,7 +154,7 @@
                                 </Grid>
                             </Border>
                             <VerticalStackLayout IsVisible="{Binding IsReminderPickerVisible}" Spacing="6">
-                                <picker:SfDatePicker SelectedDate="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
+                                <picker:SfDateTimePicker SelectedDateTime="{Binding ReminderDateSelection, Mode=TwoWay}" HeightRequest="220" />
                                 <TimePicker Time="{Binding ReminderTimeSelection, Mode=TwoWay}"
                                             BackgroundColor="Transparent"
                                             TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
@@ -173,7 +175,8 @@
                            TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
-                                      Text="🗑"
+                                      Text="&#xe872;"
+                                      FontFamily="MaterialIconRegular"
                                       WidthRequest="40"
                                       HeightRequest="40"
                                       Padding="0"

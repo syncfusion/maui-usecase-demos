@@ -49,10 +49,10 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="12">
-                    <Image Source="notesicon.png"
+                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular"
                            WidthRequest="32"
                            HeightRequest="32"
-                           Aspect="AspectFit"
+                          
                            HorizontalOptions="Center" />
                     <Label Text="Type a word or phrase to search your notes."
                            FontSize="16"
@@ -64,10 +64,10 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="8">
-                    <Image Source="notesicon.png"
+                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular"
                            WidthRequest="32"
                            HeightRequest="32"
-                           Aspect="AspectFit"
+                          
                            HorizontalOptions="Center" />
                     <Label Text="{Binding NoResultsMessage}"
                            FontSize="16"
@@ -139,16 +139,16 @@
                                                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Image Source="calendaricon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="14" TextColor="#0D7D12" WidthRequest="14" HeightRequest="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
-                                                        <Image Source="dateicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="14" TextColor="#2667A3" WidthRequest="14" HeightRequest="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Image Source="bellicon.png" WidthRequest="14" HeightRequest="14" Aspect="AspectFit" />
+                                                        <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="14" TextColor="#7D5294" WidthRequest="14" HeightRequest="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
                                                     </HorizontalStackLayout>
                                                 </HorizontalStackLayout>

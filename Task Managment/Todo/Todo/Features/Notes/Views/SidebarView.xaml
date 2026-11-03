@@ -88,8 +88,8 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists, Converter={StaticResource InvertedBoolConverter}}">
-                    <Image Source="notesicon.png" WidthRequest="40" HeightRequest="40"
-                           Aspect="AspectFit" HorizontalOptions="Center" />
+                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="40" TextColor="{StaticResource MyNotesColor}" WidthRequest="40" HeightRequest="40" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                           HorizontalOptions="Center" />
                     <Label Text="No list was found. Please create a to-do list."
                            Style="{StaticResource EmptyStateMessageStyle}"
                            HorizontalTextAlignment="Center" />
@@ -118,8 +118,8 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
-                                     <Image Grid.Column="0" Source="notesicon.png" WidthRequest="20"
-                                         HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center" />
+                                     <Label Grid.Column="0" Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="20" TextColor="{StaticResource MyNotesColor}" WidthRequest="20" HeightRequest="20" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                         HeightRequest="20" VerticalOptions="Center" />
                                     <Label Grid.Column="1" Text="{Binding Name}"
                                            Style="{StaticResource SidebarItemLabelStyle}"
                                            LineBreakMode="TailTruncation"

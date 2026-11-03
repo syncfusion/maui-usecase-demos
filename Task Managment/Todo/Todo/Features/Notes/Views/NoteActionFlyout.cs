@@ -93,15 +93,15 @@ public sealed class NoteActionFlyout : ContentView
         _actionsLayout = new VerticalStackLayout { Spacing = 0 };
         _destinationsLayout = new VerticalStackLayout { Spacing = 0, IsVisible = false };
 
-        _completionButton = CreateButton("✓   Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion));
+        _completionButton = CreateButton("   Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion));
         _actionsLayout.Children.Add(_completionButton);
-        _actionsLayout.Children.Add(CreateButton("✎   Edit note", () => RaiseAction(NoteActionKind.Edit)));
-        _actionsLayout.Children.Add(CreateButton("⇢   Move notes to", ShowDestinations));
+        _actionsLayout.Children.Add(CreateButton("   Edit note", () => RaiseAction(NoteActionKind.Edit)));
+        _actionsLayout.Children.Add(CreateButton("   Move notes to", ShowDestinations));
         _restoreButton = CreateButton("↺   Restore note", () => RaiseAction(NoteActionKind.Restore));
         _actionsLayout.Children.Add(_restoreButton);
         _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 6), Color = Color.FromArgb("#ECE8F1") };
         _actionsLayout.Children.Add(_deleteSeparator);
-        _deleteButton = CreateButton("🗑   Delete permanently", () => RaiseAction(NoteActionKind.DeletePermanently), destructive: true);
+        _deleteButton = CreateButton("   Delete permanently", () => RaiseAction(NoteActionKind.DeletePermanently), destructive: true);
         _actionsLayout.Children.Add(_deleteButton);
 
         var stage = new Grid();
