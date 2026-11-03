@@ -384,11 +384,11 @@ public sealed class ListOptionsFlyout : ContentView
             HorizontalTextAlignment = TextAlignment.Start,
             CornerRadius = 0,
             Command = new Command(action),
-            Style = (Style?)Application.Current?.Resources[(selected ? "AL_SelectedItemButton" : "TextButtonStyle")]
+            Style = (Style?)Application.Current?.Resources[(selected ? "AL_SelectedInteractiveButton" : "AL_InteractiveButton")]
         };
         button.SetAppThemeColor(SfButton.TextColorProperty,
-            destructive ? Color.FromArgb("#C62828") : Color.FromArgb("#29272F"),
-            destructive ? Color.FromArgb("#FF6B6B") : Color.FromArgb("#F5F3F7"));
+            destructive ? Color.FromArgb("#C62828") : Color.White,
+            destructive ? Color.FromArgb("#FF6B6B") : Color.White);
         SemanticProperties.SetDescription(button, text);
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });

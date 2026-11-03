@@ -72,9 +72,10 @@
                                               WidthRequest="40"
                                               HeightRequest="40"
                                               Padding="0"
-                                              BackgroundColor="Transparent"
+                                              Background="Transparent"
                                               FontSize="18"
-                                              TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}" />
+                                              TextColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}"
+                                              Command="{Binding ToggleImportantCommand}" />
                         </Grid>
 
                         <VerticalStackLayout Spacing="6">

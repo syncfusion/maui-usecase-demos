@@ -26,17 +26,20 @@
             <conv:ObjectToCategoryConverter x:Key="ObjectToCategoryConverter" />
             <conv:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBoolConverter" />
 
-            <Style x:Key="AL_ApplyButton" TargetType="buttons:SfButton">
+            <Style x:Key="AL_InteractiveButton" TargetType="buttons:SfButton">
                 <Setter Property="Background" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
                 <Setter Property="TextColor" Value="White" />
                 <Setter Property="EnableRippleEffect" Value="True" />
             </Style>
 
-            <Style x:Key="AL_SelectedItemButton" TargetType="buttons:SfButton">
+            <Style x:Key="AL_SelectedInteractiveButton" TargetType="buttons:SfButton">
                 <Setter Property="Background" Value="White" />
                 <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
                 <Setter Property="EnableRippleEffect" Value="True" />
             </Style>
+
+            <Style x:Key="AL_ApplyButton" TargetType="buttons:SfButton" BasedOn="{StaticResource AL_InteractiveButton}" />
+            <Style x:Key="AL_SelectedItemButton" TargetType="buttons:SfButton" BasedOn="{StaticResource AL_SelectedInteractiveButton}" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

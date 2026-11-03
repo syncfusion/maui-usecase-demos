@@ -147,11 +147,12 @@ public sealed class NoteActionFlyout : ContentView
             HorizontalOptions = LayoutOptions.Fill,
             HorizontalTextAlignment = TextAlignment.Start,
             CornerRadius = 8,
+            Style = (Style?)Application.Current?.Resources[destructive ? "TextButtonStyle" : "AL_InteractiveButton"],
             Command = new Command(action)
         };
         button.SetAppThemeColor(SfButton.TextColorProperty,
-            destructive ? Color.FromArgb("#D32F2F") : Color.FromArgb("#29272F"),
-            destructive ? Color.FromArgb("#FF8A8A") : Color.FromArgb("#F5F3F7"));
+            destructive ? Color.FromArgb("#D32F2F") : Colors.White,
+            destructive ? Color.FromArgb("#FF8A8A") : Colors.White);
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
         var pointerOver = new VisualState { Name = "PointerOver" };

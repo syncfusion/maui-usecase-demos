@@ -156,6 +156,13 @@ public partial class EditNoteViewModel : ViewModelBase
     private void ToggleReminderPicker() => IsReminderPickerVisible = !IsReminderPickerVisible;
 
     [RelayCommand]
+    private async Task ToggleImportantAsync()
+    {
+        if (_existing is null) return;
+        await _noteService.ToggleImportantAsync(_existing.Id);
+    }
+
+    [RelayCommand]
     private async Task DeleteAsync()
     {
         if (_existing is null) return;

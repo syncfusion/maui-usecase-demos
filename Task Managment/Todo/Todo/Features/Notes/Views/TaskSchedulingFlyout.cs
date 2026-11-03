@@ -251,16 +251,17 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     private static SfButton CreateMenuButton(string text, bool selected, Action action) => new()
     {
-        Text = selected ? $"{text}        ✓" : text,
+        Text = text,
         HeightRequest = 40,
         HorizontalOptions = LayoutOptions.Fill,
         HorizontalTextAlignment = TextAlignment.Start,
-        BackgroundColor = selected ? Color.FromArgb("#F0ECFA") : Colors.Transparent,
-        TextColor = selected ? Color.FromArgb("#5C4EAE") : Color.FromArgb("#29272F"),
+        Background = Colors.Transparent,
+        TextColor = selected ? Color.FromArgb("#5C4EAE") : Colors.White,
         FontSize = 14,
         CornerRadius = 8,
         Margin = new Thickness(0, 1),
         Padding = new Thickness(12, 0),
+        Style = (Style?)Application.Current?.Resources[(selected ? "AL_SelectedInteractiveButton" : "AL_InteractiveButton")],
         Command = new Command(action)
     };
 
@@ -269,9 +270,10 @@ public sealed class TaskSchedulingFlyout : ContentView
         Text = text,
         MinimumWidthRequest = 72,
         HeightRequest = 36,
-        BackgroundColor = Colors.Transparent,
-        TextColor = Color.FromArgb("#6F66CC"),
+        Background = Colors.Transparent,
+        TextColor = Colors.White,
         FontSize = 13,
+        Style = (Style?)Application.Current?.Resources["AL_InteractiveButton"],
         Command = new Command(action)
     };
 
@@ -282,9 +284,10 @@ public sealed class TaskSchedulingFlyout : ContentView
         WidthRequest = 40,
         HeightRequest = 40,
         Padding = 0,
-        BackgroundColor = Colors.Transparent,
+        Background = Colors.Transparent,
         TextColor = Color.FromArgb("#6F66CC"),
         FontSize = 18,
+        Style = (Style?)Application.Current?.Resources["TextButtonStyle"],
         Command = new Command(action)
     };
 
