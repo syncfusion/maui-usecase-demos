@@ -5,7 +5,7 @@
 - .NET 10 MAUI, same target frameworks as the other samples in this repository.
 - CommunityToolkit.Mvvm 8.4.0 for `ObservableObject`, `[ObservableProperty]`, and `[RelayCommand]`.
 - Syncfusion packages, version 33.2.15 to match the repository: Core (SfAvatarView, SfBadgeView), TreeView, ListView, RichTextEditor, Inputs (SfAutocomplete), Buttons (SfChipGroup), Popup. Confirm each package name in the NuGet gallery before adding it.
-- `HttpClient` for the single AI call. No other libraries.
+- No other libraries. The sample makes no network calls.
 
 ## Principles
 
@@ -37,7 +37,6 @@ FluentMail/
       ArchiveViewModel.cs
       DeletedItemsViewModel.cs
       ComposeViewModel.cs
-      AiAssistantViewModel.cs
     Views/
       MailWorkspacePage.xaml
       DraftWorkspacePage.xaml
@@ -46,11 +45,7 @@ FluentMail/
       ComposePage.xaml
       Controls/              ContentViews reused across pages
         StateView.xaml       loading, empty, error presentation
-        AiMenuPopup.xaml
         SnackbarPopup.xaml
-    Services/
-      AiClient.cs            OpenAI request, the only I/O
-      AiSettings.cs          placeholder key and model name
     Resources/
       Styles/Colors.xaml  Styles.xaml     Fluent tokens, light and dark
       Fonts/  Images/
@@ -71,14 +66,14 @@ Commands change `Mailbox` collections. Collections raise change notifications. V
 
 | Control | Bound to |
 |---|---|
-| SfTreeView | `Folders` (`ObservableCollection<FolderNode>`), `ChildPropertyName="Children"`, `SelectedItem` command |
+| SfTreeView | `Folders` (`ObservableCollection<FolderNode>`), `ChildPropertyName="Children"`, `SelectFolderCommand` |
 | SfListView (messages) | `VisibleMessages`, `SelectedMessage` |
 | SfBadgeView | `FolderNode.Count` computed from `Mailbox` |
 | SfAvatarView | `Contact.Initials`, `Contact.Color` |
 | SfChipGroup | `Recipients`, `QuickFilters`, `Tags` |
 | SfAutocomplete | `ContactSuggestions`, `SearchText`, `SelectedContact` |
 | SfRichTextEditor | `BodyHtml` (two-way via `HtmlText`) |
-| SfPopup | `IsMenuOpen`, `IsSnackbarOpen`, `IsAiOpen` booleans |
+| SfPopup | `IsMenuOpen`, `IsFilterOpen`, `IsSnackbarOpen` booleans |
 
 ## Responsive design
 
@@ -96,18 +91,23 @@ Commands change `Mailbox` collections. Collections raise change notifications. V
 
 Each ViewModel exposes `ViewState` (`Loading`, `Content`, `Empty`, `Error`). `StateView` shows the matching visual. Loading simulates a short delay (400 ms) so the loading state is visible and testable.
 
-## AI design
+## Draft save status
 
-- `AiClient.RunAsync(action, text, cancellationToken)` posts to `https://api.openai.com/v1/chat/completions` with a system prompt per action.
-- `AiSettings.IsConfigured` is false when the key is empty or equals the placeholder.
-- `AiAssistantViewModel` exposes `RunCommand(action)`, `Result`, `ViewState`, `ReplaceCommand`, `DiscardCommand`.
-- Key stays in source as a placeholder only. The README tells users to edit it locally and not to commit it.
+`DraftWorkspaceViewModel` holds a `SaveStatus` enum (`Saved`, `Saving`, `Unsaved`). Editing the subject, recipients, or body sets `Unsaved` and restarts a short debounce timer. When it fires, the status becomes `Saving`, the draft is saved to `Mailbox`, and the status becomes `Saved`. The editor text is bound two-way to `BodyHtml`, so no code-behind syncs it.
+
+## Commands
+
+Folder selection, message selection, draft selection and Resume, filter, Send, Restore, and Empty trash are all `[RelayCommand]` methods. Pages do not use event handlers for these.
+
+## Performance
+
+Each SfListView uses one `DataTemplate` with no per-item converters that allocate. Collections are built once in `MockData`. Filtering replaces the visible collection contents without recreating items.
 
 ## Error handling
 
-Validate only at boundaries: Send inputs and the AI response. Inside the app, trust the data.
+Validate only at the boundary: Send inputs. Inside the app, trust the data.
 
 ## Testing approach
 
-- ViewModel unit tests in a small test project are optional. If added, cover filter logic, Restore, and Send validation, because they have no UI dependency.
+- ViewModel unit tests in a small test project are optional. If added, cover filter logic, Restore, Send validation, and folder counts, because they have no UI dependency.
 - Manual checks use the checklist in [tasks.md](tasks.md).

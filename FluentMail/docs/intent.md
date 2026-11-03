@@ -19,14 +19,14 @@ A .NET MAUI developer who is evaluating Syncfusion controls. They open the sampl
 
 1. **Showcase, not product.** The sample teaches. It does not try to be a mail client.
 2. **Syncfusion controls first.** Use a Syncfusion control wherever one exists. Use plain MAUI layouts (Grid, VerticalStackLayout, Border, Label) only to arrange them.
-3. **Local and self-contained.** All data is mock data in memory. There is no network except the optional AI call.
+3. **Local and self-contained.** All data is mock data in memory. There are no network calls.
 4. **Clarity over abstraction.** Each page has one ViewModel. No dependency injection container, no app-wide state, no service layers.
 5. **No fake UI.** If a control is visible, its action works. If a feature cannot work, leave it out.
-6. **No secrets.** The AI key is a placeholder. The sample shows a setup message until the user adds a key.
+6. **Measurable completion.** The acceptance criteria in spec.md section 10 are the review checklist. The sample is done only when every one passes.
 
 ## Non-goals
 
-Authentication, user accounts, cloud sync, backend APIs, remote databases, splash screens, onboarding, dependency injection, app-wide state management.
+Authentication, user accounts, cloud sync, backend APIs, remote databases, AI features, splash screens, onboarding, dependency injection, app-wide state management.
 
 ## Controls demonstrated
 
@@ -39,7 +39,7 @@ Authentication, user accounts, cloud sync, backend APIs, remote databases, splas
 | SfChipGroup | Recipient chips, tags, quick filters, status |
 | SfAvatarView | Sender avatars and the user profile |
 | SfBadgeView | Unread, draft and folder counts |
-| SfPopup | Context menu, filter menu, AI menu, send confirmation snackbar |
+| SfPopup | Context menus, filter menu, confirmation, snackbar |
 
 ## Related documents
 
