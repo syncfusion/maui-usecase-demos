@@ -1,12 +1,66 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.TreeView;assembly=Syncfusion.Maui.TreeView"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:vm="clr-namespace:FluentMail.ViewModels"
              x:Class="FluentMail.Views.MailWorkspacePage"
+             x:DataType="vm:MailWorkspaceViewModel"
              Title="Mail">
-    <Grid Padding="24">
-        <VerticalStackLayout Spacing="12" HorizontalOptions="Center" VerticalOptions="Center">
-            <Label Text="Fluent Mail" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" />
-            <Label Text="M0 foundation is in place. The full mail workspace will be added in the next milestone." HorizontalTextAlignment="Center" />
+    <ContentPage.BindingContext>
+        <vm:MailWorkspaceViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="280,*,1.35*" Padding="16" ColumnSpacing="16">
+        <VerticalStackLayout Grid.ColumnSpan="3" Spacing="4">
+            <Label Text="Mail workspace" FontSize="24" FontAttributes="Bold" />
+            <Label Text="Mailbox navigation, message list, and reading pane." TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
         </VerticalStackLayout>
+
+        <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
+            <syncfusion:SfTreeView ItemsSource="{Binding Folders}" SelectionMode="Single" ItemHeight="44" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
+                <syncfusion:SfTreeView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="12,8" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding Name}" />
+                            <Label Grid.Column="1" Text="{Binding Count}" />
+                        </Grid>
+                    </DataTemplate>
+                </syncfusion:SfTreeView.ItemTemplate>
+            </syncfusion:SfTreeView>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
+            <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ItemSpacing="8" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}">
+                <listview:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="12" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Sender}" FontAttributes="Bold" />
+                                <Label Text="{Binding Subject}" />
+                                <Label Text="{Binding Preview}" FontSize="12" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </listview:SfListView.ItemTemplate>
+            </listview:SfListView>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="2" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
+            <ScrollView>
+                <VerticalStackLayout Padding="16" Spacing="10">
+                    <Label Text="{Binding SelectedMessage.Sender}" FontSize="20" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedMessage.SenderEmail}" />
+                    <Label Text="Recipients" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedMessage.Recipients}" />
+                    <Label Text="CC" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedMessage.Cc}" />
+                    <Label Text="Subject" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedMessage.Subject}" />
+                    <Label Text="Body" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedMessage.Body}" LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
     </Grid>
 </ContentPage>
