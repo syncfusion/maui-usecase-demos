@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FluentMail.Views.MailWorkspacePage"
+             Title="Mail">
+    <Grid Padding="24">
+        <VerticalStackLayout Spacing="12" HorizontalOptions="Center" VerticalOptions="Center">
+            <Label Text="Fluent Mail" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            <Label Text="M0 foundation is in place. The full mail workspace will be added in the next milestone." HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
