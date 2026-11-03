@@ -24,10 +24,10 @@
                 <Border Grid.Column="0" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Now Serving" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="Now Serving" FontSize="12" TextColor="#64748B" VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="confirmation_number" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" />
                         </Grid>
-                        <Label Grid.Row="1" Text="{Binding NowServingTokenId}" FontSize="28" FontAttributes="Bold" TextColor="#183E91" />
+                        <Label Grid.Row="1" Text="{Binding NowServingTokenId}" FontSize="30" FontAttributes="Bold" TextColor="#183E91" />
                         <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
                             <Label Text="{Binding NowServingCounterName}" FontSize="10" TextColor="#64748B" VerticalOptions="Center" />
                             <Border Grid.Column="1" Padding="8,4" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 12">
@@ -39,11 +39,11 @@
                 <Border Grid.Column="1" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Waiting Tokens" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="Waiting Tokens" FontSize="12" TextColor="#64748B" VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="show_chart" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding WaitingTokenCount}" FontSize="28" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="{Binding WaitingTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
                             <Label Grid.Column="1" Text="Tokens" FontSize="10" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
                         <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
@@ -55,11 +55,11 @@
                 <Border Grid.Column="2" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Completed Tokens" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="Completed Tokens" FontSize="12" TextColor="#64748B" VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="check_circle" FontFamily="MaterialIcons" FontSize="16" TextColor="#159B85" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding CompletedTokenCount}" FontSize="28" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="{Binding CompletedTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
                             <Label Grid.Column="1" Text="Tokens" FontSize="10" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
                         <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
@@ -71,10 +71,10 @@
                 <Border Grid.Column="3" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Average Wait" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="Average Wait" FontSize="12" TextColor="#64748B" VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="schedule" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" />
                         </Grid>
-                        <Label Grid.Row="1" Text="{Binding AverageWaitText}" FontSize="28" FontAttributes="Bold" TextColor="#0F172A" />
+                        <Label Grid.Row="1" Text="{Binding AverageWaitText}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
                         <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
                             <Label Text="Within SLA" FontSize="10" TextColor="#64748B" />
                             <Label Grid.Column="1" Text="Queue estimate" FontSize="9" TextColor="#64748B" />
@@ -93,8 +93,8 @@
                         <VerticalStackLayout Spacing="16">
                             <Grid ColumnDefinitions="*,Auto">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Queue Load" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
-                                    <Label Text="Current load capacity metric" FontSize="10" TextColor="#64748B" />
+                                    <Label Text="Queue Load" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Text="Current load capacity metric" FontSize="11" TextColor="#64748B" />
                                 </VerticalStackLayout>
                                 <Border Grid.Column="1" Padding="9,5" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 12" VerticalOptions="Start">
                                     <Label Text="Optimal" FontSize="9" FontAttributes="Bold" TextColor="#159B85" />
@@ -121,7 +121,7 @@
                                             </gauge:RadialAxis>
                                         </gauge:SfRadialGauge.Axes>
                                     </gauge:SfRadialGauge>
-                                    <VerticalStackLayout Spacing="0" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <VerticalStackLayout Spacing="0" HorizontalOptions="Center" VerticalOptions="Center" ZIndex="1">
                                         <Label Text="{Binding QueueLoad, StringFormat='{0}%'}"
                                                FontSize="17"
                                                FontAttributes="Bold"
@@ -148,8 +148,8 @@
                         <VerticalStackLayout Spacing="12">
                             <Grid ColumnDefinitions="*,Auto">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Counter Status" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
-                                    <Label Text="Local terminal assignment" FontSize="10" TextColor="#64748B" />
+                                    <Label Text="Counter Status" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Text="Local terminal assignment" FontSize="11" TextColor="#64748B" />
                                 </VerticalStackLayout>
                                 <Border Grid.Column="1" Padding="9,5" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 12" VerticalOptions="Center">
                                     <Label Text="{Binding OnlineCounterCount, StringFormat='{0} Desks Online'}" FontSize="9" FontAttributes="Bold" TextColor="#183E91" />
@@ -164,6 +164,18 @@
                                     <listview:SfListView.ItemTemplate>
                                         <DataTemplate x:DataType="models:QueueCounterSummary">
                                             <Border Margin="0,3" Padding="8,7" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+                                                        <VisualState x:Name="Normal" />
+                                                        <VisualState x:Name="PointerOver">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor" Value="#F7F9FD" />
+                                                                <Setter Property="Stroke" Value="#183E91" />
+                                                                <Setter Property="StrokeThickness" Value="1.2" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
                                                 <Grid ColumnDefinitions="30,*,Auto" ColumnSpacing="10">
                                                     <Border WidthRequest="28" HeightRequest="28" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 7" VerticalOptions="Center">
                                                         <Label Text="{Binding CounterNumber}" FontSize="10" FontAttributes="Bold" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
@@ -206,24 +218,25 @@
                     <VerticalStackLayout Spacing="12">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                             <VerticalStackLayout Spacing="4">
-                            <Label Text="Upcoming Tokens" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Text="Next in line across all counters" FontSize="10" TextColor="#64748B" />
+                            <Label Text="Upcoming Tokens" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="Next in line across all counters" FontSize="11" TextColor="#64748B" />
                             </VerticalStackLayout>
                         <Border Grid.Column="1" Padding="3" BackgroundColor="#F8FAFC" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 9" VerticalOptions="Center">
                             <buttons:SfSegmentedControl x:Name="UpcomingFilterControl"
-                                                       WidthRequest="170"
-                                                       SegmentWidth="60"
-                                                       SegmentHeight="30"
+                                                       WidthRequest="155"
+                                                       SegmentWidth="50"
+                                                       SegmentHeight="26"
                                                        StrokeThickness="0"
                                                        ShowSeparator="False"
-                                                       SegmentBackground="Transparent">
+                                                       SegmentBackground="Transparent"
+>
                                 <buttons:SfSegmentedControl.TextStyle>
                                     <buttons:SegmentTextStyle FontSize="10" TextColor="#64748B" />
                                 </buttons:SfSegmentedControl.TextStyle>
                             <buttons:SfSegmentedControl.SelectionIndicatorSettings>
                                 <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
-                                                                    Background="White"
-                                                                    TextColor="#183E91" />
+                                                                    Background="#183E91"
+                                                                    TextColor="White" />
                             </buttons:SfSegmentedControl.SelectionIndicatorSettings>
                             </buttons:SfSegmentedControl>
                         </Border>
@@ -237,6 +250,18 @@
                             <listview:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:QueueToken">
                                     <Border Margin="0,4" Padding="10,8" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal" />
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#F7F9FD" />
+                                                        <Setter Property="Stroke" Value="#183E91" />
+                                                        <Setter Property="StrokeThickness" Value="1.2" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
                                         <Grid ColumnDefinitions="56,1,*,Auto,48" ColumnSpacing="10">
                                             <Label Text="{Binding Id}" FontSize="12" FontAttributes="Bold" TextColor="#183E91" VerticalOptions="Center" />
                                             <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="32" Color="#E2E8F0" VerticalOptions="Center" />

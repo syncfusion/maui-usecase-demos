@@ -151,6 +151,8 @@ public partial class QueueSessionViewModel : ObservableObject
     public string ActiveHeaderTitle =>
         ActiveHeaderTab == "Overview" ? "Queue Overview" : "Token Directory";
 
+    public string CurrentDateText => DateTime.Now.ToString("dddd, MMM d");
+
     public int HeaderTabIndex
     {
         get => ActiveHeaderTab == "Overview" ? 0 : 1;

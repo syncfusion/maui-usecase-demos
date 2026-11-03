@@ -34,11 +34,40 @@ public partial class MainPage : ContentPage
         InitializeComponent();
         _shellViewModel = new AppShellViewModel(_viewModel);
         BindingContext = _shellViewModel;
-        HeaderTabs.ItemsSource = new[] { "Overview", "Manage" };
+        HeaderTabs.ItemsSource = BuildHeaderTabItems();
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         SizeChanged += OnPageSizeChanged;
         UpdateShellPresentation();
         RenderPage();
+    }
+
+    private static IReadOnlyList<SfSegmentItem> BuildHeaderTabItems()
+    {
+        return new[]
+        {
+            new SfSegmentItem
+            {
+                Text = "Overview",
+                ImageSource = new FontImageSource
+                {
+                    Glyph = "dashboard",
+                    FontFamily = "MaterialIcons",
+                    Color = Color.FromArgb("#64748B"),
+                    Size = 15
+                }
+            },
+            new SfSegmentItem
+            {
+                Text = "Manage",
+                ImageSource = new FontImageSource
+                {
+                    Glyph = "tune",
+                    FontFamily = "MaterialIcons",
+                    Color = Color.FromArgb("#64748B"),
+                    Size = 15
+                }
+            }
+        };
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

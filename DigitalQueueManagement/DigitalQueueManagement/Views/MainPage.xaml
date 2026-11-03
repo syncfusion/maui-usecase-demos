@@ -15,9 +15,9 @@
               Grid.Row="0"
               BackgroundColor="White">
             <Grid x:Name="HeaderLayout"
-                  ColumnDefinitions="*,Auto,*"
+                  ColumnDefinitions="Auto,*,Auto"
                   MaximumWidthRequest="1440"
-                  HorizontalOptions="Start"
+                  HorizontalOptions="Fill"
                   Padding="28,0">
                 <Grid Grid.Column="0"
                       ColumnDefinitions="40,*"
@@ -49,7 +49,7 @@
                                    FontSize="12"
                                    TextColor="#64748B"
                                    VerticalTextAlignment="Center" />
-                            <Label Text="Monday, Oct 24"
+                            <Label Text="{Binding QueueSession.CurrentDateText}"
                                    FontSize="11"
                                    TextColor="#64748B" />
                         </HorizontalStackLayout>
@@ -74,8 +74,8 @@
                         </buttons:SfSegmentedControl.TextStyle>
                         <buttons:SfSegmentedControl.SelectionIndicatorSettings>
                             <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
-                                                                Background="White"
-                                                                TextColor="#183E91" />
+                                                                Background="#183E91"
+                                                                TextColor="White" />
                         </buttons:SfSegmentedControl.SelectionIndicatorSettings>
                     </buttons:SfSegmentedControl>
                 </Border>
@@ -107,7 +107,7 @@
                        FontAttributes="Bold"
                        TextColor="#0F172A" />
                 <Label x:Name="MobileHeaderDate"
-                       Text="Monday, Oct 24"
+                       Text="{Binding QueueSession.CurrentDateText}"
                        FontSize="12"
                        TextColor="#475569" />
             </VerticalStackLayout>
@@ -134,7 +134,7 @@
         </Grid>
         <ContentView Grid.Row="1"
                      x:Name="PageHost"
-                     HorizontalOptions="Start"
+                     HorizontalOptions="Fill"
                      MaximumWidthRequest="1440" />
         <Grid x:Name="MobileBottomNavigation"
               Grid.Row="2"
