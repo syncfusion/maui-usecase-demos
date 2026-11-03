@@ -93,6 +93,9 @@ public partial class MenuBarControl : ContentView
             AutomationId = "menu_root_" + root.Id,
         };
 
+        // PopupStyle: SfPopup's default CornerRadius is 28, which wrapped the flyout in a
+        // large circular-cornered panel. The design uses ~2px sharp corners on a white panel,
+        // so override it here (the inner Border below is the visible surface).
         var popup = new Syncfusion.Maui.Popup.SfPopup
         {
             ContentTemplate = new DataTemplate(() => BuildFlyoutContent(root)),
@@ -101,6 +104,16 @@ public partial class MenuBarControl : ContentView
             ShowCloseButton = false,
             StaysOpen = false,
             OverlayMode = Syncfusion.Maui.Popup.PopupOverlayMode.Transparent,
+            // Let the panel size to the content instead of SfPopup's default 313px width —
+            // this keeps File/Edit/View/Arrange/Window at a narrow desktop-flyout width.
+            AutoSizeMode = Syncfusion.Maui.Popup.PopupAutoSizeMode.Width,
+            AutoSizeTarget = Syncfusion.Maui.Popup.PopupAutoSizeTarget.Content,
+            PopupStyle = new Syncfusion.Maui.Popup.PopupStyle
+            {
+                CornerRadius = new CornerRadius(2),
+                PopupBackground = new SolidColorBrush(Colors.Transparent),
+                HasShadow = false,
+            },
         };
 
         // Active-root highlight: swap to the white-pill style while the flyout is open.
@@ -119,15 +132,17 @@ public partial class MenuBarControl : ContentView
 
     private View BuildFlyoutContent(MenuCommandItem root)
     {
-        var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(4, 6, 4, 6) };
+        var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(0, 4, 0, 4) };
         AppendRows(stack, root.Children, indent: 0, isTopLevel: true);
+        // The SfPopup panel is transparent (see BuildRootButton), so this Border is the actual
+        // white flyout surface. ~2px corners + a thin border + soft shadow, per the design.
         var border = new Border
         {
             Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
             StrokeThickness = 1,
-            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 2 },
             BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
-            Shadow = new Shadow { Radius = 8, Offset = new Microsoft.Maui.Graphics.Point(0, 4), Opacity = 0.18f },
+            Shadow = new Shadow { Radius = 6, Offset = new Microsoft.Maui.Graphics.Point(0, 3), Opacity = 0.16f },
             Content = stack,
         };
         return border;
@@ -162,36 +177,46 @@ public partial class MenuBarControl : ContentView
             };
         }
 
-        var grid = new Grid
+        var row = new Grid
         {
             Style = (Style)Application.Current!.Resources["MenuFlyoutRowStyle"],
-            Padding = new Thickness(8 + (indent * 16), 0, 8, 0),
+            // No padding here — the full-width Button beneath (see below) must span the whole
+            // row so the hover/pressed highlight is edge-to-edge. Text indentation is applied
+            // to the labels directly.
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
-                new ColumnDefinition { Width = GridLength.Auto },   // icon
-                new ColumnDefinition { Width = GridLength.Auto },   // check
+                new ColumnDefinition { Width = GridLength.Auto },   // check mark
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // label
                 new ColumnDefinition { Width = GridLength.Auto },   // shortcut
             }),
         };
 
-        var icon = new Label
+        // Interaction + visual-state host. A Button is the only element whose visual-state
+        // manager reliably fires the pressed/touch overlay on Android in this MAUI build, so it
+        // fills the row and supplies the hover/pressed/selected background (MenuRowHitAreaStyle).
+        // The text is empty and it is transparent at rest; the VSM states paint the fill.
+        if (item.IsEnabled)
         {
-            Text = IconGlyphFor(item.Id),
-            FontSize = 13,
-            TextColor = TextSecondary,
-            WidthRequest = 16,
-            HorizontalTextAlignment = TextAlignment.Center,
-            VerticalTextAlignment = TextAlignment.Center,
-        };
+            var hitArea = new Button
+            {
+                Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+                Command = new Command(() => MenuCommand?.Execute(item.Id)),
+            };
+            Grid.SetColumnSpan(hitArea, 3);
+            row.Children.Add(hitArea);
+        }
+
+        var indentPx = 12 + (indent * 16);
         var checkGlyph = new Label
         {
             Text = (item.IsCheckable && IsCheckedSafe(item.Id)) ? "\u2713" : string.Empty,
             FontSize = 13,
             TextColor = CheckBlue,
-            WidthRequest = 16,
+            WidthRequest = 18,
+            Margin = new Thickness(indentPx, 0, 0, 0),
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
+            InputTransparent = true,   // let the touch fall through to the Button beneath
         };
         var label = new Label
         {
@@ -200,37 +225,27 @@ public partial class MenuBarControl : ContentView
             TextColor = item.IsEnabled ? Services.ResourceLookup.ResourceColor("TextPrimary") : TextSecondary,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
+            InputTransparent = true,
         };
         var shortcut = new Label
         {
             Text = item.GestureKey,
             FontSize = 11,
             TextColor = TextSecondary,
+            Margin = new Thickness(24, 0, 12, 0),
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
+            InputTransparent = true,
         };
 
-        grid.Children.Add(icon);
-        grid.Children.Add(checkGlyph);
-        grid.Children.Add(label);
-        grid.Children.Add(shortcut);
-        Grid.SetColumn(icon, 0);
-        Grid.SetColumn(checkGlyph, 1);
-        Grid.SetColumn(label, 2);
-        Grid.SetColumn(shortcut, 3);
-        grid.Opacity = item.IsEnabled ? 1 : 0.5;
-
-        if (item.IsEnabled)
-        {
-            // This MAUI build has no Pointer/Press events on a Grid, so leaf rows are plain
-            // tap targets. The root menu buttons + toolbar buttons carry the full visual-state
-            // feedback (hover/pressed/selected) via their Button VSM.
-            grid.GestureRecognizers.Add(new TapGestureRecognizer
-            {
-                Command = new Command(() => MenuCommand?.Execute(item.Id)),
-            });
-        }
-        return grid;
+        row.Children.Add(checkGlyph);
+        row.Children.Add(label);
+        row.Children.Add(shortcut);
+        Grid.SetColumn(checkGlyph, 0);
+        Grid.SetColumn(label, 1);
+        Grid.SetColumn(shortcut, 2);
+        row.Opacity = item.IsEnabled ? 1 : 0.5;
+        return row;
     }
 
     private View BuildSubmenuHeaderRow(MenuCommandItem item, int indent)
@@ -271,56 +286,4 @@ public partial class MenuBarControl : ContentView
     }
 
     private bool IsCheckedSafe(string id) => IsChecked?.Invoke(id) ?? false;
-
-    /// <summary>
-    /// Monochrome icon glyph per command id for the flyout rows. Drawn from the same OpenSans
-    /// glyph set the toolbar already renders (proven on Android), so the menu stays monochrome
-    /// and visually consistent with the rest of the app rather than relying on color emoji.
-    /// </summary>
-    private static string IconGlyphFor(string id) => id switch
-    {
-        AppConstants.CmdNew => "\u25A2",         // ▢  new document
-        AppConstants.CmdOpen => "\u2191",        // ↑  open
-        AppConstants.CmdSave => "\u25A3",        // ▣  save
-        AppConstants.CmdSaveAs => "\u25A3",      // ▣  save as
-        AppConstants.CmdExport => "\u2197",      // ↗  export
-        AppConstants.CmdPrint => "\u2318",       // ⌘  print (monochrome stand-in)
-
-        AppConstants.CmdUndo => "\u21B6",        // ↶
-        AppConstants.CmdRedo => "\u21B7",        // ↷
-        AppConstants.CmdCut => "\u2702",         // ✂
-        AppConstants.CmdCopy => "\u2460",        // ① (two stacked, see paste)
-        AppConstants.CmdPaste => "\u25A4",       // ▤  clipboard
-        AppConstants.CmdDelete => "\u2296",      // ⊖  remove
-        AppConstants.CmdDuplicate => "\u2461",   // ②
-        AppConstants.CmdSelectAll => "\u2713",   // ✓
-
-        AppConstants.CmdZoomIn => "\u2295",      // ⊕
-        AppConstants.CmdZoomOut => "\u2296",     // ⊖
-        AppConstants.CmdFitToScreen => "\u26F6", // ⛶
-        AppConstants.CmdShowGrid => "\u2317",    // ⌗
-        AppConstants.CmdSnapToGrid => "\u2317",  // ⌗
-
-        AppConstants.CmdSendToBack => "\u21E8",  // ⇈
-        AppConstants.CmdBringToFront => "\u21E8",// ⇈
-        AppConstants.CmdSendBackward => "\u21E7",// ⇇
-        AppConstants.CmdBringForward => "\u21E9",// ⇉
-        AppConstants.CmdAlignLeft => "\u2190",   // ←
-        AppConstants.CmdAlignRight => "\u2192",  // →
-        AppConstants.CmdAlignCenter => "\u2194", // ↔
-        AppConstants.CmdAlignTop => "\u2191",    // ↑
-        AppConstants.CmdAlignBottom => "\u2193", // ↓
-        AppConstants.CmdAlignMiddle => "\u2195", // ↕
-        AppConstants.CmdGroup => "\u25A6",       // ▦
-        AppConstants.CmdUngroup => "\u25A6",     // ▦
-
-        AppConstants.ToolPan => "\u26F6",        // ⛶ pan
-        AppConstants.ToolSelect => "\u25A2",     // ▢ select
-        AppConstants.ToolConnectorStraight => "\u2014",  // —
-        AppConstants.ToolConnectorOrthogonal => "\u21B4", // ↴
-        AppConstants.ToolConnectorBezier => "\u223C",    // ∼
-        AppConstants.ToolText => "\u2713",       // ✓
-
-        _ => string.Empty,
-    };
 }
