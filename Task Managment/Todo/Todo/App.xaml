@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Todo"
              xmlns:conv="clr-namespace:Todo.Converters"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="Todo.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -24,6 +25,18 @@
             <conv:EnumDisplayNameConverter x:Key="EnumDisplayNameConverter" />
             <conv:ObjectToCategoryConverter x:Key="ObjectToCategoryConverter" />
             <conv:StringNotEmptyToBoolConverter x:Key="StringNotEmptyToBoolConverter" />
+
+            <Style x:Key="AL_ApplyButton" TargetType="buttons:SfButton">
+                <Setter Property="Background" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="EnableRippleEffect" Value="True" />
+            </Style>
+
+            <Style x:Key="AL_SelectedItemButton" TargetType="buttons:SfButton">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                <Setter Property="EnableRippleEffect" Value="True" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

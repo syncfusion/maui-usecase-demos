@@ -36,7 +36,7 @@
                                       Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="2"
                                       Text="{Binding ConfirmText}"
-                                      Style="{StaticResource PrimaryButtonStyle}"
+                                      Style="{StaticResource AL_ApplyButton}"
                                       Command="{Binding ConfirmCommand}">
                         <buttons:SfButton.Triggers>
                             <DataTrigger TargetType="buttons:SfButton" Binding="{Binding IsDestructive}" Value="True">

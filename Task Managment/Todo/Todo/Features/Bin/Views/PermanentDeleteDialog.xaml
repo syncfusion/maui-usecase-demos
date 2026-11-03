@@ -36,7 +36,7 @@
                                       Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="2"
                                       Text="{Binding ConfirmText}"
-                                      Style="{StaticResource PrimaryButtonStyle}"
+                                      Style="{StaticResource AL_ApplyButton}"
                                       BackgroundColor="{StaticResource DestructiveColor}"
                                       Command="{Binding ConfirmCommand}" />
                 </Grid>

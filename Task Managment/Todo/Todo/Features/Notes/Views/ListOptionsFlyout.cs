@@ -186,10 +186,11 @@ public sealed class ListOptionsFlyout : ContentView
     private View CreateSortSurface()
     {
         var actions = new VerticalStackLayout { Spacing = 0 };
-        actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important)));
-        actions.Children.Add(CreateMenuButton("Reminder", () => ApplySort(NoteListSortOrder.Reminder)));
-        actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate)));
-        actions.Children.Add(CreateMenuButton("Alphabetically", () => ApplySort(NoteListSortOrder.Alphabetical)));
+        var currentSort = _selectedList?.SortOrder ?? _viewModel?.CurrentSortOrder ?? NoteListSortOrder.Custom;
+        actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important), currentSort == NoteListSortOrder.Important));
+        actions.Children.Add(CreateMenuButton("Reminder", () => ApplySort(NoteListSortOrder.Reminder), currentSort == NoteListSortOrder.Reminder));
+        actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate), currentSort == NoteListSortOrder.DueDate));
+        actions.Children.Add(CreateMenuButton("Alphabetically", () => ApplySort(NoteListSortOrder.Alphabetical), currentSort == NoteListSortOrder.Alphabetical));
         _sortSurface = CreateSurface(190, 220, actions);
         return _sortSurface;
     }
@@ -370,7 +371,7 @@ public sealed class ListOptionsFlyout : ContentView
         }
     }
 
-    private static SfButton CreateMenuButton(string text, Action action, bool destructive = false)
+    private static SfButton CreateMenuButton(string text, Action action, bool selected = false, bool destructive = false)
     {
         var button = new SfButton
         {
@@ -382,7 +383,8 @@ public sealed class ListOptionsFlyout : ContentView
             HorizontalOptions = LayoutOptions.Fill,
             HorizontalTextAlignment = TextAlignment.Start,
             CornerRadius = 0,
-            Command = new Command(action)
+            Command = new Command(action),
+            Style = (Style?)Application.Current?.Resources[(selected ? "AL_SelectedItemButton" : "TextButtonStyle")]
         };
         button.SetAppThemeColor(SfButton.TextColorProperty,
             destructive ? Color.FromArgb("#C62828") : Color.FromArgb("#29272F"),
