@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ResourceDictionary 
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls">
+    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons">
 
     <!--
         Diagram Builder — base control styles (light theme, desktop-first).
@@ -374,65 +375,46 @@
         <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
     </Style>
 
-    <!-- Menu flyout row: a Grid hosting the check mark / label / shortcut. The row itself has
-         no background; its interaction states are painted by the transparent Button that sits
-         beneath the labels (see MenuRowHitAreaStyle). -->
-    <Style x:Key="MenuFlyoutRowStyle" TargetType="Grid">
-        <Setter Property="HeightRequest" Value="32" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-    </Style>
+    <!-- Menu flyout row: each row IS the SfButton now (the row layout lives in its Content
+         template), so there is no separate row-grid style. -->
 
-    <!-- Diagram-type category rail button (Flow Chart / Mind Map / Organization Chart). The
-         default CommonStates VSM of a Button already fires Pressed on Android touch (the
-         proven mechanism used by MenuRootStyle / MenuRowHitAreaStyle); the persistent
-         Selected highlight for the active category is supplied by a DataTrigger in the
-         item template, so we only need to ensure the pressed overlay color is consistent. -->
-    <Style x:Key="CategoryRailButtonStyle" TargetType="Button">
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Pressed">
-                        <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#E8EAED" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>
+    <!-- Diagram-type category rail is now a Syncfusion SfListView (SelectionMode=Single +
+         SelectedItemTemplate handles the selected state, so no extra style is needed here). -->
 
-    <!-- The interaction + visual-state host for a menu row. A full-width, transparent Button
-         under the labels: it is the only element whose visual-state manager reliably fires the
-         pressed/touch overlay on Android in this MAUI build, so it supplies the fill. Text is
-         empty (the visible text is the labels on top, set InputTransparent).
-         States: only the touch-pressed overlay and the persistent selected highlight — no
-         PointerOver hover state, which flickers and isn't needed on a menu that's open at the
-         pointer's location. -->
-    <Style x:Key="MenuRowHitAreaStyle" TargetType="Button">
+    <!-- The menu row button: a Syncfusion SfButton (its native handler reliably drives Normal /
+         Pressed / Checked visual states from Android touch events, which is what the file/edit/
+         view menus were missing). Row layout (check + label + shortcut) is hosted inside
+         SfButton.Content as a DataTemplate. Background is a Brush (SfButton property). -->
+    <Style x:Key="MenuRowHitAreaStyle" TargetType="buttons:SfButton">
         <Setter Property="Text" Value="" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="HorizontalOptions" Value="Fill" />
         <Setter Property="VerticalOptions" Value="Fill" />
-        <!-- Buttons default to a 44px touch target; zero it out so the row stays compact. -->
         <Setter Property="MinimumHeightRequest" Value="0" />
         <Setter Property="MinimumWidthRequest" Value="0" />
+        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="EnableRippleEffect" Value="True" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal" />
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#E8EAED" />
+                            <Setter Property="Background" Value="#E8EAED" />
                         </VisualState.Setters>
                     </VisualState>
-                    <VisualState x:Name="Selected">
+                    <VisualState x:Name="Checked">
                         <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="#E3F2FD" />
+                            <Setter Property="Background" Value="#E3F2FD" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Background" Value="Transparent" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>

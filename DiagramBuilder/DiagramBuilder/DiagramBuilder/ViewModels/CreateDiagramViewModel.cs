@@ -53,6 +53,14 @@ public partial class CreateDiagramViewModel : ObservableObject
 
     public string SelectedCategoryName => SelectedCategory.ToString();
 
+    /// <summary>
+    /// Backing property for the SfListView SelectedItem two-way binding on the category rail.
+    /// Kept in sync with <see cref="SelectedCategory"/> via <see cref="OnSelectedCategoryChanged"/>;
+    /// a selection made in the UI flows back through <see cref="OnSelectedCategoryLabelChanged"/>.
+    /// </summary>
+    [ObservableProperty]
+    private string selectedCategoryLabel = AppStrings.CategoryFlowChart;
+
     public DiagramTemplate? EmptyDiagramTemplate => Templates.FirstOrDefault(t => t.Category == SelectedCategory && t.IsBlank);
 
     public IReadOnlyList<DiagramTemplate> PredefinedTemplates => Templates
@@ -61,30 +69,41 @@ public partial class CreateDiagramViewModel : ObservableObject
 
     partial void OnSelectedCategoryChanged(DiagramCategory value)
     {
+        var label = value switch
+        {
+            DiagramCategory.FlowChart => AppStrings.CategoryFlowChart,
+            DiagramCategory.MindMap => AppStrings.CategoryMindMap,
+            DiagramCategory.OrganizationChart => AppStrings.CategoryOrganizationChart,
+            _ => AppStrings.CategoryFlowChart,
+        };
+        // Set the label without firing the OnSelectedCategoryLabelChanged partial so the
+        // SfListView's two-way binding sees the value matching its SelectedItem and skips
+        // re-selecting (avoids a selection-change loop).
+        if (!string.Equals(SelectedCategoryLabel, label, StringComparison.Ordinal))
+        {
+            selectedCategoryLabel = label;
+            OnPropertyChanged(nameof(SelectedCategoryLabel));
+        }
         OnPropertyChanged(nameof(SelectedCategoryName));
         OnPropertyChanged(nameof(EmptyDiagramTemplate));
         OnPropertyChanged(nameof(PredefinedTemplates));
         _ = LoadTemplatesAsync(value);
     }
 
-    /// <summary>Selects a category card. Parameter is the display label (e.g. "Flow Chart"),
-    /// which doesn't match the <see cref="DiagramCategory"/> enum member names ("FlowChart").
-    /// Map the label back to the enum explicitly so the click always changes the selection.</summary>
-    [RelayCommand]
-    private void SelectCategory(string? categoryName)
+    /// <summary>Called when the SfListView two-way binding pushes a new label up.</summary>
+    partial void OnSelectedCategoryLabelChanged(string value)
     {
-        if (string.IsNullOrEmpty(categoryName))
-        {
-            return;
-        }
-
-        SelectedCategory = categoryName switch
+        var mapped = value switch
         {
             AppStrings.CategoryFlowChart => DiagramCategory.FlowChart,
             AppStrings.CategoryMindMap => DiagramCategory.MindMap,
             AppStrings.CategoryOrganizationChart => DiagramCategory.OrganizationChart,
             _ => SelectedCategory,
         };
+        if (mapped != SelectedCategory)
+        {
+            SelectedCategory = mapped;
+        }
     }
 
     /// <summary>Preloads templates; called on page appearing.</summary>
