@@ -90,7 +90,7 @@ public sealed class TaskSchedulingFlyout : ContentView
                 return;
 
             _selectedDateTime = value.Value;
-            _datePopup.Dismiss();
+            Dispatcher.Dispatch(() => _datePopup.Dismiss());
         };
 
         var clearButton = CreateActionButton("Remove", () =>

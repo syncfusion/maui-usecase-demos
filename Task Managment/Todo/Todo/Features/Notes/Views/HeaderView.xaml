@@ -21,9 +21,9 @@
             <!-- Hamburger menu: collapses / expands the sidebar.
                  Module-08 task 8-2: 48x48 touch target per the spec. -->
             <buttons:SfButton  
-                    WidthRequest="34" 
-                    HeightRequest="34" Margin="10,0" CornerRadius="0"
-                    Padding="0" Background="Transparent"
+                    WidthRequest="18" 
+                    HeightRequest="18" Margin="10,0" CornerRadius="0"
+                    Padding="0" ImageSource="humburger.png" Background="Transparent"    
                     Command="{Binding ToggleSidebarCommand}"
                     SemanticProperties.Description="Toggle navigation menu">
                 <buttons:SfButton.Content>
@@ -65,14 +65,10 @@
                                               Stroke="Transparent"
                                               VerticalOptions="Fill">
                 <syncfusionCore:SfTextInputLayout.TrailingView>
-                    <Label Text="&#xe8b6;"
-                           FontFamily="MaterialIconRegular"
-                           FontSize="18"
-                           TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                    <Image Source="search.png"
                            WidthRequest="18"
                            HeightRequest="18"
-                           VerticalTextAlignment="Center"
-                           HorizontalTextAlignment="Center"
+                           VerticalOptions="Center"
                            Margin="0,5,0,0"
                            SemanticProperties.Description="Search notes" />
                 </syncfusionCore:SfTextInputLayout.TrailingView>
@@ -103,12 +99,8 @@
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 17"
                 VerticalOptions="Center">
-            <Label Text="&#xe7fd;"
-                   FontFamily="MaterialIconRegular"
-                   FontSize="20"
-                   TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
-                   HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Center"
+            <Image Source="profile.png"
+                   Aspect="AspectFill"
                    SemanticProperties.Description="Open theme settings" />
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
