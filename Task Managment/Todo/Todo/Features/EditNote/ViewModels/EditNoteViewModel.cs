@@ -107,11 +107,7 @@ public partial class EditNoteViewModel : ViewModelBase
         _suppressAutoSave = false;
     }
 
-    partial void OnTitleChanged(string value)
-    {
-        SaveCommand.NotifyCanExecuteChanged();
-        TriggerAutoSave();
-    }
+    partial void OnTitleChanged(string value) => TriggerAutoSave();
     partial void OnHasDueDateChanged(bool value)
     {
         IsDueDatePickerVisible = value;
