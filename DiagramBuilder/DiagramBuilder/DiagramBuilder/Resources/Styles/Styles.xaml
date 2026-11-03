@@ -374,12 +374,60 @@
         <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
     </Style>
 
-    <!-- Menu flyout row (icon/check + label + shortcut). This MAUI build has no Pointer events
-         on a Grid, so pressed feedback is driven by code-behind (PressedGesture); hover/pressed
-         live on the root menu buttons and toolbar buttons instead. -->
+    <!-- Menu flyout row: a Grid hosting the check mark / label / shortcut. The row itself has
+         no background; its interaction states are painted by the transparent Button that sits
+         beneath the labels (see MenuRowHitAreaStyle). -->
     <Style x:Key="MenuFlyoutRowStyle" TargetType="Grid">
-        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="30" />
         <Setter Property="BackgroundColor" Value="Transparent" />
+    </Style>
+
+    <!-- The interaction + visual-state host for a menu row. A full-width, transparent Button
+         under the labels: it is the only element whose visual-state manager reliably fires the
+         pressed/touch overlay on Android in this MAUI build, so it supplies the fill for every
+         state. Text is empty (the visible text is the labels on top, set InputTransparent).
+         States: hover (PointerOver) = light gray, pressed/touch (Pressed) = darker gray,
+         keyboard focus (Focused) = subtle blue, selection (Selected) = light blue. -->
+    <Style x:Key="MenuRowHitAreaStyle" TargetType="Button">
+        <Setter Property="Text" Value="" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions" Value="Fill" />
+        <!-- Buttons default to a 44px touch target; zero it out so the row stays the compact
+             30px height the design calls for. -->
+        <Setter Property="MinimumHeightRequest" Value="0" />
+        <Setter Property="MinimumWidthRequest" Value="0" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#F1F3F4" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E8EAED" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E3F2FD" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Selected">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E3F2FD" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
     </Style>
 
     <!-- Menu flyout section header (e.g. ARRANGE "Align Objects"). -->
