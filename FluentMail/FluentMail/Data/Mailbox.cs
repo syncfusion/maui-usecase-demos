@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using FluentMail.Models;
+using MailContact = FluentMail.Models.Contact;
 
 namespace FluentMail.Data;
 
@@ -12,6 +13,7 @@ public class Mailbox
     public ObservableCollection<MailMessage> Archive { get; } = [];
     public ObservableCollection<MailMessage> Deleted { get; } = [];
     public ObservableCollection<AttachmentInfo> Attachments { get; } = [];
+    public ObservableCollection<MailContact> Contacts { get; } = [];
 
     public void RefreshCounts()
     {

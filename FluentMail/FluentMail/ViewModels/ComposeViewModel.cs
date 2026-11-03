@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentMail.Data;
 using FluentMail.Models;
+using MailContact = FluentMail.Models.Contact;
 
 namespace FluentMail.ViewModels;
 
@@ -14,14 +15,14 @@ public partial class ComposeViewModel : ObservableObject
     [ObservableProperty] private string recipientSearch = string.Empty;
     [ObservableProperty] private string subject = string.Empty;
     [ObservableProperty] private string body = string.Empty;
-    [ObservableProperty] private ObservableCollection<Contact> recipientChips = [];
-    [ObservableProperty] private ObservableCollection<Contact> recipientSuggestions = [];
+    [ObservableProperty] private ObservableCollection<MailContact> recipientChips = [];
+    [ObservableProperty] private ObservableCollection<MailContact> recipientSuggestions = [];
     [ObservableProperty] private ObservableCollection<AttachmentInfo> attachments = [];
     [ObservableProperty] private string statusMessage = "Unsaved Changes";
     [ObservableProperty] private bool showMessage;
 
     public IReadOnlyList<string> Accounts { get; } = ["Me <me@contoso.com>", "Work <work@contoso.com>"];
-    public ObservableCollection<Contact> Contacts => mailbox.Contacts;
+    public ObservableCollection<MailContact> Contacts => mailbox.Contacts;
 
     public ComposeViewModel() => UpdateSuggestions();
 
@@ -30,7 +31,7 @@ public partial class ComposeViewModel : ObservableObject
     partial void OnBodyChanged(string value) => StatusMessage = "Unsaved Changes";
 
     [RelayCommand]
-    void AddRecipient(Contact? contact)
+    void AddRecipient(MailContact? contact)
     {
         if (contact is null || RecipientChips.Any(x => x.Email == contact.Email)) return;
         RecipientChips.Add(contact);
@@ -39,7 +40,7 @@ public partial class ComposeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    void RemoveRecipient(Contact? contact)
+    void RemoveRecipient(MailContact? contact)
     {
         if (contact is null) return;
         RecipientChips.Remove(contact);
@@ -65,6 +66,6 @@ public partial class ComposeViewModel : ObservableObject
     void UpdateSuggestions()
     {
         var term = RecipientSearch.Trim();
-        RecipientSuggestions = new ObservableCollection<Contact>(string.IsNullOrWhiteSpace(term) ? mailbox.Contacts.Take(8) : mailbox.Contacts.Where(c => c.Name.Contains(term, StringComparison.OrdinalIgnoreCase) || c.Email.Contains(term, StringComparison.OrdinalIgnoreCase)).Take(8));
+        RecipientSuggestions = new ObservableCollection<MailContact>(string.IsNullOrWhiteSpace(term) ? mailbox.Contacts.Take(8) : mailbox.Contacts.Where(c => c.Name.Contains(term, StringComparison.OrdinalIgnoreCase) || c.Email.Contains(term, StringComparison.OrdinalIgnoreCase)).Take(8));
     }
 }

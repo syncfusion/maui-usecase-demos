@@ -1,4 +1,5 @@
 using FluentMail.Models;
+using MailContact = FluentMail.Models.Contact;
 
 namespace FluentMail.Data;
 
@@ -45,6 +46,11 @@ public static class MockData
         for (var i = 1; i <= 15; i++)
             mailbox.Deleted.Add(new MailMessage { Id = $"deleted-{i}", Folder = "Deleted", Sender = $"Deleted Sender {i}", SenderEmail = $"deleted{i}@contoso.com", Subject = $"Deleted thread {i}", Preview = $"Deleted preview {i}.", Body = $"Deleted body {i}.", Recipients = $"contact{i % 10 + 1}@contoso.com", Status = "Deleted", HasAttachments = i % 3 == 0, DeletedOn = DateTime.Today.AddDays(-i) });
 
+        mailbox.Contacts.Add(new MailContact { Name = "Ava Johnson", Email = "ava.johnson@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Noah Smith", Email = "noah.smith@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Mia Chen", Email = "mia.chen@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Liam Patel", Email = "liam.patel@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Sophia Garcia", Email = "sophia.garcia@contoso.com" });
         mailbox.Attachments.Add(new AttachmentInfo { FileName = "Proposal.pdf", FileType = "PDF", FileSize = 218000 });
         mailbox.RefreshCounts();
         return mailbox;

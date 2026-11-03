@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Color x:Key="PrimaryLight">#0F6CBD</Color>
     <Color x:Key="PrimaryDark">#4DA3FF</Color>
     <Color x:Key="SurfaceLight">#FFFFFF</Color>
