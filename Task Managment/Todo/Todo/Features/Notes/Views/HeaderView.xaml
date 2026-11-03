@@ -87,11 +87,9 @@
                        VerticalTextAlignment="Center"
                        HeightRequest="44"
                        BackgroundColor="Transparent"
-                       Margin="0" />
+                       Margin="0"
+                       Focused="OnSearchEntryFocused" />
             </syncfusionCore:SfTextInputLayout>
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OpenSearchCommand}" />
-            </Border.GestureRecognizers>
         </Border>
 
         <Border Grid.Column="2"

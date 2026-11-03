@@ -243,14 +243,15 @@
                                               IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                               CheckedChanged="OnCheckChanged"
                                               Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}"
-                                              VerticalOptions="Center"
+                                              VerticalOptions="Start"
+                                              Margin="0,2,0,0"
                                               HorizontalOptions="Center" />
 
                                     <!-- Title + metadata -->
                                     <VerticalStackLayout Grid.Column="1"
                                                          Spacing="4"
-                                                         VerticalOptions="Center"
-                                                         Margin="0,0,0,1">
+                                                         VerticalOptions="Start"
+                                                         Margin="0,1,0,0">
                                         <Label Text="{Binding Title}"
                                                Style="{StaticResource NoteTitleStyle}"
                                                FontSize="16"
@@ -482,6 +483,19 @@
                                 <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
                                                   SemanticProperties.Description="Save note">
+                                    <buttons:SfButton.Style>
+                                        <Style TargetType="buttons:SfButton">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+                                            <Setter Property="CornerRadius" Value="18" />
+                                            <Setter Property="Opacity" Value="1" />
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="buttons:SfButton" Binding="{Binding NewNoteTitle.Length}" Value="0">
+                                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                                    <Setter Property="Opacity" Value="0.55" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </buttons:SfButton.Style>
                                     <buttons:SfButton.Content><DataTemplate><Image Source="tickicon.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                             </Grid>
