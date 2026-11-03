@@ -130,12 +130,27 @@ public partial class MenuBarControl : ContentView
         return button;
     }
 
+    // Per-menu widths. Sized to fit the menu's actual content (longest label + shortcut +
+    // padding), so a Window menu with only "Show Toolbar / Show Stencil / Show Properties" is
+    // noticeably narrower than File / Edit / Arrange. These match the reference design.
+    private static readonly System.Collections.Generic.Dictionary<string, double> _flyoutWidthByRootId =
+        new()
+        {
+            ["file"] = 260,
+            ["edit"] = 240,
+            ["view"] = 260,
+            ["arrange"] = 280,
+            ["window"] = 220,
+        };
+
     private View BuildFlyoutContent(MenuCommandItem root)
     {
         var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(0, 4, 0, 4) };
         AppendRows(stack, root.Children, indent: 0, isTopLevel: true);
         // The SfPopup panel is transparent (see BuildRootButton), so this Border is the actual
         // white flyout surface. ~2px corners + a thin border + soft shadow, per the design.
+        // WidthRequest sizes each menu to its own content (Window is narrower than File).
+        var width = _flyoutWidthByRootId.TryGetValue(root.Id, out var w) ? w : 240;
         var border = new Border
         {
             Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
@@ -144,6 +159,8 @@ public partial class MenuBarControl : ContentView
             BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
             Shadow = new Shadow { Radius = 6, Offset = new Microsoft.Maui.Graphics.Point(0, 3), Opacity = 0.16f },
             Content = stack,
+            HorizontalOptions = LayoutOptions.Start,
+            WidthRequest = width,
         };
         return border;
     }
@@ -173,50 +190,52 @@ public partial class MenuBarControl : ContentView
             {
                 HeightRequest = 1,
                 BackgroundColor = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
-                Margin = new Thickness(8, 4),
+                Margin = new Thickness(12, 4),
             };
         }
 
+        // Column widths sized to the design: narrow check column, wide label, shortcut right-aligned.
         var row = new Grid
         {
             Style = (Style)Application.Current!.Resources["MenuFlyoutRowStyle"],
-            // No padding here — the full-width Button beneath (see below) must span the whole
-            // row so the hover/pressed highlight is edge-to-edge. Text indentation is applied
-            // to the labels directly.
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
-                new ColumnDefinition { Width = GridLength.Auto },   // check mark
+                new ColumnDefinition { Width = new GridLength(24) },          // check mark slot
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // label
-                new ColumnDefinition { Width = GridLength.Auto },   // shortcut
+                new ColumnDefinition { Width = new GridLength(64) },         // shortcut (right-aligned)
             }),
         };
 
-        // Interaction + visual-state host. A Button is the only element whose visual-state
-        // manager reliably fires the pressed/touch overlay on Android in this MAUI build, so it
-        // fills the row and supplies the hover/pressed/selected background (MenuRowHitAreaStyle).
-        // The text is empty and it is transparent at rest; the VSM states paint the fill.
+        // The full-width Button beneath supplies the pressed overlay (and the persistent
+        // selected highlight). It is the only element whose VSM reliably fires the touch
+        // overlay on Android in this MAUI build. CommandParameter avoids a per-row closure.
         if (item.IsEnabled)
         {
             var hitArea = new Button
             {
                 Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
-                Command = new Command(() => MenuCommand?.Execute(item.Id)),
+                CommandParameter = item.Id,
+                Command = new Command<string?>(id => MenuCommand?.Execute(id)),
             };
             Grid.SetColumnSpan(hitArea, 3);
             row.Children.Add(hitArea);
+
+            // Persistent selected highlight for checkable items that are currently on.
+            if (item.IsCheckable && IsCheckedSafe(item.Id))
+            {
+                VisualStateManager.GoToState(hitArea, "Selected");
+            }
         }
 
-        var indentPx = 12 + (indent * 16);
         var checkGlyph = new Label
         {
             Text = (item.IsCheckable && IsCheckedSafe(item.Id)) ? "\u2713" : string.Empty,
             FontSize = 13,
             TextColor = CheckBlue,
-            WidthRequest = 18,
-            Margin = new Thickness(indentPx, 0, 0, 0),
+            Margin = new Thickness(indent * 16 + 6, 0, 0, 0),
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
-            InputTransparent = true,   // let the touch fall through to the Button beneath
+            InputTransparent = true,
         };
         var label = new Label
         {
@@ -225,14 +244,16 @@ public partial class MenuBarControl : ContentView
             TextColor = item.IsEnabled ? Services.ResourceLookup.ResourceColor("TextPrimary") : TextSecondary,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
+            Margin = new Thickness(0, 0, 12, 0),
             InputTransparent = true,
         };
         var shortcut = new Label
         {
             Text = item.GestureKey,
-            FontSize = 11,
+            FontSize = 12,
             TextColor = TextSecondary,
-            Margin = new Thickness(24, 0, 12, 0),
+            Margin = new Thickness(0, 0, 14, 0),
+            HorizontalTextAlignment = TextAlignment.End,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
             InputTransparent = true,

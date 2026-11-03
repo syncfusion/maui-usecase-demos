@@ -52,7 +52,10 @@
                 <!-- Body: category rail + template list -->
                 <Grid Grid.Row="1"
                       ColumnDefinitions="240,*">
-                    <!-- Left category rail -->
+                    <!-- Left category rail: each row is a Button so its VSM supplies the touch
+                         overlay (Pressed). The persistent Selected (active-category) highlight
+                         is driven by a DataTrigger comparing the item label to
+                         SelectedCategoryName, matching the reference design. -->
                     <Border BackgroundColor="{DynamicResource CategoryRailBackground}"
                             StrokeThickness="0"
                             Padding="0,12">
@@ -60,30 +63,31 @@
                                         SelectionMode="None">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Margin="0,2,0,2"
-                                            Padding="0,0,0,0"
-                                            BackgroundColor="Transparent">
-                                        <Grid ColumnDefinitions="3,*"
-                                              VerticalOptions="Center">
-                                            <BoxView x:Name="AccentBar"
-                                                     Grid.Column="0"
-                                                     WidthRequest="3"
-                                                     HeightRequest="20"
-                                                     Color="{Binding Converter={StaticResource CategoryAccentConverter}}"
-                                                     IsVisible="{Binding ., Converter={StaticResource StringEqualsConverter}, ConverterParameter={Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedCategoryName}}"
-                                                     VerticalOptions="Center" />
-                                            <Label Grid.Column="1"
-                                                   Text="{Binding .}"
-                                                   FontSize="15"
-                                                   TextColor="{DynamicResource TextPrimary}"
-                                                   Padding="18,12,18,12"
-                                                   VerticalOptions="Center" />
-                                        </Grid>
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCategoryCommand}"
-                                                                  CommandParameter="{Binding .}" />
-                                        </Border.GestureRecognizers>
-                                    </Border>
+                                    <Button Text="{Binding .}"
+                                            Style="{StaticResource CategoryRailButtonStyle}"
+                                            Margin="8,2,8,2"
+                                            Padding="18,0,18,0"
+                                            CornerRadius="2"
+                                            HeightRequest="44"
+                                            HorizontalOptions="Fill"
+                                            HorizontalContentAlignment="Start"
+                                            FontSize="15"
+                                            BackgroundColor="Transparent"
+                                            BorderWidth="0"
+                                            TextColor="{DynamicResource TextPrimary}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCategoryCommand}"
+                                            CommandParameter="{Binding .}">
+                                        <Button.Triggers>
+                                            <!-- Persistent highlight for the active category. -->
+                                            <DataTrigger TargetType="Button"
+                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedCategoryName}"
+                                                         Value="{Binding .}">
+                                                <Setter Property="BackgroundColor" Value="#E3F2FD" />
+                                                <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
+                                                <Setter Property="FontAttributes" Value="Bold" />
+                                            </DataTrigger>
+                                        </Button.Triggers>
+                                    </Button>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
