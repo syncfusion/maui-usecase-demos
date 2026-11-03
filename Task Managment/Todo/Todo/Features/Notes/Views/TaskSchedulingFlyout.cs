@@ -72,8 +72,6 @@ public sealed class TaskSchedulingFlyout : ContentView
         var picker = new SfDateTimePicker
         {
             SelectedDate = _selectedDateTime,
-            DateFormat = PickerDateFormat.Custom,
-            CustomFormat = "dd_MMM_yyyy",
             HeightRequest = 280,
             BackgroundColor = Colors.Transparent
         };
