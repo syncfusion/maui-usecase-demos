@@ -1,4 +1,5 @@
 using Syncfusion.Maui.Buttons;
+using Syncfusion.Maui.Picker;
 using Syncfusion.Maui.Popup;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.ViewModels;
@@ -12,13 +13,12 @@ public sealed class TaskSchedulingFlyout : ContentView
     private readonly SfPopup _customPopup;
     private NotesListViewModel? _viewModel;
     private View? _repeatAnchor;
-    private string _selectedMonth = DateTime.Today.ToString("MMMM");
-    private int _selectedDay = DateTime.Today.Day;
-    private int _selectedYear = DateTime.Today.Year;
+    private DateTime _selectedDateTime = DateTime.Today.AddHours(12);
+    private bool _isReminder;
 
     public TaskSchedulingFlyout()
     {
-        _datePopup = CreatePopup(360, 344, () => CreateDateSurface(false));
+        _datePopup = CreatePopup(372, 454, CreateDateSurface);
         _repeatPopup = CreatePopup(238, 312, CreateRepeatSurface);
         _customPopup = CreatePopup(330, 214, CreateCustomSurface);
         foreach (var popup in new[] { _datePopup, _repeatPopup, _customPopup })
@@ -46,11 +46,8 @@ public sealed class TaskSchedulingFlyout : ContentView
     private void ShowDate(View anchor, NotesListViewModel viewModel, bool isReminder)
     {
         _viewModel = viewModel;
-        var value = isReminder ? viewModel.DraftReminderDate ?? DateTime.Today.AddHours(12) : viewModel.DraftDueDate ?? DateTime.Today.AddHours(12);
-        _selectedMonth = value.ToString("MMMM");
-        _selectedDay = value.Day;
-        _selectedYear = value.Year;
-        _datePopup.ContentTemplate = new DataTemplate(() => CreateDateSurface(isReminder));
+        _isReminder = isReminder;
+        _selectedDateTime = isReminder ? viewModel.DraftReminderDate ?? DateTime.Today.AddHours(12) : viewModel.DraftDueDate ?? DateTime.Today.AddHours(12);
         _datePopup.ShowRelativeToView(anchor, PopupRelativePosition.AlignTopRight);
     }
 
@@ -61,127 +58,71 @@ public sealed class TaskSchedulingFlyout : ContentView
         _repeatPopup.ShowRelativeToView(anchor, PopupRelativePosition.AlignTopRight);
     }
 
-    private View CreateDateSurface(bool isReminder)
+    private View CreateDateSurface()
     {
-        var months = new[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-        var days = Enumerable.Range(1, 31).Select(v => v.ToString()).ToList();
-        var years = Enumerable.Range(DateTime.Today.Year - 10, 21).Select(v => v.ToString()).ToList();
-
-        var monthView = CreateWheel(months.ToList(), _selectedMonth, 148, v => _selectedMonth = v);
-        var dayView = CreateWheel(days, _selectedDay.ToString(), 72, v => _selectedDay = int.Parse(v));
-        var yearView = CreateWheel(years, _selectedYear.ToString(), 140, v => _selectedYear = int.Parse(v));
-
-        var wheels = new Grid
+        var title = new Label
         {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(148), new(72), new(140) },
-            HeightRequest = 238,
-            BackgroundColor = Colors.White
-        };
-        wheels.Children.Add(monthView); Grid.SetColumn(monthView, 0);
-        wheels.Children.Add(dayView); Grid.SetColumn(dayView, 1);
-        wheels.Children.Add(yearView); Grid.SetColumn(yearView, 2);
-
-        var monthIndex = Array.FindIndex(months, v => v == _selectedMonth);
-        var headerDate = monthIndex >= 0
-            ? $"{months[monthIndex]} {_selectedDay}, {_selectedYear}"
-            : DateTime.Today.ToString("MMMM d, yyyy");
-        var existing = isReminder ? _viewModel?.DraftReminderDate : _viewModel?.DraftDueDate;
-        var header = new Grid
-        {
-            HeightRequest = 56,
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
-            Padding = new Thickness(20, 0)
-        };
-        header.Children.Add(new Label
-        {
-            Text = headerDate,
-            FontSize = 14,
+            Text = _isReminder ? "Reminder" : "Due date",
+            FontSize = 18,
             FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#29272F"),
-            VerticalOptions = LayoutOptions.Center
-        });
-        var time = new Label
-        {
-            Text = (existing ?? DateTime.Today.AddHours(12)).ToString("hh:mm tt"),
-            FontSize = 13,
-            TextColor = Color.FromArgb("#5C4EAE"),
-            FontAttributes = FontAttributes.Bold,
-            VerticalOptions = LayoutOptions.Center
+            TextColor = Color.FromArgb("#29272F")
         };
-        Grid.SetColumn(time, 1);
-        header.Children.Add(time);
 
-        var divider = new BoxView { HeightRequest = 1, Color = Color.FromArgb("#E9E5EE") };
-        var cancel = CreateTextButton("Cancel", () => _datePopup.Dismiss());
-        var save = CreateTextButton("Save", () =>
+        var closeButton = CreateIconButton("\ue5cd", () => _datePopup.Dismiss());
+
+        var picker = new SfDateTimePicker
         {
-            var selectedMonthIndex = Array.FindIndex(months, v => v == _selectedMonth) + 1;
-            try
-            {
-                var source = (isReminder ? _viewModel?.DraftReminderDate : _viewModel?.DraftDueDate) ?? DateTime.Today.AddHours(12);
-                var value = new DateTime(_selectedYear, selectedMonthIndex, _selectedDay, source.Hour, source.Minute, 0);
-                if (isReminder) _viewModel?.SetDraftReminderDate(value);
-                else _viewModel?.SetDraftDueDate(value);
-            }
-            catch { }
+            SelectedDate = _selectedDateTime,
+            HeightRequest = 280,
+            BackgroundColor = Colors.Transparent
+        };
+        picker.SelectedDateChanged += (_, e) =>
+        {
+            _selectedDateTime = e.NewValue;
+            if (_viewModel is null)
+                return;
+
+            if (_isReminder)
+                _viewModel.SetDraftReminderDate(_selectedDateTime);
+            else
+                _viewModel.SetDraftDueDate(_selectedDateTime);
+
+            _datePopup.Dismiss();
+        };
+
+        var clearButton = CreateActionButton("Remove", () =>
+        {
+            if (_viewModel is null)
+                return;
+
+            if (_isReminder)
+                _viewModel.RemoveDraftReminderCommand.Execute(null);
+            else
+                _viewModel.RemoveDraftDueDateCommand.Execute(null);
             _datePopup.Dismiss();
         });
-        var buttons = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Auto) },
-            ColumnSpacing = 4,
-            HeightRequest = 50,
-            Padding = new Thickness(16, 4)
-        };
-        buttons.Children.Add(cancel); Grid.SetColumn(cancel, 1);
-        buttons.Children.Add(save); Grid.SetColumn(save, 2);
 
-        var content = new Grid { RowDefinitions = new RowDefinitionCollection { new(56), new(1), new(238), new(50) } };
+        var content = new Grid
+        {
+            RowDefinitions = new RowDefinitionCollection { new(GridLength.Auto), new(1), new(GridLength.Star), new(GridLength.Auto) },
+            Padding = new Thickness(20, 18, 20, 16),
+            RowSpacing = 0
+        };
+
+        var header = new Grid { ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) } };
+        header.Children.Add(title);
+        header.Children.Add(closeButton);
+        Grid.SetColumn(closeButton, 1);
+
         content.Children.Add(header);
-        content.Children.Add(divider); Grid.SetRow(divider, 1);
-        content.Children.Add(wheels); Grid.SetRow(wheels, 2);
-        content.Children.Add(buttons); Grid.SetRow(buttons, 3);
-        return CreateBorder(360, 344, content);
-    }
+        content.Children.Add(new BoxView { HeightRequest = 1, Color = Color.FromArgb("#E9E5EE"), Margin = new Thickness(0, 14) });
+        Grid.SetRow(content.Children[^1], 1);
+        content.Children.Add(picker);
+        Grid.SetRow(picker, 2);
+        content.Children.Add(clearButton);
+        Grid.SetRow(clearButton, 3);
 
-    private static CollectionView CreateWheel(List<string> items, string selected, double width, Action<string> onSelected)
-    {
-        var view = new CollectionView
-        {
-            ItemsSource = items,
-            SelectionMode = SelectionMode.Single,
-            SelectedItem = selected,
-            WidthRequest = width,
-            HeightRequest = 238,
-            ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 0 },
-            BackgroundColor = Colors.White,
-            ItemTemplate = new DataTemplate(() =>
-            {
-                var itemLabel = new Label { FontSize = 13, HorizontalTextAlignment = TextAlignment.Center, VerticalTextAlignment = TextAlignment.Center };
-                itemLabel.SetBinding(Label.TextProperty, ".");
-                var border = new Border
-                {
-                    HeightRequest = 34,
-                    Margin = new Thickness(6, 0),
-                    StrokeThickness = 0,
-                    BackgroundColor = Colors.Transparent,
-                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
-                    Content = itemLabel
-                };
-                var states = new VisualStateGroup { Name = "CommonStates" };
-                states.States.Add(new VisualState { Name = "Normal" });
-                var selectedState = new VisualState { Name = "Selected" };
-                selectedState.Setters.Add(new Setter { Property = Border.BackgroundColorProperty, Value = Color.FromArgb("#F0ECFA") });
-                selectedState.Setters.Add(new Setter { Property = Border.StrokeProperty, Value = Color.FromArgb("#C9C0EC") });
-                selectedState.Setters.Add(new Setter { Property = Border.StrokeThicknessProperty, Value = 1 });
-                states.States.Add(selectedState);
-                VisualStateManager.SetVisualStateGroups(border, new VisualStateGroupList { states });
-                return border;
-            })
-        };
-        view.SelectionChanged += (_, e) => { if (e.CurrentSelection.FirstOrDefault() is string value) onSelected(value); };
-        view.Loaded += (_, _) => view.ScrollTo(selected, null, ScrollToPosition.Center, false);
-        return view;
+        return CreateBorder(372, 454, content);
     }
 
     private View CreateRepeatSurface()
@@ -272,8 +213,8 @@ public sealed class TaskSchedulingFlyout : ContentView
         }
 
         var buttons = new Grid { ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Auto) }, ColumnSpacing = 4, Padding = new Thickness(16, 4), HeightRequest = 50 };
-        var cancel = CreateTextButton("Cancel", () => _customPopup.Dismiss());
-        var save = CreateTextButton("Save", () => { _viewModel?.SetDraftRepeatFrequency(NoteRepeatFrequency.Custom); _customPopup.Dismiss(); });
+        var cancel = CreateActionButton("Cancel", () => _customPopup.Dismiss());
+        var save = CreateActionButton("Save", () => { _viewModel?.SetDraftRepeatFrequency(NoteRepeatFrequency.Custom); _customPopup.Dismiss(); });
         buttons.Children.Add(cancel); Grid.SetColumn(cancel, 1); buttons.Children.Add(save); Grid.SetColumn(save, 2);
 
         var content = new Grid { RowDefinitions = new RowDefinitionCollection { new(44), new(52), new(68), new(50) } };
@@ -317,7 +258,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         Command = new Command(action)
     };
 
-    private static SfButton CreateTextButton(string text, Action action) => new()
+    private static SfButton CreateActionButton(string text, Action action) => new()
     {
         Text = text,
         MinimumWidthRequest = 72,
@@ -328,13 +269,26 @@ public sealed class TaskSchedulingFlyout : ContentView
         Command = new Command(action)
     };
 
+    private static SfButton CreateIconButton(string glyph, Action action) => new()
+    {
+        Text = glyph,
+        FontFamily = "MaterialIconRegular",
+        WidthRequest = 40,
+        HeightRequest = 40,
+        Padding = 0,
+        BackgroundColor = Colors.Transparent,
+        TextColor = Color.FromArgb("#6F66CC"),
+        FontSize = 18,
+        Command = new Command(action)
+    };
+
     private static Border CreateBorder(double width, double height, View content) => new()
     {
         WidthRequest = width,
         HeightRequest = height,
         StrokeThickness = 1,
         Stroke = Color.FromArgb("#D8D4DE"),
-        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 12 },
+        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 16 },
         BackgroundColor = Colors.White,
         Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.18f, Radius = 12, Offset = new Point(0, 4) },
         Content = content

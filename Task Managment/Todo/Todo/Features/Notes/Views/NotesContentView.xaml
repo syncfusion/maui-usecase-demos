@@ -411,8 +411,49 @@
                     BackgroundColor="White"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
-                <Grid RowDefinitions="Auto" ColumnDefinitions="*" VerticalOptions="Center"> 
-                    <syncfusionCore:SfTextInputLayout Grid.Row="1" Grid.Column="0"
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" RowSpacing="8" VerticalOptions="Center">
+                    <FlexLayout Grid.Row="0" Direction="Row" Wrap="Wrap" AlignItems="Start" JustifyContent="Start">
+                        <Border Margin="0,0,8,8"
+                                IsVisible="{Binding HasDraftDueDate}"
+                                Padding="10,6"
+                                Stroke="{StaticResource ChipStrokeColor}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{StaticResource ChipBackgroundColor}">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" />
+                                <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="#66616F" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="#66616F" Command="{Binding RemoveDraftDueDateCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border Margin="0,0,8,8"
+                                IsVisible="{Binding HasDraftRepeat}"
+                                Padding="10,6"
+                                Stroke="{StaticResource ChipStrokeColor}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{StaticResource ChipBackgroundColor}">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" />
+                                <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="#66616F" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="#66616F" Command="{Binding RemoveDraftRepeatCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border Margin="0,0,8,8"
+                                IsVisible="{Binding HasDraftReminder}"
+                                Padding="10,6"
+                                Stroke="{StaticResource ChipStrokeColor}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{StaticResource ChipBackgroundColor}">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" />
+                                <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="#66616F" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="#66616F" Command="{Binding RemoveDraftReminderCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </FlexLayout>
+                    <syncfusionCore:SfTextInputLayout Grid.Row="1"
                                                      Hint="Add a note"
                                                      ContainerType="Outlined"
                                                      OutlineCornerRadius="28"
@@ -437,7 +478,7 @@
                                                   SemanticProperties.Description="Set due date">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
-                                            <Label Text="&#xe24f;"  HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
+                                            <Label Text="&#xe24f;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="1" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnRepeatClicked"
