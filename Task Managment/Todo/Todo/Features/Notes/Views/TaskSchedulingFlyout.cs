@@ -255,13 +255,12 @@ public sealed class TaskSchedulingFlyout : ContentView
         HeightRequest = 40,
         HorizontalOptions = LayoutOptions.Fill,
         HorizontalTextAlignment = TextAlignment.Start,
-        Background = Colors.Transparent,
-        TextColor = selected ? Color.FromArgb("#5C4EAE") : Colors.White,
+        BackgroundColor = selected ? Colors.White : Color.FromArgb("#7633DA"),
+        TextColor = selected ? Color.FromArgb("#7633DA") : Colors.White,
         FontSize = 14,
         CornerRadius = 8,
         Margin = new Thickness(0, 1),
         Padding = new Thickness(12, 0),
-        Style = (Style?)Application.Current?.Resources[(selected ? "AL_SelectedInteractiveButton" : "AL_InteractiveButton")],
         Command = new Command(action)
     };
 
@@ -270,10 +269,9 @@ public sealed class TaskSchedulingFlyout : ContentView
         Text = text,
         MinimumWidthRequest = 72,
         HeightRequest = 36,
-        Background = Colors.Transparent,
+        BackgroundColor = Color.FromArgb("#7633DA"),
         TextColor = Colors.White,
         FontSize = 13,
-        Style = (Style?)Application.Current?.Resources["AL_InteractiveButton"],
         Command = new Command(action)
     };
 
@@ -284,10 +282,9 @@ public sealed class TaskSchedulingFlyout : ContentView
         WidthRequest = 40,
         HeightRequest = 40,
         Padding = 0,
-        Background = Colors.Transparent,
+        BackgroundColor = Colors.Transparent,
         TextColor = Color.FromArgb("#6F66CC"),
         FontSize = 18,
-        Style = (Style?)Application.Current?.Resources["TextButtonStyle"],
         Command = new Command(action)
     };
 

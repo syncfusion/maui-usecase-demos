@@ -172,7 +172,8 @@
                 <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10" VerticalOptions="Center">
                     <buttons:SfButton Grid.Column="0"
                                       Text="Cancel"
-                                      Style="{StaticResource TextButtonStyle}"
+                                      BackgroundColor="Transparent"
+                                      TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                                       Command="{Binding CancelCommand}" />
                     <Label Grid.Column="1"
                            Text="{Binding CreatedAgeText}"
@@ -191,7 +192,8 @@
                                       Command="{Binding DeleteCommand}" />
                     <buttons:SfButton Grid.Column="3"
                                       Text="{Binding PrimaryButtonText}"
-                                      Style="{StaticResource AL_ApplyButton}"
+                                      BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
+                                      TextColor="White"
                                       Command="{Binding SaveCommand}" />
                 </Grid>
             </Grid>

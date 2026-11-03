@@ -62,12 +62,14 @@
                       Margin="0,8,0,0">
                     <buttons:SfButton Grid.Column="1"
                             Text="Cancel"
-                            Style="{StaticResource TextButtonStyle}"
+                            BackgroundColor="Transparent"
+                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                             Command="{Binding CancelCommand}"
                             MinimumWidthRequest="96" />
                     <buttons:SfButton Grid.Column="2"
                             Text="{Binding PrimaryButtonText}"
-                            Style="{StaticResource AL_ApplyButton}"
+                            BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
+                            TextColor="White"
                             Command="{Binding SaveCommand}"
                             MinimumWidthRequest="96" />
                 </Grid>

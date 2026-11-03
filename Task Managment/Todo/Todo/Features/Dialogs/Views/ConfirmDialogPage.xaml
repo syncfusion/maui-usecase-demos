@@ -32,11 +32,13 @@
                 <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" HorizontalOptions="End" Margin="0,8,0,0">
                     <buttons:SfButton Grid.Column="1"
                                       Text="{Binding CancelText}"
-                                      Style="{StaticResource TextButtonStyle}"
+                                      BackgroundColor="Transparent"
+                                      TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                                       Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="2"
                                       Text="{Binding ConfirmText}"
-                                      Style="{StaticResource AL_ApplyButton}"
+                                      BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
+                                      TextColor="White"
                                       Command="{Binding ConfirmCommand}">
                         <buttons:SfButton.Triggers>
                             <DataTrigger TargetType="buttons:SfButton" Binding="{Binding IsDestructive}" Value="True">

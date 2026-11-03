@@ -378,17 +378,14 @@ public sealed class ListOptionsFlyout : ContentView
             Text = text,
             HeightRequest = 42,
             Padding = new Thickness(14, 0),
-            Background = Colors.Transparent,
+            BackgroundColor = selected ? Colors.White : Color.FromArgb("#7633DA"),
             FontSize = 14,
             HorizontalOptions = LayoutOptions.Fill,
             HorizontalTextAlignment = TextAlignment.Start,
             CornerRadius = 0,
-            Command = new Command(action),
-            Style = (Style?)Application.Current?.Resources[(selected ? "AL_SelectedInteractiveButton" : "AL_InteractiveButton")]
+            TextColor = selected ? Color.FromArgb("#7633DA") : Colors.White,
+            Command = new Command(action)
         };
-        button.SetAppThemeColor(SfButton.TextColorProperty,
-            destructive ? Color.FromArgb("#C62828") : Color.White,
-            destructive ? Color.FromArgb("#FF6B6B") : Color.White);
         SemanticProperties.SetDescription(button, text);
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
