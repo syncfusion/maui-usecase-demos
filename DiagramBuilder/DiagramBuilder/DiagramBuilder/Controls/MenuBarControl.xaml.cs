@@ -10,9 +10,11 @@ namespace DiagramBuilder.Controls;
 /// is a white-on-blue pill that opens an SfPopup flyout built from its
 /// <see cref="MenuCommandItem.Children"/> tree. Tapping an open root shows the "Selected"
 /// state (white pill, blue label); the state clears when the flyout closes.
-/// Item taps execute the bound <see cref="MenuCommand"/>; checkable items show a check glyph
-/// and reflect the VM check-state delegate (<see cref="IsChecked"/>). Rows get hover +
-/// pressed feedback via explicit pointer handlers (Grid has no automatic Pressed state).
+/// Each leaf row is a Syncfusion SfButton — its native handler drives Normal / Pressed /
+/// Checked visual states from Android touch events (the only element in this MAUI build
+/// whose touch overlay works reliably). Item taps execute the bound
+/// <see cref="MenuCommand"/>; checkable items show a check glyph and a persistent Checked
+/// highlight via the IsChecked delegate.
 /// Submenu items render as indented section headers with their children inlined.
 /// Zero business logic — only binds and dispatches by id.
 /// </summary>
@@ -104,9 +106,8 @@ public partial class MenuBarControl : ContentView
             ShowCloseButton = false,
             StaysOpen = false,
             OverlayMode = Syncfusion.Maui.Popup.PopupOverlayMode.Transparent,
-            // Let the panel size to the content instead of SfPopup's default 313px width —
-            // this keeps File/Edit/View/Arrange/Window at a narrow desktop-flyout width.
-            AutoSizeMode = Syncfusion.Maui.Popup.PopupAutoSizeMode.Width,
+            // Both dimensions hug the inner Border — replaces SfPopup's default 313px width.
+            AutoSizeMode = Syncfusion.Maui.Popup.PopupAutoSizeMode.Both,
             AutoSizeTarget = Syncfusion.Maui.Popup.PopupAutoSizeTarget.Content,
             PopupStyle = new Syncfusion.Maui.Popup.PopupStyle
             {
@@ -130,27 +131,32 @@ public partial class MenuBarControl : ContentView
         return button;
     }
 
-    // Per-menu widths. Sized to fit the menu's actual content (longest label + shortcut +
-    // padding), so a Window menu with only "Show Toolbar / Show Stencil / Show Properties" is
-    // noticeably narrower than File / Edit / Arrange. These match the reference design.
-    private static readonly System.Collections.Generic.Dictionary<string, double> _flyoutWidthByRootId =
+    // Per-menu vertical padding for the content stack — used to make short menus (Window)
+    // sit tighter against the panel border without changing row height or row padding.
+    private static readonly System.Collections.Generic.Dictionary<string, Thickness> _menuPaddingByRootId =
         new()
         {
-            ["file"] = 260,
-            ["edit"] = 240,
-            ["view"] = 260,
-            ["arrange"] = 280,
-            ["window"] = 220,
+            // Compact (Window has only 3 items, so reduce the top/bottom padding so the
+            // flyout height shrinks — without touching the 32px row height or its padding).
+            ["window"] = new Thickness(0, 2, 0, 2),
+            // Default: a few px breathing room top/bottom for menus with many items.
+            ["arrange"] = new Thickness(0, 3, 0, 3),
+            ["edit"] = new Thickness(0, 4, 0, 4),
+            ["file"] = new Thickness(0, 4, 0, 4),
+            ["view"] = new Thickness(0, 4, 0, 4),
         };
 
     private View BuildFlyoutContent(MenuCommandItem root)
     {
-        var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(0, 4, 0, 4) };
+        // Use a per-menu padding so the Window menu is shorter overall; row height + row
+        // padding (MenuFlyoutRowStyle / SfButton HeightRequest) are unchanged for every menu.
+        var pad = _menuPaddingByRootId.TryGetValue(root.Id, out var p)
+            ? p
+            : new Thickness(0, 4, 0, 4);
+        var stack = new VerticalStackLayout { Spacing = 0, Padding = pad };
         AppendRows(stack, root.Children, indent: 0, isTopLevel: true);
         // The SfPopup panel is transparent (see BuildRootButton), so this Border is the actual
         // white flyout surface. ~2px corners + a thin border + soft shadow, per the design.
-        // WidthRequest sizes each menu to its own content (Window is narrower than File).
-        var width = _flyoutWidthByRootId.TryGetValue(root.Id, out var w) ? w : 240;
         var border = new Border
         {
             Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
@@ -160,7 +166,6 @@ public partial class MenuBarControl : ContentView
             Shadow = new Shadow { Radius = 6, Offset = new Microsoft.Maui.Graphics.Point(0, 3), Opacity = 0.16f },
             Content = stack,
             HorizontalOptions = LayoutOptions.Start,
-            WidthRequest = width,
         };
         return border;
     }
@@ -194,58 +199,37 @@ public partial class MenuBarControl : ContentView
             };
         }
 
-        // Column widths sized to the design: narrow check column, wide label, shortcut right-aligned.
-        var row = new Grid
+        // The menu row is a single Syncfusion SfButton. Its native handler drives Normal /
+        // Pressed / Checked visual states from Android touch events, so the touch overlay
+        // is reliable (MAUI Button's VSM press is unreliable on this MAUI build). The row's
+        // check + label + shortcut are hosted inside SfButton.Content as a DataTemplate.
+        var grid = new Grid
         {
-            Style = (Style)Application.Current!.Resources["MenuFlyoutRowStyle"],
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
-                new ColumnDefinition { Width = new GridLength(24) },          // check mark slot
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // label
-                new ColumnDefinition { Width = new GridLength(64) },         // shortcut (right-aligned)
+                new ColumnDefinition { Width = new GridLength(24) },                       // check slot
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },    // label
+                new ColumnDefinition { Width = new GridLength(64) },                      // shortcut
             }),
+            Margin = new Thickness(indent * 16, 0, 0, 0),
         };
-
-        // The full-width Button beneath supplies the pressed overlay (and the persistent
-        // selected highlight). It is the only element whose VSM reliably fires the touch
-        // overlay on Android in this MAUI build. CommandParameter avoids a per-row closure.
-        if (item.IsEnabled)
-        {
-            var hitArea = new Button
-            {
-                Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
-                CommandParameter = item.Id,
-                Command = new Command<string?>(id => MenuCommand?.Execute(id)),
-            };
-            Grid.SetColumnSpan(hitArea, 3);
-            row.Children.Add(hitArea);
-
-            // Persistent selected highlight for checkable items that are currently on.
-            if (item.IsCheckable && IsCheckedSafe(item.Id))
-            {
-                VisualStateManager.GoToState(hitArea, "Selected");
-            }
-        }
 
         var checkGlyph = new Label
         {
             Text = (item.IsCheckable && IsCheckedSafe(item.Id)) ? "\u2713" : string.Empty,
             FontSize = 13,
             TextColor = CheckBlue,
-            Margin = new Thickness(indent * 16 + 6, 0, 0, 0),
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
-            InputTransparent = true,
         };
         var label = new Label
         {
             Text = item.TextKey,
             FontSize = 13,
             TextColor = item.IsEnabled ? Services.ResourceLookup.ResourceColor("TextPrimary") : TextSecondary,
+            Margin = new Thickness(8, 0, 0, 0),
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 0, 12, 0),
-            InputTransparent = true,
         };
         var shortcut = new Label
         {
@@ -256,16 +240,24 @@ public partial class MenuBarControl : ContentView
             HorizontalTextAlignment = TextAlignment.End,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
-            InputTransparent = true,
         };
-
-        row.Children.Add(checkGlyph);
-        row.Children.Add(label);
-        row.Children.Add(shortcut);
+        grid.Children.Add(checkGlyph);
+        grid.Children.Add(label);
+        grid.Children.Add(shortcut);
         Grid.SetColumn(checkGlyph, 0);
         Grid.SetColumn(label, 1);
         Grid.SetColumn(shortcut, 2);
-        row.Opacity = item.IsEnabled ? 1 : 0.5;
+
+        var row = new Syncfusion.Maui.Buttons.SfButton
+        {
+            Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+            Content = new DataTemplate(() => grid),
+            IsCheckable = item.IsCheckable,
+            IsChecked = item.IsCheckable && IsCheckedSafe(item.Id),
+            IsEnabled = item.IsEnabled,
+            CommandParameter = item.Id,
+            Command = new Command<string?>(id => MenuCommand?.Execute(id)),
+        };
         return row;
     }
 

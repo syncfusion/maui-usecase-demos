@@ -5,6 +5,8 @@
              xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:models="clr-namespace:DiagramBuilder.Models"
              xmlns:conv="clr-namespace:DiagramBuilder.Converters"
+             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="DiagramBuilder.Views.CreateDiagramPage"
              Title="{Binding Title}"
              BackgroundColor="Transparent">
@@ -52,45 +54,78 @@
                 <!-- Body: category rail + template list -->
                 <Grid Grid.Row="1"
                       ColumnDefinitions="240,*">
-                    <!-- Left category rail: each row is a Button so its VSM supplies the touch
-                         overlay (Pressed). The persistent Selected (active-category) highlight
-                         is driven by a DataTrigger comparing the item label to
-                         SelectedCategoryName, matching the reference design. -->
+                    <!-- Left category rail: Syncfusion SfListView owns selection, so the
+                         active category gets the persistent highlight via SelectedItemTemplate
+                         (no fragile trigger). Each item is a Syncfusion SfButton so the
+                         touch press overlay fires reliably from Android touch events. -->
                     <Border BackgroundColor="{DynamicResource CategoryRailBackground}"
                             StrokeThickness="0"
                             Padding="0,12">
-                        <CollectionView ItemsSource="{Binding Categories}"
-                                        SelectionMode="None">
-                            <CollectionView.ItemTemplate>
+                        <listView:SfListView x:Name="CategoryList"
+                                              ItemsSource="{Binding Categories}"
+                                              SelectionMode="Single"
+                                              SelectedItem="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedCategoryLabel, Mode=TwoWay}"
+                                              ItemSpacing="4">
+                            <listView:SfListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Text="{Binding .}"
-                                            Style="{StaticResource CategoryRailButtonStyle}"
-                                            Margin="8,2,8,2"
-                                            Padding="18,0,18,0"
-                                            CornerRadius="2"
-                                            HeightRequest="44"
-                                            HorizontalOptions="Fill"
-                                            HorizontalContentAlignment="Start"
-                                            FontSize="15"
-                                            BackgroundColor="Transparent"
-                                            BorderWidth="0"
-                                            TextColor="{DynamicResource TextPrimary}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectCategoryCommand}"
-                                            CommandParameter="{Binding .}">
-                                        <Button.Triggers>
-                                            <!-- Persistent highlight for the active category. -->
-                                            <DataTrigger TargetType="Button"
-                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedCategoryName}"
-                                                         Value="{Binding .}">
-                                                <Setter Property="BackgroundColor" Value="#E3F2FD" />
-                                                <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
-                                                <Setter Property="FontAttributes" Value="Bold" />
-                                            </DataTrigger>
-                                        </Button.Triggers>
-                                    </Button>
+                                    <buttons:SfButton Text="{Binding .}"
+                                                      Margin="8,0,8,0"
+                                                      Padding="18,0,18,0"
+                                                      CornerRadius="2"
+                                                      HeightRequest="44"
+                                                      HorizontalOptions="Fill"
+                                                      HorizontalContentAlignment="Start"
+                                                      FontSize="15"
+                                                      Background="Transparent"
+                                                      StrokeThickness="0"
+                                                      EnableRippleEffect="True"
+                                                      TextColor="{DynamicResource TextPrimary}">
+                                        <buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroupList>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="Pressed">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="Background" Value="#E8EAED" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateGroupList>
+                                        </buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                    </buttons:SfButton>
                                 </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                            </listView:SfListView.ItemTemplate>
+                            <listView:SfListView.SelectedItemTemplate>
+                                <DataTemplate>
+                                    <buttons:SfButton Text="{Binding .}"
+                                                      Margin="8,0,8,0"
+                                                      Padding="18,0,18,0"
+                                                      CornerRadius="2"
+                                                      HeightRequest="44"
+                                                      HorizontalOptions="Fill"
+                                                      HorizontalContentAlignment="Start"
+                                                      FontSize="15"
+                                                      FontAttributes="Bold"
+                                                      Background="#E3F2FD"
+                                                      StrokeThickness="0"
+                                                      EnableRippleEffect="True"
+                                                      TextColor="{DynamicResource PrimaryColor}">
+                                        <buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroupList>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="Pressed">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="Background" Value="#BBDEFB" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateGroupList>
+                                        </buttons:SfButton.VisualStateManager.VisualStateGroups>
+                                    </buttons:SfButton>
+                                </DataTemplate>
+                            </listView:SfListView.SelectedItemTemplate>
+                        </listView:SfListView>
                     </Border>
 
                     <!-- Right template panel -->

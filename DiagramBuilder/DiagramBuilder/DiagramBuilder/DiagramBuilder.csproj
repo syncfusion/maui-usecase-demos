@@ -96,6 +96,7 @@
 		<PackageReference Include="Syncfusion.Maui.Expander" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Toolkit" Version="*" />
 		<PackageReference Include="Syncfusion.Maui.Popup" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.ListView" Version="*" />
 	</ItemGroup>
 
 </Project>
