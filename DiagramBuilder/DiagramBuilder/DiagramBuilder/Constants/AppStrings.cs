@@ -39,12 +39,12 @@ public static class AppStrings
     public const string TemplateBlankOrgChartDescription = "Start with an empty organization chart.";
     public const string TemplateCompanyHierarchyDescription = "Executive, director and team reporting tree.";
 
-    // Menus
-    public const string MenuFile = "FILE";
-    public const string MenuEdit = "EDIT";
-    public const string MenuView = "VIEW";
-    public const string MenuArrange = "ARRANGE";
-    public const string MenuWindow = "WINDOW";
+    // Menus (spec §2: mixed-case, regular weight)
+    public const string MenuFile = "File";
+    public const string MenuEdit = "Edit";
+    public const string MenuView = "View";
+    public const string MenuArrange = "Arrange";
+    public const string MenuWindow = "Window";
 
     public const string MenuNew = "New";
     public const string MenuOpen = "Open";

@@ -11,7 +11,7 @@
 
     <!--
       Designer frame per ui-spec.md §1: Canvas | Properties.
-      Rows: title / menu / toolbar / content / status; columns: /* / 320.
+      Rows: blue-chrome(title+menu) / toolbar / content / status; columns: /* / 320.
       Panels collapse to 0 width via WINDOW menu toggles.
 
       The shapes render in the native Syncfusion palette inside the SfDiagram's
@@ -19,46 +19,56 @@
       sibling of the SfDiagram — it lives inside DiagramWorkspaceControl's
       DiagramGrid (hidden, config-only).
     -->
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto"
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
           ColumnDefinitions="Auto,*,Auto"
           Padding="8"
           ColumnSpacing="8">
 
-        <!-- Row 0: title -->
-        <StackLayout Grid.Row="0" Grid.ColumnSpan="3"
-                     Orientation="Horizontal" Spacing="8">
-            <Label Text="{x:Static constants:AppStrings.AppTitle}"
-                   FontSize="20" FontAttributes="Bold"
-                   TextColor="{DynamicResource TextPrimary}"
-                   VerticalOptions="Center" />
-            <Label Text="{Binding DocumentTitle}"
-                   FontSize="13"
-                   TextColor="{DynamicResource TextSecondary}"
-                   VerticalOptions="Center" />
-        </StackLayout>
+        <!-- Row 0: blue chrome — document title on top, menu roots (File/Edit/View/
+             Arrange/Window) on a second line, both left-aligned per the design. -->
+        <VerticalStackLayout Grid.Row="0" Grid.ColumnSpan="3"
+                             BackgroundColor="{DynamicResource PrimaryColor}"
+                             Spacing="0">
+            <Grid ColumnDefinitions="*,Auto"
+                  Padding="12,8,12,2"
+                  HeightRequest="30">
+                <StackLayout Grid.Column="0"
+                             Orientation="Horizontal" Spacing="12"
+                             VerticalOptions="Center">
+                    <Label Text="{x:Static constants:AppStrings.AppTitle}"
+                           FontSize="15" FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center" />
+                    <Label Text="{Binding DocumentTitle}"
+                           FontSize="12"
+                           TextColor="#CCFFFFFF"
+                           VerticalOptions="Center" />
+                </StackLayout>
+            </Grid>
 
-        <!-- Row 1: menu bar -->
-        <controls:MenuBarControl x:Name="MenuBar"
-                                  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                                  ItemsSource="{Binding MenuBar.Roots}"
-                                  MenuCommand="{Binding MenuBar.MenuCommand}" />
+            <!-- Menu bar: File / Edit / View / Arrange / Window pills -->
+            <controls:MenuBarControl x:Name="MenuBar"
+                                      ItemsSource="{Binding MenuBar.Roots}"
+                                      MenuCommand="{Binding MenuBar.MenuCommand}" />
+        </VerticalStackLayout>
 
-        <!-- Row 2: toolbar (collapsible) -->
-        <controls:ToolbarControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+        <!-- Row 1: toolbar (collapsible) -->
+        <controls:ToolbarControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                                  IsVisible="{Binding ShowToolbar}"
                                  ItemsSource="{Binding Toolbar.Items}"
                                  ToolCommand="{Binding Toolbar.ToolCommand}"
+                                 ActiveToolId="{Binding Toolbar.ActiveToolId}"
                                  HasSingleSelection="{Binding Toolbar.HasSingleSelection}"
                                  CurrentZoom="{Binding Zoom.CurrentZoom}"
                                  ZoomLevels="{Binding Zoom.Levels}"
                                  SetZoomCommand="{Binding Zoom.SetZoomLevelCommand}"
                                  ShowPropertiesCommand="{Binding TogglePropertiesCommand}" />
 
-        <!-- Row 3: content area. A single DiagramWorkspaceControl fills the
+        <!-- Row 2: content area. A single DiagramWorkspaceControl fills the
              canvas area; the shape palette is discovered by Syncfusion from
              the SymbolPalette sibling inside the workspace control and renders
              inside the SfDiagram's own webview. -->
-        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
               ColumnDefinitions="*">
             <controls:DiagramWorkspaceControl x:Name="Workspace"
                                                Margin="0" />
@@ -66,13 +76,13 @@
 
         <!-- Properties (right, 320 px, collapsible) -->
         <controls:PropertyPanelControl x:Name="PropertyPanel"
-                                       Grid.Row="3" Grid.Column="2"
+                                       Grid.Row="2" Grid.Column="2"
                                        BindingContext="{Binding PropertyPanel}"
                                        WidthRequest="320"
                                        IsVisible="{Binding Source={x:Reference RootPage}, Path=BindingContext.ShowProperties}" />
 
-        <!-- Row 4: status bar -->
-        <Border Grid.Row="4" Grid.ColumnSpan="3"
+        <!-- Row 3: status bar -->
+        <Border Grid.Row="3" Grid.ColumnSpan="3"
                 Stroke="{DynamicResource PanelBorderBrush}"
                 StrokeThickness="1"
                 BackgroundColor="{DynamicResource PanelBackground}"
