@@ -24,9 +24,13 @@ public partial class MailWorkspaceViewModel : ObservableObject
     [ObservableProperty]
     private bool isEmptyFolder;
 
+    [ObservableProperty]
+    private bool isLoading = true;
+
     public MailWorkspaceViewModel()
     {
         LoadFolder(mailbox.Folders.First());
+        IsLoading = false;
     }
 
     partial void OnSelectedFolderChanged(FolderNode? value)
@@ -47,6 +51,12 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     [RelayCommand]
     void SelectMessage(MailMessage? message) => SelectedMessage = message;
+
+    [RelayCommand]
+    void SelectFolder(FolderNode? folder)
+    {
+        if (folder is not null) SelectedFolder = folder;
+    }
 
     void LoadFolder(FolderNode folder)
     {

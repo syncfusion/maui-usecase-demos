@@ -4,6 +4,7 @@
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.TreeView;assembly=Syncfusion.Maui.TreeView"
              xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:vm="clr-namespace:FluentMail.ViewModels"
+             xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              x:Class="FluentMail.Views.MailWorkspacePage"
              x:DataType="vm:MailWorkspaceViewModel"
              Title="Mail">
@@ -31,36 +32,42 @@
         </Border>
 
         <Border Grid.Row="1" Grid.Column="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
-            <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ItemSpacing="8" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}">
-                <listview:SfListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border Padding="12" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding Sender}" FontAttributes="Bold" />
-                                <Label Text="{Binding Subject}" />
-                                <Label Text="{Binding Preview}" FontSize="12" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </listview:SfListView.ItemTemplate>
-            </listview:SfListView>
+            <Grid>
+                <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ItemSpacing="8" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}">
+                    <listview:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="12" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding Sender}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Subject}" />
+                                    <Label Text="{Binding Preview}" FontSize="12" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </listview:SfListView.ItemTemplate>
+                </listview:SfListView>
+                <controls:StateView IsVisible="{Binding IsEmptyFolder}" />
+            </Grid>
         </Border>
 
         <Border Grid.Row="1" Grid.Column="2" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
-            <ScrollView>
-                <VerticalStackLayout Padding="16" Spacing="10">
-                    <Label Text="{Binding SelectedMessage.Sender}" FontSize="20" FontAttributes="Bold" />
-                    <Label Text="{Binding SelectedMessage.SenderEmail}" />
-                    <Label Text="Recipients" FontAttributes="Bold" />
-                    <Label Text="{Binding SelectedMessage.Recipients}" />
-                    <Label Text="CC" FontAttributes="Bold" />
-                    <Label Text="{Binding SelectedMessage.Cc}" />
-                    <Label Text="Subject" FontAttributes="Bold" />
-                    <Label Text="{Binding SelectedMessage.Subject}" />
-                    <Label Text="Body" FontAttributes="Bold" />
-                    <Label Text="{Binding SelectedMessage.Body}" LineBreakMode="WordWrap" />
-                </VerticalStackLayout>
-            </ScrollView>
+            <Grid>
+                <ScrollView>
+                    <VerticalStackLayout Padding="16" Spacing="10">
+                        <Label Text="{Binding SelectedMessage.Sender}" FontSize="20" FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedMessage.SenderEmail}" />
+                        <Label Text="Recipients" FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedMessage.Recipients}" />
+                        <Label Text="CC" FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedMessage.Cc}" />
+                        <Label Text="Subject" FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedMessage.Subject}" />
+                        <Label Text="Body" FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedMessage.Body}" LineBreakMode="WordWrap" />
+                    </VerticalStackLayout>
+                </ScrollView>
+                <controls:StateView IsVisible="{Binding IsLoading}" />
+            </Grid>
         </Border>
     </Grid>
 </ContentPage>

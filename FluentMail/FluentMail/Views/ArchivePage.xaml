@@ -10,7 +10,7 @@
         <vm:ArchiveViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto,Auto,*" Padding="16" RowSpacing="12">
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="16" RowSpacing="12">
         <Label Text="Archive" FontSize="24" FontAttributes="Bold" />
         <ScrollView Grid.Row="1" Orientation="Horizontal">
             <HorizontalStackLayout Spacing="8">
@@ -20,7 +20,15 @@
                 <Button Text="Flagged" Command="{Binding ApplyFilterCommand}" CommandParameter="Flagged" />
             </HorizontalStackLayout>
         </ScrollView>
-        <Grid Grid.Row="2">
+        <Border Grid.Row="2" BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#1A1D23}" Padding="12">
+            <VerticalStackLayout>
+                <Label Text="Storage used by archive items." />
+                <Label Text="Used Space: 3.4 GB" />
+                <Label Text="Remaining Space: 18.6 GB" />
+                <Label Text="Sync Status: Local sample data" />
+            </VerticalStackLayout>
+        </Border>
+        <Grid Grid.Row="3">
             <listview:SfListView ItemsSource="{Binding VisibleItems}" SelectionMode="Single">
                 <listview:SfListView.ItemTemplate>
                     <DataTemplate>
@@ -29,6 +37,7 @@
                                 <Label Text="{Binding Sender}" FontAttributes="Bold" />
                                 <Label Text="{Binding Subject}" />
                                 <Label Text="{Binding Preview}" FontSize="12" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+                                <Label Text="{Binding ArchivedOn, StringFormat='Archived {0:d}'}" FontSize="12" />
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

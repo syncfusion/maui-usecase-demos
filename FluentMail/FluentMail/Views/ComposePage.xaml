@@ -16,6 +16,7 @@
             <Label Text="Compose mail" FontSize="24" FontAttributes="Bold" />
             <Picker ItemsSource="{Binding Accounts}" SelectedItem="{Binding FromAccount}" />
             <inputs:SfAutocomplete Text="{Binding RecipientSearch}" ItemsSource="{Binding RecipientSuggestions}" SuggestionMode="Contains" DisplayMemberPath="Name" />
+            <Button Text="Add selected recipient" Command="{Binding AddRecipientCommand}" CommandParameter="{Binding RecipientSuggestions[0]}" />
             <listview:SfListView ItemsSource="{Binding RecipientChips}" HeightRequest="90" />
             <Entry Text="{Binding Subject}" Placeholder="Subject" />
             <Editor Text="{Binding Body}" AutoSize="TextChanges" HeightRequest="180" />
