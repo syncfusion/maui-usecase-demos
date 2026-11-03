@@ -76,17 +76,20 @@ public sealed class TaskSchedulingFlyout : ContentView
             HeightRequest = 280,
             BackgroundColor = Colors.Transparent
         };
-        picker.SelectedDateChanged += (_, e) =>
+        picker.SetBinding(SfDateTimePicker.SelectedDateProperty, new Binding(
+            _isReminder ? nameof(NotesListViewModel.DraftReminderDate) : nameof(NotesListViewModel.DraftDueDate),
+            mode: BindingMode.TwoWay,
+            source: _viewModel));
+        picker.PropertyChanged += (_, e) =>
         {
-            _selectedDateTime = e.NewValue;
-            if (_viewModel is null)
+            if (e.PropertyName != nameof(SfDateTimePicker.SelectedDate) || _viewModel is null)
                 return;
 
-            if (_isReminder)
-                _viewModel.SetDraftReminderDate(_selectedDateTime);
-            else
-                _viewModel.SetDraftDueDate(_selectedDateTime);
+            var value = picker.SelectedDate;
+            if (value is null)
+                return;
 
+            _selectedDateTime = value.Value;
             _datePopup.Dismiss();
         };
 
@@ -115,8 +118,9 @@ public sealed class TaskSchedulingFlyout : ContentView
         Grid.SetColumn(closeButton, 1);
 
         content.Children.Add(header);
-        content.Children.Add(new BoxView { HeightRequest = 1, Color = Color.FromArgb("#E9E5EE"), Margin = new Thickness(0, 14) });
-        Grid.SetRow(content.Children[^1], 1);
+        var divider = new BoxView { HeightRequest = 1, Color = Color.FromArgb("#E9E5EE"), Margin = new Thickness(0, 14) };
+        content.Children.Add(divider);
+        Grid.SetRow(divider, 1);
         content.Children.Add(picker);
         Grid.SetRow(picker, 2);
         content.Children.Add(clearButton);
