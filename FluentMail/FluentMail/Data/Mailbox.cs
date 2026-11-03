@@ -13,6 +13,15 @@ public class Mailbox
     public ObservableCollection<MailMessage> Deleted { get; } = [];
     public ObservableCollection<AttachmentInfo> Attachments { get; } = [];
 
+    public void RefreshCounts()
+    {
+        Folders[0].Count = Inbox.Count;
+        Folders[1].Count = SentItems.Count;
+        Folders[2].Count = Drafts.Count;
+        Folders[3].Count = Archive.Count;
+        Folders[4].Count = Deleted.Count;
+    }
+
     public IEnumerable<MailMessage> GetMessages(string folder) => folder switch
     {
         "Inbox" => Inbox,

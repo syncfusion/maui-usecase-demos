@@ -46,16 +46,8 @@ public static class MockData
             mailbox.Deleted.Add(new MailMessage { Id = $"deleted-{i}", Folder = "Deleted", Sender = $"Deleted Sender {i}", SenderEmail = $"deleted{i}@contoso.com", Subject = $"Deleted thread {i}", Preview = $"Deleted preview {i}.", Body = $"Deleted body {i}.", Recipients = $"contact{i % 10 + 1}@contoso.com", Status = "Deleted", HasAttachments = i % 3 == 0 });
 
         mailbox.Attachments.Add(new AttachmentInfo { FileName = "Proposal.pdf", FileType = "PDF", FileSize = 218000 });
-        UpdateCounts(mailbox);
+        mailbox.RefreshCounts();
         return mailbox;
     }
 
-    public static void UpdateCounts(Mailbox mailbox)
-    {
-        mailbox.Folders[0].Count = mailbox.Inbox.Count;
-        mailbox.Folders[1].Count = mailbox.SentItems.Count;
-        mailbox.Folders[2].Count = mailbox.Drafts.Count;
-        mailbox.Folders[3].Count = mailbox.Archive.Count;
-        mailbox.Folders[4].Count = mailbox.Deleted.Count;
-    }
 }

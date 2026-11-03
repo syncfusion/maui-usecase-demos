@@ -1,8 +1,14 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace FluentMail.Models;
 
-public class FolderNode
+public partial class FolderNode : ObservableObject
 {
-    public string Name { get; set; } = string.Empty;
-    public int Count { get; set; }
+    [ObservableProperty]
+    private string name = string.Empty;
+
+    [ObservableProperty]
+    private int count;
+
     public List<FolderNode> Children { get; set; } = [];
 }
