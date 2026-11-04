@@ -17,25 +17,15 @@ public class Mailbox
 
     public void RefreshCounts()
     {
-        if (Folders.Count < 2)
+        foreach (var root in Folders)
         {
-            return;
+            root.Count = root.Children.Count == 0 ? CountFor(root.Name) : root.Children.Sum(child => CountFor(child.Name));
         }
 
-        var favorites = Folders[0];
-        var account = Folders[1];
-
-        favorites.Count = 0;
-        account.Count = 0;
-
-        var favoriteFolders = new[] { "Inbox", "Sales Reports", "Personnel", "Marketing Reports", "Sent Items" };
-        var accountFolders = new[] { "Inbox", "Clutter", "Drafts", "Sent Items", "Deleted Items", "Archive", "Junk Mail", "Personnel", "Sales Reports", "Marketing Reports" };
-
-        foreach (var folder in favoriteFolders)
+        foreach (var folder in new[] { "Inbox", "Clutter", "Drafts", "Sent Items", "Deleted Items", "Archive", "Junk Mail", "Personnel", "Sales Reports", "Marketing Reports", "My Team", "Trash", "Outbox" })
+        {
             SetCount(folder, CountFor(folder));
-
-        foreach (var folder in accountFolders)
-            SetCount(folder, CountFor(folder));
+        }
     }
 
     int CountFor(string folder) => folder switch
