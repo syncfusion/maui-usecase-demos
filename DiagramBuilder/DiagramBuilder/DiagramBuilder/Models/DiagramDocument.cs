@@ -13,6 +13,9 @@ public class DiagramDocument
 
     public DiagramCategory Category { get; set; }
 
+    /// <summary>Optional layout configuration (from template or user-set).</summary>
+    public DiagramLayoutTemplate? Layout { get; set; }
+
     public ObservableCollection<ShapeItem> Items { get; } = [];
 
     public ObservableCollection<ConnectorItem> Connectors { get; } = [];
