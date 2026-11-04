@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Windows.Input;
 using DiagramBuilder.Constants;
-using DiagramToolbarItem = DiagramBuilder.Models.ToolbarItem;
+using DiagramBuilder.Models;
+using DiagramBuilder.Services;
 using Microsoft.Maui.Controls.Shapes;
 using Syncfusion.Maui.Buttons;
 using Syncfusion.Maui.Inputs;
@@ -10,10 +11,8 @@ using Syncfusion.Maui.Popup;
 namespace DiagramBuilder.Controls;
 
 /// <summary>
-/// Toolbar (ui-spec.md §3). Binds to the toolbar items (ItemsSource); renders
-/// grouped actions, flyouts for shapes/connectors, a zoom dropdown, and hides
-/// group 6 unless <see cref="HasSingleSelection"/>.
-/// Code-behind dispatches tool ids via <see cref="ToolCommand"/>.
+/// Simplified toolbar matching expected design (ui-spec.md §3).
+/// Layout: [Undo|Redo] [Pan|Select] [Shapes▼] [Connector▼] [Text] [Fill] [Stroke] [Arrange▼] [Zoom%▼] [Properties]
 /// </summary>
 public partial class ToolbarControl : ContentView
 {
@@ -25,8 +24,7 @@ public partial class ToolbarControl : ContentView
         BindableProperty.Create(nameof(ToolCommand), typeof(ICommand), typeof(ToolbarControl));
 
     public static readonly BindableProperty HasSingleSelectionProperty =
-        BindableProperty.Create(nameof(HasSingleSelection), typeof(bool), typeof(ToolbarControl), false,
-            propertyChanged: OnHasSingleSelectionChanged);
+        BindableProperty.Create(nameof(HasSingleSelection), typeof(bool), typeof(ToolbarControl), false);
 
     public static readonly BindableProperty CurrentZoomProperty =
         BindableProperty.Create(nameof(CurrentZoom), typeof(double), typeof(ToolbarControl), 1.0d,
@@ -45,16 +43,13 @@ public partial class ToolbarControl : ContentView
         BindableProperty.Create(nameof(ActiveToolId), typeof(string), typeof(ToolbarControl),
             string.Empty, propertyChanged: OnActiveToolIdChanged);
 
+    public static readonly BindableProperty SelectedElementIdProperty =
+        BindableProperty.Create(nameof(SelectedElementId), typeof(string), typeof(ToolbarControl));
+
     public IEnumerable? ItemsSource
     {
         get => (IEnumerable?)GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
-    }
-
-    public string ActiveToolId
-    {
-        get => (string)GetValue(ActiveToolIdProperty);
-        set => SetValue(ActiveToolIdProperty, value);
     }
 
     public ICommand? ToolCommand
@@ -93,12 +88,27 @@ public partial class ToolbarControl : ContentView
         set => SetValue(ShowPropertiesCommandProperty, value);
     }
 
-    // Toggle buttons that carry the active-tool highlight (Pan / Selection).
+    public string ActiveToolId
+    {
+        get => (string)GetValue(ActiveToolIdProperty);
+        set => SetValue(ActiveToolIdProperty, value);
+    }
+
+    public string? SelectedElementId
+    {
+        get => (string?)GetValue(SelectedElementIdProperty);
+        set => SetValue(SelectedElementIdProperty, value);
+    }
+
     private readonly Dictionary<string, Button> _toggleButtons = new();
+    private string _fillColorKey = "AccentFlow";
+    private string _strokeColorKey = "TextPrimary";
+    private IPropertyService? _propertyService;
 
     public ToolbarControl()
     {
         InitializeComponent();
+        _propertyService = ServiceProvider.GetService<IPropertyService>();
     }
 
     private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
@@ -135,156 +145,189 @@ public partial class ToolbarControl : ContentView
         }
     }
 
-    private static void OnHasSingleSelectionChanged(BindableObject bindable, object oldValue, object newValue)
-    {
-        if (bindable is ToolbarControl tb)
-        {
-            tb.ApplyGroup6Visibility();
-        }
-    }
-
     private void Rebuild()
     {
         LeftGroupsBar.Children.Clear();
         RightGroupsBar.Children.Clear();
         _toggleButtons.Clear();
+
         if (ItemsSource is null)
-        {
             return;
-        }
 
-        var byGroup = ((IEnumerable)ItemsSource).Cast<DiagramToolbarItem>()
-            .GroupBy(i => i.Group)
-            .OrderBy(g => g.Key)
-            .ToList();
+        var items = ((IEnumerable)ItemsSource).Cast<DiagramToolbarItem>().ToList();
 
-        var firstLeft = true;
-        foreach (var group in byGroup.Where(g => g.Key <= 6))
-        {
-            if (!firstLeft)
-            {
-                LeftGroupsBar.Children.Add(new BoxView { Style = (Style)Resources["ToolbarGroupDividerStyle"] });
-            }
-            firstLeft = false;
-            LeftGroupsBar.Children.Add(BuildGroupLayout(group));
-        }
+        // Left side: Groups 1-6 (main toolbar items)
+        BuildLeftToolbar(items);
 
-        if (byGroup.Any(g => g.Key <= 6) && (byGroup.Any(g => g.Key == 7) || byGroup.Any(g => g.Key == 8)))
-        {
-            RightGroupsBar.Children.Add(new BoxView { Style = (Style)Resources["ToolbarGroupDividerStyle"] });
-        }
+        // Right side: Groups 7-8 (zoom + properties)
+        BuildRightToolbar(items);
 
-        if (byGroup.Any(g => g.Key == 7))
-        {
-            RightGroupsBar.Children.Add(BuildZoomDropdown());
-        }
-
-        if (byGroup.Any(g => g.Key == 8))
-        {
-            RightGroupsBar.Children.Add(BuildPropertiesButton());
-        }
-
-        ApplyGroup6Visibility();
         ApplyActiveToolHighlight();
     }
 
-    private View BuildGroupLayout(IGrouping<int, DiagramToolbarItem> group)
+    private void BuildLeftToolbar(List<DiagramToolbarItem> allItems)
     {
-        var groupLayout = new HorizontalStackLayout
-        {
-            Spacing = 0,
-            AutomationId = "group_" + group.Key,
-        };
+        var byGroup = allItems.GroupBy(i => i.Group).OrderBy(g => g.Key).ToList();
 
-        if (group.Key == 3)
+        // Group 1: Undo/Redo
+        if (byGroup.Any(g => g.Key == 1))
         {
-            groupLayout.Children.Add(BuildGroup3Flyout());
+            LeftGroupsBar.Children.Add(BuildGroup(byGroup.First(g => g.Key == 1)));
+            LeftGroupsBar.Children.Add(BuildDivider());
         }
-        else if (group.Key == 4)
+
+        // Group 2: Pan/Select
+        if (byGroup.Any(g => g.Key == 2))
         {
-            groupLayout.Children.Add(BuildGroup4Flyout());
+            LeftGroupsBar.Children.Add(BuildGroup(byGroup.First(g => g.Key == 2)));
+            LeftGroupsBar.Children.Add(BuildDivider());
         }
-        else
+
+        // Group 3: Shapes (flyout)
+        if (byGroup.Any(g => g.Key == 3))
         {
-            foreach (var item in group.OrderBy(i => i.Id))
+            LeftGroupsBar.Children.Add(BuildShapesFlyout());
+            LeftGroupsBar.Children.Add(BuildDivider());
+        }
+
+        // Group 4: Connectors (flyout)
+        if (byGroup.Any(g => g.Key == 4))
+        {
+            LeftGroupsBar.Children.Add(BuildConnectorsFlyout());
+            LeftGroupsBar.Children.Add(BuildDivider());
+        }
+
+        // Group 5: Text + Colors
+        if (byGroup.Any(g => g.Key == 5))
+        {
+            var group5Items = byGroup.First(g => g.Key == 5).ToList();
+            foreach (var item in group5Items.OrderBy(x => x.Id))
             {
-                groupLayout.Children.Add(BuildGroupItem(item));
+                if (item.Id == AppConstants.ToolText)
+                {
+                    LeftGroupsBar.Children.Add(BuildIconButton(item));
+                }
+                else if (item.Id == "tool.stroke.color")
+                {
+                    LeftGroupsBar.Children.Add(BuildStrokeColorSwatch());
+                }
+                else if (item.Id == "tool.fill.color")
+                {
+                    LeftGroupsBar.Children.Add(BuildFillColorSwatch());
+                }
             }
+            LeftGroupsBar.Children.Add(BuildDivider());
         }
 
-        return groupLayout;
-    }
-
-    private void ApplyGroup6Visibility()
-    {
-        foreach (var child in LeftGroupsBar.Children)
+        // Group 6: Arrange dropdown (selection-only)
+        if (HasSingleSelection && byGroup.Any(g => g.Key == 6))
         {
-            if (child is HorizontalStackLayout groupLayout && groupLayout.AutomationId == "group_6")
-            {
-                groupLayout.IsVisible = HasSingleSelection;
-            }
+            LeftGroupsBar.Children.Add(BuildArrangeDropdown());
+            LeftGroupsBar.Children.Add(BuildDivider());
         }
     }
 
-    private View BuildGroupItem(DiagramToolbarItem item)
+    private void BuildRightToolbar(List<DiagramToolbarItem> allItems)
     {
-        if (item.Id is "tool.fill.color" or "tool.stroke.color")
-        {
-            return BuildColorSwatchButton(item);
-        }
+        // Group 7: Zoom dropdown
+        RightGroupsBar.Children.Add(BuildZoomDropdown());
 
-        return BuildIconButton(item);
-    }
-
-    private View BuildGroup3Flyout()
-    {
-        var subItems = new List<MenuCommandItem>
+        // Group 8: Properties button
+        var btn = new Button
         {
-            new() { Id = "tool.shape.rectangle", TextKey = AppStrings.ToolbarRectangle },
-            new() { Id = "tool.shape.ellipse", TextKey = AppStrings.ToolbarEllipse },
-            new() { Id = "tool.shape.polygon", TextKey = AppStrings.ToolbarPolygon },
+            Text = "☰",
+            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            AutomationId = "toolbar_properties",
         };
-        return BuildFlyoutButton("tool.shape", AppStrings.ToolbarBasicShapes, subItems);
+        btn.Clicked += (_, _) => ShowPropertiesCommand?.Execute(null);
+        RightGroupsBar.Children.Add(btn);
     }
 
-    private View BuildGroup4Flyout()
+    private HorizontalStackLayout BuildGroup(IGrouping<int, DiagramToolbarItem> group)
     {
-        var subItems = new List<MenuCommandItem>
+        var layout = new HorizontalStackLayout { Spacing = 0 };
+        foreach (var item in group.OrderBy(x => x.Id))
         {
-            new() { Id = AppConstants.ToolConnectorStraight, TextKey = AppStrings.ToolbarStraightConnector },
-            new() { Id = AppConstants.ToolConnectorOrthogonal, TextKey = AppStrings.ToolbarOrthogonalConnector },
-            new() { Id = AppConstants.ToolConnectorBezier, TextKey = AppStrings.ToolbarBezierConnector },
-        };
-        return BuildFlyoutButton("tool.connector", AppStrings.ToolbarConnectors, subItems);
+            layout.Children.Add(BuildIconButton(item));
+        }
+        return layout;
     }
 
-    private View BuildColorSwatchButton(DiagramToolbarItem item)
+    private View BuildDivider()
     {
-        var defaultColor = item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary";
-        var fillColor = Services.ResourceLookup.ResourceColor(defaultColor);
+        return new BoxView
+        {
+            Style = (Style)Resources["ToolbarGroupDividerStyle"]
+        };
+    }
+
+    private Button BuildIconButton(DiagramToolbarItem item)
+    {
+        var btn = new Button
+        {
+            Text = GlyphFor(item.Id),
+            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
+        };
+
+        if (item.IsToggle)
+        {
+            _toggleButtons[item.Id] = btn;
+        }
+
+        btn.Clicked += (_, _) => ToolCommand?.Execute(item.Id);
+        return btn;
+    }
+
+    private View BuildFillColorSwatch()
+    {
         var swatch = new Border
         {
             Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
             StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = 4 },
-            WidthRequest = 28,
-            HeightRequest = 28,
-            BackgroundColor = fillColor,
+            StrokeShape = new RoundRectangle { CornerRadius = 2 },
+            WidthRequest = 20,
+            HeightRequest = 20,
+            BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White),
             VerticalOptions = LayoutOptions.Center,
-            Margin = new Thickness(4, 6),
-            AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
+            Margin = new Thickness(4, 8),
+            AutomationId = "toolbar_fill_color",
         };
 
-        string pendingColorKey = item.Id == "tool.fill.color" ? "AccentFlow" : (item.Id == "tool.stroke.color" ? "TextPrimary" : "AccentFlow");
+        var tap = new TapGestureRecognizer();
+        tap.Tapped += (_, _) => ShowFillColorPicker(swatch);
+        swatch.GestureRecognizers.Add(tap);
+        return swatch;
+    }
+
+    private View BuildStrokeColorSwatch()
+    {
+        var swatch = new Border
+        {
+            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
+            StrokeThickness = 1,
+            StrokeShape = new RoundRectangle { CornerRadius = 2 },
+            WidthRequest = 20,
+            HeightRequest = 20,
+            BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White),
+            VerticalOptions = LayoutOptions.Center,
+            Margin = new Thickness(4, 8),
+            AutomationId = "toolbar_stroke_color",
+        };
+
+        var tap = new TapGestureRecognizer();
+        tap.Tapped += (_, _) => ShowStrokeColorPicker(swatch);
+        swatch.GestureRecognizers.Add(tap);
+        return swatch;
+    }
+
+    private void ShowFillColorPicker(Border swatch)
+    {
         var picker = new SfColorPicker
         {
             ColorMode = ColorPickerMode.Spectrum,
             ShowAlphaSlider = true,
             ShowInputArea = true,
-        };
-        picker.ColorChanged += (_, args) =>
-        {
-            pendingColorKey = FindNearestKey(args.NewColor ?? Colors.White);
         };
 
         SfPopup? popup = null;
@@ -299,190 +342,165 @@ public partial class ToolbarControl : ContentView
             DeclineButtonText = "Cancel",
             AcceptCommand = new Command(() =>
             {
-                ApplyToSwatch(swatch, pendingColorKey);
-                ToolCommand?.Execute(item.Id);
+                var newColor = picker.SelectedColor ?? Colors.White;
+                _fillColorKey = FindNearestKey(newColor);
+                swatch.BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White);
+                
+                // Apply the color to the selected element
+                if (!string.IsNullOrEmpty(SelectedElementId) && _propertyService is not null)
+                {
+                    var property = new PropertyModel
+                    {
+                        Key = "FillColor",
+                        Value = _fillColorKey,
+                        Group = PropertyGroup.Fill,
+                    };
+                    _propertyService.Apply(SelectedElementId, property);
+                }
+                
+                popup!.IsOpen = false;
             }),
-            DeclineCommand = new Command(() => { }),
+            DeclineCommand = new Command(() => popup!.IsOpen = false),
         };
 
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) =>
-        {
-            PopupXamlRootHelper.AttachIfAvailable(popup, swatch);
-            popup.ShowRelativeToView(swatch, PopupRelativePosition.AlignBottomLeft);
-        };
-        swatch.GestureRecognizers.Add(tap);
-        return swatch;
+        PopupXamlRootHelper.AttachIfAvailable(popup, swatch);
+        popup.ShowRelativeToView(swatch, PopupRelativePosition.AlignBottomLeft);
     }
 
-    private static void ApplyToSwatch(Border swatch, string key)
+    private void ShowStrokeColorPicker(Border swatch)
     {
-        swatch.BackgroundColor = Services.ResourceLookup.Color(key, Colors.White);
-    }
-
-    private Button BuildIconButton(DiagramToolbarItem item)
-    {
-        var btn = new Button
+        var picker = new SfColorPicker
         {
-            Text = GlyphFor(item.Id),
-            Style = item.Id == AppConstants.CmdShowProperties
-                ? (Style)Application.Current!.Resources["ToolbarPrimaryActionStyle"]
-                : (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
-            AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
+            ColorMode = ColorPickerMode.Spectrum,
+            ShowAlphaSlider = true,
+            ShowInputArea = true,
         };
-        AutomationProperties.SetHelpText(btn, item.TooltipKey);
 
-        if (item.IsToggle && item.Id != AppConstants.CmdShowProperties)
+        SfPopup? popup = null;
+        popup = new SfPopup
         {
-            _toggleButtons[item.Id] = btn;
-            btn.Style = string.Equals(item.Id, ActiveToolId, StringComparison.Ordinal)
-                ? (Style)Application.Current!.Resources["ToolbarIconActiveStyle"]
-                : (Style)Application.Current!.Resources["ToolbarIconButtonStyle"];
-        }
+            ContentTemplate = new DataTemplate(() => picker),
+            ShowHeader = false,
+            ShowFooter = true,
+            ShowCloseButton = false,
+            AppearanceMode = PopupButtonAppearanceMode.TwoButton,
+            AcceptButtonText = "Apply",
+            DeclineButtonText = "Cancel",
+            AcceptCommand = new Command(() =>
+            {
+                var newColor = picker.SelectedColor ?? Colors.White;
+                _strokeColorKey = FindNearestKey(newColor);
+                swatch.BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White);
+                
+                // Apply the color to the selected element
+                if (!string.IsNullOrEmpty(SelectedElementId) && _propertyService is not null)
+                {
+                    var property = new PropertyModel
+                    {
+                        Key = "BorderColor",
+                        Value = _strokeColorKey,
+                        Group = PropertyGroup.Border,
+                    };
+                    _propertyService.Apply(SelectedElementId, property);
+                }
+                
+                popup!.IsOpen = false;
+            }),
+            DeclineCommand = new Command(() => popup!.IsOpen = false),
+        };
 
-        if (item.Id == AppConstants.CmdShowProperties)
-        {
-            btn.Clicked += (_, _) => ShowPropertiesCommand?.Execute(null);
-        }
-        else
-        {
-            btn.Clicked += (_, _) => ToolCommand?.Execute(item.Id);
-        }
-
-        return btn;
+        PopupXamlRootHelper.AttachIfAvailable(popup, swatch);
+        popup.ShowRelativeToView(swatch, PopupRelativePosition.AlignBottomLeft);
     }
 
-    private View BuildZoomDropdown()
+    private View BuildShapesFlyout()
+    {
+        var subItems = new List<MenuCommandItem>
+        {
+            new() { Id = "tool.shape.rectangle", TextKey = AppStrings.ToolbarRectangle },
+            new() { Id = "tool.shape.ellipse", TextKey = AppStrings.ToolbarEllipse },
+            new() { Id = "tool.shape.polygon", TextKey = AppStrings.ToolbarPolygon },
+        };
+        return BuildFlyoutDropdown("tool.shape", AppStrings.ToolbarBasicShapes, subItems);
+    }
+
+    private View BuildConnectorsFlyout()
+    {
+        var subItems = new List<MenuCommandItem>
+        {
+            new() { Id = AppConstants.ToolConnectorStraight, TextKey = AppStrings.ToolbarStraightConnector },
+            new() { Id = AppConstants.ToolConnectorOrthogonal, TextKey = AppStrings.ToolbarOrthogonalConnector },
+            new() { Id = AppConstants.ToolConnectorBezier, TextKey = AppStrings.ToolbarBezierConnector },
+        };
+        return BuildFlyoutDropdown("tool.connector", AppStrings.ToolbarConnectors, subItems);
+    }
+
+    private View BuildArrangeDropdown()
+    {
+        var subItems = new List<MenuCommandItem>
+        {
+            new() { Id = AppConstants.CmdSendToBack, TextKey = AppStrings.ToolbarArrangeObject },
+            new() { Id = AppConstants.CmdBringToFront, TextKey = AppStrings.ToolbarArrangeObject },
+            new() { Id = AppConstants.CmdSendBackward, TextKey = AppStrings.ToolbarArrangeObject },
+            new() { Id = AppConstants.CmdBringForward, TextKey = AppStrings.ToolbarArrangeObject },
+        };
+        return BuildFlyoutDropdown("arrange", "Arrange", subItems);
+    }
+
+    private View BuildFlyoutDropdown(string id, string headerKey, List<MenuCommandItem> items)
     {
         SfPopup? popup = null;
         popup = new SfPopup
         {
-            ContentTemplate = new DataTemplate(() => BuildZoomPopupContent(popup!)),
+            ContentTemplate = new DataTemplate(() => BuildFlyoutContent(items, popup!)),
             ShowHeader = false,
             ShowFooter = false,
             ShowCloseButton = false,
             StaysOpen = false,
         };
 
-        var button = BuildDropdownButton(CurrentZoomLabel(), null, "toolbar_zoom_dropdown");
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) =>
+        var button = new Button
+        {
+            Text = GlyphFor(id) + " ▼",
+            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            AutomationId = "toolbar_" + id.Replace('.', '_'),
+        };
+
+        button.Clicked += (_, _) =>
         {
             PopupXamlRootHelper.AttachIfAvailable(popup, button);
             popup.ShowRelativeToView(button, PopupRelativePosition.AlignBottomLeft);
         };
-        button.GestureRecognizers.Add(tap);
+
         return button;
     }
 
-    private View BuildPropertiesButton()
-    {
-        var btn = new Button
-        {
-            Text = GlyphFor(AppConstants.CmdShowProperties),
-            Style = (Style)Application.Current!.Resources["ToolbarPrimaryActionStyle"],
-            AutomationId = "toolbar_" + AppConstants.CmdShowProperties.Replace('.', '_'),
-        };
-        AutomationProperties.SetHelpText(btn, AppConstants.CmdShowProperties);
-        btn.Clicked += (_, _) => ShowPropertiesCommand?.Execute(null);
-        return btn;
-    }
-
-    private View BuildFlyoutButton(string id, string headerKey, IList<MenuCommandItem> subItems)
-    {
-        SfPopup? popup = null;
-        popup = new SfPopup
-        {
-            ContentTemplate = new DataTemplate(() => BuildFlyoutContent(subItems, popup!)),
-            ShowHeader = false,
-            ShowFooter = false,
-            ShowCloseButton = false,
-            StaysOpen = false,
-        };
-
-        var button = BuildDropdownButton(null, GlyphFor(id), "toolbar_" + id.Replace('.', '_'));
-        AutomationProperties.SetHelpText(button, headerKey);
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) =>
-        {
-            PopupXamlRootHelper.AttachIfAvailable(popup, button);
-            popup.ShowRelativeToView(button, PopupRelativePosition.AlignBottomLeft);
-        };
-        button.GestureRecognizers.Add(tap);
-        return button;
-    }
-
-    private Border BuildDropdownButton(string? text, string? icon, string automationId)
-    {
-        var content = new HorizontalStackLayout
-        {
-            Spacing = 2,
-            VerticalOptions = LayoutOptions.Center,
-            HorizontalOptions = LayoutOptions.Center,
-            Padding = new Thickness(0),
-        };
-
-        if (!string.IsNullOrEmpty(icon))
-        {
-            content.Children.Add(new Label
-            {
-                Text = icon,
-                FontSize = 13,
-                TextColor = Application.Current!.Resources.TryGetValue("TextPrimary", out var iconColor) && iconColor is Color c1 ? c1 : Colors.Black,
-                VerticalTextAlignment = TextAlignment.Center,
-                Margin = new Thickness(0),
-            });
-        }
-
-        if (!string.IsNullOrEmpty(text))
-        {
-            content.Children.Add(new Label
-            {
-                Text = text,
-                FontSize = 12,
-                TextColor = Application.Current!.Resources.TryGetValue("TextPrimary", out var textColor) && textColor is Color c2 ? c2 : Colors.Black,
-                VerticalTextAlignment = TextAlignment.Center,
-                Margin = new Thickness(0),
-            });
-        }
-
-        // Smaller chevron for the dropdown indicator
-        content.Children.Add(new Label
-        {
-            Text = "▼",
-            FontSize = 8,
-            TextColor = Application.Current!.Resources.TryGetValue("TextSecondary", out var chevronColor) && chevronColor is Color c3 ? c3 : Colors.Gray,
-            VerticalTextAlignment = TextAlignment.Center,
-            Margin = new Thickness(1, 0, 0, 0),
-        });
-
-        return new Border
-        {
-            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = 4 },
-            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
-            HeightRequest = 32,
-            MinimumWidthRequest = string.IsNullOrEmpty(text) ? 40 : 70,
-            Padding = new Thickness(8, 6),
-            Margin = new Thickness(4, 6),
-            AutomationId = automationId,
-            Content = content,
-            VerticalOptions = LayoutOptions.Center,
-        };
-    }
-
-    private View BuildFlyoutContent(IList<MenuCommandItem> subItems, SfPopup popup)
+    private View BuildFlyoutContent(List<MenuCommandItem> items, SfPopup popup)
     {
         var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(4) };
 
-        foreach (var child in subItems)
+        foreach (var item in items)
         {
-            stack.Children.Add(BuildPopupRow(child.TextKey, GlyphFor(child.Id), () =>
+            var row = new SfButton
             {
-                ToolCommand?.Execute(child.Id);
-                popup.IsOpen = false;
-            }));
+                Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+                Padding = new Thickness(8, 6),
+                HeightRequest = 32,
+                Command = new Command(() =>
+                {
+                    ToolCommand?.Execute(item.Id);
+                    popup.IsOpen = false;
+                }),
+                Content = new DataTemplate(() => new Label
+                {
+                    Text = item.TextKey,
+                    FontSize = 12,
+                    TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                    VerticalTextAlignment = TextAlignment.Center,
+                    Margin = new Thickness(8, 0),
+                }),
+            };
+            stack.Children.Add(row);
         }
 
         return new Border
@@ -495,7 +513,35 @@ public partial class ToolbarControl : ContentView
         };
     }
 
-    private View BuildZoomPopupContent(SfPopup popup)
+    private View BuildZoomDropdown()
+    {
+        SfPopup? popup = null;
+        popup = new SfPopup
+        {
+            ContentTemplate = new DataTemplate(() => BuildZoomContent(popup!)),
+            ShowHeader = false,
+            ShowFooter = false,
+            ShowCloseButton = false,
+            StaysOpen = false,
+        };
+
+        var button = new Button
+        {
+            Text = Math.Round(CurrentZoom * 100).ToString("0") + "% ▼",
+            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            AutomationId = "toolbar_zoom",
+        };
+
+        button.Clicked += (_, _) =>
+        {
+            PopupXamlRootHelper.AttachIfAvailable(popup, button);
+            popup.ShowRelativeToView(button, PopupRelativePosition.AlignBottomLeft);
+        };
+
+        return button;
+    }
+
+    private View BuildZoomContent(SfPopup popup)
     {
         var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(4) };
 
@@ -504,15 +550,28 @@ public partial class ToolbarControl : ContentView
             foreach (var level in ZoomLevels)
             {
                 if (level is not ZoomLevel zl)
-                {
                     continue;
-                }
 
-                stack.Children.Add(BuildPopupRow(zl.LabelKey, null, () =>
+                var row = new SfButton
                 {
-                    SetZoomCommand?.Execute(zl);
-                    popup.IsOpen = false;
-                }));
+                    Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+                    Padding = new Thickness(8, 6),
+                    HeightRequest = 32,
+                    Command = new Command(() =>
+                    {
+                        SetZoomCommand?.Execute(zl);
+                        popup.IsOpen = false;
+                    }),
+                    Content = new DataTemplate(() => new Label
+                    {
+                        Text = zl.LabelKey,
+                        FontSize = 12,
+                        TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                        VerticalTextAlignment = TextAlignment.Center,
+                        Margin = new Thickness(8, 0),
+                    }),
+                };
+                stack.Children.Add(row);
             }
         }
 
@@ -526,61 +585,18 @@ public partial class ToolbarControl : ContentView
         };
     }
 
-    private View BuildPopupRow(string label, string? icon, Action onTap)
+    private static string GlyphFor(string id) => id switch
     {
-        var row = new SfButton
-        {
-            Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
-            Padding = new Thickness(8, 6),
-            HeightRequest = 32,
-            Command = new Command(onTap),
-            Content = new DataTemplate(() => BuildPopupRowContent(label, icon)),
-        };
-        return row;
-    }
-
-    private View BuildPopupRowContent(string label, string? icon)
-    {
-        var row = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection(new[]
-            {
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-            }),
-            ColumnSpacing = 8,
-            VerticalOptions = LayoutOptions.Center,
-        };
-
-        if (!string.IsNullOrEmpty(icon))
-        {
-            row.Add(new Label
-            {
-                Text = icon,
-                FontSize = 13,
-                TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
-                VerticalTextAlignment = TextAlignment.Center,
-            });
-        }
-
-        var textLabel = new Label
-        {
-            Text = label,
-            VerticalTextAlignment = TextAlignment.Center,
-            FontSize = 13,
-            TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
-        };
-        row.Add(textLabel);
-        Grid.SetColumn(textLabel, 1);
-
-        return row;
-    }
-
-    private string CurrentZoomLabel()
-    {
-        var percent = Math.Round(CurrentZoom * 100.0);
-        return percent.ToString("0") + "%";
-    }
+        AppConstants.CmdUndo => "↶",
+        AppConstants.CmdRedo => "↷",
+        AppConstants.ToolPan => "✋",
+        AppConstants.ToolSelect => "↗",
+        "tool.shape" => "◯",
+        "tool.connector" => "→",
+        AppConstants.ToolText => "T",
+        "arrange" => "≡",
+        _ => "□",
+    };
 
     private static string FindNearestKey(Color color)
     {
@@ -597,37 +613,6 @@ public partial class ToolbarControl : ContentView
                 bestKey = key;
             }
         }
-
         return bestKey;
     }
-
-    private static string GlyphFor(string id) => id switch
-    {
-        AppConstants.CmdUndo => "\u21B6",
-        AppConstants.CmdRedo => "\u21B7",
-        AppConstants.ToolPan => "\u270B",
-        AppConstants.ToolSelect => "\u2197",
-        "tool.shape" => "\u25EF",
-        "tool.shape.rectangle" => "\u25AD",
-        "tool.shape.ellipse" => "\u25EF",
-        "tool.shape.polygon" => "\u25B3",
-        "tool.connector" => "\u279C",
-        AppConstants.ToolConnectorStraight => "\u2500",
-        AppConstants.ToolConnectorOrthogonal => "\u21AA",
-        AppConstants.ToolConnectorBezier => "\u223C",
-        AppConstants.ToolText => "T",
-        "tool.stroke.color" => "\u270F",
-        "tool.fill.color" => "\u2B22",
-        "tool.border.color" => "\u25A1",
-        AppConstants.CmdCopy => "\u2398",
-        AppConstants.CmdPaste => "\u2147",
-        AppConstants.CmdSendToBack => "\u2B05",
-        AppConstants.CmdBringToFront => "\u27A1",
-        AppConstants.CmdSendBackward => "\u2B05\u2B05",
-        AppConstants.CmdBringForward => "\u27A1\u27A1",
-        "tool.lock" => "\u26BF",
-        AppConstants.CmdDelete => "\u2716",
-        AppConstants.CmdShowProperties => "\u25A3",
-        _ => "\u25A1",
-    };
 }
