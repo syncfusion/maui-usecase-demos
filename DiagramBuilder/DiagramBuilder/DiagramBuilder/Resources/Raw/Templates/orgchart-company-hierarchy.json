@@ -141,77 +141,88 @@
       "sourceId": "ceo",
       "targetId": "cto",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c2",
       "sourceId": "ceo",
       "targetId": "coo",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c3",
       "sourceId": "ceo",
       "targetId": "cmo",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c4",
       "sourceId": "cto",
       "targetId": "d-eng",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c5",
       "sourceId": "cto",
       "targetId": "d-data",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c6",
       "sourceId": "coo",
       "targetId": "t-ops",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c7",
       "sourceId": "d-eng",
       "targetId": "t-mob",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c8",
       "sourceId": "d-eng",
       "targetId": "t-web",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c9",
       "sourceId": "d-eng",
       "targetId": "t-qa",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c10",
       "sourceId": "d-data",
       "targetId": "t-ml",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     },
     {
       "id": "c11",
       "sourceId": "d-data",
       "targetId": "t-bi",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentOrgChart",
+      "strokeThickness": 2
     }
   ]
 }

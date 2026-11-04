@@ -121,14 +121,16 @@
       "sourceId": "start",
       "targetId": "enter-card",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c2",
       "sourceId": "enter-card",
       "targetId": "validate",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c3",
@@ -136,14 +138,16 @@
       "targetId": "declined",
       "text": "No",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c4",
       "sourceId": "declined",
       "targetId": "notify",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c5",
@@ -151,42 +155,48 @@
       "targetId": "process-payment",
       "text": "Yes",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c6",
       "sourceId": "process-payment",
       "targetId": "check-balance",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c7",
       "sourceId": "check-balance",
       "targetId": "update-balance",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c8",
       "sourceId": "update-balance",
       "targetId": "store",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c9",
       "sourceId": "store",
       "targetId": "receipt",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     },
     {
       "id": "c10",
       "sourceId": "receipt",
       "targetId": "end",
       "kind": "Orthogonal",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentFlow",
+      "strokeThickness": 2
     }
   ]
 }

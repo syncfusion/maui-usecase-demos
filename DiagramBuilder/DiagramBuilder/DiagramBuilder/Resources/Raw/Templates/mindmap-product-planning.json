@@ -191,119 +191,136 @@
       "sourceId": "center",
       "targetId": "research",
       "kind": "Bezier",
-      "strokeColorKey": "AccentMindMap"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 2
     },
     {
       "id": "c2",
       "sourceId": "center",
       "targetId": "design",
       "kind": "Bezier",
-      "strokeColorKey": "AccentMindMap"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 2
     },
     {
       "id": "c3",
       "sourceId": "center",
       "targetId": "development",
       "kind": "Bezier",
-      "strokeColorKey": "AccentMindMap"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 2
     },
     {
       "id": "c4",
       "sourceId": "center",
       "targetId": "marketing",
       "kind": "Bezier",
-      "strokeColorKey": "AccentMindMap"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 2
     },
     {
       "id": "c5",
       "sourceId": "center",
       "targetId": "launch",
       "kind": "Bezier",
-      "strokeColorKey": "AccentMindMap"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 2
     },
     {
       "id": "c6",
       "sourceId": "research",
       "targetId": "user-interviews",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c7",
       "sourceId": "research",
       "targetId": "market-scan",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c8",
       "sourceId": "research",
       "targetId": "competitors",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c9",
       "sourceId": "design",
       "targetId": "wireframes",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c10",
       "sourceId": "design",
       "targetId": "prototype",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c11",
       "sourceId": "development",
       "targetId": "architecture",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c12",
       "sourceId": "development",
       "targetId": "implementation",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c13",
       "sourceId": "development",
       "targetId": "qa",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c14",
       "sourceId": "marketing",
       "targetId": "messaging",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c15",
       "sourceId": "marketing",
       "targetId": "campaigns",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c16",
       "sourceId": "launch",
       "targetId": "release-notes",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     },
     {
       "id": "c17",
       "sourceId": "launch",
       "targetId": "go-live",
       "kind": "Bezier",
-      "strokeColorKey": "PanelBorderColor"
+      "strokeColorKey": "AccentMindMap",
+      "strokeThickness": 1.5
     }
   ]
 }
