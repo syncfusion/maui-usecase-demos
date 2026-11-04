@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:DigitalQueueManagement.Model"
+             xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
+             xmlns:controls="clr-namespace:DigitalQueueManagement.Controls"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             x:Class="DigitalQueueManagement.Views.TokensPage"
+             x:DataType="vm:TokenManagementViewModel">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            <Style x:Key="StatusFilterHover" TargetType="Border">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="Stroke" Value="#BFDBFE" />
+                                    <Setter Property="StrokeThickness" Value="1.2" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <VerticalStackLayout x:Name="PageContentLayout"
+                             BindingContext="{Binding QueueSession}"
+                             x:DataType="vm:QueueSessionViewModel"
+                             Padding="28,22,28,36"
+                             Spacing="18">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnPageTapped" />
+            </VerticalStackLayout.GestureRecognizers>
+            <Grid x:Name="MetricGrid"
+                  ColumnDefinitions="*,*,*,*"
+                  RowDefinitions="Auto"
+                  ColumnSpacing="12"
+                  RowSpacing="12">
+                <Border Grid.Column="0" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="TOTAL TOKENS" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 9">
+                                <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding TotalTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Active pool" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="●  All services combined" FontSize="9" TextColor="#183E91" />
+                    </Grid>
+                </Border>
+                <Border Grid.Column="1" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="WAITING" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#FFF7E6" StrokeThickness="0" StrokeShape="RoundRectangle 9">
+                                <Label Text="schedule" FontFamily="MaterialIcons" FontSize="17" TextColor="#D18A16" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding WaitingTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Tokens in queue" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="●  Queue estimate updates live" FontSize="9" TextColor="#D18A16" />
+                    </Grid>
+                </Border>
+                <Border Grid.Column="2" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="SERVING NOW" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 9">
+                                <Label Text="shield" FontFamily="MaterialIcons" FontSize="17" TextColor="#159B85" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding ServingTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Engaged now" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="{Binding OnlineCounterCount, StringFormat='●  Across {0} counters'}" FontSize="9" TextColor="#159B85" />
+                    </Grid>
+                </Border>
+                <Border Grid.Column="3" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="SKIPPED / ON HOLD" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#FFF1F2" StrokeThickness="0" StrokeShape="RoundRectangle 9">
+                                <Label Text="monitor_heart" FontFamily="MaterialIcons" FontSize="17" TextColor="#DC6670" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding SkippedTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Action required" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="●  Recallable on request" FontSize="9" TextColor="#DC6670" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Grid x:Name="DirectoryGrid"
+                  ColumnDefinitions="336,*"
+                  RowDefinitions="Auto"
+                  ColumnSpacing="16"
+                  RowSpacing="16">
+                <Border x:Name="MobileTokenFilterPanel"
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        IsVisible="False"
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        StrokeThickness="0">
+                    <VerticalStackLayout Spacing="16">
+                        <Border x:Name="MobileSearchBorder"
+                                Padding="8,2"
+                                BackgroundColor="White"
+                                Stroke="#DCE7F5"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Property="Stroke" Value="#3B82F6" />
+                                            <Setter Property="StrokeThickness" Value="1.5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid ColumnDefinitions="24,*">
+                                <Label Text="search"
+                                       FontFamily="MaterialIcons"
+                                       FontSize="20"
+                                       TextColor="#64748B"
+                                       VerticalOptions="Center" />
+                                <controls:BorderlessEntry x:Name="MobileSearchEntry"
+                                                          Grid.Column="1"
+                                                          Placeholder="Search token number..."
+                                                          Text="{Binding SearchText, Mode=TwoWay}"
+                                                          FontFamily="Segoe UI"
+                                                          FontSize="16"
+                                                          ClearButtonVisibility="WhileEditing"
+                                                          Background="Transparent"
+                                                          TextColor="#0F172A"
+                                                          PlaceholderColor="#94A3B8"
+                                                          HeightRequest="36"
+                                                          MinimumHeightRequest="0"
+                                                          VerticalOptions="Center"
+                                                          VerticalTextAlignment="Center" />
+                            </Grid>
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border"
+                                             x:DataType="Entry"
+                                             Binding="{Binding Source={x:Reference MobileSearchEntry}, Path=IsFocused}"
+                                             Value="True">
+                                    <Setter Property="Stroke" Value="#3B82F6" />
+                                    <Setter Property="StrokeThickness" Value="2" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                        </Border>
+                        <ScrollView Orientation="Horizontal"
+                                    HorizontalScrollBarVisibility="Never">
+                            <HorizontalStackLayout Spacing="8">
+                                <Border Style="{StaticResource StatusFilterHover}" Padding="16,8" BackgroundColor="#E5EEFF" StrokeThickness="0" StrokeShape="RoundRectangle 22">
+                                    <Label Text="All" FontSize="14" TextColor="#0F172A">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding StatusFilter}" Value="All Tokens">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="All Tokens">
+                                            <Setter Property="BackgroundColor" Value="#00288E" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="All Tokens" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <Border Style="{StaticResource StatusFilterHover}" Padding="16,8" BackgroundColor="#E5EEFF" StrokeThickness="0" StrokeShape="RoundRectangle 22">
+                                    <Label Text="Waiting" FontSize="14" TextColor="#0F172A">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding StatusFilter}" Value="Waiting">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Waiting">
+                                            <Setter Property="BackgroundColor" Value="#00288E" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Waiting" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <Border Style="{StaticResource StatusFilterHover}" Padding="16,8" BackgroundColor="#E5EEFF" StrokeThickness="0" StrokeShape="RoundRectangle 22">
+                                    <Label Text="Serving" FontSize="14" TextColor="#0F172A">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding StatusFilter}" Value="Serving">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Serving">
+                                            <Setter Property="BackgroundColor" Value="#00288E" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Serving" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <Border Style="{StaticResource StatusFilterHover}" Padding="16,8" BackgroundColor="#E5EEFF" StrokeThickness="0" StrokeShape="RoundRectangle 22">
+                                    <Label Text="Skipped" FontSize="14" TextColor="#0F172A">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding StatusFilter}" Value="Skipped">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Skipped">
+                                            <Setter Property="BackgroundColor" Value="#00288E" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Skipped" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <Border Style="{StaticResource StatusFilterHover}" Padding="16,8" BackgroundColor="#E5EEFF" StrokeThickness="0" StrokeShape="RoundRectangle 22">
+                                    <Label Text="Completed" FontSize="14" TextColor="#0F172A">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding StatusFilter}" Value="Completed">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Completed">
+                                            <Setter Property="BackgroundColor" Value="#00288E" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Completed" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </HorizontalStackLayout>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                </Border>
+                <Border x:Name="FilterPanel"
+                        Grid.Column="0"
+                        VerticalOptions="Start"
+                        Padding="20"
+                        BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="14">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Label Text="Filter tokens" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="{Binding VisibleTokenCountText}" FontSize="9" TextColor="#64748B" VerticalOptions="Center" />
+                        </Grid>
+                        <Border x:Name="DesktopSearchBorder"
+                                Padding="12,0"
+                                HeightRequest="44"
+                                BackgroundColor="#F8FAFC"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 8">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Property="Stroke" Value="#3B82F6" />
+                                            <Setter Property="StrokeThickness" Value="1.5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid ColumnDefinitions="26,*">
+                                <Label Text="search" FontFamily="MaterialIcons" FontSize="18" TextColor="#94A3B8" VerticalOptions="Center" />
+                                <controls:BorderlessEntry x:Name="DesktopSearchEntry"
+                                                          Grid.Column="1"
+                                                          Placeholder="Search token number..."
+                                                          Text="{Binding SearchText, Mode=TwoWay}"
+                                                          FontFamily="Segoe UI"
+                                                          FontSize="14"
+                                                          ClearButtonVisibility="WhileEditing"
+                                                          Background="Transparent"
+                                                          TextColor="#334155"
+                                                          PlaceholderColor="#94A3B8"
+                                                          HeightRequest="40"
+                                                          MinimumHeightRequest="0"
+                                                          VerticalOptions="Center"
+                                                          VerticalTextAlignment="Center" />
+                            </Grid>
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border"
+                                             x:DataType="Entry"
+                                             Binding="{Binding Source={x:Reference DesktopSearchEntry}, Path=IsFocused}"
+                                             Value="True">
+                                    <Setter Property="Stroke" Value="#3B82F6" />
+                                    <Setter Property="StrokeThickness" Value="2" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                        </Border>
+                        <Label Text="QUEUE STATUS" FontSize="9" FontAttributes="Bold" TextColor="#94A3B8" />
+                        <VerticalStackLayout Spacing="2">
+                            <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
+                                    <BoxView WidthRequest="6" HeightRequest="6" Color="#183E91" CornerRadius="3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="All Tokens" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding TotalTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                </Grid>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="All Tokens">
+                                        <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="All Tokens" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
+                                    <BoxView WidthRequest="6" HeightRequest="6" Color="#8AA1C7" CornerRadius="3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Waiting" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding WaitingTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                </Grid>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Waiting">
+                                        <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Waiting" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
+                                    <BoxView WidthRequest="6" HeightRequest="6" Color="#159B85" CornerRadius="3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Serving" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding ServingTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                </Grid>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Serving">
+                                        <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Serving" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
+                                    <BoxView WidthRequest="6" HeightRequest="6" Color="#DC6670" CornerRadius="3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Skipped" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding SkippedTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                </Grid>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Skipped">
+                                        <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Skipped" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                            <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
+                                    <BoxView WidthRequest="6" HeightRequest="6" Color="#94A3B8" CornerRadius="3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Completed" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding CompletedTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                </Grid>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Completed">
+                                        <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStatusFilterTapped" CommandParameter="Completed" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </VerticalStackLayout>
+                        <Border Padding="12" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Priority routing rate" FontSize="9" TextColor="#64748B" />
+                                    <Label Grid.Column="1" Text="{Binding PriorityRoutingRate, StringFormat='{0}% Priority'}" FontSize="10" FontAttributes="Bold" TextColor="#183E91" />
+                                </Grid>
+                                <ProgressBar Progress="{Binding PriorityRoutingProgress}" ProgressColor="#183E91" BackgroundColor="#E2E8F0" HeightRequest="5" />
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="{Binding PriorityWaitingCount, StringFormat='Priority: {0} tokens'}" FontSize="8" TextColor="#94A3B8" />
+                                    <Label Grid.Column="1" Text="{Binding NormalWaitingCount, StringFormat='Normal: {0} tokens'}" FontSize="8" TextColor="#94A3B8" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border x:Name="DirectoryPanel"
+                        Grid.Column="1"
+                        Padding="18"
+                        BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid x:Name="DirectoryHeader" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" VerticalOptions="Center" />
+                                <Label Text="Tokens list" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
+                                <Border Padding="8,4" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                    <Label Text="Local sequence" FontSize="8" FontAttributes="Bold" TextColor="#183E91" />
+                                </Border>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                                    <BoxView WidthRequest="6" HeightRequest="6" Color="#10B981" CornerRadius="3" VerticalOptions="Center" />
+                                    <Label Text="Local sample data" FontSize="9" TextColor="#64748B" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </Grid>
+                        <Grid x:Name="DesktopTokenListHost" HeightRequest="520">
+                            <listview:SfListView ItemsSource="{Binding VisibleTokenRows}"
+                                                 ItemSize="104"
+                                                 SelectionMode="None"
+                                                 HeightRequest="520"
+                                                 IsVisible="{Binding HasVisibleTokens}">
+                                <listview:SfListView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:QueueTokenListItem">
+                                        <Grid BackgroundColor="White">
+                                            <Border Margin="2,5"
+                                                    Padding="14,12"
+                                                    BackgroundColor="White"
+                                                    Stroke="#E9EEF5"
+                                                    StrokeThickness="1"
+                                                    StrokeShape="RoundRectangle 9">
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+                                                        <VisualState x:Name="Normal" />
+                                                        <VisualState x:Name="PointerOver">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="Stroke" Value="#BFDBFE" />
+                                                                <Setter Property="StrokeThickness" Value="1.2" />
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OnTokenTapped" />
+                                                </Border.GestureRecognizers>
+                                                <Grid ColumnDefinitions="140,1,*,180,34" ColumnSpacing="14">
+                                                <VerticalStackLayout Spacing="7" VerticalOptions="Center">
+                                                    <Label Text="{Binding Id}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                                                    <HorizontalStackLayout Spacing="5">
+                                                        <Border Padding="7,3" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 5">
+                                                            <Label Text="{Binding Priority}" TextTransform="Uppercase" FontSize="8" FontAttributes="Bold" TextColor="#183E91">
+                                                                <Label.Triggers>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Normal}">
+                                                                        <Setter Property="TextColor" Value="#475569" />
+                                                                    </DataTrigger>
+                                                                </Label.Triggers>
+                                                            </Label>
+                                                            <Border.Triggers>
+                                                                <DataTrigger TargetType="Border" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Normal}">
+                                                                    <Setter Property="BackgroundColor" Value="#F1F5F9" />
+                                                                </DataTrigger>
+                                                            </Border.Triggers>
+                                                        </Border>
+                                                        <Border Padding="7,3" BackgroundColor="#EFF6FF" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                                                            <Label Text="{Binding Status}" FontSize="8" FontAttributes="Bold" TextColor="#1D4ED8">
+                                                                <Label.Triggers>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
+                                                                        <Setter Property="TextColor" Value="#159B85" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Skipped}">
+                                                                        <Setter Property="TextColor" Value="#DC6670" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Completed}">
+                                                                        <Setter Property="TextColor" Value="#64748B" />
+                                                                    </DataTrigger>
+                                                                </Label.Triggers>
+                                                            </Label>
+                                                            <Border.Triggers>
+                                                                <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
+                                                                    <Setter Property="BackgroundColor" Value="#E9FBF4" />
+                                                                </DataTrigger>
+                                                                <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Skipped}">
+                                                                    <Setter Property="BackgroundColor" Value="#FFF1F2" />
+                                                                </DataTrigger>
+                                                                <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Completed}">
+                                                                    <Setter Property="BackgroundColor" Value="#F1F5F9" />
+                                                                </DataTrigger>
+                                                            </Border.Triggers>
+                                                        </Border>
+                                                    </HorizontalStackLayout>
+                                                </VerticalStackLayout>
+                                                <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="46" Color="#E2E8F0" VerticalOptions="Center" />
+                                                <VerticalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center">
+                                                    <Label Text="{Binding Service}" FontSize="11" FontAttributes="Bold" TextColor="#0F172A" />
+                                                    <HorizontalStackLayout Spacing="6">
+                                                        <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="11" TextColor="#64748B" />
+                                                        <Label Text="{Binding CounterName}" FontSize="9" TextColor="#64748B" />
+                                                        <Label Text="·" FontSize="9" TextColor="#94A3B8" />
+                                                        <Label Text="schedule" FontFamily="MaterialIcons" FontSize="11" TextColor="#64748B" />
+                                                        <Label Text="{Binding Wait}" FontSize="9" TextColor="#64748B" />
+                                                    </HorizontalStackLayout>
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="3" Spacing="3" HorizontalOptions="End" VerticalOptions="Center">
+                                                    <Label Text="Queue position" FontSize="8" TextColor="#64748B" HorizontalTextAlignment="End">
+                                                        <Label.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
+                                                                <Setter Property="Text" Value="Status" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                    <Label Text="{Binding QueuePositionText}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" HorizontalTextAlignment="End" />
+                                                </VerticalStackLayout>
+                                                <Border Grid.Column="4" WidthRequest="34" HeightRequest="34" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 8" VerticalOptions="Center">
+                                                    <Label Text="chevron_right" FontFamily="MaterialIcons" FontSize="18" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                </Border>
+                                                </Grid>
+                                                <Border.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
+                                                        <Setter Property="Stroke" Value="#BBD4FF" />
+                                                    </DataTrigger>
+                                                </Border.Triggers>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </listview:SfListView.ItemTemplate>
+                            </listview:SfListView>
+                            <VerticalStackLayout IsVisible="{Binding HasNoVisibleTokens}"
+                                                 Spacing="5"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center">
+                                <Label Text="No tokens found" FontSize="14" FontAttributes="Bold" TextColor="#334155" HorizontalTextAlignment="Center" />
+                                <Label Text="Try a different search or status filter." FontSize="11" TextColor="#64748B" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Grid x:Name="MobileTokenContent" IsVisible="False">
+                            <VerticalStackLayout x:Name="MobileTokenList"
+                                                 IsVisible="{Binding HasVisibleTokens}"
+                                                 Spacing="18"
+                                                 BindableLayout.ItemsSource="{Binding VisibleTokenRows}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:QueueTokenListItem">
+                                    <Border Padding="18,16"
+                                            BackgroundColor="White"
+                                            Stroke="#DCE7F5"
+                                            StrokeThickness="1"
+                                            StrokeShape="RoundRectangle 14">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnTokenTapped" />
+                                        </Border.GestureRecognizers>
+                                        <VerticalStackLayout Spacing="14">
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                                    <Label Text="{Binding Id}"
+                                                           FontSize="30"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#00288E"
+                                                           VerticalOptions="Center" />
+                                                    <Border Padding="10,5"
+                                                            BackgroundColor="#FFF3C4"
+                                                            Stroke="#FFD95C"
+                                                            StrokeThickness="1"
+                                                            StrokeShape="RoundRectangle 4"
+                                                            VerticalOptions="Center">
+                                                        <Label Text="{Binding Priority}" TextTransform="Uppercase" FontSize="12" FontAttributes="Bold" TextColor="#7C2D12">
+                                                            <Label.Triggers>
+                                                                <DataTrigger TargetType="Label" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Normal}">
+                                                                    <Setter Property="TextColor" Value="#475569" />
+                                                                </DataTrigger>
+                                                            </Label.Triggers>
+                                                        </Label>
+                                                        <Border.Triggers>
+                                                            <DataTrigger TargetType="Border" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Normal}">
+                                                                <Setter Property="BackgroundColor" Value="#E5EEFF" />
+                                                                <Setter Property="Stroke" Value="Transparent" />
+                                                            </DataTrigger>
+                                                        </Border.Triggers>
+                                                    </Border>
+                                                </HorizontalStackLayout>
+                                                <Border Grid.Column="1"
+                                                        Padding="12,8"
+                                                        BackgroundColor="#E0E7FF"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 22"
+                                                        VerticalOptions="Center">
+                                                    <Label Text="{Binding Status}" FontSize="14" FontAttributes="Bold" TextColor="#172554">
+                                                        <Label.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
+                                                                <Setter Property="TextColor" Value="#006A61" />
+                                                            </DataTrigger>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Skipped}">
+                                                                <Setter Property="TextColor" Value="#BA1A1A" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                    <Border.Triggers>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
+                                                            <Setter Property="BackgroundColor" Value="#86F2E4" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Skipped}">
+                                                            <Setter Property="BackgroundColor" Value="#FFdad6" />
+                                                            <Setter Property="Stroke" Value="#FFdad6" />
+                                                        </DataTrigger>
+                                                    </Border.Triggers>
+                                                </Border>
+                                            </Grid>
+                                            <BoxView HeightRequest="1" Color="#E5EEFF" />
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                                <HorizontalStackLayout Spacing="7" VerticalOptions="Center">
+                                                    <Label Text="payments" FontFamily="MaterialIcons" FontSize="18" TextColor="#64748B" />
+                                                    <Label Text="{Binding Service}" FontSize="16" TextColor="#0B1C30" LineBreakMode="TailTruncation" />
+                                                    <Label Text="·" FontSize="16" TextColor="#C4C5D5" />
+                                                    <Label Text="{Binding CounterName}" FontSize="16" TextColor="#00288E" LineBreakMode="TailTruncation" />
+                                                </HorizontalStackLayout>
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding Wait}"
+                                                       FontSize="15"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#006A61"
+                                                       VerticalOptions="Center"
+                                                       HorizontalTextAlignment="End">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Waiting}">
+                                                            <Setter Property="TextColor" Value="#334155" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Skipped}">
+                                                            <Setter Property="Text" Value="Skipped" />
+                                                            <Setter Property="TextColor" Value="#BA1A1A" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </Grid>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout x:Name="MobileTokenEmptyState"
+                                             IsVisible="{Binding HasNoVisibleTokens}"
+                                             Spacing="5"
+                                             HorizontalOptions="Center"
+                                             Padding="18">
+                                <Label Text="No tokens found" FontSize="15" FontAttributes="Bold" TextColor="#334155" HorizontalTextAlignment="Center" />
+                                <Label Text="Try changing the status filter or search term." FontSize="12" TextColor="#64748B" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+</ContentView>
