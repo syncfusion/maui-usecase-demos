@@ -9,8 +9,10 @@ namespace FluentMail.ViewModels;
 public partial class MailWorkspaceViewModel : ObservableObject
 {
     readonly Mailbox mailbox = MockData.Mailbox;
+    readonly List<MailMessage> folderMessages = [];
 
     public ObservableCollection<FolderNode> Folders => mailbox.Folders;
+    public IReadOnlyList<string> FilterOptions { get; } = ["All", "Unread", "Flagged", "With attachments"];
 
     [ObservableProperty]
     private FolderNode? selectedFolder;
@@ -26,6 +28,12 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isLoading = true;
+
+    [ObservableProperty]
+    private string searchQuery = string.Empty;
+
+    [ObservableProperty]
+    private string selectedFilter = "All";
 
     public MailWorkspaceViewModel()
     {
@@ -46,11 +54,21 @@ public partial class MailWorkspaceViewModel : ObservableObject
         if (value is not null)
         {
             value.IsRead = true;
+            UpdateFolderCounts();
         }
     }
 
+    partial void OnSearchQueryChanged(string value) => ApplyFilters();
+    partial void OnSelectedFilterChanged(string value) => ApplyFilters();
+
     [RelayCommand]
     void SelectMessage(MailMessage? message) => SelectedMessage = message;
+
+    [RelayCommand]
+    async Task NewMailAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(Views.ComposePage));
+    }
 
     [RelayCommand]
     void SelectFolder(FolderNode? folder)
@@ -60,8 +78,45 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     void LoadFolder(FolderNode folder)
     {
-        VisibleMessages = new ObservableCollection<MailMessage>(mailbox.GetMessages(folder.Name));
+        folderMessages.Clear();
+        folderMessages.AddRange(mailbox.GetMessages(folder.Name));
+        ApplyFilters();
+    }
+
+    void ApplyFilters()
+    {
+        IEnumerable<MailMessage> query = folderMessages;
+
+        if (!string.IsNullOrWhiteSpace(SearchQuery))
+        {
+            var term = SearchQuery.Trim();
+            query = query.Where(message =>
+                message.Sender.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                message.SenderEmail.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                message.Subject.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                message.Preview.Contains(term, StringComparison.OrdinalIgnoreCase));
+        }
+
+        query = SelectedFilter switch
+        {
+            "Unread" => query.Where(x => !x.IsRead),
+            "Flagged" => query.Where(x => x.IsFlagged),
+            "With attachments" => query.Where(x => x.HasAttachments),
+            _ => query
+        };
+
+        VisibleMessages = new ObservableCollection<MailMessage>(query);
         IsEmptyFolder = VisibleMessages.Count == 0;
         SelectedMessage = VisibleMessages.FirstOrDefault();
+        UpdateFolderCounts();
+    }
+
+    void UpdateFolderCounts()
+    {
+        mailbox.Folders[0].UnreadCount = mailbox.Inbox.Count(x => !x.IsRead);
+        mailbox.Folders[1].UnreadCount = 0;
+        mailbox.Folders[2].UnreadCount = mailbox.Drafts.Count(x => x.Status == "Unsaved Changes");
+        mailbox.Folders[3].UnreadCount = mailbox.Archive.Count(x => x.IsFlagged);
+        mailbox.Folders[4].UnreadCount = mailbox.Deleted.Count;
     }
 }

@@ -60,6 +60,9 @@ public static class MockData
             ("Me", "me@contoso.com", "Project status update", "Weekly status update sent to the delivery stakeholders.", "pm@contoso.com, engineering@contoso.com", false),
             ("Me", "me@contoso.com", "Invoice follow-up", "I sent a follow-up on the outstanding invoices.", "accounts.payable@contoso.com", false),
             ("Me", "me@contoso.com", "Hiring panel schedule", "The interview panel calendar has been circulated.", "talent@contoso.com", false),
+            ("Me", "me@contoso.com", "Budget revision sent", "The revised budget was shared with the finance leads.", "finance@contoso.com", true),
+            ("Me", "me@contoso.com", "Client call recap", "I sent the recap and next steps after the client call.", "clientsuccess@contoso.com", false),
+            ("Me", "me@contoso.com", "Security training reminder", "The reminder was sent to the entire department.", "allstaff@contoso.com", false),
         };
 
         for (var i = 0; i < sent.Length; i++)
@@ -80,6 +83,8 @@ public static class MockData
             ("Draft: Q4 planning review", "planning@contoso.com", "Follow up with revised goals and action items."),
             ("Draft: Vendor comparison", "procurement@contoso.com", "Include the pricing table and risk summary."),
             ("Draft: Staff announcement", "allstaff@contoso.com", "Polish the wording before HR review."),
+            ("Draft: Product launch note", "product@contoso.com", "Add the release date and ownership details."),
+            ("Draft: Budget approval recap", "finance@contoso.com", "Confirm the numbers before sending."),
         };
 
         for (var i = 0; i < drafts.Length; i++)
@@ -92,6 +97,8 @@ public static class MockData
             ("Priya Nair", "priya.nair@contoso.com", "Archive: Marketing campaign wrap-up", "Campaign results and creative assets are now archived.", true),
             ("Leo Martinez", "leo.martinez@contoso.com", "Archive: Client kickoff notes", "Kickoff notes and next steps were preserved for reference.", false),
             ("Ivy Chen", "ivy.chen@contoso.com", "Archive: Compliance review", "The compliance review package is now archived.", false),
+            ("Grace Morgan", "grace.morgan@contoso.com", "Archive: HR policy update", "HR policy updates were archived after publishing.", false),
+            ("Daniel Moore", "daniel.moore@contoso.com", "Archive: Office relocation plan", "The relocation plan is complete and archived.", true),
         };
 
         for (var i = 0; i < archive.Length; i++)
@@ -103,6 +110,8 @@ public static class MockData
             ("Noah Bennett", "noah.bennett@contoso.com", "Deleted: outdated file request", "The request was superseded by the latest upload.", false),
             ("Emma Wilson", "emma.wilson@contoso.com", "Deleted: stale approvals", "This thread was cleared after approvals were finalized.", false),
             ("Lucas Reed", "lucas.reed@contoso.com", "Deleted: canceled meeting", "The canceled meeting notice has been deleted.", false),
+            ("Tara Hughes", "tara.hughes@contoso.com", "Deleted: obsolete proposal", "The older proposal file was removed from the inbox thread.", true),
+            ("Evan Price", "evan.price@contoso.com", "Deleted: expired agenda", "The event agenda was deleted after the meeting ended.", false),
         };
 
         for (var i = 0; i < deleted.Length; i++)
