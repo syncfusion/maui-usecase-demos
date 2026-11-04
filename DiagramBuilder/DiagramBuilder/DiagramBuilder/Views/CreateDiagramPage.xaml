@@ -5,7 +5,6 @@
              xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:models="clr-namespace:DiagramBuilder.Models"
              xmlns:conv="clr-namespace:DiagramBuilder.Converters"
-             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="DiagramBuilder.Views.CreateDiagramPage"
              Title="{Binding Title}"
@@ -61,71 +60,9 @@
                     <Border BackgroundColor="{DynamicResource CategoryRailBackground}"
                             StrokeThickness="0"
                             Padding="0,12">
-                        <listView:SfListView x:Name="CategoryList"
-                                              ItemsSource="{Binding Categories}"
-                                              SelectionMode="Single"
-                                              SelectedItem="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedCategoryLabel, Mode=TwoWay}"
-                                              ItemSpacing="4">
-                            <listView:SfListView.ItemTemplate>
-                                <DataTemplate>
-                                    <buttons:SfButton Text="{Binding .}"
-                                                      Margin="8,0,8,0"
-                                                      Padding="18,0,18,0"
-                                                      CornerRadius="2"
-                                                      HeightRequest="44"
-                                                      HorizontalOptions="Fill"
-                                                      HorizontalTextAlignment="Start"
-                                                      FontSize="15"
-                                                      Background="Transparent"
-                                                      StrokeThickness="0"
-                                                      EnableRippleEffect="True"
-                                                      TextColor="{DynamicResource TextPrimary}">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroupList>
-                                                <VisualStateGroup x:Name="CommonStates">
-                                                    <VisualState x:Name="Normal" />
-                                                    <VisualState x:Name="Pressed">
-                                                        <VisualState.Setters>
-                                                            <Setter Property="Background" Value="#E8EAED" />
-                                                        </VisualState.Setters>
-                                                    </VisualState>
-                                                </VisualStateGroup>
-                                            </VisualStateGroupList>
-                                        </VisualStateManager.VisualStateGroups>
-                                    </buttons:SfButton>
-                                </DataTemplate>
-                            </listView:SfListView.ItemTemplate>
-                            <listView:SfListView.SelectedItemTemplate>
-                                <DataTemplate>
-                                    <buttons:SfButton Text="{Binding .}"
-                                                      Margin="8,0,8,0"
-                                                      Padding="18,0,18,0"
-                                                      CornerRadius="2"
-                                                      HeightRequest="44"
-                                                      HorizontalOptions="Fill"
-                                                      HorizontalTextAlignment="Start"
-                                                      FontSize="15"
-                                                      FontAttributes="Bold"
-                                                      Background="#E3F2FD"
-                                                      StrokeThickness="0"
-                                                      EnableRippleEffect="True"
-                                                      TextColor="{DynamicResource PrimaryColor}">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroupList>
-                                                <VisualStateGroup x:Name="CommonStates">
-                                                    <VisualState x:Name="Normal" />
-                                                    <VisualState x:Name="Pressed">
-                                                        <VisualState.Setters>
-                                                            <Setter Property="Background" Value="#BBDEFB" />
-                                                        </VisualState.Setters>
-                                                    </VisualState>
-                                                </VisualStateGroup>
-                                            </VisualStateGroupList>
-                                        </VisualStateManager.VisualStateGroups>
-                                    </buttons:SfButton>
-                                </DataTemplate>
-                            </listView:SfListView.SelectedItemTemplate>
-                        </listView:SfListView>
+                        <VerticalStackLayout x:Name="CategoryRail"
+                                             Spacing="4"
+                                             Padding="8,0" />
                     </Border>
 
                     <!-- Right template panel -->

@@ -1,4 +1,5 @@
 using DiagramBuilder.ViewModels;
+using Syncfusion.Maui.Buttons;
 
 namespace DiagramBuilder.Views;
 
@@ -14,18 +15,78 @@ public partial class CreateDiagramPage : ContentPage
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         Appearing += async (_, _) => await viewModel.InitializeAsync();
         
-        // Wire the category list selection change to update the ViewModel
-        if (this.FindByName("CategoryList") is Syncfusion.Maui.ListView.SfListView categoryList)
-        {
-            categoryList.ItemSelectionChanging += OnCategorySelectionChanging;
-        }
+        // Build category buttons manually
+        BuildCategoryRail();
     }
     
-    private void OnCategorySelectionChanging(object? sender, Syncfusion.Maui.ListView.ItemSelectionChangingEventArgs e)
+    private void BuildCategoryRail()
     {
-        if (e.AddedItems.Count > 0 && e.AddedItems[0] is string selectedCategory)
+        if (this.FindByName("CategoryRail") is not VerticalStackLayout categoryRail)
         {
-            _viewModel.SelectedCategoryLabel = selectedCategory;
+            return;
+        }
+        
+        categoryRail.Children.Clear();
+        
+        foreach (var category in _viewModel.Categories)
+        {
+            var btn = new SfButton
+            {
+                Text = category,
+                Margin = new Thickness(0),
+                Padding = new Thickness(18, 0),
+                CornerRadius = 2,
+                HeightRequest = 44,
+                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalTextAlignment = TextAlignment.Start,
+                FontSize = 15,
+                Background = Colors.Transparent,
+                StrokeThickness = 0,
+            };
+            
+            // Add tap handler to select category
+            btn.Clicked += (_, _) =>
+            {
+                _viewModel.SelectedCategoryLabel = category;
+                UpdateCategoryButtons();
+            };
+            
+            categoryRail.Children.Add(btn);
+        }
+        
+        UpdateCategoryButtons();
+    }
+    
+    private void UpdateCategoryButtons()
+    {
+        if (this.FindByName("CategoryRail") is not VerticalStackLayout categoryRail)
+        {
+            return;
+        }
+        
+        int index = 0;
+        foreach (var child in categoryRail.Children)
+        {
+            if (child is SfButton btn && index < _viewModel.Categories.Count)
+            {
+                var category = _viewModel.Categories[index];
+                bool isSelected = category == _viewModel.SelectedCategoryLabel;
+                
+                if (isSelected)
+                {
+                    btn.Background = Microsoft.Maui.Graphics.Color.Parse("#E3F2FD");
+                    btn.TextColor = Application.Current?.Resources["PrimaryColor"] as Color ?? Colors.Blue;
+                    btn.FontAttributes = FontAttributes.Bold;
+                }
+                else
+                {
+                    btn.Background = Colors.Transparent;
+                    btn.TextColor = Application.Current?.Resources["TextPrimary"] as Color ?? Colors.Black;
+                    btn.FontAttributes = FontAttributes.None;
+                }
+                
+                index++;
+            }
         }
     }
 
@@ -35,6 +96,10 @@ public partial class CreateDiagramPage : ContentPage
         if (e.PropertyName == nameof(CreateDiagramViewModel.CloseRequested) && _viewModel.CloseRequested)
         {
             await Shell.Current.Navigation.PopModalAsync();
+        }
+        else if (e.PropertyName == nameof(CreateDiagramViewModel.SelectedCategoryLabel))
+        {
+            UpdateCategoryButtons();
         }
     }
 
