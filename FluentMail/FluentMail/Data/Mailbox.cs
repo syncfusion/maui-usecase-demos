@@ -19,7 +19,7 @@ public class Mailbox
     {
         foreach (var root in Folders)
         {
-            root.Count = root.Children.Count == 0 ? CountFor(root.Name) : root.Children.Sum(child => CountFor(child.Name));
+            root.Count = 0;
         }
 
         foreach (var folder in new[] { "Inbox", "Clutter", "Drafts", "Sent Items", "Deleted Items", "Archive", "Junk Mail", "Personnel", "Sales Reports", "Marketing Reports", "My Team", "Trash", "Outbox" })
@@ -30,7 +30,7 @@ public class Mailbox
 
     int CountFor(string folder) => folder switch
     {
-        "Inbox" => Inbox.Count,
+        "Inbox" => Inbox.Count(x => !x.IsRead),
         "Sent Items" => SentItems.Count,
         "Drafts" => Drafts.Count,
         "Archive" => Archive.Count,

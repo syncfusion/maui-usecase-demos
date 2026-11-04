@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace FluentMail.Models;
 
-public class MailMessage
+public partial class MailMessage : ObservableObject
 {
     public string Id { get; set; } = string.Empty;
     public string Folder { get; set; } = string.Empty;
@@ -13,9 +15,15 @@ public class MailMessage
     public string Cc { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public bool HasAttachments { get; set; }
-    public bool IsRead { get; set; }
+
+    [ObservableProperty]
+    private bool isRead;
+
     public bool IsFlagged { get; set; }
-    public bool IsFavourite { get; set; }
+
+    [ObservableProperty]
+    private bool isFavourite;
+
     public DateTime ReceivedOn { get; set; }
     public DateTime ArchivedOn { get; set; }
     public DateTime DeletedOn { get; set; }

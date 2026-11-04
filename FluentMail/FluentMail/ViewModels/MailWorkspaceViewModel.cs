@@ -53,7 +53,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
                 LoadFolder(SelectedFolder ?? mailbox.Folders.First());
             }
         };
-        SelectedFolder = mailbox.Folders.First();
+        SelectedFolder = mailbox.Folders[^1].Children[0];
         LoadFolder(SelectedFolder);
         IsLoading = false;
     }
@@ -66,8 +66,11 @@ public partial class MailWorkspaceViewModel : ObservableObject
         }
     }
 
+    public bool HasSelectedMessage => SelectedMessage is not null;
+
     partial void OnSelectedMessageChanged(MailMessage? value)
     {
+        OnPropertyChanged(nameof(HasSelectedMessage));
         if (value is not null)
         {
             value.IsRead = true;
@@ -96,6 +99,13 @@ public partial class MailWorkspaceViewModel : ObservableObject
         Composer.Subject = string.Empty;
         Composer.Body = string.Empty;
         Composer.StatusMessage = "Unsaved Changes";
+    }
+
+    [RelayCommand]
+    void MarkAllAsRead()
+    {
+        foreach (var message in VisibleMessages) message.IsRead = true;
+        UpdateFolderCounts();
     }
 
     [RelayCommand]
@@ -138,7 +148,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
         VisibleMessages = new ObservableCollection<MailMessage>(query);
         IsEmptyFolder = VisibleMessages.Count == 0;
-        SelectedMessage = VisibleMessages.FirstOrDefault();
+        SelectedMessage = null;
         UpdateFolderCounts();
     }
 
