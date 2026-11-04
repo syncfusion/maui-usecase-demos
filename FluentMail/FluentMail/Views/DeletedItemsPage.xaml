@@ -11,7 +11,16 @@
     </ContentPage.BindingContext>
 
     <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="16" RowSpacing="12">
-        <Label Text="Deleted items" FontSize="24" FontAttributes="Bold" />
+        <Grid ColumnDefinitions="*,Auto">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Deleted items" FontSize="24" FontAttributes="Bold" />
+                <Label Text="Recently removed work mail" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+            </VerticalStackLayout>
+            <HorizontalStackLayout Grid.Column="1" Spacing="12" VerticalOptions="Center">
+                <Label FontFamily="MauiMaterialAssets" Text="&#xE92B;" FontSize="18" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                <Label Text="Restore" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+            </HorizontalStackLayout>
+        </Grid>
         <HorizontalStackLayout Grid.Row="1" Spacing="12">
             <Button Text="Restore" Command="{Binding RestoreCommand}" CommandParameter="{Binding Source={x:Reference DeletedList}, Path=SelectedItem}" />
             <Button Text="Empty Trash" Command="{Binding EmptyTrashCommand}" />

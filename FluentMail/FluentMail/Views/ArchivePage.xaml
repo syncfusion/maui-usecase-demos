@@ -11,18 +11,35 @@
     </ContentPage.BindingContext>
 
     <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="16" RowSpacing="12">
-        <Label Text="Archive" FontSize="24" FontAttributes="Bold" />
+        <Grid ColumnDefinitions="*,Auto">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Archive" FontSize="24" FontAttributes="Bold" />
+                <Label Text="Work messages preserved for reference" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+            </VerticalStackLayout>
+            <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                <Label FontFamily="MauiMaterialAssets" Text="&#xE5D4;" FontSize="18" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                <Label Text="Filter" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+            </HorizontalStackLayout>
+        </Grid>
         <ScrollView Grid.Row="1" Orientation="Horizontal">
             <HorizontalStackLayout Spacing="8">
-                <Button Text="All" Command="{Binding ApplyFilterCommand}" CommandParameter="All" />
-                <Button Text="Has Files" Command="{Binding ApplyFilterCommand}" CommandParameter="Has Files" />
-                <Button Text="This Year" Command="{Binding ApplyFilterCommand}" CommandParameter="This Year" />
-                <Button Text="Flagged" Command="{Binding ApplyFilterCommand}" CommandParameter="Flagged" />
+                <Border BackgroundColor="{AppThemeBinding Light=#EAF2FF, Dark=#20324D}" Padding="10,6" StrokeThickness="0">
+                    <Label Text="All" />
+                </Border>
+                <Border BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#1A1D23}" Padding="10,6" StrokeThickness="0">
+                    <Label Text="Has Files" />
+                </Border>
+                <Border BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#1A1D23}" Padding="10,6" StrokeThickness="0">
+                    <Label Text="This Year" />
+                </Border>
+                <Border BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#1A1D23}" Padding="10,6" StrokeThickness="0">
+                    <Label Text="Flagged" />
+                </Border>
             </HorizontalStackLayout>
         </ScrollView>
         <Border Grid.Row="2" BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#1A1D23}" Padding="12">
             <VerticalStackLayout>
-                <Label Text="Storage used by archive items." />
+                <Label Text="Archive storage" FontAttributes="Bold" />
                 <Label Text="Used Space: 3.4 GB" />
                 <Label Text="Remaining Space: 18.6 GB" />
                 <Label Text="Sync Status: Local sample data" />

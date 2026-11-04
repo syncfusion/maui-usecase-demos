@@ -12,58 +12,92 @@
         <vm:MailWorkspaceViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto,*" ColumnDefinitions="280,*,1.35*" Padding="16" ColumnSpacing="16">
-        <VerticalStackLayout Grid.ColumnSpan="3" Spacing="4">
-            <Label Text="Mail workspace" FontSize="24" FontAttributes="Bold" />
-            <Label Text="Mailbox navigation, message list, and reading pane." TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
-        </VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="300,*,1.35*" Padding="16" ColumnSpacing="16">
+        <Grid Grid.ColumnSpan="3" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Fluent Mail" FontSize="26" FontAttributes="Bold" />
+                <Label Text="Outlook-style mail workspace with local mock data" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+            </VerticalStackLayout>
+            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                <Label FontFamily="MauiMaterialAssets" Text="&#xE8B6;" FontSize="18" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                <Label Text="Search" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                <Label FontFamily="MauiMaterialAssets" Text="&#xE5D4;" FontSize="18" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                <Label Text="Filter" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+            </HorizontalStackLayout>
+        </Grid>
 
-        <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
-            <syncfusion:SfTreeView ItemsSource="{Binding Folders}" SelectionMode="Single" ItemHeight="44" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
-                <syncfusion:SfTreeView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="12,8" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding Name}" />
-                            <Label Grid.Column="1" Text="{Binding Count}" />
-                        </Grid>
-                    </DataTemplate>
-                </syncfusion:SfTreeView.ItemTemplate>
-            </syncfusion:SfTreeView>
+        <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light=#F7F9FC, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
+            <VerticalStackLayout Padding="8" Spacing="10">
+                <Grid Padding="8,6" ColumnDefinitions="Auto,*">
+                    <Label FontFamily="MauiMaterialAssets" Text="&#xE5C8;" FontSize="18" Margin="0,0,10,0" />
+                    <Label Text="Favorites" FontAttributes="Bold" />
+                </Grid>
+                <syncfusion:SfTreeView ItemsSource="{Binding Folders}" SelectionMode="Single" ItemHeight="42" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
+                    <syncfusion:SfTreeView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="12,8" ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Name}" />
+                                <Label Grid.Column="1" Text="{Binding Count}" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfTreeView.ItemTemplate>
+                </syncfusion:SfTreeView>
+            </VerticalStackLayout>
         </Border>
 
         <Border Grid.Row="1" Grid.Column="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
-            <Grid>
-                <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ItemSpacing="8" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}">
-                    <listview:SfListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="12" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="{Binding Sender}" FontAttributes="Bold" />
-                                    <Label Text="{Binding Subject}" />
-                                    <Label Text="{Binding Preview}" FontSize="12" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
-                                </VerticalStackLayout>
-                            </Border>
-                        </DataTemplate>
-                    </listview:SfListView.ItemTemplate>
-                </listview:SfListView>
-                <controls:StateView IsVisible="{Binding IsEmptyFolder}" />
+            <Grid RowDefinitions="Auto,*">
+                <Grid Padding="16,12" ColumnDefinitions="*,Auto">
+                    <Label Text="{Binding SelectedFolder.Name}" FontSize="22" FontAttributes="Bold" />
+                    <Label Grid.Column="1" FontFamily="MauiMaterialAssets" Text="&#xE152;" FontSize="18" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                </Grid>
+                <Grid Grid.Row="1">
+                    <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ItemSpacing="0" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}">
+                        <listview:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="14" ColumnDefinitions="48,*,Auto" RowDefinitions="Auto,Auto,Auto" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}">
+                                    <Border Grid.RowSpan="3" HeightRequest="36" WidthRequest="36" StrokeShape="Ellipse" BackgroundColor="{AppThemeBinding Light=#DCEBFF, Dark=#20324D}">
+                                        <Label Text="{Binding Sender, Converter={StaticResource InitialsConverter}}" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" />
+                                    </Border>
+                                    <Label Grid.Column="1" Text="{Binding Sender}" FontAttributes="Bold" FontSize="16" />
+                                    <Label Grid.Column="2" Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Subject}" TextColor="{AppThemeBinding Light=#1B1B1B, Dark=#F5F5F5}" />
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding Preview}" FontSize="12" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+                                    <Label Grid.Row="1" Grid.Column="2" FontFamily="MauiMaterialAssets" Text="&#xE89B;" FontSize="16" TextColor="{AppThemeBinding Light=#0F6CBD, Dark=#4DA3FF}" />
+                                </Grid>
+                            </DataTemplate>
+                        </listview:SfListView.ItemTemplate>
+                    </listview:SfListView>
+                    <controls:StateView IsVisible="{Binding IsEmptyFolder}" />
+                </Grid>
             </Grid>
         </Border>
 
         <Border Grid.Row="1" Grid.Column="2" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111317}" Stroke="{AppThemeBinding Light=#D8DEE9, Dark=#2A2F3A}" StrokeThickness="1">
             <Grid>
                 <ScrollView>
-                    <VerticalStackLayout Padding="16" Spacing="10">
-                        <Label Text="{Binding SelectedMessage.Sender}" FontSize="20" FontAttributes="Bold" />
-                        <Label Text="{Binding SelectedMessage.SenderEmail}" />
-                        <Label Text="Recipients" FontAttributes="Bold" />
-                        <Label Text="{Binding SelectedMessage.Recipients}" />
-                        <Label Text="CC" FontAttributes="Bold" />
-                        <Label Text="{Binding SelectedMessage.Cc}" />
-                        <Label Text="Subject" FontAttributes="Bold" />
-                        <Label Text="{Binding SelectedMessage.Subject}" />
-                        <Label Text="Body" FontAttributes="Bold" />
-                        <Label Text="{Binding SelectedMessage.Body}" LineBreakMode="WordWrap" />
+                    <VerticalStackLayout Padding="20" Spacing="12">
+                        <Label Text="{Binding SelectedMessage.Subject}" FontSize="26" FontAttributes="Bold" />
+                        <Grid ColumnDefinitions="56,*" ColumnSpacing="12">
+                            <Border HeightRequest="48" WidthRequest="48" StrokeShape="Ellipse" BackgroundColor="{AppThemeBinding Light=#DCEBFF, Dark=#20324D}">
+                                <Label Text="{Binding SelectedMessage.Sender, Converter={StaticResource InitialsConverter}}" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{Binding SelectedMessage.Sender}" FontSize="18" FontAttributes="Bold" />
+                                <Label Text="{Binding SelectedMessage.SenderEmail}" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+                                <Label Text="{Binding SelectedMessage.ReceivedOn, StringFormat='{0:dd/MM/yyyy h:mm tt}'}" TextColor="{AppThemeBinding Light=#5C5C5C, Dark=#B7BDC8}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Label Text="Hi Kerry Best," FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedMessage.Body}" LineBreakMode="WordWrap" FontSize="14" />
+                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="6">
+                            <Label Text="To" FontAttributes="Bold" />
+                            <Label Grid.Column="1" Text="{Binding SelectedMessage.Recipients}" />
+                            <Label Grid.Row="1" Text="Cc" FontAttributes="Bold" />
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding SelectedMessage.Cc}" />
+                            <Label Grid.Row="2" Text="Status" FontAttributes="Bold" />
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedMessage.Status}" />
+                        </Grid>
                     </VerticalStackLayout>
                 </ScrollView>
                 <controls:StateView IsVisible="{Binding IsLoading}" />
