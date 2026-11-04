@@ -59,6 +59,7 @@
                                  ToolCommand="{Binding Toolbar.ToolCommand}"
                                  ActiveToolId="{Binding Toolbar.ActiveToolId}"
                                  HasSingleSelection="{Binding Toolbar.HasSingleSelection}"
+                                 SelectedElementId="{Binding SelectedNodeId}"
                                  CurrentZoom="{Binding Zoom.CurrentZoom}"
                                  ZoomLevels="{Binding Zoom.Levels}"
                                  SetZoomCommand="{Binding Zoom.SetZoomLevelCommand}"
