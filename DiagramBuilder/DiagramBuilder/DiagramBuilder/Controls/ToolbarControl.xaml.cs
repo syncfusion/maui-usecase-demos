@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Windows.Input;
 using DiagramBuilder.Constants;
-using DiagramBuilder.Models;
+using DiagramToolbarItem = DiagramBuilder.Models.ToolbarItem;
 using Microsoft.Maui.Controls.Shapes;
 using Syncfusion.Maui.Buttons;
 using Syncfusion.Maui.Inputs;
@@ -153,7 +153,7 @@ public partial class ToolbarControl : ContentView
             return;
         }
 
-        var byGroup = ((IEnumerable)ItemsSource).Cast<ToolbarItem>()
+        var byGroup = ((IEnumerable)ItemsSource).Cast<DiagramToolbarItem>()
             .GroupBy(i => i.Group)
             .OrderBy(g => g.Key)
             .ToList();
@@ -188,7 +188,7 @@ public partial class ToolbarControl : ContentView
         ApplyActiveToolHighlight();
     }
 
-    private View BuildGroupLayout(IGrouping<int, ToolbarItem> group)
+    private View BuildGroupLayout(IGrouping<int, DiagramToolbarItem> group)
     {
         var groupLayout = new HorizontalStackLayout
         {
@@ -226,7 +226,7 @@ public partial class ToolbarControl : ContentView
         }
     }
 
-    private View BuildGroupItem(ToolbarItem item)
+    private View BuildGroupItem(DiagramToolbarItem item)
     {
         if (item.Id is "tool.fill.color" or "tool.border.color")
         {
@@ -258,7 +258,7 @@ public partial class ToolbarControl : ContentView
         return BuildFlyoutButton("tool.connector", AppStrings.ToolbarConnectors, subItems);
     }
 
-    private View BuildColorSwatchButton(ToolbarItem item)
+    private View BuildColorSwatchButton(DiagramToolbarItem item)
     {
         var fillColor = Services.ResourceLookup.ResourceColor(item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary");
         var swatch = new Border
@@ -319,7 +319,7 @@ public partial class ToolbarControl : ContentView
         swatch.BackgroundColor = Services.ResourceLookup.Color(key, Colors.White);
     }
 
-    private Button BuildIconButton(ToolbarItem item)
+    private Button BuildIconButton(DiagramToolbarItem item)
     {
         var btn = new Button
         {
