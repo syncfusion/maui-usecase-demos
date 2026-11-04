@@ -167,11 +167,13 @@ public partial class DiagramWorkspaceControl : ContentView
                 Diagram.Connectors.Add(c);
             }
 
-            // Apply layout if present in the template
-            if (document.Layout != null)
-            {
-                Diagram.AutoLayout = DiagramModelAdapter.ToLayout(document.Layout);
-            }
+            // TODO: Apply layout after diagram is fully initialized
+            // Layout application requires the diagram to be fully ready (Created event fired).
+            // For now, templates use manual positioning with pre-calculated node coordinates.
+            // if (document.Layout != null)
+            // {
+            //     await SafeApplyLayoutAsync(document.Layout);
+            // }
 
             // Inform any registered property service of the new live nodes/connectors
             // so the property panel can read live state for the selected element.
