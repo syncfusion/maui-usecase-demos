@@ -273,7 +273,11 @@ public partial class ToolbarControl : ContentView
             ShowCloseButton = false,
         };
         var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) => popup.ShowRelativeToView(swatch, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
+        tap.Tapped += (_, _) =>
+        {
+            PopupXamlRootHelper.AttachIfAvailable(popup, swatch);
+            popup.ShowRelativeToView(swatch, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
+        };
         swatch.GestureRecognizers.Add(tap);
         return swatch;
     }
@@ -357,7 +361,11 @@ public partial class ToolbarControl : ContentView
             AutomationId = "toolbar_" + id.Replace('.', '_'),
         };
         AutomationProperties.SetHelpText(btn, headerKey);
-        btn.Clicked += (_, _) => popup.ShowRelativeToView(btn, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
+        btn.Clicked += (_, _) =>
+        {
+            PopupXamlRootHelper.AttachIfAvailable(popup, btn);
+            popup.ShowRelativeToView(btn, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
+        };
         return btn;
     }
 

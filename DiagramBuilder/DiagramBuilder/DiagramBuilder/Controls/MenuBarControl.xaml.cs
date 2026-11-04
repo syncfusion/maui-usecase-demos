@@ -135,6 +135,7 @@ public partial class MenuBarControl : ContentView
 
         button.Clicked += (_, _) =>
         {
+            PopupXamlRootHelper.AttachIfAvailable(popup, button);
             popup.ShowRelativeToView(button, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
         };
         return button;

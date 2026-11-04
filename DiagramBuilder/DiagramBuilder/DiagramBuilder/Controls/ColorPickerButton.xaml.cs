@@ -63,6 +63,11 @@ public partial class ColorPickerButton : ContentView
     private void OnSwatchTapped(object? sender, TappedEventArgs e)
     {
         _popup ??= BuildPopup();
+        PopupXamlRootHelper.AttachIfAvailable(_popup, SwatchFrame);
+        if (_popup.Content is VisualElement popupContent)
+        {
+            PopupXamlRootHelper.AttachIfAvailable(popupContent, SwatchFrame);
+        }
         _popup.ShowRelativeToView(SwatchFrame, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
     }
 

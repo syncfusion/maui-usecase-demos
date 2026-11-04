@@ -427,7 +427,7 @@ public partial class PropertyPanelControl : ContentView
                 AutomationId = "property_font_size",
             },
             "TextColor" => new ColorPickerButton { ColorValue = model.Value as string ?? string.Empty, AutomationId = "property_text_color" },
-            "TextBold" or "TextItalic" or "TextUnderline" => BuildToggle(model.Value as bool? ?? false, "property_text_" + model.Key.ToLowerInvariant(), value =>
+            "TextBold" or "TextItalic" => BuildToggle(model.Value as bool? ?? false, "property_text_" + model.Key.ToLowerInvariant(), value =>
             {
                 model.Value = value;
                 if (vm.ApplyCommand.CanExecute(model))

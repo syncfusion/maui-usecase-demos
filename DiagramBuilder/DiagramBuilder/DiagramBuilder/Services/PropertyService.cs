@@ -95,9 +95,6 @@ public class PropertyService : IPropertyService
             case "TextItalic":
                 ApplyTextStyle(element, italic: property.Value as bool?);
                 break;
-            case "TextUnderline":
-                ApplyTextStyle(element, underline: property.Value as bool?);
-                break;
             case "TextColor":
                 ApplyTextStyle(element, color: ResourceLookup.Color(property.Value?.ToString()));
                 break;
@@ -144,7 +141,6 @@ public class PropertyService : IPropertyService
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextUnderline", LabelKey = AppStrings.PropertyUnderline, Value = textStyle?.Underline ?? false });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color) });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "HorizontalAlignment", LabelKey = AppStrings.PropertyHorizontalAlign, Value = HorizontalKeyFor(annotation?.HorizontalAlignment) });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "VerticalAlignment", LabelKey = AppStrings.PropertyVerticalAlign, Value = VerticalKeyFor(annotation?.VerticalAlignment) });
@@ -246,7 +242,7 @@ public class PropertyService : IPropertyService
         };
     }
 
-    private static void ApplyTextStyle(NodeBase element, double? fontSize = null, bool? bold = null, bool? italic = null, bool? underline = null, Color? color = null)
+    private static void ApplyTextStyle(NodeBase element, double? fontSize = null, bool? bold = null, bool? italic = null, Color? color = null)
     {
         TextStyle? textStyle = element switch
         {
@@ -273,11 +269,6 @@ public class PropertyService : IPropertyService
         if (italic.HasValue)
         {
             textStyle.Italic = italic.Value;
-        }
-
-        if (underline.HasValue)
-        {
-            textStyle.Underline = underline.Value;
         }
 
         if (color is not null)
