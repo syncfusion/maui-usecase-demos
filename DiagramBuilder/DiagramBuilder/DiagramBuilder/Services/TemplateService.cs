@@ -72,7 +72,6 @@ public class TemplateService : ITemplateService
                 IsBlank = false,
                 AccentColorKey = AccentFor(dto.Category),
                 ThumbnailKey = "thumb." + dto.Id,
-                Layout = dto.Layout,
             };
 
             foreach (var node in dto.Nodes)
@@ -253,8 +252,6 @@ public class TemplateService : ITemplateService
         public string Title { get; set; } = string.Empty;
 
         public string Description { get; set; } = string.Empty;
-
-        public DiagramLayoutTemplate? Layout { get; set; }
 
         public List<TemplateNode> Nodes { get; set; } = [];
 
