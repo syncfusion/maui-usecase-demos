@@ -259,6 +259,40 @@ public static class DiagramModelAdapter
         };
     }
 
+    /// <summary>
+    /// Converts a template layout descriptor to a Syncfusion DiagramLayout.
+    /// </summary>
+    public static DiagramLayout ToLayout(DiagramTemplate.DiagramLayoutTemplate layoutTemplate)
+    {
+        return new DiagramLayout
+        {
+            Type = ToLayoutType(layoutTemplate.Type),
+            Orientation = ToLayoutOrientation(layoutTemplate.Orientation),
+            HorizontalSpacing = layoutTemplate.HorizontalSpacing,
+            VerticalSpacing = layoutTemplate.VerticalSpacing,
+            Root = layoutTemplate.Root,
+        };
+    }
+
+    private static DiagramLayoutType ToLayoutType(string type) => type switch
+    {
+        "OrganizationalChart" => DiagramLayoutType.OrganizationalChart,
+        "HierarchicalTree" => DiagramLayoutType.HierarchicalTree,
+        "ComplexHierarchicalTree" => DiagramLayoutType.ComplexHierarchicalTree,
+        "RadialTree" => DiagramLayoutType.RadialTree,
+        "MindMap" => DiagramLayoutType.MindMap,
+        "SymmetricalLayout" => DiagramLayoutType.SymmetricalLayout,
+        _ => DiagramLayoutType.None,
+    };
+
+    private static LayoutOrientation ToLayoutOrientation(string orientation) => orientation switch
+    {
+        "LeftToRight" => LayoutOrientation.LeftToRight,
+        "RightToLeft" => LayoutOrientation.RightToLeft,
+        "BottomToTop" => LayoutOrientation.BottomToTop,
+        _ => LayoutOrientation.TopToBottom,
+    };
+
     private static Syncfusion.Maui.Diagram.HorizontalAlignment ToHorizontalAlignment(string value) => value switch
     {
         "Left" => HorizontalAlignment.Left,

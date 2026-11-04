@@ -167,6 +167,12 @@ public partial class DiagramWorkspaceControl : ContentView
                 Diagram.Connectors.Add(c);
             }
 
+            // Apply layout if present in the template
+            if (document.Layout != null)
+            {
+                Diagram.AutoLayout = DiagramModelAdapter.ToLayout(document.Layout);
+            }
+
             // Inform any registered property service of the new live nodes/connectors
             // so the property panel can read live state for the selected element.
             TemplateLoaded?.Invoke(this, new TemplateLoadPayload(createdNodes, createdConnectors));
