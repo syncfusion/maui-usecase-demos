@@ -1,4 +1,5 @@
 using DiagramBuilder.Constants;
+using System.Reflection;
 using DiagramBuilder.Models;
 using Syncfusion.Maui.Diagram;
 using HorizontalAlignment = Syncfusion.Maui.Diagram.HorizontalAlignment;
