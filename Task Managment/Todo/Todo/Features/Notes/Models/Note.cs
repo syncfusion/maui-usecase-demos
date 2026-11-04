@@ -72,6 +72,12 @@ public partial class Note : ObservableObject
     /// </summary>
     public bool IsDueToday => DueDate.HasValue && DueDate.Value.Date == DateTime.Today;
 
+    partial void OnDueDateChanged(DateTime? value)
+        => OnPropertyChanged(nameof(IsDueToday));
+
+    partial void OnReminderDateChanged(DateTime? value)
+        => OnPropertyChanged(nameof(HasReminder));
+
     /// <summary>
     /// Whether the note is visible in the My Notes (active) view —
     /// i.e. not soft-deleted.

@@ -63,13 +63,7 @@ public sealed class InMemoryNoteService : INoteService
     public Task UpdateAsync(Note note)
     {
         RemoveExpiredDeletedNotes();
-        if (note.ReminderDate.HasValue)
-        {
-            // Reminder is a destination category, not an additional tag.
-            note.ListId = null;
-            note.DeletedAt = null;
-        }
-
+        if (note.DeletedAt is not null) return Task.CompletedTask;
         note.UpdatedAt = DateTime.Now;
         return Task.CompletedTask;
     }
@@ -102,7 +96,7 @@ public sealed class InMemoryNoteService : INoteService
     {
         RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
-        if (existing is not null)
+        if (existing is not null && existing.DeletedAt is not null)
             _notes.Remove(existing);
         return Task.CompletedTask;
     }
@@ -111,7 +105,7 @@ public sealed class InMemoryNoteService : INoteService
     {
         RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
-        if (existing is null)
+        if (existing is null || existing.DeletedAt is not null)
             return Task.CompletedTask;
 
         existing.IsCompleted = !existing.IsCompleted;
@@ -123,7 +117,7 @@ public sealed class InMemoryNoteService : INoteService
     {
         RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
-        if (existing is null)
+        if (existing is null || existing.DeletedAt is not null)
             return Task.CompletedTask;
 
         existing.IsImportant = !existing.IsImportant;
@@ -138,8 +132,7 @@ public sealed class InMemoryNoteService : INoteService
         query = category switch
         {
             NotesListCategory.MyNotes => query.Where(n => n.DeletedAt is null
-                                                           && n.ListId is null
-                                                           && n.ReminderDate is null),
+                                                           && n.ListId is null),
             NotesListCategory.Important => query.Where(n => n.DeletedAt is null && n.IsImportant),
             NotesListCategory.Reminder => query.Where(n => n.DeletedAt is null && n.ReminderDate.HasValue),
             NotesListCategory.Bin => query.Where(n => n.DeletedAt is not null),
@@ -201,12 +194,10 @@ public sealed class InMemoryNoteService : INoteService
     {
         RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == noteId);
-        if (existing is null) return Task.CompletedTask;
+        if (existing is null || existing.DeletedAt is not null) return Task.CompletedTask;
 
         existing.ListId = targetListId;
         existing.DeletedAt = null;
-        existing.IsImportant = false;
-        existing.ReminderDate = null;
         existing.UpdatedAt = DateTime.Now;
 
         if (existing.DeletedAt is null)
@@ -226,13 +217,14 @@ public sealed class InMemoryNoteService : INoteService
     {
         RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == noteId);
-        if (existing is null) return Task.CompletedTask;
+        if (existing is null || existing.DeletedAt is not null) return Task.CompletedTask;
 
-        existing.ListId = null;
-        existing.IsImportant = category == NotesListCategory.Important;
-        existing.ReminderDate = category == NotesListCategory.Reminder
-            ? existing.ReminderDate ?? DateTime.Today.AddDays(1).AddHours(9)
-            : null;
+        if (category == NotesListCategory.Important)
+            existing.IsImportant = true;
+        if (category == NotesListCategory.Reminder)
+            existing.ReminderDate ??= DateTime.Today.AddDays(1).AddHours(9);
+        if (category == NotesListCategory.MyNotes)
+            existing.ListId = null;
         existing.DeletedAt = category == NotesListCategory.Bin ? DateTime.Now : null;
         existing.UpdatedAt = DateTime.Now;
         return Task.CompletedTask;

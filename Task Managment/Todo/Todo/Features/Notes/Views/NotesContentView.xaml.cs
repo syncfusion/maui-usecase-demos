@@ -87,7 +87,8 @@ public partial class NotesContentView : ContentView
                 vm.DeleteCommand.Execute(e.Note);
                 break;
             case NoteActionKind.DeletePermanently:
-                vm.ConfirmDeletePermanentlyCommand.Execute(e.Note);
+                if (e.Note.DeletedAt is not null)
+                    vm.ConfirmDeletePermanentlyCommand.Execute(e.Note);
                 break;
         }
     }

@@ -10,14 +10,14 @@
              BackgroundColor="#80000000">
 
     <Grid Padding="24" VerticalOptions="Center" HorizontalOptions="Center">
-        <Border WidthRequest="340"
+        <Border WidthRequest="{OnIdiom Phone=300, Default=320}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 27"
                 Padding="20">
             <Border.Shadow>
-                <Shadow Brush="#40000000" Radius="16" Offset="0,8" Opacity="0.18" />
+                <Shadow Brush="#4D000000" Radius="6" Offset="0,2" Opacity="1" />
             </Border.Shadow>
             <VerticalStackLayout Spacing="14">
                 <Label Text="{Binding Title}"
@@ -32,40 +32,20 @@
                 <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" HorizontalOptions="End" Margin="0,8,0,0">
                     <buttons:SfButton Grid.Column="1"
                                       Text="{Binding CancelText}"
-                                      BackgroundColor="White"
-                                      TextColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
+                                      Background="Transparent"
+                                      TextColor="#6750A4"
                                       HeightRequest="36"
                                       MinimumWidthRequest="72"
                                       CornerRadius="8"
                                       Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="2"
                                       Text="{Binding ConfirmText}"
-                                      BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
-                                      TextColor="White"
+                                      Background="Transparent"
+                                      TextColor="#6750A4"
                                       HeightRequest="36"
                                       MinimumWidthRequest="72"
                                       CornerRadius="8"
-                                      Command="{Binding ConfirmCommand}">
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal" />
-                                    <VisualState x:Name="PointerOver" />
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                        <buttons:SfButton.Triggers>
-                            <DataTrigger TargetType="buttons:SfButton" Binding="{Binding IsDestructive}" Value="True">
-                                <Setter Property="BackgroundColor" Value="{StaticResource DestructiveColor}" />
-                            </DataTrigger>
-                        </buttons:SfButton.Triggers>
-                    </buttons:SfButton>
+                                      Command="{Binding ConfirmCommand}" />
                 </Grid>
             </VerticalStackLayout>
         </Border>

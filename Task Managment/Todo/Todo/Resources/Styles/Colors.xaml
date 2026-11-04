@@ -52,7 +52,7 @@
     <!-- ============================================================ -->
     <!-- Text                                                         -->
     <!-- ============================================================ -->
-    <Color x:Key="TextPrimaryColor">#212121</Color>
+    <Color x:Key="TextPrimaryColor">#1C1B1F</Color>
     <Color x:Key="TextSecondaryColor">#757575</Color>
     <Color x:Key="TextTertiaryColor">#9E9E9E</Color>
     <Color x:Key="TextPrimaryDarkColor">#F5F5F5</Color>

@@ -14,11 +14,11 @@
              BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
 
     <Grid RowDefinitions="192,Auto,*,Auto" Padding="0,12,0,16">
-        <syncfusion:SfListView Grid.Row="0"
+        <syncfusion:SfListView x:Name="SidebarCategoriesView" Grid.Row="0"
                                 ItemSize="45"
                                 ItemsSource="{Binding AvailableCategories}"
-                                SelectionMode="Single" SelectionBackground="White"
-                                SelectedItem="{Binding SelectedCategory, Mode=OneWay, Converter={StaticResource ObjectToCategoryConverter}}"
+                                SelectionMode="Single" SelectionBackground="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}"
+                                SelectedItem="{Binding SelectedSidebarCategory, Mode=OneWay, Converter={StaticResource ObjectToCategoryConverter}}"
                                 BackgroundColor="Transparent"
                                 SelectionChanged="OnSidebarSelectionChanged">
             <syncfusion:SfListView.ItemTemplate>
@@ -34,7 +34,7 @@
                                         <VisualState x:Name="Normal" /> 
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="White" />
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -96,7 +96,8 @@
                 </VerticalStackLayout>
 
                 <syncfusion:SfListView x:Name="CustomListsView" ItemsSource="{Binding CustomLists}"
-                                SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45" SelectionBackground="White"
+                                SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45" SelectionBackground="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}"
+                                SelectedItem="{Binding SelectedCustomList, Mode=OneWay}"
                                 SelectionChanged="OnCustomListSelectionChanged">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="custmodels:NoteList">
@@ -112,7 +113,7 @@
                                         <VisualState x:Name="Normal" /> 
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="White" />
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -120,10 +121,16 @@
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
                                      <Image Grid.Column="0" Source="notesicon.png" WidthRequest="20"
                                          HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="{Binding Name}"
-                                           Style="{StaticResource SidebarItemLabelStyle}"
-                                           LineBreakMode="TailTruncation"
-                                           IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="4"
+                                                           VerticalOptions="Center"
+                                                           IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}">
+                                        <Label Text="{Binding Name}"
+                                               Style="{StaticResource SidebarItemLabelStyle}"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding NoteCountText, StringFormat='({0})'}"
+                                               Style="{StaticResource SidebarItemLabelStyle}"
+                                               IsVisible="{Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}" />
+                                    </HorizontalStackLayout>
                                     <buttons:SfButton Grid.Column="2" Text="&#8943;" FontSize="18" Rotation="90"
                                                       WidthRequest="32" HeightRequest="32" Padding="0"
                                                       Background="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
@@ -138,7 +145,7 @@
         </Grid>
 
         <buttons:SfButton Grid.Row="3" Text="&#65291;" FontSize="26" WidthRequest="52"
-                          HeightRequest="52" CornerRadius="26" Padding="0" Margin="16,12,0,0"
+                          HeightRequest="52" CornerRadius="26" Padding="0" Margin="16,12,10,0"
                           HorizontalOptions="End"
                           BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
                           TextColor="White"

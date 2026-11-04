@@ -41,6 +41,9 @@ public partial class EditNoteViewModel : ViewModelBase
     private DateTime dueDateSelection = DateTime.Today;
 
     [ObservableProperty]
+    private DateTime draftDueDateSelection = DateTime.Today;
+
+    [ObservableProperty]
     private NoteRepeatFrequency repeatFrequency;
 
     [ObservableProperty]
@@ -52,17 +55,33 @@ public partial class EditNoteViewModel : ViewModelBase
     [ObservableProperty]
     private bool isReminderPickerVisible;
 
+    public bool IsMetadataPickerClosed =>
+        !IsDueDatePickerVisible &&
+        !IsRepeatPickerVisible &&
+        !IsReminderPickerVisible;
+
     [ObservableProperty]
     private DateTime reminderDateSelection = DateTime.Today;
 
     [ObservableProperty]
     private TimeSpan reminderTimeSelection = new(9, 0, 0);
 
+    [ObservableProperty]
+    private DateTime draftReminderDateSelection = DateTime.Today;
+
+    [ObservableProperty]
+    private TimeSpan draftReminderTimeSelection = new(9, 0, 0);
+
     public IReadOnlyList<NoteRepeatFrequency> RepeatOptions { get; } =
         Enum.GetValues<NoteRepeatFrequency>();
 
+    public bool HasRepeatSelection => RepeatFrequency != NoteRepeatFrequency.Never;
+
     [ObservableProperty]
     private bool isExisting;
+
+    [ObservableProperty]
+    private bool isImportant;
 
     public string DialogTitle => IsExisting ? "Edit note" : "Create note";
     public string PrimaryButtonText => IsExisting ? "Save" : "Create";
@@ -85,6 +104,7 @@ public partial class EditNoteViewModel : ViewModelBase
         {
             IsExisting = true;
             Title = existing.Title ?? string.Empty;
+            IsImportant = existing.IsImportant;
             HasDueDate = existing.DueDate.HasValue;
             IsDueDatePickerVisible = HasDueDate;
             DueDateSelection = existing.DueDate ?? DateTime.Today;
@@ -94,6 +114,9 @@ public partial class EditNoteViewModel : ViewModelBase
             IsReminderPickerVisible = HasReminder;
             ReminderDateSelection = existing.ReminderDate ?? DateTime.Today;
             ReminderTimeSelection = existing.ReminderDate?.TimeOfDay ?? new TimeSpan(9, 0, 0);
+            DraftDueDateSelection = DueDateSelection;
+            DraftReminderDateSelection = ReminderDateSelection;
+            DraftReminderTimeSelection = ReminderTimeSelection;
             var age = DateTime.Now - existing.CreatedAt;
             CreatedAgeText = age.TotalMinutes < 1 ? "Created just now" :
                 age.TotalHours < 1 ? $"Created {(int)age.TotalMinutes} min ago" :
@@ -104,12 +127,32 @@ public partial class EditNoteViewModel : ViewModelBase
         }
     }
 
-    partial void OnHasDueDateChanged(bool value) => IsDueDatePickerVisible = value;
-    partial void OnDueDateSelectionChanged(DateTime value) => IsDueDatePickerVisible = false;
-    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value) => IsRepeatPickerVisible = false;
-    partial void OnHasReminderChanged(bool value) => IsReminderPickerVisible = value;
-    partial void OnReminderDateSelectionChanged(DateTime value) => IsReminderPickerVisible = false;
-    partial void OnReminderTimeSelectionChanged(TimeSpan value) => IsReminderPickerVisible = false;
+    partial void OnHasDueDateChanged(bool value)
+    {
+        if (!value)
+        {
+            IsDueDatePickerVisible = false;
+            OnPropertyChanged(nameof(HasDueDate));
+        }
+    }
+    partial void OnIsDueDatePickerVisibleChanged(bool value)
+        => OnPropertyChanged(nameof(IsMetadataPickerClosed));
+
+    partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value)
+    {
+        IsRepeatPickerVisible = false;
+        OnPropertyChanged(nameof(HasRepeatSelection));
+    }
+    partial void OnIsRepeatPickerVisibleChanged(bool value)
+        => OnPropertyChanged(nameof(IsMetadataPickerClosed));
+
+    partial void OnHasReminderChanged(bool value)
+    {
+        if (!value)
+            IsReminderPickerVisible = false;
+    }
+    partial void OnIsReminderPickerVisibleChanged(bool value)
+        => OnPropertyChanged(nameof(IsMetadataPickerClosed));
 
     [RelayCommand]
     private async Task SaveAsync()
@@ -147,19 +190,63 @@ public partial class EditNoteViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ToggleDueDatePicker() => IsDueDatePickerVisible = !IsDueDatePickerVisible;
+    private void OpenDueDatePicker()
+    {
+        DraftDueDateSelection = HasDueDate ? DueDateSelection : DateTime.Today;
+        IsReminderPickerVisible = false;
+        IsDueDatePickerVisible = true;
+    }
+
+    [RelayCommand]
+    private void SaveDueDate()
+    {
+        DueDateSelection = DraftDueDateSelection;
+        HasDueDate = true;
+        IsDueDatePickerVisible = false;
+    }
+
+    [RelayCommand]
+    private void CancelDueDate()
+    {
+        DraftDueDateSelection = DueDateSelection;
+        IsDueDatePickerVisible = false;
+    }
 
     [RelayCommand]
     private void ToggleRepeatPicker() => IsRepeatPickerVisible = !IsRepeatPickerVisible;
 
     [RelayCommand]
-    private void ToggleReminderPicker() => IsReminderPickerVisible = !IsReminderPickerVisible;
+    private void OpenReminderPicker()
+    {
+        DraftReminderDateSelection = HasReminder ? ReminderDateSelection : DateTime.Today;
+        DraftReminderTimeSelection = HasReminder ? ReminderTimeSelection : new TimeSpan(9, 0, 0);
+        IsDueDatePickerVisible = false;
+        IsReminderPickerVisible = true;
+    }
+
+    [RelayCommand]
+    private void SaveReminder()
+    {
+        ReminderDateSelection = DraftReminderDateSelection.Date;
+        ReminderTimeSelection = DraftReminderTimeSelection;
+        HasReminder = true;
+        IsReminderPickerVisible = false;
+    }
+
+    [RelayCommand]
+    private void CancelReminder()
+    {
+        DraftReminderDateSelection = ReminderDateSelection;
+        DraftReminderTimeSelection = ReminderTimeSelection;
+        IsReminderPickerVisible = false;
+    }
 
     [RelayCommand]
     private async Task ToggleImportantAsync()
     {
         if (_existing is null) return;
         await _noteService.ToggleImportantAsync(_existing.Id);
+        IsImportant = _existing.IsImportant;
     }
 
     [RelayCommand]

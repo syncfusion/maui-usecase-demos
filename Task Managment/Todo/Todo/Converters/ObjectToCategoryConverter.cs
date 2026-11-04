@@ -11,8 +11,8 @@ namespace Todo.Converters;
 public sealed class ObjectToCategoryConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value is NotesListCategory c ? c : NotesListCategory.MyNotes;
+        => value is NotesListCategory c ? c : null!;
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => value is NotesListCategory c ? c : NotesListCategory.MyNotes;
+        => value is NotesListCategory c ? c : null!;
 }

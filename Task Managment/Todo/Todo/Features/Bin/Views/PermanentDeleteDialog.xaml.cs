@@ -35,7 +35,7 @@ public partial class PermanentDeleteDialog : ContentPage
         var vm = new ConfirmDialogViewModel(navigation)
         {
             Title = "Delete permanently?",
-            Message = "This note will be permanently deleted and cannot be recovered.",
+            Message = "This notes will be permanently deleted.",
             CancelText = "Cancel",
             ConfirmText = "Delete",
             IsDestructive = true

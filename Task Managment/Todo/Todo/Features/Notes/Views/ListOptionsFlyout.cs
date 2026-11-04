@@ -43,8 +43,8 @@ public sealed class ListOptionsFlyout : ContentView
 
     public ListOptionsFlyout()
     {
-        _popup = CreatePopup(250, 220, CreateMainSurface);
-        _sortPopup = CreatePopup(190, 178, CreateSortSurface);
+        _popup = CreatePopup(220, 220, CreateMainSurface);
+        _sortPopup = CreatePopup(180, 178, CreateSortSurface);
         _popup.Opened += OnPopupOpened;
         _popup.Closing += async (_, e) =>
         {
@@ -134,7 +134,7 @@ public sealed class ListOptionsFlyout : ContentView
             PopupStyle = new PopupStyle
             {
                 OverlayColor = Colors.Transparent,
-                MessageBackground = Color.FromArgb("#FFFFFF")
+                MessageBackground = Colors.Transparent
             },
             ContentTemplate = new DataTemplate(contentFactory)
         };
@@ -147,7 +147,7 @@ public sealed class ListOptionsFlyout : ContentView
             Margin = new Thickness(0, MenuTopMargin, 0, 0)
         };
         RebuildMenu();
-        _surface = CreateSurface(250, GetMainMenuHeight(), _menuActions);
+        _surface = CreateSurface(220, GetMainMenuHeight(), _menuActions);
         return _surface;
     }
 
@@ -187,8 +187,13 @@ public sealed class ListOptionsFlyout : ContentView
             Margin = new Thickness(0, 0, 16, 0),
             HorizontalOptions = LayoutOptions.End,
             VerticalOptions = LayoutOptions.Center,
+            TextColor = Color.FromArgb("#1C1B1F"),
             InputTransparent = true
         });
+        var sortArrow = (Label)sortRow.Children[1];
+        sortArrow.SetAppThemeColor(Label.TextColorProperty,
+            Color.FromArgb("#1C1B1F"),
+            Color.FromArgb("#E6E1E5"));
         _menuActions.Children.Add(sortRow);
         _menuActions.Children.Add(CreateSectionLabel("Theme colors"));
         _themePicker = CreateThemePicker();
@@ -233,7 +238,7 @@ public sealed class ListOptionsFlyout : ContentView
         actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate), currentSort == NoteListSortOrder.DueDate));
         actions.Children.Add(CreateMenuButton("Alphabetically", () => ApplySort(NoteListSortOrder.Alphabetical), currentSort == NoteListSortOrder.Alphabetical));
         var sortHeight = MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance + 20;
-        _sortSurface = CreateSurface(200, sortHeight, actions);
+        _sortSurface = CreateSurface(180, sortHeight, actions);
         return _sortSurface;
     }
 
@@ -254,14 +259,16 @@ public sealed class ListOptionsFlyout : ContentView
             },
             Shadow = new Shadow
             {
-                Brush = Colors.Black,
-                Opacity = 0.14f,
-                Radius = 9,
+                Brush = Color.FromArgb("#4D000000"),
+                Opacity = 1f,
+                Radius = 6,
                 Offset = new Point(0, 2)
             }
         };
-        surface.SetAppThemeColor(BackgroundColorProperty, Colors.White, Color.FromArgb("#29272F"));
-        surface.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#CAC4D0"), Color.FromArgb("#494650"));
+        surface.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
+            Brush.White,
+            new SolidColorBrush(Color.FromArgb("#29272F")));
+        surface.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#E3DFEA"), Color.FromArgb("#44414B"));
         return surface;
     }
 
@@ -420,30 +427,24 @@ public sealed class ListOptionsFlyout : ContentView
             Text = text,
             HeightRequest = 42,
             Padding = new Thickness(14, 0),
-            BackgroundColor = selected ? Colors.White : Color.FromArgb("#7633DA"),
+            Background = Brush.Transparent,
             FontSize = 14,
             HorizontalOptions = LayoutOptions.Fill,
             HorizontalTextAlignment = TextAlignment.Start,
             CornerRadius = 8,
-            TextColor = selected ? Color.FromArgb("#7633DA") : Colors.White,
             Command = new Command(action)
         };
-        button.SetAppThemeColor(VisualElement.BackgroundColorProperty,
-            selected ? Colors.White : Color.FromArgb("#7633DA"),
-            selected ? Colors.White : Color.FromArgb("#8D4CF5"));
         button.SetAppThemeColor(SfButton.TextColorProperty,
-            selected ? Color.FromArgb("#7633DA") : Colors.White,
-            selected ? Color.FromArgb("#8D4CF5") : Colors.White);
+            destructive ? Color.FromArgb("#D32F2F") : Color.FromArgb("#1C1B1F"),
+            destructive ? Color.FromArgb("#FFB4AB") : Color.FromArgb("#E6E1E5"));
         SemanticProperties.SetDescription(button, text);
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
         var pointerOver = new VisualState { Name = "PointerOver" };
-        pointerOver.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
-        pointerOver.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
+        pointerOver.Setters.Add(new Setter { Property = VisualElement.BackgroundProperty, Value = Brush.Transparent });
         commonStates.States.Add(pointerOver);
         var pressed = new VisualState { Name = "Pressed" };
-        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
-        pressed.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
+        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundProperty, Value = Brush.Transparent });
         commonStates.States.Add(pressed);
         VisualStateManager.SetVisualStateGroups(button, new VisualStateGroupList { commonStates });
         return button;

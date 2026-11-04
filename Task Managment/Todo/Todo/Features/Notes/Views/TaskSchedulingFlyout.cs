@@ -18,9 +18,9 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     public TaskSchedulingFlyout()
     {
-        _datePopup = CreatePopup(372, 420, CreateDateSurface);
-        _repeatPopup = CreatePopup(238, 362, CreateRepeatSurface);
-        _customPopup = CreatePopup(330, 214, CreateCustomSurface);
+        _datePopup = CreatePopup(340, 420, CreateDateSurface);
+        _repeatPopup = CreatePopup(210, 362, CreateRepeatSurface);
+        _customPopup = CreatePopup(300, 214, CreateCustomSurface);
         foreach (var popup in new[] { _datePopup, _repeatPopup, _customPopup })
             popup.PositionChanging += ClampPosition;
         Content = new Grid { Children = { _datePopup, _repeatPopup, _customPopup } };
@@ -74,14 +74,15 @@ public sealed class TaskSchedulingFlyout : ContentView
             FontAttributes = FontAttributes.Bold,
             TextColor = Color.FromArgb("#29272F"),
         };
-        title.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#49454F"), Color.FromArgb("#E6E1E5"));
+        title.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
 
         var closeButton = CreateIconButton("\ue5cd", () => _datePopup.Dismiss());
         var picker = new SfDateTimePicker
         {
             SelectedDate = _selectedDateTime,
             HeightRequest = 250,
-            BackgroundColor = Colors.Transparent,
+            Background = Brush.Transparent,
+            DateFormat = PickerDateFormat.MMM_dd_yyyy
         };
 
         var cancelButton = CreateTextActionButton("Cancel", () => _datePopup.Dismiss());
@@ -162,7 +163,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         content.Children.Add(buttons);
         Grid.SetRow(buttons, 4);
 
-        return CreateBorder(372, 400, content);
+        return CreateBorder(340, 400, content);
     }
 
     private View CreateRepeatSurface()
@@ -178,7 +179,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             Padding = new Thickness(12, 0),
             VerticalTextAlignment = TextAlignment.Center
         };
-        repeatTitle.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#49454F"), Color.FromArgb("#E6E1E5"));
+        repeatTitle.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
         content.Children.Add(repeatTitle);
 
         foreach (var option in new[] { NoteRepeatFrequency.Daily, NoteRepeatFrequency.Weekdays, NoteRepeatFrequency.Weekly, NoteRepeatFrequency.Monthly, NoteRepeatFrequency.Yearly })
@@ -191,7 +192,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         content.Children.Add(new BoxView { HeightRequest = 1, Color = Color.FromArgb("#CAC4D0"), Margin = new Thickness(4, 4) });
         content.Children.Add(CreateMenuButton("Custom", _viewModel?.DraftRepeatFrequency == NoteRepeatFrequency.Custom,
             () => { _repeatPopup.Dismiss(); if (_repeatAnchor is not null) _customPopup.ShowRelativeToView(_repeatAnchor, PopupRelativePosition.AlignTopRight); }));
-        return CreateBorder(238, 332, content);
+        return CreateBorder(210, 332, content);
     }
 
     private View CreateCustomSurface()
@@ -208,7 +209,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             Padding = new Thickness(20, 12, 20, 4),
             VerticalOptions = LayoutOptions.Center
         };
-        title.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#49454F"), Color.FromArgb("#E6E1E5"));
+        title.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
 
         var frequency = new Grid
         {
@@ -216,28 +217,34 @@ public sealed class TaskSchedulingFlyout : ContentView
             ColumnSpacing = 8,
             Padding = new Thickness(20, 4, 20, 4)
         };
-        frequency.Children.Add(new Label { Text = "Every", FontSize = 13, VerticalTextAlignment = TextAlignment.Center });
+        var everyLabel = new Label { Text = "Every", FontSize = 13, VerticalTextAlignment = TextAlignment.Center };
+        everyLabel.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
+        frequency.Children.Add(everyLabel);
         var count = new Border
         {
             WidthRequest = 56,
             HeightRequest = 36,
             StrokeThickness = 1,
-            Stroke = Color.FromArgb("#E1DDED"),
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
-            BackgroundColor = Color.FromArgb("#F7F5FA"),
             Content = new Label { Text = "11", FontSize = 14, HorizontalTextAlignment = TextAlignment.Center, VerticalTextAlignment = TextAlignment.Center }
         };
+        count.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#E1DDED"), Color.FromArgb("#494650"));
+        count.Background = Brush.Transparent;
+        if (count.Content is Label countLabel)
+            countLabel.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
         Grid.SetColumn(count, 1);
         frequency.Children.Add(count);
         var interval = new Border
         {
             HeightRequest = 36,
             StrokeThickness = 1,
-            Stroke = Color.FromArgb("#E1DDED"),
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
-            BackgroundColor = Color.FromArgb("#F7F5FA"),
             Content = new Picker { ItemsSource = new[] { "Days", "Weeks", "Months", "Years" }, SelectedIndex = 1, FontSize = 13, Margin = new Thickness(0, 0) }
         };
+        interval.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#E1DDED"), Color.FromArgb("#494650"));
+        interval.Background = Brush.Transparent;
+        if (interval.Content is Picker pickerControl)
+            pickerControl.SetAppThemeColor(Picker.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
         Grid.SetColumn(interval, 2);
         frequency.Children.Add(interval);
 
@@ -251,9 +258,11 @@ public sealed class TaskSchedulingFlyout : ContentView
             {
                 selected[captured] = !selected[captured];
                 button.Stroke = selected[captured] ? Color.FromArgb("#7633DA") : Color.FromArgb("#C9C5D4");
-                button.BackgroundColor = selected[captured] ? Colors.White : Colors.Transparent;
+                button.Background = Brush.Transparent;
                 if (button.Content is Label label)
-                    label.TextColor = selected[captured] ? Color.FromArgb("#7633DA") : Color.FromArgb("#5D5966");
+                    label.SetAppThemeColor(Label.TextColorProperty,
+                        selected[captured] ? Color.FromArgb("#7633DA") : Color.FromArgb("#1C1B1F"),
+                        selected[captured] ? Color.FromArgb("#D0BCFF") : Color.FromArgb("#E6E1E5"));
             };
             button.GestureRecognizers.Add(tap);
             days.Children.Add(button);
@@ -269,26 +278,33 @@ public sealed class TaskSchedulingFlyout : ContentView
         content.Children.Add(frequency); Grid.SetRow(frequency, 1);
         content.Children.Add(days); Grid.SetRow(days, 2);
         content.Children.Add(buttons); Grid.SetRow(buttons, 3);
-        return CreateBorder(330, 224, content);
+        return CreateBorder(300, 224, content);
     }
 
-    private static Border CreateDayButton(string text, bool selected) => new()
+    private static Border CreateDayButton(string text, bool selected)
     {
-        WidthRequest = 34,
-        HeightRequest = 34,
-        StrokeThickness = 1,
-        Stroke = selected ? Color.FromArgb("#7633DA") : Color.FromArgb("#C9C5D4"),
-        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 17 },
-        BackgroundColor = selected ? Colors.White : Colors.Transparent,
-        Content = new Label
+        var label = new Label
         {
             Text = text,
             FontSize = 12,
-            TextColor = selected ? Color.FromArgb("#7633DA") : Color.FromArgb("#5D5966"),
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center
-        }
-    };
+        };
+        label.SetAppThemeColor(Label.TextColorProperty,
+            selected ? Color.FromArgb("#7633DA") : Color.FromArgb("#1C1B1F"),
+            selected ? Color.FromArgb("#D0BCFF") : Color.FromArgb("#E6E1E5"));
+
+        return new Border
+        {
+            WidthRequest = 34,
+            HeightRequest = 34,
+            StrokeThickness = 1,
+            Stroke = selected ? Color.FromArgb("#7633DA") : Color.FromArgb("#C9C5D4"),
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 17 },
+            Background = Brush.Transparent,
+            Content = label
+        };
+    }
 
     private static SfButton CreateMenuButton(string text, bool selected, Action action)
     {
@@ -298,8 +314,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             HeightRequest = 40,
             HorizontalOptions = LayoutOptions.Fill,
             HorizontalTextAlignment = TextAlignment.Start,
-            BackgroundColor = selected ? Colors.White : Color.FromArgb("#7633DA"),
-            TextColor = selected ? Color.FromArgb("#7633DA") : Colors.White,
+            Background = Brush.Transparent,
             FontSize = 14,
             CornerRadius = 8,
             Margin = new Thickness(0, 1),
@@ -307,12 +322,9 @@ public sealed class TaskSchedulingFlyout : ContentView
             Command = new Command(action)
         };
         ApplyButtonStates(button, selected);
-        button.SetAppThemeColor(VisualElement.BackgroundColorProperty,
-            selected ? Colors.White : Color.FromArgb("#7633DA"),
-            selected ? Colors.White : Color.FromArgb("#8D4CF5"));
         button.SetAppThemeColor(SfButton.TextColorProperty,
-            selected ? Color.FromArgb("#7633DA") : Colors.White,
-            selected ? Color.FromArgb("#8D4CF5") : Colors.White);
+            selected ? Color.FromArgb("#7633DA") : Color.FromArgb("#1C1B1F"),
+            selected ? Color.FromArgb("#D0BCFF") : Color.FromArgb("#E6E1E5"));
         return button;
     }
 
@@ -327,7 +339,9 @@ public sealed class TaskSchedulingFlyout : ContentView
             CornerRadius = 8,
             Command = new Command(action)
         };
-        button.SetAppThemeColor(VisualElement.BackgroundColorProperty, Color.FromArgb("#7633DA"), Color.FromArgb("#8D4CF5"));
+        button.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
+            new SolidColorBrush(Color.FromArgb("#7633DA")),
+            new SolidColorBrush(Color.FromArgb("#8D4CF5")));
         button.SetAppThemeColor(SfButton.TextColorProperty, Colors.White, Colors.White);
         ApplyButtonStates(button, false);
         return button;
@@ -340,14 +354,14 @@ public sealed class TaskSchedulingFlyout : ContentView
             Text = text,
             MinimumWidthRequest = 72,
             HeightRequest = 36,
-            BackgroundColor = Colors.Transparent,
+            Background = Brush.Transparent,
             FontSize = 13,
             CornerRadius = 8,
             Padding = new Thickness(12, 8),
             Command = new Command(action)
         };
         button.SetAppThemeColor(SfButton.TextColorProperty,
-            Color.FromArgb("#FFFFFF"),
+            Color.FromArgb("#1C1B1F"),
             Color.FromArgb("#E6E1E5"));
         ApplyButtonStates(button, false);
         return button;
@@ -362,12 +376,12 @@ public sealed class TaskSchedulingFlyout : ContentView
             WidthRequest = 40,
             HeightRequest = 40,
             Padding = 0,
-            BackgroundColor = Colors.Transparent,
+            Background = Brush.Transparent,
             FontSize = 18,
             Command = new Command(action)
         };
         button.SetAppThemeColor(SfButton.TextColorProperty,
-            Color.FromArgb("#FFFFFF"),
+            Color.FromArgb("#1C1B1F"),
             Color.FromArgb("#E6E1E5"));
         ApplyIconButtonStates(button);
         return button;
@@ -378,11 +392,11 @@ public sealed class TaskSchedulingFlyout : ContentView
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
         var pointerOver = new VisualState { Name = "PointerOver" };
-        pointerOver.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
+        pointerOver.Setters.Add(new Setter { Property = VisualElement.BackgroundProperty, Value = Brush.Transparent });
         pointerOver.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
         commonStates.States.Add(pointerOver);
         var pressed = new VisualState { Name = "Pressed" };
-        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
+        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundProperty, Value = Brush.Transparent });
         pressed.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
         commonStates.States.Add(pressed);
         VisualStateManager.SetVisualStateGroups(button, new VisualStateGroupList { commonStates });
@@ -393,11 +407,11 @@ public sealed class TaskSchedulingFlyout : ContentView
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
         var pointerOver = new VisualState { Name = "PointerOver" };
-        pointerOver.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
+        pointerOver.Setters.Add(new Setter { Property = VisualElement.BackgroundProperty, Value = Brush.Transparent });
         pointerOver.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
         commonStates.States.Add(pointerOver);
         var pressed = new VisualState { Name = "Pressed" };
-        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
+        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundProperty, Value = Brush.Transparent });
         pressed.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
         commonStates.States.Add(pressed);
         VisualStateManager.SetVisualStateGroups(button, new VisualStateGroupList { commonStates });
@@ -414,10 +428,19 @@ public sealed class TaskSchedulingFlyout : ContentView
             Padding = 0,
             StrokeThickness = 1.5,
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 27 },
-            Content = content
+            Content = content,
+            Shadow = new Shadow
+            {
+                Brush = Color.FromArgb("#4D000000"),
+                Opacity = 1f,
+                Radius = 6,
+                Offset = new Point(0, 2)
+            }
         };
         border.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#D8D4DE"), Color.FromArgb("#494650"));
-        border.SetAppThemeColor(BackgroundColorProperty, Colors.White, Color.FromArgb("#29272F"));
+        border.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
+            Brush.White,
+            new SolidColorBrush(Color.FromArgb("#29272F")));
         return border;
     }
 

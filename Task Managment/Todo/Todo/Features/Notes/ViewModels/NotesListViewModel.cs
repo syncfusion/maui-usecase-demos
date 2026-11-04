@@ -94,7 +94,9 @@ public partial class NotesListViewModel : ViewModelBase
             list.PropertyChanged += OnListPropertyChanged;
         }
 
+        SelectedSidebarCategory = SelectedCategory;
         ApplyFilter();
+        RefreshCustomListCounts();
     }
 
     // ---------------------------------------------------------------
@@ -105,6 +107,9 @@ public partial class NotesListViewModel : ViewModelBase
 
     [ObservableProperty]
     private string headerTitle = NotesListCategory.MyNotes.ToDisplayName();
+
+    [ObservableProperty]
+    private NotesListCategory? selectedSidebarCategory;
 
     [ObservableProperty]
     private string toastMessage = string.Empty;
@@ -122,6 +127,9 @@ public partial class NotesListViewModel : ViewModelBase
     /// </summary>
     [ObservableProperty]
     private string? selectedListId;
+
+    [ObservableProperty]
+    private NoteList? selectedCustomList;
 
     /// <summary>
     /// Available sidebar entries. Static for Module-02; later modules
@@ -157,6 +165,8 @@ public partial class NotesListViewModel : ViewModelBase
     {
         // Selecting a built-in category clears any active custom list.
         SelectedListId = null;
+        SelectedCustomList = null;
+        SelectedSidebarCategory = value;
         HeaderTitle = value.ToDisplayName();
         ApplyFilter();
         OnPropertyChanged(nameof(IsEmpty));
@@ -173,6 +183,12 @@ public partial class NotesListViewModel : ViewModelBase
     {
         // Selecting a custom list keeps the built-in category filter
         // while using the selected list's own theme.
+        SelectedCustomList = string.IsNullOrEmpty(value)
+            ? null
+            : ResolveCustomList(value);
+        SelectedSidebarCategory = string.IsNullOrEmpty(value)
+            ? SelectedCategory
+            : null;
         HeaderTitle = string.IsNullOrEmpty(value)
             ? SelectedCategory.ToDisplayName()
             : ResolveCustomListName(value) ?? "List";
@@ -512,6 +528,9 @@ public partial class NotesListViewModel : ViewModelBase
     {
         if (category is null) return;
         CloseSearch();
+        SelectedListId = null;
+        SelectedCustomList = null;
+        SelectedSidebarCategory = category.Value;
         // The active category is always kept in sync, even if the host
         // doesn't navigate (so the sidebar selection / header text
         // remain consistent with the destination page).
@@ -529,8 +548,9 @@ public partial class NotesListViewModel : ViewModelBase
     {
         if (string.IsNullOrEmpty(listId)) return;
         CloseSearch();
-        SelectedCategory = NotesListCategory.MyNotes;
         SelectedListId = listId;
+        SelectedCustomList = ResolveCustomList(listId);
+        SelectedSidebarCategory = null;
     }
 
     // ---------------------------------------------------------------
@@ -756,6 +776,7 @@ public partial class NotesListViewModel : ViewModelBase
     private async Task ToggleComplete(Note? note)
     {
         if (note is null) return;
+        if (note.DeletedAt is not null) return;
         await _noteService.ToggleCompleteAsync(note.Id);
     }
 
@@ -764,7 +785,7 @@ public partial class NotesListViewModel : ViewModelBase
     {
         if (request is null) return;
         var note = _noteService.Notes.FirstOrDefault(item => item.Id == request.NoteId);
-        if (note is null || note.IsCompleted == request.IsCompleted) return;
+        if (note is null || note.DeletedAt is not null || note.IsCompleted == request.IsCompleted) return;
         await _noteService.ToggleCompleteAsync(note.Id);
     }
 
@@ -772,6 +793,7 @@ public partial class NotesListViewModel : ViewModelBase
     private async Task ToggleImportant(Note? note)
     {
         if (note is null) return;
+        if (note.DeletedAt is not null) return;
         await _noteService.ToggleImportantAsync(note.Id);
     }
 
@@ -793,6 +815,7 @@ public partial class NotesListViewModel : ViewModelBase
     private async Task DeletePermanently(Note? note)
     {
         if (note is null) return;
+        if (note.DeletedAt is null) return;
         await _noteService.DeletePermanentlyAsync(note.Id);
     }
 
@@ -863,7 +886,7 @@ public partial class NotesListViewModel : ViewModelBase
     {
         if (request is null || string.IsNullOrEmpty(request.NoteId)) return;
         var note = _noteService.Notes.FirstOrDefault(n => n.Id == request.NoteId);
-        if (note is null) return;
+        if (note is null || note.DeletedAt is not null) return;
 
         var targetCategory = TryDecodeCategoryKey(request.TargetKey);
         if (request.TargetKey == "my")
@@ -996,6 +1019,7 @@ public partial class NotesListViewModel : ViewModelBase
     private async Task EditNoteAsync(Note? note)
     {
         if (note is null) return;
+        if (note.DeletedAt is not null) return;
         var page = new EditNotePage(new EditNoteViewModel(_noteService, _navigation, note));
         await _navigation.PushModalAsync(page);
     }
@@ -1009,10 +1033,11 @@ public partial class NotesListViewModel : ViewModelBase
     private async Task ConfirmDeletePermanentlyAsync(Note? note)
     {
         if (note is null) return;
+        if (note.DeletedAt is null) return;
         var vm = new ConfirmDialogViewModel(_navigation)
         {
             Title = "Delete permanently?",
-            Message = "This note will be permanently deleted and cannot be recovered.",
+            Message = "This notes will be permanently deleted.",
             ConfirmText = "Delete",
             IsDestructive = true
         };
@@ -1079,6 +1104,7 @@ public partial class NotesListViewModel : ViewModelBase
             foreach (Note n in e.OldItems)
                 n.PropertyChanged -= OnNotePropertyChanged;
 
+        RefreshCustomListCounts();
         ApplyFilter();
     }
 
@@ -1089,11 +1115,15 @@ public partial class NotesListViewModel : ViewModelBase
         if (e.PropertyName is nameof(Note.IsImportant)
                               or nameof(Note.IsCompleted)
                               or nameof(Note.DeletedAt)
+                              or nameof(Note.Title)
+                              or nameof(Note.DueDate)
                               or nameof(Note.ReminderDate)
+                              or nameof(Note.RepeatFrequency)
                               or nameof(Note.ListId)
                               or nameof(Note.DisplayOrder))
         {
-            ApplyFilter();
+                              RefreshCustomListCounts();
+                              ApplyFilter();
         }
     }
 
@@ -1106,6 +1136,7 @@ public partial class NotesListViewModel : ViewModelBase
             foreach (Todo.Features.CustomLists.Models.NoteList l in e.OldItems)
                 l.PropertyChanged -= OnListPropertyChanged;
 
+        RefreshCustomListCounts();
         // Module-08 task 8-3: the sidebar "Lists" header is bound to
         // HasCustomLists — refresh the flag every time the underlying
         // collection changes so the section header appears / disappears
@@ -1148,6 +1179,16 @@ public partial class NotesListViewModel : ViewModelBase
             if (e.PropertyName == nameof(Todo.Features.CustomLists.Models.NoteList.SortOrder)
                 && SelectedListId == ((Todo.Features.CustomLists.Models.NoteList)sender!).Id)
                 ApplyFilter();
+        }
+    }
+
+    private void RefreshCustomListCounts()
+    {
+        foreach (var list in _listService.Lists)
+        {
+            list.NoteCount = _noteService.Notes.Count(note =>
+                note.DeletedAt is null &&
+                string.Equals(note.ListId, list.Id, StringComparison.Ordinal));
         }
     }
 

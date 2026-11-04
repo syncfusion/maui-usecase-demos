@@ -45,6 +45,19 @@ public partial class NoteList : ObservableObject
 
     [ObservableProperty]
     private DateTime createdAt = DateTime.Now;
+
+    [ObservableProperty]
+    private int noteCount;
+
+    public string? NoteCountText => NoteCount switch
+    {
+        <= 0 => null,
+        <= 10 => NoteCount.ToString(),
+        _ => "10+"
+    };
+
+    partial void OnNoteCountChanged(int value)
+        => OnPropertyChanged(nameof(NoteCountText));
 }
 
 public enum NoteListSortOrder

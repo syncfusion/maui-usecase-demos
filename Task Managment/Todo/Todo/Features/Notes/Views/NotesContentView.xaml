@@ -165,7 +165,7 @@
                         IsVisible="{Binding IsEmpty, Converter={StaticResource InvertedBoolConverter}}">
                     <syncfusion:SfListView Grid.Row="0" ItemsSource="{Binding ActiveNotes}"
                                    IsVisible="{Binding HasActiveNotes}"
-                                   ItemSpacing="0" ItemSize="76"
+                                   ItemSpacing="0" ItemSize="80" 
                                    BackgroundColor="Transparent"
                                    SelectionMode="SingleDeselect"
                                    ItemDragging="OnItemDragging">
@@ -202,7 +202,7 @@
                                          be dropped on a sidebar entry to
                                          move it to another list. -->
                                     <DragGestureRecognizer
-                                        CanDrag="True"
+                                        CanDrag="{Binding IsActive}"
                                         DragStarting="OnNoteDragStarting"
                                         DropCompleted="OnNoteDropCompleted" />
                                 </Border.GestureRecognizers>
@@ -242,9 +242,14 @@
                                     <CheckBox Grid.Column="0"
                                               IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                               CheckedChanged="OnCheckChanged"
+                                              IsEnabled="{Binding IsActive}"
                                               Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}"
                                               VerticalOptions="Start"
-                                              HorizontalOptions="Center" />
+                                              HorizontalOptions="Center"
+                                              WidthRequest="32"
+                                              HeightRequest="32"
+                                              Margin="0,-10,0,0"
+                                              BackgroundColor="Transparent" />
 
                                     <!-- Title + metadata -->
                                     <VerticalStackLayout Grid.Column="1"
@@ -256,6 +261,7 @@
                                                FontSize="16"
                                                VerticalTextAlignment="Center"
                                                MaxLines="1"
+                                               HeightRequest="24"
                                                TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}" />
                                         <HorizontalStackLayout Spacing="8"
                                                                VerticalOptions="Center"
@@ -263,26 +269,29 @@
                                             <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}"
                                                     Padding="8,4"
                                                     Stroke="{StaticResource ChipStrokeColor}"
-                                                    StrokeThickness="1"
+                                                    StrokeThickness="0"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                    <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}" FontSize="10" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                             <Border IsVisible="{Binding HasRepeat}"
                                                     Padding="8,4"
                                                     Stroke="{StaticResource ChipStrokeColor}"
-                                                    StrokeThickness="1"
+                                                    StrokeThickness="0"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                    <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                        <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
-                                            <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}"
+                                            <Border IsVisible="{Binding HasReminder}"
                                                     Padding="8,4"
                                                     Stroke="{StaticResource ChipStrokeColor}"
-                                                    StrokeThickness="1"
+                                                    StrokeThickness="0"
                                                     StrokeShape="RoundRectangle 12"
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center"><Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
+                                                    <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                        <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}" FontSize="10" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
                                             </Border>
                                         </HorizontalStackLayout>
                                     </VerticalStackLayout>
@@ -291,6 +300,7 @@
                                     <buttons:SfButton Grid.Column="2"
                                             Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
                                             TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                            IsEnabled="{Binding IsActive}"
                                             FontSize="20"
                                             Background="Transparent"
                                             WidthRequest="40"
@@ -357,14 +367,21 @@
                                             <CheckBox Grid.Column="0"
                                                       IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
+                                                      IsEnabled="{Binding IsActive}"
                                                       VerticalOptions="Start" 
-                                                      HorizontalOptions="Center" />
+                                                      HorizontalOptions="Center"
+                                                      WidthRequest="32"
+                                                      HeightRequest="32"
+                                                      Margin="0,-4,0,0"
+                                                      BackgroundColor="Transparent" />
                                             <VerticalStackLayout Grid.Column="1"
                                                                  Spacing="2"
                                                                  VerticalOptions="Start">
                                                 <Label Text="{Binding Title}"
                                                        Style="{StaticResource NoteTitleStyle}"
                                                        MaxLines="1"
+                                                       HeightRequest="24"
+                                                       VerticalTextAlignment="Center"
                                                        TextDecorations="Strikethrough"
                                                        TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}">
                                                     <Label.GestureRecognizers>
@@ -374,20 +391,53 @@
                                                     </Label.GestureRecognizers>
                                                 </Label>
                                                 <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                                    <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" /></HorizontalStackLayout>
+                                                    <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}"
+                                                            Padding="0"
+                                                            StrokeThickness="0"
+                                                            BackgroundColor="Transparent">
+                                                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                            <Label Text="&#xe24f;"
+                                                                   FontFamily="MaterialIconRegular"
+                                                                   FontSize="14"
+                                                                   TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                                   WidthRequest="14"
+                                                                   HeightRequest="14"
+                                                                   HorizontalTextAlignment="Center"
+                                                                   VerticalTextAlignment="Center" />
+                                                            <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}"
+                                                                   FontSize="12"
+                                                                   TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                                   VerticalTextAlignment="Center" />
+                                                        </HorizontalStackLayout>
                                                     </Border>
-                                                    <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                    <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="0" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
                                                         <HorizontalStackLayout Spacing="4"><Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" /></HorizontalStackLayout>
                                                     </Border>
-                                                    <Border IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="1" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
-                                                        <HorizontalStackLayout Spacing="4"><Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" /></HorizontalStackLayout>
+                                                    <Border IsVisible="{Binding HasReminder}"
+                                                            Padding="0"
+                                                            StrokeThickness="0"
+                                                            BackgroundColor="Transparent">
+                                                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                            <Label Text="&#xe7f5;"
+                                                                   FontFamily="MaterialIconRegular"
+                                                                   FontSize="14"
+                                                                   TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                                   WidthRequest="14"
+                                                                   HeightRequest="14"
+                                                                   HorizontalTextAlignment="Center"
+                                                                   VerticalTextAlignment="Center" />
+                                                            <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}"
+                                                                   FontSize="12"
+                                                                   TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                                   VerticalTextAlignment="Center" />
+                                                        </HorizontalStackLayout>
                                                     </Border>
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
                                             <buttons:SfButton Grid.Column="2"
                                                               Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
                                                               TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                                              IsEnabled="{Binding IsActive}"
                                                               Background="Transparent" FontSize="20" Padding="0"
                                                               WidthRequest="40" HeightRequest="40"
                                                               VerticalOptions="Center"
@@ -423,7 +473,7 @@
                                 IsVisible="{Binding HasDraftDueDate}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
-                                StrokeThickness="1"
+                                StrokeThickness="0"
                                 StrokeShape="RoundRectangle 12"
                                 BackgroundColor="{StaticResource ChipBackgroundColor}">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
@@ -436,7 +486,7 @@
                                 IsVisible="{Binding HasDraftRepeat}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
-                                StrokeThickness="1"
+                                StrokeThickness="0"
                                 StrokeShape="RoundRectangle 12"
                                 BackgroundColor="{StaticResource ChipBackgroundColor}">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
@@ -449,7 +499,7 @@
                                 IsVisible="{Binding HasDraftReminder}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
-                                StrokeThickness="1"
+                                StrokeThickness="0"
                                 StrokeShape="RoundRectangle 12"
                                 BackgroundColor="{StaticResource ChipBackgroundColor}">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
@@ -484,21 +534,21 @@
                                                   SemanticProperties.Description="Set due date">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
-                                            <Label Text="&#xe24f;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
+                                            <Label Text="&#xe24f;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="1" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnRepeatClicked"
                                                   SemanticProperties.Description="Set repeat frequency">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
-                                            <Label Text="&#xe040;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
+                                            <Label Text="&#xe040;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="2" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnReminderClicked"
                                                   SemanticProperties.Description="Set reminder date and time">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
-                                            <Label Text="&#xe7f5;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
+                                            <Label Text="&#xe7f5;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="0,0,0,5"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
@@ -518,7 +568,7 @@
                                                 <Label Text="&#xe876;" HeightRequest="20" WidthRequest="20" FontSize="18" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                                                     <Label.Triggers>
                                                         <DataTrigger TargetType="Label" Binding="{Binding NewNoteTitle, Converter={StaticResource StringNotEmptyToBoolConverter}}" Value="False">
-                                                            <Setter Property="TextColor" Value="#49454F" />
+                                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" />
                                                         </DataTrigger>
                                                         <DataTrigger TargetType="Label" Binding="{Binding NewNoteTitle, Converter={StaticResource StringNotEmptyToBoolConverter}}" Value="True">
                                                             <Setter Property="TextColor" Value="White" />

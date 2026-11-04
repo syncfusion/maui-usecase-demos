@@ -15,17 +15,17 @@
           HorizontalOptions="Center">
 
         <Border MaximumWidthRequest="420"
-                WidthRequest="{OnIdiom Phone=300, Default=400}"
+                WidthRequest="{OnIdiom Phone=300, Default=360}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 27"
                 Padding="20">
             <Border.Shadow>
-                <Shadow Brush="#33000000"
-                        Radius="8"
-                        Offset="0,4"
-                        Opacity="0.20" />
+                <Shadow Brush="#4D000000"
+                        Radius="6"
+                        Offset="0,2"
+                        Opacity="1" />
             </Border.Shadow>
             <VerticalStackLayout Spacing="16">
 

@@ -49,10 +49,10 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="12">
-                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular"
-                           WidthRequest="32"
-                           HeightRequest="32"
-                          
+                    <Image Source="notesicon.png"
+                           WidthRequest="40"
+                           HeightRequest="40"
+                           Aspect="AspectFit"
                            HorizontalOptions="Center" />
                     <Label Text="Type a word or phrase to search your notes."
                            FontSize="16"
@@ -64,10 +64,10 @@
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      Spacing="8">
-                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular"
-                           WidthRequest="32"
-                           HeightRequest="32"
-                          
+                    <Image Source="notesicon.png"
+                           WidthRequest="40"
+                           HeightRequest="40"
+                           Aspect="AspectFit"
                            HorizontalOptions="Center" />
                     <Label Text="{Binding NoResultsMessage}"
                            FontSize="16"

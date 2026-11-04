@@ -29,7 +29,8 @@ public partial class SidebarView : ContentView
         if (BindingContext is not NotesListViewModel vm) return;
         if (e.AddedItems?.FirstOrDefault() is not NotesListCategory category) return;
 
-        if (vm.SelectedCategory == category)
+        CustomListsView.SelectedItem = null;
+        if (vm.SelectedCategory == category && string.IsNullOrEmpty(vm.SelectedListId))
         {
             vm.CloseSearchCommand.Execute(null);
             return;
@@ -47,6 +48,7 @@ public partial class SidebarView : ContentView
         if (BindingContext is not NotesListViewModel vm) return;
         if (e.AddedItems?.FirstOrDefault() is not NoteList list) return;
 
+        SidebarCategoriesView.SelectedItem = null;
         if (string.Equals(vm.SelectedListId, list.Id, StringComparison.Ordinal))
         {
             vm.CloseSearchCommand.Execute(null);
