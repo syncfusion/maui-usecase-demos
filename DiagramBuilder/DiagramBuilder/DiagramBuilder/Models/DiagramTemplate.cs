@@ -23,9 +23,6 @@ public class DiagramTemplate
     /// <summary>Resource key of the card thumbnail swatch style.</summary>
     public string ThumbnailKey { get; set; } = string.Empty;
 
-    /// <summary>Optional layout configuration for auto-layout algorithms (e.g., OrganizationalChart, MindMap).</summary>
-    public DiagramLayoutTemplate? Layout { get; set; }
-
     public ObservableCollection<TemplateNode> Nodes { get; } = [];
 
     public ObservableCollection<TemplateConnector> Connectors { get; } = [];

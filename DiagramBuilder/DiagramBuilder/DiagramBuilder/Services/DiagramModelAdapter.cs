@@ -1,5 +1,4 @@
 using DiagramBuilder.Constants;
-using System.Reflection;
 using DiagramBuilder.Models;
 using Syncfusion.Maui.Diagram;
 using HorizontalAlignment = Syncfusion.Maui.Diagram.HorizontalAlignment;
@@ -260,75 +259,7 @@ public static class DiagramModelAdapter
         };
     }
 
-    /// <summary>
-    /// Converts a template layout descriptor to a Syncfusion DiagramLayout.
-    /// Uses reflection to set enum properties since DiagramLayoutType and LayoutOrientation are internal.
-    /// </summary>
-    public static DiagramLayout ToLayout(DiagramLayoutTemplate layoutTemplate)
-    {
-        var layout = new DiagramLayout
-        {
-            HorizontalSpacing = layoutTemplate.HorizontalSpacing,
-            VerticalSpacing = layoutTemplate.VerticalSpacing,
-            Root = layoutTemplate.Root,
-        };
 
-        // Set Type property via reflection (internal enum)
-        var typeProperty = typeof(DiagramLayout).GetProperty(nameof(DiagramLayout.Type));
-        if (typeProperty != null)
-        {
-            var layoutTypeEnum = GetDiagramLayoutType(layoutTemplate.Type);
-            if (layoutTypeEnum != null)
-            {
-                typeProperty.SetValue(layout, layoutTypeEnum);
-            }
-        }
-
-        // Set Orientation property via reflection (internal enum)
-        var orientationProperty = typeof(DiagramLayout).GetProperty(nameof(DiagramLayout.Orientation));
-        if (orientationProperty != null)
-        {
-            var orientationEnum = GetLayoutOrientation(layoutTemplate.Orientation);
-            if (orientationEnum != null)
-            {
-                orientationProperty.SetValue(layout, orientationEnum);
-            }
-        }
-
-        return layout;
-    }
-
-    private static object? GetDiagramLayoutType(string type)
-    {
-        var enumType = typeof(DiagramLayout).Assembly.GetType("Syncfusion.Maui.Diagram.DiagramLayoutType");
-        if (enumType == null) return null;
-
-        return type switch
-        {
-            "OrganizationalChart" => Enum.Parse(enumType, "OrganizationalChart", ignoreCase: true),
-            "HierarchicalTree" => Enum.Parse(enumType, "HierarchicalTree", ignoreCase: true),
-            "ComplexHierarchicalTree" => Enum.Parse(enumType, "ComplexHierarchicalTree", ignoreCase: true),
-            "RadialTree" => Enum.Parse(enumType, "RadialTree", ignoreCase: true),
-            "MindMap" => Enum.Parse(enumType, "MindMap", ignoreCase: true),
-            "SymmetricalLayout" => Enum.Parse(enumType, "SymmetricalLayout", ignoreCase: true),
-            "Flowchart" => Enum.Parse(enumType, "Flowchart", ignoreCase: true),
-            _ => Enum.Parse(enumType, "None", ignoreCase: true),
-        };
-    }
-
-    private static object? GetLayoutOrientation(string orientation)
-    {
-        var enumType = typeof(DiagramLayout).Assembly.GetType("Syncfusion.Maui.Diagram.LayoutOrientation");
-        if (enumType == null) return null;
-
-        return orientation switch
-        {
-            "LeftToRight" => Enum.Parse(enumType, "LeftToRight", ignoreCase: true),
-            "RightToLeft" => Enum.Parse(enumType, "RightToLeft", ignoreCase: true),
-            "BottomToTop" => Enum.Parse(enumType, "BottomToTop", ignoreCase: true),
-            _ => Enum.Parse(enumType, "TopToBottom", ignoreCase: true),
-        };
-    }
 
     private static Syncfusion.Maui.Diagram.HorizontalAlignment ToHorizontalAlignment(string value) => value switch
     {

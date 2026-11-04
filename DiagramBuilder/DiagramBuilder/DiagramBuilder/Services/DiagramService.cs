@@ -32,7 +32,6 @@ public class DiagramService : IDiagramService
                 Id = "doc-" + Guid.NewGuid().ToString("N"),
                 Title = template.IsBlank ? AppStrings.UntitledDocument : template.Title,
                 Category = template.Category,
-                Layout = template.Layout,
                 IsDirty = false,
             };
 
