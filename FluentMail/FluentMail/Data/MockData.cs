@@ -16,6 +16,16 @@ public static class MockData
         mailbox.Folders.Add(new FolderNode { Name = "Archive", Count = 0 });
         mailbox.Folders.Add(new FolderNode { Name = "Deleted", Count = 0 });
 
+        string BuildBody(string preview, string sender) => string.Join("\n\n", new[]
+        {
+            preview,
+            "I wanted to share the latest update and make sure you have the current details.",
+            "Please review the open items and let me know if anything needs to be adjusted.",
+            "The attached notes cover the decisions that were made in the latest check-in.",
+            "If you have any questions, I can walk through the next steps with you.",
+            $"Regards,\n{sender}"
+        });
+
         var inbox = new[]
         {
             ("Anastasia Callahan", "anastasia.callahan@contoso.com", "Training announcement", "Please review the attached agenda before the leadership session.", true, true),
@@ -34,21 +44,30 @@ public static class MockData
         {
             var item = inbox[i % inbox.Length];
             var round = i / inbox.Length;
+            var subject = round switch
+            {
+                0 => item.Item3,
+                1 => item.Item3 + " follow-up",
+                2 => item.Item3 + " updated",
+                3 => item.Item3 + " action items",
+                _ => item.Item3 + " latest"
+            };
+
             mailbox.Inbox.Add(new MailMessage
             {
-                Id = $"inbox-{i + 1}", Folder = "Inbox", Sender = item.Item1, SenderEmail = item.Item2,
-                Subject = round switch
-                {
-                    0 => item.Item3,
-                    1 => item.Item3 + " follow-up",
-                    2 => item.Item3 + " updated",
-                    3 => item.Item3 + " action items",
-                    _ => item.Item3 + " latest"
-                },
+                Id = $"inbox-{i + 1}",
+                Folder = "Inbox",
+                Sender = item.Item1,
+                SenderEmail = item.Item2,
+                Subject = subject,
                 Preview = item.Item4,
-                Body = item.Item4 + "\n\nRegards,\n" + item.Item1,
-                Recipients = "kerry.best@contoso.com", Cc = i % 3 == 0 ? "project.office@contoso.com" : string.Empty,
-                Status = item.Item5 ? "Attachments" : "Unread", HasAttachments = item.Item5, IsRead = item.Item6 || i % 4 == 0, IsFlagged = i % 7 == 0,
+                Body = BuildBody(item.Item4, item.Item1),
+                Recipients = "kerry.best@contoso.com",
+                Cc = i % 3 == 0 ? "project.office@contoso.com" : string.Empty,
+                Status = item.Item5 ? "Attachments" : "Unread",
+                HasAttachments = item.Item5,
+                IsRead = item.Item6 || i % 4 == 0,
+                IsFlagged = i % 7 == 0,
                 ReceivedOn = DateTime.Today.AddDays(-(i % 14)).AddHours(8 + (i % 9))
             });
         }
@@ -70,9 +89,17 @@ public static class MockData
             var item = sent[i];
             mailbox.SentItems.Add(new MailMessage
             {
-                Id = $"sent-{i + 1}", Folder = "Sent Items", Sender = item.Item1, SenderEmail = item.Item2,
-                Subject = item.Item3, Preview = item.Item4, Body = item.Item4 + "\n\nBest,\nFinance Operations",
-                Recipients = item.Item5, Status = "Sent", IsRead = true, HasAttachments = item.Item6,
+                Id = $"sent-{i + 1}",
+                Folder = "Sent Items",
+                Sender = item.Item1,
+                SenderEmail = item.Item2,
+                Subject = item.Item3,
+                Preview = item.Item4,
+                Body = BuildBody(item.Item4, item.Item1),
+                Recipients = item.Item5,
+                Status = "Sent",
+                IsRead = true,
+                HasAttachments = item.Item6,
                 ReceivedOn = DateTime.Today.AddDays(-i).AddHours(8 + i)
             });
         }
@@ -88,7 +115,20 @@ public static class MockData
         };
 
         for (var i = 0; i < drafts.Length; i++)
-            mailbox.Drafts.Add(new MailMessage { Id = $"draft-{i + 1}", Folder = "Drafts", Sender = "Me", SenderEmail = "me@contoso.com", Subject = drafts[i].Item1, Preview = drafts[i].Item3, Body = drafts[i].Item3, Recipients = drafts[i].Item2, Status = i % 2 == 0 ? "Saved" : "Unsaved Changes", HasAttachments = i % 2 == 0, ReceivedOn = DateTime.Today.AddDays(-i) });
+            mailbox.Drafts.Add(new MailMessage
+            {
+                Id = $"draft-{i + 1}",
+                Folder = "Drafts",
+                Sender = "Me",
+                SenderEmail = "me@contoso.com",
+                Subject = drafts[i].Item1,
+                Preview = drafts[i].Item3,
+                Body = BuildBody(drafts[i].Item3, "Me"),
+                Recipients = drafts[i].Item2,
+                Status = i % 2 == 0 ? "Saved" : "Unsaved Changes",
+                HasAttachments = i % 2 == 0,
+                ReceivedOn = DateTime.Today.AddDays(-i)
+            });
 
         var archive = new[]
         {
@@ -102,7 +142,21 @@ public static class MockData
         };
 
         for (var i = 0; i < archive.Length; i++)
-            mailbox.Archive.Add(new MailMessage { Id = $"archive-{i + 1}", Folder = "Archive", Sender = archive[i].Item1, SenderEmail = archive[i].Item2, Subject = archive[i].Item3, Preview = archive[i].Item4, Body = archive[i].Item4, Recipients = "team@contoso.com", Status = "Archived", HasAttachments = archive[i].Item5, IsFlagged = i % 2 == 0, ArchivedOn = DateTime.Today.AddDays(-(i + 14)) });
+            mailbox.Archive.Add(new MailMessage
+            {
+                Id = $"archive-{i + 1}",
+                Folder = "Archive",
+                Sender = archive[i].Item1,
+                SenderEmail = archive[i].Item2,
+                Subject = archive[i].Item3,
+                Preview = archive[i].Item4,
+                Body = BuildBody(archive[i].Item4, archive[i].Item1),
+                Recipients = "team@contoso.com",
+                Status = "Archived",
+                HasAttachments = archive[i].Item5,
+                IsFlagged = i % 2 == 0,
+                ArchivedOn = DateTime.Today.AddDays(-(i + 14))
+            });
 
         var deleted = new[]
         {
@@ -115,7 +169,20 @@ public static class MockData
         };
 
         for (var i = 0; i < deleted.Length; i++)
-            mailbox.Deleted.Add(new MailMessage { Id = $"deleted-{i + 1}", Folder = "Deleted", Sender = deleted[i].Item1, SenderEmail = deleted[i].Item2, Subject = deleted[i].Item3, Preview = deleted[i].Item4, Body = deleted[i].Item4, Recipients = "archive@contoso.com", Status = "Deleted", HasAttachments = deleted[i].Item5, DeletedOn = DateTime.Today.AddDays(-(i + 2)) });
+            mailbox.Deleted.Add(new MailMessage
+            {
+                Id = $"deleted-{i + 1}",
+                Folder = "Deleted",
+                Sender = deleted[i].Item1,
+                SenderEmail = deleted[i].Item2,
+                Subject = deleted[i].Item3,
+                Preview = deleted[i].Item4,
+                Body = BuildBody(deleted[i].Item4, deleted[i].Item1),
+                Recipients = "archive@contoso.com",
+                Status = "Deleted",
+                HasAttachments = deleted[i].Item5,
+                DeletedOn = DateTime.Today.AddDays(-(i + 2))
+            });
 
         mailbox.Contacts.Add(new MailContact { Name = "Ava Johnson", Email = "ava.johnson@contoso.com" });
         mailbox.Contacts.Add(new MailContact { Name = "Noah Smith", Email = "noah.smith@contoso.com" });
@@ -131,5 +198,4 @@ public static class MockData
         mailbox.Folders[4].UnreadCount = mailbox.Deleted.Count;
         return mailbox;
     }
-
 }

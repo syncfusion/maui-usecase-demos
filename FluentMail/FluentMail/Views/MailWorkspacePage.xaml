@@ -31,9 +31,6 @@
                 <Label Grid.Column="1" FontFamily="MauiMaterialAssets" Text="&#xE8B6;" FontSize="22" TextColor="{StaticResource PrimaryLight}" VerticalOptions="Center" />
             </Grid>
 
-            <Border Grid.Column="2" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#252525}" Padding="14,10" StrokeThickness="0">
-                <Picker ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" TextColor="{StaticResource PrimaryLight}" />
-            </Border>
         </Grid>
 
         <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#252525}" StrokeThickness="0">
@@ -61,10 +58,7 @@
                     <HorizontalStackLayout Spacing="12">
                         <Label Text="{Binding SelectedFolder.Name}" FontSize="28" FontAttributes="Bold" />
                         <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#F3F3F3}" Stroke="{AppThemeBinding Light=#D0D0D0, Dark=#3A3A3A}" StrokeThickness="1" Padding="12,8" VerticalOptions="Center">
-                            <HorizontalStackLayout Spacing="8">
-                                <Label Text="{Binding SelectedFilter}" FontSize="16" TextColor="{StaticResource PrimaryLight}" />
-                                <Label FontFamily="MauiMaterialAssets" Text="&#xE5C5;" FontSize="18" TextColor="{StaticResource PrimaryLight}" />
-                            </HorizontalStackLayout>
+                            <Picker ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" TextColor="{StaticResource PrimaryLight}" WidthRequest="110" />
                         </Border>
                     </HorizontalStackLayout>
                 </Grid>
@@ -166,13 +160,11 @@
                             </Grid>
                             <Label Text="Hi Kerry Best," FontSize="16" FontAttributes="Bold" />
                             <Label Text="{Binding SelectedMessage.Body}" FontSize="16" LineBreakMode="WordWrap" />
-                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="10" Padding="0,10,0,0">
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="10" Padding="0,10,0,0">
                                 <Label Text="To" FontAttributes="Bold" FontSize="16" />
                                 <Label Grid.Column="1" Text="{Binding SelectedMessage.Recipients}" FontSize="16" />
                                 <Label Grid.Row="1" Text="Cc" FontAttributes="Bold" FontSize="16" />
                                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding SelectedMessage.Cc}" FontSize="16" />
-                                <Label Grid.Row="2" Text="Status" FontAttributes="Bold" FontSize="16" />
-                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedMessage.Status}" FontSize="16" />
                             </Grid>
                         </VerticalStackLayout>
                     </ScrollView>
