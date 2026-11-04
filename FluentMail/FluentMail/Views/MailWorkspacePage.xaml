@@ -13,9 +13,9 @@
         <vm:MailWorkspaceViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto,*" ColumnDefinitions="270,490,*" Padding="0" BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="200,350,*" Padding="0" BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
         <Grid Grid.ColumnSpan="3" Padding="20,16,20,14" ColumnDefinitions="*,Auto">
-            <Grid ColumnDefinitions="*,Auto" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#252525}" Padding="18,10" StrokeThickness="0">
+            <Grid ColumnDefinitions="*,Auto" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#252525}" Padding="18,10">
                 <Label Text="Search Mail and People" FontSize="18" TextColor="{AppThemeBinding Light=#666666, Dark=#B7BDC8}" VerticalOptions="Center" />
                 <Label Grid.Column="1" FontFamily="MauiMaterialAssets" Text="&#xE8B6;" FontSize="22" TextColor="{StaticResource PrimaryLight}" VerticalOptions="Center" />
             </Grid>
@@ -37,7 +37,7 @@
                     <Label FontFamily="MauiMaterialAssets" Text="&#xE313;" FontSize="18" Margin="0,0,10,0" />
                     <Label Text="Favorites" FontSize="18" FontAttributes="Bold" />
                 </Grid>
-                <syncfusion:SfTreeView ItemsSource="{Binding Folders}" SelectionMode="Single" ItemHeight="40" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
+                <syncfusion:SfTreeView ItemsSource="{Binding Folders}" SelectionMode="Single" ItemHeight="40" SelectionBackground="{AppThemeBinding Light=#D7E8FB, Dark=#27405E}" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
                     <syncfusion:SfTreeView.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="16,8" ColumnDefinitions="*,Auto">
@@ -60,9 +60,10 @@
                     </HorizontalStackLayout>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ItemSpacing="0" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" BackgroundColor="White">
+                    <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ItemSpacing="0" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" AutoFitMode="DynamicHeight" BackgroundColor="White">
                         <listview:SfListView.ItemTemplate>
                             <DataTemplate>
+                                <StackLayout>
                                 <Border StrokeThickness="0" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
                                     <Grid Padding="14,14,14,12" ColumnDefinitions="4,44,*,Auto" RowDefinitions="Auto,Auto,Auto">
                                         <Border x:Name="UnreadBar" Grid.RowSpan="3" WidthRequest="4" BackgroundColor="Transparent" StrokeThickness="0" />
@@ -85,10 +86,10 @@
                                                         <StateTrigger IsActive="{Binding IsRead}" />
                                                     </VisualState.StateTriggers>
                                                     <VisualState.Setters>
-                                                        <Setter TargetName="UnreadBar" Property="BackgroundColor" Value="Transparent" />
+                                                        <!--<Setter TargetName="UnreadBar" Property="Background" Value="Transparent" />-->
                                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" />
-                                                        <Setter TargetName="SenderLabel" Property="Label.TextColor" Value="{AppThemeBinding Light=#202020, Dark=#F5F5F5}" />
-                                                        <Setter TargetName="SubjectLabel" Property="Label.TextColor" Value="{AppThemeBinding Light=#666666, Dark=#B7BDC8}" />
+                                                        <!--<Setter TargetName="SenderLabel" Property="Label.TextColor" Value="{AppThemeBinding Light=#202020, Dark=#F5F5F5}" />
+                                                        <Setter TargetName="SubjectLabel" Property="Label.TextColor" Value="{AppThemeBinding Light=#666666, Dark=#B7BDC8}" />-->
                                                     </VisualState.Setters>
                                                 </VisualState>
                                                 <VisualState Name="Unread">
@@ -96,16 +97,18 @@
                                                         <StateTrigger IsActive="{Binding IsRead, Converter={StaticResource BooleanNegationConverter}}" />
                                                     </VisualState.StateTriggers>
                                                     <VisualState.Setters>
-                                                        <Setter TargetName="UnreadBar" Property="BackgroundColor" Value="{StaticResource PrimaryLight}" />
+                                                        <!--<Setter TargetName="UnreadBar" Property="BackgroundColor" Value="{StaticResource PrimaryLight}" />-->
                                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EAF2FF, Dark=#20324D}" />
-                                                        <Setter TargetName="SenderLabel" Property="Label.TextColor" Value="{StaticResource PrimaryLight}" />
-                                                        <Setter TargetName="SubjectLabel" Property="Label.TextColor" Value="{StaticResource PrimaryLight}" />
+                                                        <!--<Setter TargetName="SenderLabel" Property="Label.TextColor" Value="{StaticResource PrimaryLight}" />
+                                                        <Setter TargetName="SubjectLabel" Property="Label.TextColor" Value="{StaticResource PrimaryLight}" />-->
                                                     </VisualState.Setters>
                                                 </VisualState>
                                             </VisualStateGroup>
                                         </VisualStateManager.VisualStateGroups>
                                     </Grid>
                                 </Border>
+                                <BoxView Color="Gray" HeightRequest="0.35"/>
+                                </StackLayout>
                             </DataTemplate>
                         </listview:SfListView.ItemTemplate>
                     </listview:SfListView>
