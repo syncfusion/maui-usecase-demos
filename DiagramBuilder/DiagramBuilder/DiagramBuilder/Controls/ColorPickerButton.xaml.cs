@@ -62,38 +62,65 @@ public partial class ColorPickerButton : ContentView
 
     private void OnSwatchTapped(object? sender, TappedEventArgs e)
     {
-        _popup ??= BuildPopup();
+        _popup = BuildPopup();
         PopupXamlRootHelper.AttachIfAvailable(_popup, SwatchFrame);
         _popup.ShowRelativeToView(SwatchFrame, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
     }
 
     private SfPopup BuildPopup()
     {
+        var pendingColorKey = string.IsNullOrWhiteSpace(ColorValue)
+            ? FindNearestKey(Colors.White)
+            : ColorValue;
+
         var picker = new SfColorPicker
         {
             ColorMode = ColorPickerMode.Spectrum,
             ShowAlphaSlider = true,
             ShowInputArea = true,
         };
+
+        SetPickerColor(picker, Services.ResourceLookup.Color(pendingColorKey, Colors.White));
         picker.ColorChanged += (_, args) =>
         {
-            var nearestKey = FindNearestKey(args.NewColor ?? Colors.White);
-            // 1) Surface the event for code-behind subscribers.
-            ColorChanged?.Invoke(this, nearestKey);
-            // 2) Surface the command for MVVM XAML bindings.
-            if (ColorChangedCommand?.CanExecute(nearestKey) == true)
-            {
-                ColorChangedCommand.Execute(nearestKey);
-            }
+            pendingColorKey = FindNearestKey(args.NewColor ?? Colors.White);
         };
 
         return new SfPopup
         {
             ContentTemplate = new DataTemplate(() => picker),
             ShowHeader = false,
-            ShowFooter = false,
-            ShowCloseButton = true,
+            ShowFooter = true,
+            ShowCloseButton = false,
+            AppearanceMode = PopupButtonAppearanceMode.TwoButton,
+            AcceptButtonText = "Apply",
+            DeclineButtonText = "Cancel",
+            AcceptCommand = new Command(() =>
+            {
+                ColorValue = pendingColorKey;
+                ApplyToSwatch(pendingColorKey);
+                ColorChanged?.Invoke(this, pendingColorKey);
+                if (ColorChangedCommand?.CanExecute(pendingColorKey) == true)
+                {
+                    ColorChangedCommand.Execute(pendingColorKey);
+                }
+            }),
+            DeclineCommand = new Command(() => { }),
         };
+    }
+
+    private static void SetPickerColor(SfColorPicker picker, Color color)
+    {
+        var type = picker.GetType();
+        foreach (var propertyName in new[] { "SelectedColor", "Color", "CurrentColor" })
+        {
+            var property = type.GetProperty(propertyName);
+            if (property?.CanWrite == true && property.PropertyType == typeof(Color))
+            {
+                property.SetValue(picker, color);
+                return;
+            }
+        }
     }
 
     private static string FindNearestKey(Color color)
