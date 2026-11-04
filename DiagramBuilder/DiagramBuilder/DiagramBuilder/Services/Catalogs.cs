@@ -208,6 +208,7 @@ public static class MenuCatalog
 
 /// <summary>
 /// In-code toolbar catalog: 8 groups per spec.md §7 / F2.2.
+/// Updated to match expected design: colors moved to group 5 (after text).
 /// </summary>
 public static class ToolbarCatalog
 {
@@ -231,12 +232,14 @@ public static class ToolbarCatalog
         Tool(AppConstants.ToolConnectorOrthogonal, AppStrings.ToolbarOrthogonalConnector, group: 4),
         Tool(AppConstants.ToolConnectorBezier, AppStrings.ToolbarBezierConnector, group: 4),
 
-        // Group 5 — text tool
+        // Group 5 — text tool + colors (stroke + fill swatches)
         Tool(AppConstants.ToolText, AppStrings.ToolbarTextTool, group: 5),
+        Tool("tool.stroke.color", AppStrings.ToolbarBorderColor, group: 5),
+        Tool("tool.fill.color", AppStrings.ToolbarFillColor, group: 5),
 
-        // Group 6 — selection-only: colors, z-order, lock, delete
-        Tool("tool.fill.color", AppStrings.ToolbarFillColor, group: 6),
-        Tool("tool.border.color", AppStrings.ToolbarBorderColor, group: 6),
+        // Group 6 — selection-only: z-order, lock, delete, copy, paste
+        Tool(AppConstants.CmdCopy, "Copy", group: 6),
+        Tool(AppConstants.CmdPaste, "Paste", group: 6),
         Tool(AppConstants.CmdSendToBack, AppStrings.ToolbarArrangeObject, group: 6),
         Tool(AppConstants.CmdBringToFront, AppStrings.ToolbarArrangeObject, group: 6),
         Tool(AppConstants.CmdSendBackward, AppStrings.ToolbarArrangeObject, group: 6),
@@ -244,10 +247,8 @@ public static class ToolbarCatalog
         Tool("tool.lock", AppStrings.ToolbarLockObject, group: 6),
         Tool(AppConstants.CmdDelete, AppStrings.ToolbarDeleteObject, group: 6),
 
-        // Group 7 — zoom
-        Tool(AppConstants.CmdZoomIn, AppStrings.ToolbarZoomIn, group: 7),
-        Tool(AppConstants.CmdZoomOut, AppStrings.ToolbarZoomOut, group: 7),
-        Tool(AppConstants.CmdFitToScreen, AppStrings.ToolbarFitToScreen, group: 7),
+        // Group 7 — zoom (only the dropdown, not individual zoom buttons)
+        // Individual zoom buttons are handled via ZoomLevels in the ViewModel
 
         // Group 8 — toggle property panel
         Tool(AppConstants.CmdShowProperties, AppStrings.ToolbarToggleProperties, group: 8, isToggle: true, isChecked: true),

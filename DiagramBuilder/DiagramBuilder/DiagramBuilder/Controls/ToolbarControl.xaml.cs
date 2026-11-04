@@ -228,7 +228,7 @@ public partial class ToolbarControl : ContentView
 
     private View BuildGroupItem(DiagramToolbarItem item)
     {
-        if (item.Id is "tool.fill.color" or "tool.border.color")
+        if (item.Id is "tool.fill.color" or "tool.stroke.color")
         {
             return BuildColorSwatchButton(item);
         }
@@ -260,21 +260,22 @@ public partial class ToolbarControl : ContentView
 
     private View BuildColorSwatchButton(DiagramToolbarItem item)
     {
-        var fillColor = Services.ResourceLookup.ResourceColor(item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary");
+        var defaultColor = item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary";
+        var fillColor = Services.ResourceLookup.ResourceColor(defaultColor);
         var swatch = new Border
         {
             Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
             StrokeThickness = 1,
             StrokeShape = new RoundRectangle { CornerRadius = 4 },
-            WidthRequest = 24,
-            HeightRequest = 24,
+            WidthRequest = 28,
+            HeightRequest = 28,
             BackgroundColor = fillColor,
             VerticalOptions = LayoutOptions.Center,
-            Margin = new Thickness(4, 0),
+            Margin = new Thickness(4, 6),
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
         };
 
-        string pendingColorKey = item.Id == "tool.fill.color" ? "AccentFlow" : "TextPrimary";
+        string pendingColorKey = item.Id == "tool.fill.color" ? "AccentFlow" : (item.Id == "tool.stroke.color" ? "TextPrimary" : "AccentFlow");
         var picker = new SfColorPicker
         {
             ColorMode = ColorPickerMode.Spectrum,
@@ -415,9 +416,10 @@ public partial class ToolbarControl : ContentView
     {
         var content = new HorizontalStackLayout
         {
-            Spacing = 4,
+            Spacing = 2,
             VerticalOptions = LayoutOptions.Center,
             HorizontalOptions = LayoutOptions.Center,
+            Padding = new Thickness(0),
         };
 
         if (!string.IsNullOrEmpty(icon))
@@ -428,6 +430,7 @@ public partial class ToolbarControl : ContentView
                 FontSize = 13,
                 TextColor = Application.Current!.Resources.TryGetValue("TextPrimary", out var iconColor) && iconColor is Color c1 ? c1 : Colors.Black,
                 VerticalTextAlignment = TextAlignment.Center,
+                Margin = new Thickness(0),
             });
         }
 
@@ -436,18 +439,21 @@ public partial class ToolbarControl : ContentView
             content.Children.Add(new Label
             {
                 Text = text,
-                FontSize = 13,
+                FontSize = 12,
                 TextColor = Application.Current!.Resources.TryGetValue("TextPrimary", out var textColor) && textColor is Color c2 ? c2 : Colors.Black,
                 VerticalTextAlignment = TextAlignment.Center,
+                Margin = new Thickness(0),
             });
         }
 
+        // Smaller chevron for the dropdown indicator
         content.Children.Add(new Label
         {
-            Text = "⌄",
-            FontSize = 12,
-            TextColor = Application.Current!.Resources.TryGetValue("TextSecondary", out var chevronColor) && chevronColor is Color c3 ? c3 : Colors.Black,
+            Text = "▼",
+            FontSize = 8,
+            TextColor = Application.Current!.Resources.TryGetValue("TextSecondary", out var chevronColor) && chevronColor is Color c3 ? c3 : Colors.Gray,
             VerticalTextAlignment = TextAlignment.Center,
+            Margin = new Thickness(1, 0, 0, 0),
         });
 
         return new Border
@@ -457,9 +463,9 @@ public partial class ToolbarControl : ContentView
             StrokeShape = new RoundRectangle { CornerRadius = 4 },
             BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
             HeightRequest = 32,
-            MinimumWidthRequest = string.IsNullOrEmpty(text) ? 44 : 76,
-            Padding = new Thickness(10, 0),
-            Margin = new Thickness(4, 0),
+            MinimumWidthRequest = string.IsNullOrEmpty(text) ? 40 : 70,
+            Padding = new Thickness(8, 6),
+            Margin = new Thickness(4, 6),
             AutomationId = automationId,
             Content = content,
             VerticalOptions = LayoutOptions.Center,
@@ -610,8 +616,11 @@ public partial class ToolbarControl : ContentView
         AppConstants.ToolConnectorOrthogonal => "\u21AA",
         AppConstants.ToolConnectorBezier => "\u223C",
         AppConstants.ToolText => "T",
+        "tool.stroke.color" => "\u270F",
         "tool.fill.color" => "\u2B22",
         "tool.border.color" => "\u25A1",
+        AppConstants.CmdCopy => "\u2398",
+        AppConstants.CmdPaste => "\u2147",
         AppConstants.CmdSendToBack => "\u2B05",
         AppConstants.CmdBringToFront => "\u27A1",
         AppConstants.CmdSendBackward => "\u2B05\u2B05",

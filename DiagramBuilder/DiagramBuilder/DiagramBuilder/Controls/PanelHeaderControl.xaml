@@ -32,8 +32,23 @@
                Style="{StaticResource PanelHeaderTitleStyle}"
                Grid.Column="1"
                LineBreakMode="TailTruncation" />
-        <ContentView x:Name="TrailingHost"
-                     Grid.Column="2"
-                     VerticalOptions="Center" />
+        <HorizontalStackLayout x:Name="TrailingLayout"
+                               Grid.Column="2"
+                               Spacing="8"
+                               VerticalOptions="Center">
+            <ContentView x:Name="TrailingHost"
+                         VerticalOptions="Center" />
+            <Button x:Name="CloseButton"
+                    Text="✕"
+                    FontSize="14"
+                    TextColor="{DynamicResource TextSecondary}"
+                    BackgroundColor="Transparent"
+                    Padding="0"
+                    CornerRadius="0"
+                    BorderWidth="0"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    AutomationId="panel_close" />
+        </HorizontalStackLayout>
     </Grid>
 </ContentView>
