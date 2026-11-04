@@ -17,15 +17,16 @@
 
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="220,400,*" Padding="0" BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
         <Grid Grid.ColumnSpan="3" Padding="20,16,20,14" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
-            <Border BackgroundColor="{StaticResource PrimaryLight}" Padding="18,12" StrokeThickness="0">
-                <HorizontalStackLayout Spacing="10">
-                    <Label FontFamily="MauiMaterialAssets" Text="&#xE145;" FontSize="20" TextColor="White" VerticalOptions="Center" />
-                    <Label Text="New mail" FontSize="18" TextColor="White" VerticalOptions="Center" />
-                </HorizontalStackLayout>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding NewMailAsyncCommand}" />
-                </Border.GestureRecognizers>
-            </Border>
+            <Button Text="New mail"
+                    Command="{Binding NewMailAsyncCommand}"
+                    BackgroundColor="{StaticResource PrimaryLight}"
+                    TextColor="White"
+                    FontSize="18"
+                    CornerRadius="0"
+                    WidthRequest="205"
+                    HeightRequest="78"
+                    HorizontalOptions="Start"
+                    Padding="0" />
 
             <Grid Grid.Column="1" ColumnDefinitions="*,Auto" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#252525}" Padding="18,10">
                 <SearchBar Text="{Binding SearchQuery, Mode=TwoWay}" Placeholder="Search Mail and People" BackgroundColor="Transparent" HorizontalOptions="Fill" />
@@ -58,7 +59,15 @@
                         <Label Text="{Binding CurrentAccount.Email}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#B7BDC8}" />
                     </VerticalStackLayout>
                 </Grid>
-                <syncfusion:SfTreeView ItemsSource="{Binding Folders}" SelectionBackground="{AppThemeBinding Light=#D7E8FB, Dark=#27405E}" SelectionMode="Single" ItemHeight="40" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
+                <syncfusion:SfTreeView ItemsSource="{Binding Folders}"
+                                       ChildPropertyName="Children"
+                                       AutoExpandMode="AllNodesExpanded"
+                                       ExpandActionTarget="Node"
+                                       ItemTemplateContextType="Item"
+                                       SelectionBackground="{AppThemeBinding Light=#D7E8FB, Dark=#27405E}"
+                                       SelectionMode="Single"
+                                       ItemHeight="40"
+                                       SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
                     <syncfusion:SfTreeView.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="16,8" ColumnDefinitions="*,Auto">
