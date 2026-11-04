@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:FluentMail.ViewModels"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              x:Class="FluentMail.Views.MailWorkspacePage"
+             x:Name="MailWorkspaceRoot"
              x:DataType="vm:MailWorkspaceViewModel"
              Title="Mail"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
@@ -129,7 +130,7 @@
                                                 </DataTrigger>
                                             </Label.Triggers>
                                             <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MailWorkspaceViewModel}}, Path=ToggleFavouriteCommand}" CommandParameter="{Binding .}" />
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFavouriteCommand}" CommandParameter="{Binding .}" />
                                             </Label.GestureRecognizers>
                                         </Label>
                                     </Grid>
