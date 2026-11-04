@@ -12,6 +12,13 @@ namespace Todo.Features.Notes.Views;
 
 public sealed class ListOptionsFlyout : ContentView
 {
+    private const double MenuItemHeight = 42;
+    private const double SectionHeight = 25;
+    private const double ThemePickerHeight = 42;
+    private const double ImageGalleryHeight = 66;
+    private const double MenuTopMargin = 10;
+    private const double SurfaceBorderAllowance = 4;
+
     private readonly SfPopup _popup;
     private readonly SfPopup _sortPopup;
     private Border? _surface;
@@ -36,8 +43,8 @@ public sealed class ListOptionsFlyout : ContentView
 
     public ListOptionsFlyout()
     {
-        _popup = CreatePopup(250, 330, CreateMainSurface);
-        _sortPopup = CreatePopup(190, 220, CreateSortSurface);
+        _popup = CreatePopup(250, 220, CreateMainSurface);
+        _sortPopup = CreatePopup(190, 178, CreateSortSurface);
         _popup.Opened += OnPopupOpened;
         _popup.Closing += async (_, e) =>
         {
@@ -102,9 +109,13 @@ public sealed class ListOptionsFlyout : ContentView
         _viewModel = viewModel;
         RebuildMenu();
         _isOpen = true;
-        _popup.HeightRequest = CanEditSelectedList ? 330 : 250;
+        var popupHeight = GetMainMenuHeight();
+        _popup.HeightRequest = popupHeight;
         if (_surface is not null)
+        {
             _surface.HeightRequest = _popup.HeightRequest;
+            RebuildMenu();
+        }
         _popup.ShowRelativeToView(anchor, PopupRelativePosition.AlignBottomRight);
     }
 
@@ -120,15 +131,40 @@ public sealed class ListOptionsFlyout : ContentView
             HeightRequest = height,
             AutoSizeMode = PopupAutoSizeMode.None,
             AnimationMode = PopupAnimationMode.None,
+            PopupStyle = new PopupStyle
+            {
+                OverlayColor = Colors.Transparent,
+                MessageBackground = Color.FromArgb("#FFFFFF")
+            },
             ContentTemplate = new DataTemplate(contentFactory)
         };
 
     private View CreateMainSurface()
     {
-        _menuActions = new VerticalStackLayout { Spacing = 0 };
+        _menuActions = new VerticalStackLayout
+        {
+            Spacing = 0,
+            Margin = new Thickness(0, MenuTopMargin, 0, 0)
+        };
         RebuildMenu();
-        _surface = CreateSurface(250, CanEditSelectedList ? 330 : 250, _menuActions);
+        _surface = CreateSurface(250, GetMainMenuHeight(), _menuActions);
         return _surface;
+    }
+
+    private double GetMainMenuHeight()
+    {
+        var height = MenuTopMargin
+            + MenuItemHeight
+            + SectionHeight
+            + ThemePickerHeight
+            + SectionHeight
+            + ImageGalleryHeight
+            + SurfaceBorderAllowance;
+
+        if (CanEditSelectedList)
+            height += MenuItemHeight + MenuItemHeight + 12;
+
+        return height;
     }
 
     private void RebuildMenu()
@@ -137,6 +173,7 @@ public sealed class ListOptionsFlyout : ContentView
             return;
 
         _menuActions.Children.Clear();
+        _menuActions.Margin = new Thickness(10, MenuTopMargin, 10, 0);
         if (CanEditSelectedList)
             _menuActions.Children.Add(CreateMenuButton("Rename list", RenameList));
 
@@ -185,13 +222,18 @@ public sealed class ListOptionsFlyout : ContentView
 
     private View CreateSortSurface()
     {
-        var actions = new VerticalStackLayout { Spacing = 0 };
+        var actions = new VerticalStackLayout
+        {
+            Spacing = 0,
+            Margin = new Thickness(10, MenuTopMargin, 10, 10),
+        };
         var currentSort = _selectedList?.SortOrder ?? NoteListSortOrder.Custom;
         actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important), currentSort == NoteListSortOrder.Important));
         actions.Children.Add(CreateMenuButton("Reminder", () => ApplySort(NoteListSortOrder.Reminder), currentSort == NoteListSortOrder.Reminder));
         actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate), currentSort == NoteListSortOrder.DueDate));
         actions.Children.Add(CreateMenuButton("Alphabetically", () => ApplySort(NoteListSortOrder.Alphabetical), currentSort == NoteListSortOrder.Alphabetical));
-        _sortSurface = CreateSurface(190, 220, actions);
+        var sortHeight = MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance + 20;
+        _sortSurface = CreateSurface(200, sortHeight, actions);
         return _sortSurface;
     }
 
@@ -203,7 +245,7 @@ public sealed class ListOptionsFlyout : ContentView
             HeightRequest = height,
             Padding = new Thickness(1),
             StrokeThickness = 1,
-            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(27) },
             Content = new ScrollView
             {
                 Content = content,
@@ -382,20 +424,27 @@ public sealed class ListOptionsFlyout : ContentView
             FontSize = 14,
             HorizontalOptions = LayoutOptions.Fill,
             HorizontalTextAlignment = TextAlignment.Start,
-            CornerRadius = 0,
+            CornerRadius = 8,
             TextColor = selected ? Color.FromArgb("#7633DA") : Colors.White,
             Command = new Command(action)
         };
+        button.SetAppThemeColor(VisualElement.BackgroundColorProperty,
+            selected ? Colors.White : Color.FromArgb("#7633DA"),
+            selected ? Colors.White : Color.FromArgb("#8D4CF5"));
+        button.SetAppThemeColor(SfButton.TextColorProperty,
+            selected ? Color.FromArgb("#7633DA") : Colors.White,
+            selected ? Color.FromArgb("#8D4CF5") : Colors.White);
         SemanticProperties.SetDescription(button, text);
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
         var pointerOver = new VisualState { Name = "PointerOver" };
-        pointerOver.Setters.Add(new Setter
-        {
-            Property = VisualElement.BackgroundColorProperty,
-            Value = Color.FromArgb("#F1EEF2")
-        });
+        pointerOver.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
+        pointerOver.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
         commonStates.States.Add(pointerOver);
+        var pressed = new VisualState { Name = "Pressed" };
+        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = Colors.White });
+        pressed.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = Color.FromArgb("#7633DA") });
+        commonStates.States.Add(pressed);
         VisualStateManager.SetVisualStateGroups(button, new VisualStateGroupList { commonStates });
         return button;
     }
@@ -422,6 +471,9 @@ public sealed class ListOptionsFlyout : ContentView
         {
             _isSortOpen = true;
             _popup.StaysOpen = true;
+            var sortHeight = MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance;
+            _sortPopup.HeightRequest = sortHeight;
+            _sortPopup.ContentTemplate = new DataTemplate(CreateSortSurface);
             _sortPopup.ShowRelativeToView(_sortButton, PopupRelativePosition.AlignToRightOf);
         }
     }

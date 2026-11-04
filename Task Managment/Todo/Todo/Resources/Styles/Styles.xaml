@@ -23,31 +23,6 @@
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
 
-    <Style TargetType="Button">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-        <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="BorderWidth" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Padding" Value="14,10"/>
-        <Setter Property="MinimumHeightRequest" Value="44"/>
-        <Setter Property="MinimumWidthRequest" Value="44"/>
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
-                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState x:Name="PointerOver" />
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>
 
     <!--<Style TargetType="buttons:SfButton">
         <Setter Property="MinimumHeightRequest" Value="40" />
@@ -416,102 +391,6 @@
         <Setter Property="UnselectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
         <Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
-
-    <!-- ================================================================ -->
-    <!-- Todo app: To-Do List custom styles                                -->
-    <!-- ================================================================ -->
-
-    <!-- Primary action button (Submit on bottom input bar, etc.) -->
-    <!--<Style x:Key="PrimaryButtonStyle" TargetType="buttons:SfButton">
-        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
-        <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusPill}" />
-        <Setter Property="Padding" Value="20,10" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLightColor}" />
-                            <Setter Property="Opacity" Value="0.6" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>-->
-
-    <!-- Unified dialog/flyout actions -->
-    <Style x:Key="TextButtonStyle" TargetType="buttons:SfButton">
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="12,10" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="88" />
-    </Style>
-
-    <Style x:Key="PrimaryButtonStyle" TargetType="buttons:SfButton">
-        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
-        <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="16,10" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="88" />
-    </Style>
-
-    <Style x:Key="DestructiveButtonStyle" TargetType="buttons:SfButton">
-        <Setter Property="BackgroundColor" Value="{StaticResource DestructiveColor}" />
-        <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="16,10" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="88" />
-    </Style>
-
-    <Style x:Key="DialogPrimaryButtonStyle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
-        <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="88" />
-    </Style>
-
-    <Style x:Key="DialogTextButtonStyle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="88" />
-    </Style>
-
-    <!--<Style x:Key="PrimarySfButtonStyle" TargetType="buttons:SfButton">
-        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
-        <Setter Property="TextColor" Value="{StaticResource OnPrimaryColor}" />
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilySemibold}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusPill}" />
-        <Setter Property="Padding" Value="20,10" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-    </Style>-->
-
-    <!--<Style x:Key="TextSfButtonStyle" TargetType="buttons:SfButton">
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
-        <Setter Property="FontFamily" Value="{StaticResource FontFamilyRegular}" />
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
-        <Setter Property="Padding" Value="12,10" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-    </Style>-->
 
     <!-- Sidebar item (label, used inside the data template) -->
     <Style x:Key="SidebarItemLabelStyle" TargetType="Label">

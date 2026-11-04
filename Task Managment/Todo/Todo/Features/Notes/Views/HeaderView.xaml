@@ -78,6 +78,7 @@
                                                TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
                 </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                 <Entry Text="{Binding SearchViewModel.Query, Mode=TwoWay}"
+                       Focused="OnSearchEntryFocused"
                        FontFamily="{StaticResource FontFamilyRegular}"
                        FontSize="14"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
@@ -87,9 +88,6 @@
                        BackgroundColor="Transparent"
                        Margin="0" />
             </syncfusionCore:SfTextInputLayout>
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OpenSearchCommand}" />
-            </Border.GestureRecognizers>
         </Border>
 
         <Border Grid.Column="2"

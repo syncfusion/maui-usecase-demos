@@ -67,7 +67,8 @@ public partial class NotesListViewModel : ViewModelBase
             new InMemoryNoteSearchService(_noteService),
             _noteService,
             _listService,
-            _navigation);
+            _navigation,
+            NavigateToSearchResult);
 
         Preferences.Default.Remove("BuiltInBackgroundImage");
         Preferences.Default.Remove("BuiltInCustomBackgroundImages");
@@ -635,6 +636,29 @@ public partial class NotesListViewModel : ViewModelBase
     {
         IsSearchActive = false;
         SearchViewModel.Query = string.Empty;
+    }
+
+    private void NavigateToSearchResult(Note note)
+    {
+        CloseSearch();
+
+        if (note.DeletedAt.HasValue)
+        {
+            SelectedListId = null;
+            NavigateToCategoryCommand.Execute(NotesListCategory.Bin);
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(note.ListId))
+        {
+            SelectedCategory = NotesListCategory.MyNotes;
+            SelectedListId = note.ListId;
+            return;
+        }
+
+        SelectedListId = null;
+        var category = note.IsImportant ? NotesListCategory.Important : NotesListCategory.MyNotes;
+        NavigateToCategoryCommand.Execute(category);
     }
 
     [RelayCommand]

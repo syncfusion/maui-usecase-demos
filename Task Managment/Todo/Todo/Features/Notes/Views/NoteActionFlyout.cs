@@ -38,9 +38,13 @@ public sealed class NoteActionFlyout : ContentView
             OverlayMode = PopupOverlayMode.Transparent,
             StaysOpen = false,
             WidthRequest = 260,
-            HeightRequest = 244,
             AutoSizeMode = PopupAutoSizeMode.None,
             AnimationMode = PopupAnimationMode.None,
+            PopupStyle = new PopupStyle
+            {
+                OverlayColor = Colors.Transparent,
+                MessageBackground = Color.FromArgb("#FFFFFF")
+            },
             ContentTemplate = new DataTemplate(CreateMenuSurface)
         };
 
@@ -87,44 +91,41 @@ public sealed class NoteActionFlyout : ContentView
         UpdateMenu();
         UpdateDestinations();
         ShowActions();
+        UpdatePopupSize();
         _popup.ShowRelativeToView(anchor, PopupRelativePosition.AlignBottomRight);
     }
 
     private View CreateMenuSurface()
     {
-        _actionsLayout = new VerticalStackLayout { Spacing = 0 };
+        _actionsLayout = new VerticalStackLayout { Spacing = 5 , Margin = new Thickness(5, 0, 0, 0) };
         _destinationsLayout = new VerticalStackLayout { Spacing = 0, IsVisible = false };
 
-        _completionButton = CreateButton("   Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion));
+        _completionButton = CreateButton("Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion), iconGlyph: "\ue876", iconColor: "#FFFFFF");
         _actionsLayout.Children.Add(_completionButton);
-        _editButton = CreateButton("   Edit note", () => RaiseAction(NoteActionKind.Edit));
+        _editButton = CreateButton("Edit note", () => RaiseAction(NoteActionKind.Edit), iconGlyph: "\ue150", iconColor: "#FFFFFF");
         _actionsLayout.Children.Add(_editButton);
-        _moveButton = CreateButton("   Move notes to", ShowDestinations);
+        _moveButton = CreateButton("Move notes to", ShowDestinations, iconGlyph: "\ue5c4", iconColor: "#FFFFFF");
         _actionsLayout.Children.Add(_moveButton);
-        _restoreButton = CreateButton("↺   Restore note", () => RaiseAction(NoteActionKind.Restore));
+        _restoreButton = CreateButton("Restore note", () => RaiseAction(NoteActionKind.Restore), iconGlyph: "\ue5d5", iconColor: "#49454F");
         _actionsLayout.Children.Add(_restoreButton);
-        _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 6), Color = Color.FromArgb("#ECE8F1") };
+        _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
+        _deleteSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#FFFFFF"));
         _actionsLayout.Children.Add(_deleteSeparator);
-        _deleteButton = CreateButton("   Delete permanently", () => RaiseAction(NoteActionKind.DeletePermanently), destructive: true);
+        _deleteButton = CreateButton("Delete permanently", () => RaiseAction(NoteActionKind.DeletePermanently), destructive: true, iconGlyph: "\ue92e", iconColor: "#B3261E");
         _actionsLayout.Children.Add(_deleteButton);
 
         var stage = new Grid();
+        stage.Margin = new Thickness(0,10);
         stage.Children.Add(_actionsLayout);
         stage.Children.Add(_destinationsLayout);
 
         _surface = new Border
         {
             WidthRequest = 260,
-            HeightRequest = 244,
             Padding = 8,
             StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(12) },
-            Content = new ScrollView
-            {
-                Content = stage,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Never,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Never
-            },
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(27) },
+            Content = stage,
             Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.16f, Radius = 12, Offset = new Point(0, 4) }
         };
         _surface.SetAppThemeColor(BackgroundColorProperty, Color.FromArgb("#FFFFFF"), Color.FromArgb("#29272F"));
@@ -135,7 +136,7 @@ public sealed class NoteActionFlyout : ContentView
         return _surface;
     }
 
-    private static SfButton CreateButton(string text, Action action, bool destructive = false)
+    private static SfButton CreateButton(string text, Action action, bool destructive = false, string? iconGlyph = null, string? iconColor = null)
     {
         var button = new SfButton
         {
@@ -150,15 +151,64 @@ public sealed class NoteActionFlyout : ContentView
             TextColor = destructive ? Color.FromArgb("#D32F2F") : Colors.White,
             Command = new Command(action)
         };
+        if (!string.IsNullOrEmpty(iconGlyph))
+        {
+            button.Content = new DataTemplate(() =>
+            {
+                var grid = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
+                    ColumnSpacing = 4
+                };
+                var iconLabel = new Label
+                {
+                    Text = iconGlyph,
+                    FontFamily = "MaterialIconRegular",
+                    FontSize = 18,
+                    TextColor = Color.FromArgb(iconColor ?? "#49454F"),
+                    Margin = new Thickness(0, 0, 5, 0),
+                    VerticalTextAlignment = TextAlignment.Center
+                };
+                grid.Children.Add(iconLabel);
+                var textLabel = new Label
+                {
+                    FontSize = 14,
+                    VerticalTextAlignment = TextAlignment.Center
+                };
+                textLabel.SetBinding(Label.TextProperty,
+                    new Binding(nameof(SfButton.Text), source: button));
+                textLabel.SetBinding(Label.TextColorProperty,
+                    new Binding(nameof(SfButton.TextColor), source: button));
+                grid.Children.Add(textLabel);
+                textLabel.SetValue(Grid.ColumnProperty, 1);
+                return grid;
+            });
+        }
+        if (!destructive)
+        {
+            button.SetAppThemeColor(VisualElement.BackgroundColorProperty,
+                Color.FromArgb("#7633DA"),
+                Color.FromArgb("#8D4CF5"));
+            button.SetAppThemeColor(SfButton.TextColorProperty, Colors.White, Colors.White);
+        }
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
         var pointerOver = new VisualState { Name = "PointerOver" };
         pointerOver.Setters.Add(new Setter
         {
             Property = VisualElement.BackgroundColorProperty,
-            Value = destructive ? Color.FromArgb("#FDECEC") : Color.FromArgb("#F2EEFA")
+            Value = destructive ? Color.FromArgb("#FDECEC") : Colors.White
+        });
+        pointerOver.Setters.Add(new Setter
+        {
+            Property = SfButton.TextColorProperty,
+            Value = destructive ? Color.FromArgb("#D32F2F") : Color.FromArgb("#7633DA")
         });
         commonStates.States.Add(pointerOver);
+        var pressed = new VisualState { Name = "Pressed" };
+        pressed.Setters.Add(new Setter { Property = VisualElement.BackgroundColorProperty, Value = destructive ? Color.FromArgb("#FDECEC") : Colors.White });
+        pressed.Setters.Add(new Setter { Property = SfButton.TextColorProperty, Value = destructive ? Color.FromArgb("#D32F2F") : Color.FromArgb("#7633DA") });
+        commonStates.States.Add(pressed);
         VisualStateManager.SetVisualStateGroups(button, new VisualStateGroupList { commonStates });
         return button;
     }
@@ -167,8 +217,10 @@ public sealed class NoteActionFlyout : ContentView
     {
         if (_destinationsLayout is null) return;
         _destinationsLayout.Children.Clear();
-        _destinationsLayout.Children.Add(CreateButton("‹   Move notes to", ShowActions));
-        _destinationsLayout.Children.Add(new BoxView { HeightRequest = 1, Margin = new Thickness(0, 6), Color = Color.FromArgb("#ECE8F1") });
+        _destinationsLayout.Children.Add(CreateButton("Move notes to", ShowActions, iconGlyph: "\ue5c4", iconColor: "#49454F"));
+        var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
+        separator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#494650"));
+        _destinationsLayout.Children.Add(separator);
         foreach (var destination in _destinations)
             _destinationsLayout.Children.Add(CreateButton(destination.Name, () => RaiseAction(NoteActionKind.Move, destination.Key)));
     }
@@ -182,11 +234,48 @@ public sealed class NoteActionFlyout : ContentView
         _moveButton.IsVisible = !isDeleted;
         _restoreButton.IsVisible = isDeleted;
         _deleteSeparator.IsVisible = isDeleted;
-        _deleteButton.Text = isDeleted ? "🗑   Delete permanently" : "🗑   Delete task";
+        _deleteButton.Text = isDeleted ? "Delete permanently" : "Delete task";
     }
 
-    private void ShowDestinations() { if (_actionsLayout is not null) _actionsLayout.IsVisible = false; if (_destinationsLayout is not null) _destinationsLayout.IsVisible = true; }
-    private void ShowActions() { if (_actionsLayout is not null) _actionsLayout.IsVisible = true; if (_destinationsLayout is not null) _destinationsLayout.IsVisible = false; }
+    private void ShowDestinations()
+    {
+        if (_actionsLayout is not null) _actionsLayout.IsVisible = false;
+        if (_destinationsLayout is not null) _destinationsLayout.IsVisible = true;
+        UpdatePopupSize();
+    }
+
+    private void ShowActions()
+    {
+        if (_actionsLayout is not null) _actionsLayout.IsVisible = true;
+        if (_destinationsLayout is not null) _destinationsLayout.IsVisible = false;
+        UpdatePopupSize();
+    }
+
+    private void UpdatePopupSize()
+    {
+        double contentHeight;
+        if (_destinationsLayout?.IsVisible == true)
+        {
+            // Back button + separator + every destination, with no internal scrolling.
+            contentHeight = ((_destinations.Count + 1) * 40) + 1;
+        }
+        else if (_selectedNote?.DeletedAt is not null)
+        {
+            // Restore button, separator, and delete button.
+            contentHeight = 40 + 1 + 40 + 10;
+        }
+        else
+        {
+            // Completion, edit, move, and delete buttons.
+            contentHeight = (4 * 40) + (3 * 5);
+        }
+
+        var popupHeight = contentHeight + 16 + 20;
+        _popup.HeightRequest = popupHeight;
+
+        if (_surface is not null)
+            _surface.HeightRequest = popupHeight;
+    }
 
     private void RaiseAction(NoteActionKind action, string? targetKey = null)
     {

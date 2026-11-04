@@ -14,8 +14,8 @@
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="1"
-                StrokeShape="RoundRectangle 16"
-                Padding="24">
+                StrokeShape="RoundRectangle 27"
+                Padding="20">
             <Border.Shadow>
                 <Shadow Brush="#40000000" Radius="16" Offset="0,8" Opacity="0.18" />
             </Border.Shadow>
@@ -32,13 +32,19 @@
                 <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" HorizontalOptions="End" Margin="0,8,0,0">
                     <buttons:SfButton Grid.Column="1"
                                       Text="{Binding CancelText}"
-                                      BackgroundColor="Transparent"
-                                      TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                      BackgroundColor="White"
+                                      TextColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
+                                      HeightRequest="36"
+                                      MinimumWidthRequest="72"
+                                      CornerRadius="8"
                                       Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="2"
                                       Text="{Binding ConfirmText}"
                                       BackgroundColor="{StaticResource DestructiveColor}"
                                       TextColor="White"
+                                      HeightRequest="36"
+                                      MinimumWidthRequest="72"
+                                      CornerRadius="8"
                                       Command="{Binding ConfirmCommand}" />
                 </Grid>
             </VerticalStackLayout>

@@ -16,10 +16,11 @@
 
         <Border MaximumWidthRequest="420"
                 WidthRequest="{OnIdiom Phone=300, Default=400}"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 16"
-                Padding="24">
+                BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
+                Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 27"
+                Padding="20">
             <Border.Shadow>
                 <Shadow Brush="#33000000"
                         Radius="8"
@@ -34,19 +35,31 @@
                        FontAttributes="Bold"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
 
-                <!-- List-name input -->
+                <!-- List-name input (matches the header search layout without the icon) -->
                 <syncfusionCore:SfTextInputLayout Hint="List name"
-                                                  ContainerType="None"
-                                                  ShowHint="True"
+                                                  ContainerType="Outlined"
+                                                  ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
+                                                  OutlineCornerRadius="8"
+                                                  FocusedStrokeThickness="1"
+                                                  UnfocusedStrokeThickness="1"
                                                   ReserveSpaceForAssistiveLabels="False"
-                                                  InputViewPadding="0">
+                                                  InputViewPadding="16,0"
+                                                  EnableFloating="False"
+                                                  Margin="0"
+                                                  ShowHelperText="False"
+                                                  ShowHint="True"
+                                                  Stroke="Transparent"
+                                                  HorizontalOptions="Fill">
                     <Entry Text="{Binding ListName, Mode=TwoWay}"
-                           Placeholder="List name"
+                           Placeholder=""
+                           FontFamily="{StaticResource FontFamilyRegular}"
                            FontSize="14"
                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextTertiaryColor}, Dark={StaticResource TextTertiaryDarkColor}}"
-                           BackgroundColor="{AppThemeBinding Light={StaticResource InputPillBackgroundColor}, Dark={StaticResource InputPillBackgroundDarkColor}}"
-                           MinimumHeightRequest="44" />
+                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                           VerticalTextAlignment="Center"
+                           HeightRequest="44"
+                           BackgroundColor="Transparent"
+                           Margin="0" />
                 </syncfusionCore:SfTextInputLayout>
 
                 <!-- Inline validation message (only visible when set) -->
@@ -63,15 +76,34 @@
                     <buttons:SfButton Grid.Column="1"
                             Text="Cancel"
                             BackgroundColor="Transparent"
-                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                            TextColor="White"
                             Command="{Binding CancelCommand}"
-                            MinimumWidthRequest="96" />
+                            HeightRequest="36"
+                            MinimumWidthRequest="72"
+                            CornerRadius="8" />
                     <buttons:SfButton Grid.Column="2"
                             Text="{Binding PrimaryButtonText}"
                             BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
                             TextColor="White"
                             Command="{Binding CreateCommand}"
-                            MinimumWidthRequest="96" />
+                            HeightRequest="36"
+                            MinimumWidthRequest="72"
+                            CornerRadius="8">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="White" />
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
                 </Grid>
 
             </VerticalStackLayout>

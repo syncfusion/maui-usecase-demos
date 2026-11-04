@@ -23,7 +23,14 @@
                            VerticalOptions="Center" />
                     <buttons:SfButton Grid.Column="1"
                                       Text="Close"
-                                      Style="{StaticResource TextButtonStyle}"
+                                      BackgroundColor="Transparent"
+                                      TextColor="White"
+                                      FontFamily="{StaticResource FontFamilySemibold}"
+                                      FontSize="{StaticResource FontSizeLabel}"
+                                      CornerRadius="8"
+                                      Padding="12,10"
+                                      MinimumHeightRequest="44"
+                                      MinimumWidthRequest="88"
                                       Command="{Binding CloseCommand}"
                                       SemanticProperties.Description="Close settings" />
                 </Grid>
@@ -34,7 +41,10 @@
                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
                     <Picker ItemsSource="{Binding ThemeOptions}"
                             SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
-                            Title="Choose a theme" />
+                            Title="Choose a theme"
+                            TitleColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2B2B2B}" />
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </Border>

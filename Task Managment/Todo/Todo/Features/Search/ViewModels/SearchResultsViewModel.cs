@@ -31,17 +31,21 @@ public partial class SearchResultsViewModel : ViewModelBase
     private readonly INoteService _noteService;
     private readonly IListService _listService;
     private readonly INavigationService _navigation;
+    private readonly Action<Note>? _navigateToNote;
+    private readonly HashSet<string> _trackedNotes = new(StringComparer.Ordinal);
 
     public SearchResultsViewModel(
         INoteSearchService searchService,
         INoteService noteService,
         IListService listService,
-        INavigationService navigation)
+        INavigationService navigation,
+        Action<Note>? navigateToNote = null)
     {
         _searchService = searchService;
         _noteService = noteService;
         _listService = listService;
         _navigation = navigation;
+        _navigateToNote = navigateToNote;
         Results = new ObservableCollection<Note>();
     }
 
@@ -97,7 +101,11 @@ public partial class SearchResultsViewModel : ViewModelBase
     {
         Results.Clear();
         foreach (var match in _searchService.Search(Query))
+        {
             Results.Add(match);
+            if (_trackedNotes.Add(match.Id))
+                match.PropertyChanged += OnTrackedNoteChanged;
+        }
 
         OnPropertyChanged(nameof(HasNoResults));
         OnPropertyChanged(nameof(HasResults));
@@ -106,6 +114,9 @@ public partial class SearchResultsViewModel : ViewModelBase
         OnPropertyChanged(nameof(ResultCountText));
         OnPropertyChanged(nameof(NoResultsMessage));
     }
+
+    private void OnTrackedNoteChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        => RefreshResults();
 
     // ---------------------------------------------------------------
     //  Per-result commands
@@ -116,6 +127,7 @@ public partial class SearchResultsViewModel : ViewModelBase
     {
         if (note is null) return;
         await _noteService.ToggleCompleteAsync(note.Id);
+        RefreshResults();
     }
 
     [RelayCommand]
@@ -123,6 +135,7 @@ public partial class SearchResultsViewModel : ViewModelBase
     {
         if (note is null) return;
         await _noteService.ToggleImportantAsync(note.Id);
+        RefreshResults();
     }
 
     [RelayCommand]
@@ -165,7 +178,9 @@ public partial class SearchResultsViewModel : ViewModelBase
     private async Task OpenNoteAsync(Note? note)
     {
         if (note is null) return;
+        _navigateToNote?.Invoke(note);
         var page = new EditNotePage(new EditNoteViewModel(_noteService, _navigation, note));
         await _navigation.PushModalAsync(page);
+        RefreshResults();
     }
 }

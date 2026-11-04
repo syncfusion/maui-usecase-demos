@@ -17,7 +17,7 @@
         <syncfusion:SfListView Grid.Row="0"
                                 ItemSize="45"
                                 ItemsSource="{Binding AvailableCategories}"
-                                SelectionMode="Single" SelectionBackground="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}"
+                                SelectionMode="Single" SelectionBackground="White"
                                 SelectedItem="{Binding SelectedCategory, Mode=OneWay, Converter={StaticResource ObjectToCategoryConverter}}"
                                 BackgroundColor="Transparent"
                                 SelectionChanged="OnSidebarSelectionChanged">
@@ -34,7 +34,7 @@
                                         <VisualState x:Name="Normal" /> 
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}" />
+                                        <Setter Property="BackgroundColor" Value="White" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -96,7 +96,7 @@
                 </VerticalStackLayout>
 
                 <syncfusion:SfListView x:Name="CustomListsView" ItemsSource="{Binding CustomLists}"
-                                SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45" SelectionBackground="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}"
+                                SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45" SelectionBackground="White"
                                 SelectionChanged="OnCustomListSelectionChanged">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="custmodels:NoteList">
@@ -112,7 +112,7 @@
                                         <VisualState x:Name="Normal" /> 
                                         <VisualState x:Name="Selected">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SidebarSelectionColor}, Dark=#4A4458}" />
+                                                <Setter Property="BackgroundColor" Value="White" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -139,10 +139,31 @@
 
         <buttons:SfButton Grid.Row="3" Text="&#65291;" FontSize="26" WidthRequest="52"
                           HeightRequest="52" CornerRadius="26" Padding="0" Margin="16,12,0,0"
-                          HorizontalOptions="End" BackgroundColor="{StaticResource PrimaryColor}"
-                          TextColor="{StaticResource OnPrimaryColor}"
+                          HorizontalOptions="End"
+                          BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
+                          TextColor="White"
                           Command="{Binding OpenCreateListDialogCommand}"
-                          SemanticProperties.Description="Create a to-do list" />
+                          SemanticProperties.Description="Create a to-do list">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="White" />
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="White" />
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </VisualStateManager.VisualStateGroups>
+        </buttons:SfButton>
         <noteViews:ListOptionsFlyout x:Name="ListOptionsFlyout"
                                      Grid.RowSpan="4"
                                      WidthRequest="0"

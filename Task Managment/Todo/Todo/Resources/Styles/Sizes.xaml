@@ -38,7 +38,7 @@
     <!-- Border radius -->
     <CornerRadius x:Key="CornerRadiusSmall">4</CornerRadius>
     <CornerRadius x:Key="CornerRadiusMedium">8</CornerRadius>
-    <CornerRadius x:Key="CornerRadiusLarge">12</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusLarge">27</CornerRadius>
     <CornerRadius x:Key="CornerRadiusXLarge">16</CornerRadius>
     <CornerRadius x:Key="CornerRadiusPill">24</CornerRadius>
 
@@ -67,8 +67,8 @@
     <!-- surfaces, corner radii, shadows and menu metrics stay        -->
     <!-- consistent across all screens.                               -->
     <!-- ============================================================ -->
-    <CornerRadius x:Key="DialogCornerRadius">16</CornerRadius>
-    <CornerRadius x:Key="FlyoutCornerRadius">12</CornerRadius>
+    <CornerRadius x:Key="DialogCornerRadius">27</CornerRadius>
+    <CornerRadius x:Key="FlyoutCornerRadius">27</CornerRadius>
     <CornerRadius x:Key="ChipCornerRadius">12</CornerRadius>
 
     <x:Double x:Key="DialogPadding">24</x:Double>

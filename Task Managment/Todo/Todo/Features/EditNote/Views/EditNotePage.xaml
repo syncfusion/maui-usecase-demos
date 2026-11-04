@@ -17,7 +17,7 @@
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="1"
-                StrokeShape="RoundRectangle 16"
+                StrokeShape="RoundRectangle 27"
                 Padding="20">
             <Border.Shadow>
                 <Shadow Brush="#40000000" Radius="16" Offset="0,8" Opacity="0.18" />
@@ -37,7 +37,7 @@
                                       HeightRequest="40"
                                       Padding="0"
                                       BackgroundColor="Transparent"
-                                      TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
+                                      TextColor="White"
                                       FontSize="18"
                                       Command="{Binding CancelCommand}" />
                 </Grid>
@@ -45,9 +45,9 @@
                 <BoxView Grid.Row="1"
                          HeightRequest="1"
                          Color="{AppThemeBinding Light={StaticResource PopupDividerColor}, Dark={StaticResource PopupDividerDarkColor}}"
-                         Margin="0,16" />
+                         Margin="0,10" />
 
-                <ScrollView Grid.Row="2" Margin="0">
+                <ScrollView Grid.Row="2" Margin="0" VerticalScrollBarVisibility="Never">
                     <VerticalStackLayout Spacing="10">
                         <Grid ColumnDefinitions="44,*,40" ColumnSpacing="10" VerticalOptions="Center">
                             <CheckBox Grid.Column="0"
@@ -130,7 +130,7 @@
                                     ItemsSource="{Binding RepeatOptions}"
                                     SelectedItem="{Binding RepeatFrequency, Mode=TwoWay}"
                                     HeightRequest="44"
-                                    BackgroundColor="Transparent"
+                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2B2B2B}"
                                     TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
 
                             <Border Padding="0"
@@ -167,34 +167,47 @@
                 <BoxView Grid.Row="3"
                          HeightRequest="1"
                          Color="{AppThemeBinding Light={StaticResource PopupDividerColor}, Dark={StaticResource PopupDividerDarkColor}}"
-                         Margin="0,16" />
+                         Margin="0,10" />
 
-                <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10" VerticalOptions="Center">
-                    <buttons:SfButton Grid.Column="0"
-                                      Text="Cancel"
-                                      BackgroundColor="Transparent"
-                                      TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
-                                      Command="{Binding CancelCommand}" />
-                    <Label Grid.Column="1"
+                <Grid Grid.Row="4" Margin="0,10,0,0"  ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                    
+                    <Label Grid.Column="0"
                            Text="{Binding CreatedAgeText}"
                            IsVisible="{Binding HasCreatedInfo}"
                            FontSize="12"
                            TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
                            VerticalOptions="Center" />
-                    <buttons:SfButton Grid.Column="2"
-                                      Text="&#xe872;"
-                                      FontFamily="MaterialIconRegular"
-                                      WidthRequest="40"
-                                      HeightRequest="40"
-                                      Padding="0"
+                    <buttons:SfButton Grid.Column="1"
+                                      Text="Cancel"
                                       BackgroundColor="Transparent"
-                                      TextColor="{StaticResource DestructiveColor}"
-                                      Command="{Binding DeleteCommand}" />
+                                      TextColor="White"
+                                      HeightRequest="36"
+                                      MinimumWidthRequest="72"
+                                      CornerRadius="8"
+                                      Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="3"
                                       Text="{Binding PrimaryButtonText}"
                                       BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
                                       TextColor="White"
-                                      Command="{Binding SaveCommand}" />
+                                      HeightRequest="36"
+                                      MinimumWidthRequest="72"
+                                      CornerRadius="8"
+                                      Command="{Binding SaveCommand}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="White" />
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
                 </Grid>
             </Grid>
         </Border>

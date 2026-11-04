@@ -219,7 +219,7 @@
 
                                 <Grid ColumnDefinitions="40,*,40,40"
                                       ColumnSpacing="8"
-                                      VerticalOptions="Center">
+                                      VerticalOptions="Start">
                                     <BoxView Grid.ColumnSpan="4"
                                              InputTransparent="True">
                                         <BoxView.Color>
@@ -243,13 +243,13 @@
                                               IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                               CheckedChanged="OnCheckChanged"
                                               Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}"
-                                              VerticalOptions="Center"
+                                              VerticalOptions="Start"
                                               HorizontalOptions="Center" />
 
                                     <!-- Title + metadata -->
                                     <VerticalStackLayout Grid.Column="1"
                                                          Spacing="4"
-                                                         VerticalOptions="Center"
+                                                         VerticalOptions="Start"
                                                          Margin="0,0,0,1">
                                         <Label Text="{Binding Title}"
                                                Style="{StaticResource NoteTitleStyle}"
@@ -338,7 +338,7 @@
                     </expander:SfExpander.Header>
                     <expander:SfExpander.Content>
                         <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}"
-                                               ItemSpacing="0" ItemSize="80"
+                                               ItemSpacing="0" ItemSize="85"
                                                BackgroundColor="Transparent"
                                                SelectionMode="SingleDeselect">
                             <syncfusion:SfListView.ItemTemplate>
@@ -351,12 +351,17 @@
                                             <TapGestureRecognizer Buttons="Secondary"
                                                                   Tapped="OnNoteSecondaryTapped" />
                                         </Border.GestureRecognizers>
-                                        <Grid ColumnDefinitions="44,*,40,40" ColumnSpacing="8">
+                                        <Grid ColumnDefinitions="44,*,40,40"
+                                              ColumnSpacing="8"
+                                              VerticalOptions="Start">
                                             <CheckBox Grid.Column="0"
                                                       IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
-                                                      VerticalOptions="Start" />
-                                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                                      VerticalOptions="Start" 
+                                                      HorizontalOptions="Center" />
+                                            <VerticalStackLayout Grid.Column="1"
+                                                                 Spacing="2"
+                                                                 VerticalOptions="Start">
                                                 <Label Text="{Binding Title}"
                                                        Style="{StaticResource NoteTitleStyle}"
                                                        MaxLines="1"
@@ -392,6 +397,7 @@
                                                               Background="Transparent" Padding="0"
                                                               FontSize="22" WidthRequest="40" HeightRequest="40"
                                                               VerticalOptions="Center"
+                                                              TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                                               Clicked="OnNoteMenuClicked"
                                                               SemanticProperties.Description="More note options" />
                                         </Grid>
@@ -494,8 +500,9 @@
                                         <DataTemplate>
                                             <Label Text="&#xe7f5;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" /></DataTemplate></buttons:SfButton.Content>
                                 </buttons:SfButton>
-                                <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0"
+                                <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="0,0,0,5"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
+                                                  TextColor="White"
                                                   SemanticProperties.Description="Save note">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
