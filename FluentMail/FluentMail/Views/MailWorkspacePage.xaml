@@ -158,7 +158,6 @@
                         <Picker ItemsSource="{Binding Composer.Accounts}" SelectedItem="{Binding Composer.FromAccount, Mode=TwoWay}" />
                         <inputs:SfAutocomplete Text="{Binding Composer.RecipientSearch, Mode=TwoWay}"
                                                ItemsSource="{Binding Composer.RecipientSuggestions}"
-                                               SuggestionMode="Contains"
                                                DisplayMemberPath="Name"
                                                Placeholder="To" />
                         <Button Text="Add recipient" Command="{Binding Composer.AddRecipientCommand}" CommandParameter="{Binding Composer.RecipientSuggestions[0]}" BackgroundColor="{StaticResource PrimaryLight}" TextColor="White" />
@@ -166,7 +165,7 @@
                         <Entry Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Subject" />
                         <Editor Text="{Binding Composer.Body, Mode=TwoWay}" AutoSize="TextChanges" HeightRequest="180" />
                         <HorizontalStackLayout Spacing="12">
-                            <Button Text="Send" Command="{Binding Composer.SendAsyncCommand}" BackgroundColor="{StaticResource PrimaryLight}" TextColor="White" />
+                            <Button Text="Send" Command="{Binding Composer.SendCommand}" BackgroundColor="{StaticResource PrimaryLight}" TextColor="White" />
                             <Label Text="{Binding Composer.StatusMessage}" VerticalTextAlignment="Center" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
