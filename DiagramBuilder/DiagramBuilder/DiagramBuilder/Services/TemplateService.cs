@@ -150,13 +150,13 @@ public class TemplateService : ITemplateService
         },
         Connectors =
         {
-            Link("c1", "start", "enter", "Yes"),
-            Link("c2", "enter", "validate"),
-            Link("c3", "validate", "declined", "No"),
-            Link("c4", "validate", "process", "Yes"),
-            Link("c5", "process", "store"),
-            Link("c6", "store", "receipt"),
-            Link("c7", "receipt", "end"),
+            Link("c1", "start", "enter", "Yes", strokeColorKey: ResourceKeys.AccentFlow),
+            Link("c2", "enter", "validate", strokeColorKey: ResourceKeys.AccentFlow),
+            Link("c3", "validate", "declined", "No", strokeColorKey: ResourceKeys.AccentFlow),
+            Link("c4", "validate", "process", "Yes", strokeColorKey: ResourceKeys.AccentFlow),
+            Link("c5", "process", "store", strokeColorKey: ResourceKeys.AccentFlow),
+            Link("c6", "store", "receipt", strokeColorKey: ResourceKeys.AccentFlow),
+            Link("c7", "receipt", "end", strokeColorKey: ResourceKeys.AccentFlow),
         },
     };
 
@@ -182,11 +182,11 @@ public class TemplateService : ITemplateService
         },
         Connectors =
         {
-            Link("c1", "center", "research", kind: ConnectorKind.Bezier),
-            Link("c2", "center", "design", kind: ConnectorKind.Bezier),
-            Link("c3", "center", "development", kind: ConnectorKind.Bezier),
-            Link("c4", "center", "marketing", kind: ConnectorKind.Bezier),
-            Link("c5", "center", "launch", kind: ConnectorKind.Bezier),
+            Link("c1", "center", "research", kind: ConnectorKind.Bezier, strokeColorKey: ResourceKeys.AccentMindMap),
+            Link("c2", "center", "design", kind: ConnectorKind.Bezier, strokeColorKey: ResourceKeys.AccentMindMap),
+            Link("c3", "center", "development", kind: ConnectorKind.Bezier, strokeColorKey: ResourceKeys.AccentMindMap),
+            Link("c4", "center", "marketing", kind: ConnectorKind.Bezier, strokeColorKey: ResourceKeys.AccentMindMap),
+            Link("c5", "center", "launch", kind: ConnectorKind.Bezier, strokeColorKey: ResourceKeys.AccentMindMap),
         },
     };
 
@@ -212,11 +212,11 @@ public class TemplateService : ITemplateService
         },
         Connectors =
         {
-            Link("c1", "ceo", "d-ops"),
-            Link("c2", "ceo", "d-eng"),
-            Link("c3", "ceo", "d-sales"),
-            Link("c4", "d-eng", "t-mob"),
-            Link("c5", "d-eng", "t-web"),
+            Link("c1", "ceo", "d-ops", strokeColorKey: ResourceKeys.AccentOrgChart),
+            Link("c2", "ceo", "d-eng", strokeColorKey: ResourceKeys.AccentOrgChart),
+            Link("c3", "ceo", "d-sales", strokeColorKey: ResourceKeys.AccentOrgChart),
+            Link("c4", "d-eng", "t-mob", strokeColorKey: ResourceKeys.AccentOrgChart),
+            Link("c5", "d-eng", "t-web", strokeColorKey: ResourceKeys.AccentOrgChart),
         },
     };
 
@@ -233,14 +233,14 @@ public class TemplateService : ITemplateService
         IsManager = isManager,
     };
 
-    private static TemplateConnector Link(string id, string source, string target, string? text = null, ConnectorKind kind = ConnectorKind.Orthogonal) => new()
+    private static TemplateConnector Link(string id, string source, string target, string? text = null, ConnectorKind kind = ConnectorKind.Orthogonal, string? strokeColorKey = null) => new()
     {
         Id = id,
         SourceId = source,
         TargetId = target,
         Text = text ?? string.Empty,
         Kind = kind,
-        StrokeColorKey = ResourceKeys.PanelBorderColor,
+        StrokeColorKey = strokeColorKey ?? ResourceKeys.TextSecondary,
     };
 
     private sealed class TemplatePayloadDto
