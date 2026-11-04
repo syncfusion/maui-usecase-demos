@@ -17,11 +17,11 @@ public partial class CreateDiagramPage : ContentPage
         // Wire the category list selection change to update the ViewModel
         if (this.FindByName("CategoryList") is Syncfusion.Maui.ListView.SfListView categoryList)
         {
-            categoryList.SelectionChanging += OnCategorySelectionChanging;
+            categoryList.ItemSelectionChanging += OnCategorySelectionChanging;
         }
     }
     
-    private void OnCategorySelectionChanging(object? sender, Syncfusion.Maui.ListView.SelectionChangingEventArgs e)
+    private void OnCategorySelectionChanging(object? sender, Syncfusion.Maui.ListView.ItemSelectionChangingEventArgs e)
     {
         if (e.AddedItems.Count > 0 && e.AddedItems[0] is string selectedCategory)
         {
