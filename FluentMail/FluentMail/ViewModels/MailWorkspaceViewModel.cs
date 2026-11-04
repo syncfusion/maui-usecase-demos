@@ -44,6 +44,15 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public MailWorkspaceViewModel()
     {
+        Composer.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(ComposeViewModel.ShowMessage) && Composer.ShowMessage)
+            {
+                IsComposing = false;
+                Composer.ShowMessage = false;
+                LoadFolder(SelectedFolder ?? mailbox.Folders.First());
+            }
+        };
         SelectedFolder = mailbox.Folders.First();
         LoadFolder(SelectedFolder);
         IsLoading = false;
@@ -73,7 +82,15 @@ public partial class MailWorkspaceViewModel : ObservableObject
     void SelectMessage(MailMessage? message) => SelectedMessage = message;
 
     [RelayCommand]
-    void NewMail()
+    void ToggleFavourite(MailMessage? message)
+    {
+        if (message is null) return;
+        message.IsFavourite = !message.IsFavourite;
+        UpdateFolderCounts();
+    }
+
+    [RelayCommand]
+    async Task NewMailAsync()
     {
         IsComposing = true;
         Composer.Subject = string.Empty;

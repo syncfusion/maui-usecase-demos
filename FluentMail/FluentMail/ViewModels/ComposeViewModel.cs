@@ -54,13 +54,18 @@ public partial class ComposeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    void Send()
+    async Task SendAsync()
     {
         if (RecipientChips.Count == 0) { StatusMessage = "Add at least one recipient."; return; }
         if (string.IsNullOrWhiteSpace(Subject)) { StatusMessage = "Enter a subject."; return; }
         mailbox.SentItems.Insert(0, new MailMessage { Id=$"sent-{Guid.NewGuid():N}", Folder="Sent Items", Sender="Me", SenderEmail="me@contoso.com", Subject=Subject, Preview=Body[..Math.Min(Body.Length, 40)], Body=Body, Recipients=string.Join(", ", RecipientChips.Select(x=>x.Email)), Status="Sent", IsRead=true, HasAttachments=Attachments.Count>0 });
         mailbox.RefreshCounts();
         RecipientChips.Clear(); Attachments.Clear(); Subject=string.Empty; Body=string.Empty; StatusMessage="Message sent"; ShowMessage = true;
+        var page = Application.Current?.Windows.FirstOrDefault()?.Page;
+        if (page is not null)
+        {
+            await page.DisplayAlertAsync("Mail sent", "Your message has been sent.", "OK");
+        }
     }
 
     void UpdateSuggestions()

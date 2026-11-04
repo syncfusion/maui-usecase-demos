@@ -10,11 +10,36 @@ public static class MockData
     static Mailbox CreateMailbox()
     {
         var mailbox = new Mailbox();
-        mailbox.Folders.Add(new FolderNode { Name = "Inbox", Count = 0, Children = [new FolderNode { Name = "Projects" }, new FolderNode { Name = "Clients" }] });
-        mailbox.Folders.Add(new FolderNode { Name = "Sent Items", Count = 0 });
-        mailbox.Folders.Add(new FolderNode { Name = "Drafts", Count = 0 });
-        mailbox.Folders.Add(new FolderNode { Name = "Archive", Count = 0 });
-        mailbox.Folders.Add(new FolderNode { Name = "Deleted", Count = 0 });
+        mailbox.Folders.Add(new FolderNode
+        {
+            Name = "Favorites",
+            Children = [
+                new FolderNode { Name = "Inbox" },
+                new FolderNode { Name = "Sales Reports" },
+                new FolderNode { Name = "Personnel" },
+                new FolderNode { Name = "Marketing Reports" },
+                new FolderNode { Name = "Sent Items" }
+            ]
+        });
+        mailbox.Folders.Add(new FolderNode
+        {
+            Name = "Andrew Fuller",
+            Children = [
+                new FolderNode { Name = "Inbox" },
+                new FolderNode { Name = "Clutter" },
+                new FolderNode { Name = "Drafts" },
+                new FolderNode { Name = "Sent Items" },
+                new FolderNode { Name = "Deleted Items" },
+                new FolderNode { Name = "Archive" },
+                new FolderNode { Name = "Junk Mail" },
+                new FolderNode { Name = "Personnel" },
+                new FolderNode { Name = "Sales Reports" },
+                new FolderNode { Name = "Marketing Reports" },
+                new FolderNode { Name = "My Team" },
+                new FolderNode { Name = "Trash" },
+                new FolderNode { Name = "Outbox" }
+            ]
+        });
 
         string BuildBody(string preview, string sender) => string.Join("\n\n", new[]
         {

@@ -22,7 +22,7 @@
                     <Label Text="New mail" FontSize="18" TextColor="White" VerticalOptions="Center" />
                 </HorizontalStackLayout>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding NewMailCommand}" />
+                    <TapGestureRecognizer Command="{Binding NewMailAsyncCommand}" />
                 </Border.GestureRecognizers>
             </Border>
 
@@ -117,10 +117,21 @@
 
                                     <Label Grid.Row="2" Grid.Column="2" Text="{Binding Preview}" FontSize="14" TextColor="{AppThemeBinding Light=#8A8A8A, Dark=#B7BDC8}" />
 
-                                    <Grid Grid.Row="1" Grid.Column="3" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                                    <Grid Grid.Row="1" Grid.Column="3" ColumnDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" VerticalOptions="Center">
                                         <Label FontFamily="MauiMaterialAssets" Text="&#xE0C8;" FontSize="18" TextColor="{AppThemeBinding Light=#5F5F5F, Dark=#B7BDC8}" />
                                         <Label Grid.Column="1" FontFamily="MauiMaterialAssets" Text="&#xE878;" FontSize="18" TextColor="{AppThemeBinding Light=#5F5F5F, Dark=#B7BDC8}" />
                                         <Label Grid.Column="2" FontFamily="MauiMaterialAssets" Text="&#xE897;" FontSize="18" TextColor="{StaticResource PrimaryLight}" />
+                                        <Label Grid.Column="3" FontFamily="MauiMaterialAssets" Text="&#xE838;" FontSize="18" TextColor="{StaticResource PrimaryLight}" Opacity="0.4">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsFavourite}" Value="True">
+                                                    <Setter Property="Text" Value="&#xE838;" />
+                                                    <Setter Property="Opacity" Value="1" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MailWorkspaceViewModel}}, Path=ToggleFavouriteCommand}" CommandParameter="{Binding .}" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
                                     </Grid>
                                     <BoxView Grid.Row="3" Grid.ColumnSpan="4" HeightRequest="0.35" Color="Gray"/>
                                 </Grid>
@@ -155,7 +166,7 @@
                         <Entry Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Subject" />
                         <Editor Text="{Binding Composer.Body, Mode=TwoWay}" AutoSize="TextChanges" HeightRequest="180" />
                         <HorizontalStackLayout Spacing="12">
-                            <Button Text="Send" Command="{Binding Composer.SendCommand}" BackgroundColor="{StaticResource PrimaryLight}" TextColor="White" />
+                            <Button Text="Send" Command="{Binding Composer.SendAsyncCommand}" BackgroundColor="{StaticResource PrimaryLight}" TextColor="White" />
                             <Label Text="{Binding Composer.StatusMessage}" VerticalTextAlignment="Center" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>

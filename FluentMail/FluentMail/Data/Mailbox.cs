@@ -17,11 +17,47 @@ public class Mailbox
 
     public void RefreshCounts()
     {
-        Folders[0].Count = Inbox.Count;
-        Folders[1].Count = SentItems.Count;
-        Folders[2].Count = Drafts.Count;
-        Folders[3].Count = Archive.Count;
-        Folders[4].Count = Deleted.Count;
+        if (Folders.Count < 2)
+        {
+            return;
+        }
+
+        var favorites = Folders[0];
+        var account = Folders[1];
+
+        favorites.Count = 0;
+        account.Count = 0;
+
+        var favoriteFolders = new[] { "Inbox", "Sales Reports", "Personnel", "Marketing Reports", "Sent Items" };
+        var accountFolders = new[] { "Inbox", "Clutter", "Drafts", "Sent Items", "Deleted Items", "Archive", "Junk Mail", "Personnel", "Sales Reports", "Marketing Reports" };
+
+        foreach (var folder in favoriteFolders)
+            SetCount(folder, CountFor(folder));
+
+        foreach (var folder in accountFolders)
+            SetCount(folder, CountFor(folder));
+    }
+
+    int CountFor(string folder) => folder switch
+    {
+        "Inbox" => Inbox.Count,
+        "Sent Items" => SentItems.Count,
+        "Drafts" => Drafts.Count,
+        "Archive" => Archive.Count,
+        "Deleted" or "Deleted Items" => Deleted.Count,
+        _ => Inbox.Count(x => x.Subject.Contains(folder, StringComparison.OrdinalIgnoreCase) || x.Preview.Contains(folder, StringComparison.OrdinalIgnoreCase))
+    };
+
+    void SetCount(string folder, int count)
+    {
+        foreach (var root in Folders)
+        {
+            foreach (var child in root.Children)
+            {
+                if (child.Name == folder)
+                    child.Count = count;
+            }
+        }
     }
 
     public IEnumerable<MailMessage> GetMessages(string folder) => folder switch
@@ -30,7 +66,7 @@ public class Mailbox
         "Sent Items" => SentItems,
         "Drafts" => Drafts,
         "Archive" => Archive,
-        "Deleted" => Deleted,
+        "Deleted" or "Deleted Items" => Deleted,
         _ => Inbox
     };
 }
