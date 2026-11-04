@@ -18,7 +18,7 @@
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="220,400,*" Padding="0" BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
         <Grid Grid.ColumnSpan="3" Padding="20,16,20,14" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
             <Button Text="New mail"
-                    Command="{Binding NewMailAsyncCommand}"
+                    Command="{Binding NewMailCommand}"
                     BackgroundColor="{StaticResource PrimaryLight}"
                     TextColor="White"
                     FontSize="18"
