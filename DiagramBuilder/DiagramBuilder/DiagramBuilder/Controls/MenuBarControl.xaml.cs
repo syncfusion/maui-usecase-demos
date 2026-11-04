@@ -338,14 +338,16 @@ public partial class MenuBarControl : ContentView
         Grid.SetColumn(label, 1);
         Grid.SetColumn(chevron, 2);
 
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) =>
+        return new Syncfusion.Maui.Buttons.SfButton
         {
-            item.IsExpanded = !item.IsExpanded;
-            Rebuild();
+            Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+            Content = new DataTemplate(() => grid),
+            Command = new Command(() =>
+            {
+                item.IsExpanded = !item.IsExpanded;
+                Rebuild();
+            }),
         };
-        grid.GestureRecognizers.Add(tap);
-        return grid;
     }
 
     private static double GetFlyoutMinWidth(string rootId) => FlyoutMinWidths.TryGetValue(rootId, out var width)

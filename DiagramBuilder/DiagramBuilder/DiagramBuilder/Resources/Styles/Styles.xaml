@@ -171,18 +171,18 @@
 
     <!-- ============ Named styles (referenced via ResourceKeys) ============ -->
 
-    <!-- 36x36 transparent icon button for the toolbar; hover #EFEFEF, pressed #E0E0E0, disabled 40% opacity. -->
+    <!-- 32x32 transparent icon button for the toolbar; hover #EFEFEF, pressed #E0E0E0, disabled 40% opacity. -->
     <Style x:Key="ToolbarIconButtonStyle" TargetType="Button">
-        <Setter Property="WidthRequest" Value="38" />
-        <Setter Property="HeightRequest" Value="38" />
+        <Setter Property="WidthRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="32" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="3,0" />
-        <Setter Property="MinimumHeightRequest" Value="38" />
-        <Setter Property="MinimumWidthRequest" Value="38" />
-        <Setter Property="CornerRadius" Value="9" />
+        <Setter Property="Margin" Value="2,0" />
+        <Setter Property="MinimumHeightRequest" Value="32" />
+        <Setter Property="MinimumWidthRequest" Value="32" />
+        <Setter Property="CornerRadius" Value="6" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="13" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -207,8 +207,36 @@
         </Setter>
     </Style>
 
-    <!-- Active-tool variant: SelectionBlue background, white glyph. -->
+    <!-- Active-tool variant: neutral dark background, white glyph. -->
     <Style x:Key="ToolbarIconActiveStyle" TargetType="Button" BasedOn="{StaticResource ToolbarIconButtonStyle}">
+        <Setter Property="BackgroundColor" Value="#5F5F5F" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#6C6C6C" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#4A4A4A" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.4" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Blue primary action button used for the properties pane toggle. -->
+    <Style x:Key="ToolbarPrimaryActionStyle" TargetType="Button" BasedOn="{StaticResource ToolbarIconButtonStyle}">
         <Setter Property="BackgroundColor" Value="{DynamicResource SelectionBlue}" />
         <Setter Property="TextColor" Value="White" />
         <Setter Property="VisualStateManager.VisualStateGroups">
