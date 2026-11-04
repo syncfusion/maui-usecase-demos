@@ -6,6 +6,7 @@ public sealed class QueueStore
     private readonly List<QueueCounter> _counters;
     private readonly IReadOnlyList<QueueToken> _initialTokens;
     private readonly IReadOnlyList<QueueCounter> _initialCounters;
+    private readonly Dictionary<string, DateTime> _servingStartedAt = new(StringComparer.Ordinal);
 
     public QueueStore()
     {
@@ -18,6 +19,7 @@ public sealed class QueueStore
         ];
         _tokens = [.. _initialTokens];
         _counters = [.. _initialCounters];
+        StartServingTimers();
     }
 
     public event EventHandler? Changed;
@@ -25,6 +27,9 @@ public sealed class QueueStore
     public IReadOnlyList<QueueToken> Tokens => _tokens.AsReadOnly();
 
     public IReadOnlyList<QueueCounter> Counters => _counters.AsReadOnly();
+
+    public DateTime? ServingStartedAt(string tokenId) =>
+        _servingStartedAt.TryGetValue(tokenId, out var startedAt) ? startedAt : null;
 
     public QueueToken UpdateToken(
         string tokenId,
@@ -67,6 +72,7 @@ public sealed class QueueStore
         }
 
         _tokens.RemoveAt(index);
+        _servingStartedAt.Remove(tokenId);
         OnChanged();
         return true;
     }
@@ -96,6 +102,7 @@ public sealed class QueueStore
                 token.CounterName == counterName && token.Status == TokenStatus.Serving);
             if (servingIndex >= 0)
             {
+                _servingStartedAt.Remove(_tokens[servingIndex].Id);
                 _tokens[servingIndex] = _tokens[servingIndex] with
                 {
                     Status = TokenStatus.Waiting,
@@ -128,6 +135,7 @@ public sealed class QueueStore
 
         foreach (var token in moving)
         {
+            _servingStartedAt.Remove(token.Id);
             var status = token.Status == TokenStatus.Serving ? TokenStatus.Waiting : token.Status;
             _tokens.Add(token with
             {
@@ -145,9 +153,25 @@ public sealed class QueueStore
     public QueueToken? CallNext(string counterName)
     {
         EnsureOnlineCounter(counterName);
+        if (_tokens.Any(token =>
+                token.CounterName == counterName && token.Status == TokenStatus.Serving))
+        {
+            return null;
+        }
+
+        var serving = PromoteNextWaitingToken(counterName);
+        if (serving is not null)
+        {
+            OnChanged();
+        }
+
+        return serving;
+    }
+
+    private QueueToken? PromoteNextWaitingToken(string counterName)
+    {
         var next = _tokens.FirstOrDefault(token =>
-            token.Status == TokenStatus.Waiting && token.CounterName == counterName)
-            ?? _tokens.FirstOrDefault(token => token.Status == TokenStatus.Waiting);
+            token.Status == TokenStatus.Waiting && token.CounterName == counterName);
         if (next is null)
         {
             return null;
@@ -157,6 +181,7 @@ public sealed class QueueStore
             token.Status == TokenStatus.Serving && token.CounterName == counterName);
         if (servingIndex >= 0)
         {
+            _servingStartedAt.Remove(_tokens[servingIndex].Id);
             _tokens[servingIndex] = _tokens[servingIndex] with
             {
                 Status = TokenStatus.Completed,
@@ -172,7 +197,7 @@ public sealed class QueueStore
             Wait = "Now"
         };
         _tokens[nextIndex] = serving;
-        OnChanged();
+        _servingStartedAt[next.Id] = DateTime.Now;
         return serving;
     }
 
@@ -180,14 +205,25 @@ public sealed class QueueStore
         ChangeCurrentStatus(counterName, TokenStatus.Serving, TokenStatus.Completed, "Done");
 
     public bool SkipCurrent(string counterName) =>
-        ChangeCurrentStatus(counterName, TokenStatus.Serving, TokenStatus.Skipped, "Skipped");
+        ChangeCurrentStatus(counterName, TokenStatus.Serving, TokenStatus.Skipped, "Skipped", advanceQueue: true);
 
     public bool RecallCurrent(string counterName)
     {
         EnsureOnlineCounter(counterName);
         var skipped = _tokens.FirstOrDefault(token =>
             token.CounterName == counterName && token.Status == TokenStatus.Skipped);
-        return skipped is not null && RecallToken(skipped.Id);
+        if (skipped is null || !RecallToken(skipped.Id))
+        {
+            return false;
+        }
+
+        if (!_tokens.Any(token =>
+                token.CounterName == counterName && token.Status == TokenStatus.Serving))
+        {
+            CallNext(counterName);
+        }
+
+        return true;
     }
 
     public bool RecallToken(string tokenId)
@@ -199,7 +235,18 @@ public sealed class QueueStore
             return false;
         }
 
-        _tokens[index] = _tokens[index] with { Status = TokenStatus.Waiting, Wait = "Now" };
+        var skipped = _tokens[index];
+        _tokens.RemoveAt(index);
+        var firstWaitingIndex = _tokens.FindIndex(token =>
+            token.CounterName == skipped.CounterName && token.Status == TokenStatus.Waiting);
+        if (firstWaitingIndex < 0)
+        {
+            var servingIndex = _tokens.FindIndex(token =>
+                token.CounterName == skipped.CounterName && token.Status == TokenStatus.Serving);
+            firstWaitingIndex = servingIndex < 0 ? _tokens.Count : servingIndex + 1;
+        }
+
+        _tokens.Insert(firstWaitingIndex, skipped with { Status = TokenStatus.Waiting, Wait = "4 mins" });
         OnChanged();
         return true;
     }
@@ -220,14 +267,15 @@ public sealed class QueueStore
 
         var source = _tokens[index];
         _tokens.RemoveAt(index);
+        _servingStartedAt.Remove(source.Id);
         var moved = source with
         {
-            Id = NextTokenId(destination.Name, destination.Service),
             CounterName = destination.Name,
             Status = TokenStatus.Waiting,
             Wait = WaitFor(destination.Name)
         };
         _tokens.Add(moved);
+        PromoteNextWaitingToken(source.CounterName);
         OnChanged();
         return moved;
     }
@@ -238,6 +286,7 @@ public sealed class QueueStore
         _tokens.AddRange(_initialTokens);
         _counters.Clear();
         _counters.AddRange(_initialCounters);
+        StartServingTimers();
         OnChanged();
     }
 
@@ -245,7 +294,8 @@ public sealed class QueueStore
         string counterName,
         TokenStatus requiredStatus,
         TokenStatus newStatus,
-        string wait)
+        string wait,
+        bool advanceQueue = false)
     {
         EnsureOnlineCounter(counterName);
         var index = _tokens.FindIndex(token =>
@@ -255,7 +305,16 @@ public sealed class QueueStore
             return false;
         }
 
-        _tokens[index] = _tokens[index] with { Status = newStatus, Wait = wait };
+        var current = _tokens[index];
+        _servingStartedAt.Remove(current.Id);
+        _tokens[index] = current with { Status = newStatus, Wait = wait };
+        if (advanceQueue)
+        {
+            PromoteNextWaitingToken(counterName);
+            OnChanged();
+            return true;
+        }
+
         OnChanged();
         return true;
     }
@@ -314,31 +373,75 @@ public sealed class QueueStore
         }
     }
 
-    private void OnChanged() => Changed?.Invoke(this, EventArgs.Empty);
+    private void OnChanged()
+    {
+        var waitingPositions = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (var index = 0; index < _tokens.Count; index++)
+        {
+            var token = _tokens[index];
+            if (token.Status != TokenStatus.Waiting)
+            {
+                continue;
+            }
 
-    private static IReadOnlyList<QueueToken> CreateInitialTokens() =>
-    [
-        new("A-104", "Payments & Billing", TokenPriority.Priority, TokenStatus.Serving, "Counter 1", "Now"),
-        new("A-105", "Payments & Billing", TokenPriority.Priority, TokenStatus.Waiting, "Counter 1", "4 mins"),
-        new("A-106", "Payments & Billing", TokenPriority.Normal, TokenStatus.Waiting, "Counter 1", "8 mins"),
-        new("A-107", "Payments & Billing", TokenPriority.Normal, TokenStatus.Completed, "Counter 1", "Done"),
-        new("A-108", "Payments & Billing", TokenPriority.Priority, TokenStatus.Skipped, "Counter 1", "Skipped"),
-        new("A-109", "Payments & Billing", TokenPriority.Normal, TokenStatus.Waiting, "Counter 1", "12 mins"),
-        new("A-110", "Payments & Billing", TokenPriority.Priority, TokenStatus.Completed, "Counter 1", "Done"),
-        new("B-202", "General Inquiry", TokenPriority.Normal, TokenStatus.Serving, "Counter 2", "Now"),
-        new("B-203", "General Inquiry", TokenPriority.Priority, TokenStatus.Waiting, "Counter 2", "4 mins"),
-        new("B-204", "General Inquiry", TokenPriority.Normal, TokenStatus.Waiting, "Counter 2", "8 mins"),
-        new("B-205", "General Inquiry", TokenPriority.Normal, TokenStatus.Completed, "Counter 2", "Done"),
-        new("B-206", "General Inquiry", TokenPriority.Priority, TokenStatus.Waiting, "Counter 2", "12 mins"),
-        new("B-207", "General Inquiry", TokenPriority.Normal, TokenStatus.Skipped, "Counter 2", "Skipped"),
-        new("B-208", "General Inquiry", TokenPriority.Normal, TokenStatus.Completed, "Counter 2", "Done"),
-        new("C-301", "Customer Support", TokenPriority.Priority, TokenStatus.Serving, "Counter 3", "Now"),
-        new("C-302", "Customer Support", TokenPriority.Normal, TokenStatus.Waiting, "Counter 3", "4 mins"),
-        new("C-303", "Customer Support", TokenPriority.Priority, TokenStatus.Waiting, "Counter 3", "8 mins"),
-        new("C-304", "Customer Support", TokenPriority.Normal, TokenStatus.Completed, "Counter 3", "Done"),
-        new("C-305", "Customer Support", TokenPriority.Normal, TokenStatus.Waiting, "Counter 3", "12 mins"),
-        new("C-306", "Customer Support", TokenPriority.Priority, TokenStatus.Waiting, "Counter 3", "16 mins"),
-        new("C-307", "Customer Support", TokenPriority.Normal, TokenStatus.Skipped, "Counter 3", "Skipped"),
-        new("C-308", "Customer Support", TokenPriority.Normal, TokenStatus.Completed, "Counter 3", "Done")
-    ];
+            var position = waitingPositions.GetValueOrDefault(token.CounterName) + 1;
+            waitingPositions[token.CounterName] = position;
+            _tokens[index] = token with { Wait = $"{position * 4} mins" };
+        }
+
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void StartServingTimers()
+    {
+        _servingStartedAt.Clear();
+        foreach (var token in _tokens.Where(token => token.Status == TokenStatus.Serving))
+        {
+            _servingStartedAt[token.Id] = DateTime.Now;
+        }
+    }
+
+    private static IReadOnlyList<QueueToken> CreateInitialTokens()
+    {
+        var tokens = new List<QueueToken>(60);
+        AddCounterTokens(tokens, "A", "Counter 1", "Payments & Billing", 101);
+        AddCounterTokens(tokens, "B", "Counter 2", "General Inquiry", 201);
+        AddCounterTokens(tokens, "C", "Counter 3", "Customer Support", 301);
+        return tokens;
+    }
+
+    private static void AddCounterTokens(
+        ICollection<QueueToken> tokens,
+        string prefix,
+        string counterName,
+        string service,
+        int firstNumber)
+    {
+        var waitingPosition = 0;
+        for (var index = 0; index < 20; index++)
+        {
+            var status = index switch
+            {
+                0 => TokenStatus.Serving,
+                <= 13 => TokenStatus.Waiting,
+                <= 17 => TokenStatus.Completed,
+                _ => TokenStatus.Skipped
+            };
+            var wait = status switch
+            {
+                TokenStatus.Serving => "Now",
+                TokenStatus.Waiting => $"{++waitingPosition * 4} mins",
+                TokenStatus.Completed => "Done",
+                _ => "Skipped"
+            };
+            var priority = index % 4 == 0 ? TokenPriority.Priority : TokenPriority.Normal;
+            tokens.Add(new QueueToken(
+                $"{prefix}-{firstNumber + index}",
+                service,
+                priority,
+                status,
+                counterName,
+                wait));
+        }
+    }
 }

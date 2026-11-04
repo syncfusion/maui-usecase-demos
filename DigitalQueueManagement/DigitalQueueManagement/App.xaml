@@ -10,10 +10,6 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <syncTheme:SyncfusionThemeResourceDictionary />
-                <ResourceDictionary>
-                    <x:String x:Key="SfListViewTheme">CommonTheme</x:String>
-                    <Color x:Key="SfListViewHoverListViewItemBackground">Transparent</Color>
-                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

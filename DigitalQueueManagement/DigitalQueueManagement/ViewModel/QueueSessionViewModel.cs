@@ -7,6 +7,7 @@ namespace DigitalQueueManagement.ViewModel;
 public partial class QueueSessionViewModel : ObservableObject
 {
     private readonly QueueStore _store;
+    private readonly Dictionary<string, string> _completedTokenByCounter = new(StringComparer.Ordinal);
 
     public IReadOnlyList<QueueAnalyticsPoint> ServiceAnalytics { get; } =
     [
@@ -50,7 +51,9 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public ObservableCollection<QueueToken> UpcomingTokens { get; } = [];
 
-    public ObservableCollection<QueueTokenListItem> CounterWaitingPreview { get; } = [];
+    public ObservableCollection<QueueTokenListItem> CompletedStatusTokens { get; } = [];
+
+    public ObservableCollection<QueueTokenListItem> WaitingStatusTokens { get; } = [];
 
     public ObservableCollection<QueueCounter> Counters { get; } = [];
 
@@ -61,6 +64,13 @@ public partial class QueueSessionViewModel : ObservableObject
     public int TotalTokenCount => Tokens.Count;
 
     public int WaitingTokenCount => Tokens.Count(token => token.Status == TokenStatus.Waiting);
+
+    public int SelectedCounterWaitingCount =>
+        SelectedCounter is { } counter ? WaitingTokenCountFor(counter.Name) : 0;
+
+    public int SelectedCounterCompletedTokenCount => CountTokensForSelectedCounter(TokenStatus.Completed);
+
+    public int SelectedCounterSkippedTokenCount => CountTokensForSelectedCounter(TokenStatus.Skipped);
 
     public int ServingTokenCount => Tokens.Count(token => token.Status == TokenStatus.Serving);
 
@@ -101,9 +111,17 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public bool HasNoUpcomingTokens => !HasUpcomingTokens;
 
-    public bool HasCounterWaitingTokens => CounterWaitingPreview.Count > 0;
+    public int CompletedStatusTokenCount => CompletedStatusTokens.Count;
 
-    public bool HasNoCounterWaitingTokens => !HasCounterWaitingTokens;
+    public int WaitingStatusTokenCount => WaitingStatusTokens.Count;
+
+    public bool HasCompletedStatusTokens => CompletedStatusTokens.Count > 0;
+
+    public bool HasNoCompletedStatusTokens => !HasCompletedStatusTokens;
+
+    public bool HasWaitingStatusTokens => WaitingStatusTokens.Count > 0;
+
+    public bool HasNoWaitingStatusTokens => !HasWaitingStatusTokens;
 
     public bool HasCounters => Counters.Count > 0;
 
@@ -140,7 +158,37 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public string SelectedCounterTokenWait => SelectedCounterToken?.Wait ?? "—";
 
-    public bool CanCallNext => SelectedCounter is { IsOnline: true } && WaitingTokenCount > 0;
+    public string SelectedCounterServingDurationText
+    {
+        get
+        {
+            if (SelectedCounterToken is not { Status: TokenStatus.Serving } token
+                || _store.ServingStartedAt(token.Id) is not { } startedAt)
+            {
+                return "—";
+            }
+
+            var elapsed = DateTime.Now - startedAt;
+            return $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";
+        }
+    }
+
+    public void RefreshServingDuration() =>
+        OnPropertyChanged(nameof(SelectedCounterServingDurationText));
+
+    public bool CanCallNext =>
+        SelectedCounter is { } counter && CanCallNextFor(counter.Name);
+
+    public int WaitingTokenCountFor(string counterName) =>
+        Tokens.Count(token =>
+            token.CounterName == counterName && token.Status == TokenStatus.Waiting);
+
+    public bool CanCallNextFor(string counterName) =>
+        Counters.Any(counter => counter.Name == counterName && counter.IsOnline)
+        && _completedTokenByCounter.ContainsKey(counterName)
+        && !Tokens.Any(token =>
+            token.CounterName == counterName && token.Status == TokenStatus.Serving)
+        && WaitingTokenCountFor(counterName) > 0;
 
     public bool CanCompleteCurrent =>
         SelectedCounter is { IsOnline: true } && SelectedCounterToken?.Status == TokenStatus.Serving;
@@ -233,6 +281,9 @@ public partial class QueueSessionViewModel : ObservableObject
     public QueueToken? SelectedCounterToken =>
         SelectedCounter is null ? null : CurrentTokenFor(SelectedCounter.Name);
 
+    public bool IsSelectedCounterServiceCompleted =>
+        SelectedCounter is { } counter && _completedTokenByCounter.ContainsKey(counter.Name);
+
     [ObservableProperty]
     public partial string ActiveHeaderTab { get; set; } = "Overview";
 
@@ -306,11 +357,25 @@ public partial class QueueSessionViewModel : ObservableObject
         }
     }
 
-    public QueueToken? CurrentTokenFor(string counterName) =>
-        Tokens.FirstOrDefault(token =>
+    public QueueToken? CurrentTokenFor(string counterName)
+    {
+        if (_completedTokenByCounter.TryGetValue(counterName, out var completedTokenId))
+        {
+            var completedToken = Tokens.FirstOrDefault(token =>
+                token.Id == completedTokenId
+                && token.CounterName == counterName
+                && token.Status == TokenStatus.Completed);
+            if (completedToken is not null)
+            {
+                return completedToken;
+            }
+        }
+
+        return Tokens.FirstOrDefault(token =>
             token.CounterName == counterName && token.Status == TokenStatus.Serving)
         ?? Tokens.FirstOrDefault(token =>
             token.CounterName == counterName && token.Status == TokenStatus.Waiting);
+    }
 
     public bool IsCounterActive(QueueCounter counter) =>
         GetCounterAvailabilityText(counter) != "Offline";
@@ -342,26 +407,88 @@ public partial class QueueSessionViewModel : ObservableObject
     public QueueCounter AddCounter(string service) => _store.AddCounter(service);
 
     public QueueCounter UpdateCounter(string counterName, string service, bool isOnline) =>
-        _store.UpdateCounter(counterName, service, isOnline);
+        UpdateCounterState(counterName, service, isOnline);
 
-    public void DeleteCounter(string counterName, string destinationName) =>
+    public void DeleteCounter(string counterName, string destinationName)
+    {
         _store.DeleteCounter(counterName, destinationName);
+        _completedTokenByCounter.Remove(counterName);
+        OnPropertyChanged(nameof(CanCallNext));
+    }
 
-    public QueueToken? CallNext(string counterName) => _store.CallNext(counterName);
+    public QueueToken? CallNext(string counterName)
+    {
+        if (!CanCallNextFor(counterName))
+        {
+            return null;
+        }
 
-    public bool CompleteCurrent(string counterName) => _store.CompleteCurrent(counterName);
+        var token = _store.CallNext(counterName);
+        if (token is not null)
+        {
+            _completedTokenByCounter.Remove(counterName);
+            NotifySelectedCounterChanged();
+        }
 
-    public bool SkipCurrent(string counterName) => _store.SkipCurrent(counterName);
+        return token;
+    }
 
-    public bool RecallCurrent(string counterName) => _store.RecallCurrent(counterName);
+    public bool CompleteCurrent(string counterName)
+    {
+        var servingToken = Tokens.FirstOrDefault(token =>
+            token.CounterName == counterName && token.Status == TokenStatus.Serving);
+        var completed = _store.CompleteCurrent(counterName);
+        if (completed)
+        {
+            if (servingToken is null)
+            {
+                throw new InvalidOperationException("The completed token could not be found.");
+            }
 
-    public bool RecallToken(string tokenId) => _store.RecallToken(tokenId);
+            _completedTokenByCounter[counterName] = servingToken.Id;
+            NotifySelectedCounterChanged();
+        }
 
-    public QueueToken? TransferToken(string tokenId, string destinationName) =>
-        _store.TransferToken(tokenId, destinationName);
+        return completed;
+    }
+
+    public bool SkipCurrent(string counterName)
+    {
+        var skipped = _store.SkipCurrent(counterName);
+        if (skipped)
+        {
+            _completedTokenByCounter.Remove(counterName);
+            NotifySelectedCounterChanged();
+        }
+
+        return skipped;
+    }
+
+    public bool RecallCurrent(string counterName)
+    {
+        var recalled = _store.RecallCurrent(counterName);
+        if (recalled)
+        {
+            _completedTokenByCounter.Remove(counterName);
+            NotifySelectedCounterChanged();
+        }
+
+        return recalled;
+    }
+
+    public bool RecallToken(string tokenId)
+    {
+        return _store.RecallToken(tokenId);
+    }
+
+    public QueueToken? TransferToken(string tokenId, string destinationName)
+    {
+        return _store.TransferToken(tokenId, destinationName);
+    }
 
     public void ResetQueue()
     {
+        _completedTokenByCounter.Clear();
         ActiveCounterName = "Counter 1";
         SearchText = string.Empty;
         SetHeader("Manage");
@@ -374,6 +501,17 @@ public partial class QueueSessionViewModel : ObservableObject
     private void OnStoreChanged(object? sender, EventArgs e)
     {
         RefreshCollections();
+        foreach (var (counterName, tokenId) in _completedTokenByCounter.ToArray())
+        {
+            if (!Tokens.Any(token =>
+                    token.Id == tokenId
+                    && token.CounterName == counterName
+                    && token.Status == TokenStatus.Completed))
+            {
+                _completedTokenByCounter.Remove(counterName);
+            }
+        }
+
         if (!Counters.Any(counter => counter.Name == ActiveCounterName))
         {
             ActiveCounterName = Counters.FirstOrDefault()?.Name ?? string.Empty;
@@ -404,9 +542,12 @@ public partial class QueueSessionViewModel : ObservableObject
     private void NotifySelectedCounterChanged()
     {
         RefreshCounterSummaries();
+        RefreshStatusTokens();
         OnPropertyChanged(nameof(SelectedCounter));
         OnPropertyChanged(nameof(SelectedCounterToken));
         OnPropertyChanged(nameof(SelectedCounterDisplayName));
+        OnPropertyChanged(nameof(SelectedCounterCompletedTokenCount));
+        OnPropertyChanged(nameof(SelectedCounterSkippedTokenCount));
         OnPropertyChanged(nameof(SelectedCounterDisplayService));
         OnPropertyChanged(nameof(SelectedCounterAvailabilityText));
         OnPropertyChanged(nameof(SelectedCounterAvailabilityColor));
@@ -415,6 +556,8 @@ public partial class QueueSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedCounterTokenService));
         OnPropertyChanged(nameof(SelectedCounterTokenStatus));
         OnPropertyChanged(nameof(SelectedCounterTokenWait));
+        OnPropertyChanged(nameof(SelectedCounterServingDurationText));
+        OnPropertyChanged(nameof(IsSelectedCounterServiceCompleted));
         OnPropertyChanged(nameof(CanCallNext));
         OnPropertyChanged(nameof(CanCompleteCurrent));
         OnPropertyChanged(nameof(CanSkipCurrent));
@@ -423,24 +566,56 @@ public partial class QueueSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(CanOpenSelectedToken));
     }
 
+    private QueueCounter UpdateCounterState(string counterName, string service, bool isOnline)
+    {
+        var counter = _store.UpdateCounter(counterName, service, isOnline);
+        if (!isOnline && _completedTokenByCounter.Remove(counterName))
+        {
+            NotifySelectedCounterChanged();
+        }
+
+        return counter;
+    }
+
     private void RefreshCollections()
     {
         Replace(Tokens, _store.Tokens);
         Replace(Counters, _store.Counters);
         RefreshCounterSummaries();
-        var waitingPositions = Tokens
+        RefreshStatusTokens();
+        RefreshVisibleTokens();
+        RefreshUpcomingTokens();
+    }
+
+    private void RefreshStatusTokens()
+    {
+        var counterName = SelectedCounter?.Name;
+        var counterTokens = Tokens
+            .Where(token => token.CounterName == counterName)
+            .ToArray();
+        var waitingPositions = counterTokens
             .Where(token => token.Status == TokenStatus.Waiting)
             .Select((token, index) => (token.Id, Position: index + 1))
             .ToDictionary(item => item.Id, item => item.Position);
-        Replace(CounterWaitingPreview, Tokens
-            .Where(token => token.Status == TokenStatus.Waiting)
-            .Take(3)
+        Replace(CompletedStatusTokens, counterTokens
+            .Where(token => token.Status == TokenStatus.Completed)
             .Select(token => new QueueTokenListItem(token, GetQueuePositionText(token, waitingPositions))));
-        RefreshVisibleTokens();
-        RefreshUpcomingTokens();
-        OnPropertyChanged(nameof(HasCounterWaitingTokens));
-        OnPropertyChanged(nameof(HasNoCounterWaitingTokens));
+        Replace(WaitingStatusTokens, counterTokens
+            .Where(token => token.Status == TokenStatus.Waiting)
+            .Select(token => new QueueTokenListItem(token, GetQueuePositionText(token, waitingPositions))));
+        OnPropertyChanged(nameof(CompletedStatusTokenCount));
+        OnPropertyChanged(nameof(WaitingStatusTokenCount));
+        OnPropertyChanged(nameof(HasCompletedStatusTokens));
+        OnPropertyChanged(nameof(HasNoCompletedStatusTokens));
+        OnPropertyChanged(nameof(HasWaitingStatusTokens));
+        OnPropertyChanged(nameof(HasNoWaitingStatusTokens));
+        OnPropertyChanged(nameof(SelectedCounterWaitingCount));
     }
+
+    private int CountTokensForSelectedCounter(TokenStatus status) =>
+        SelectedCounter is { } counter
+            ? Tokens.Count(token => token.CounterName == counter.Name && token.Status == status)
+            : 0;
 
     private void RefreshCounterSummaries() =>
         Replace(CounterSummaries, Counters.Select(counter =>

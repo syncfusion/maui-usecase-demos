@@ -1285,7 +1285,7 @@ public partial class MainPage : ContentPage
         };
         var callNext = TextButton("Call next", () => RunCounterAction(() => _viewModel.CallNext(counter.Name)), true);
         callNext.HorizontalOptions = LayoutOptions.Fill;
-        callNext.IsEnabled = counter.IsOnline && _viewModel.WaitingTokenCount > 0;
+        callNext.IsEnabled = _viewModel.CanCallNextFor(counter.Name);
         var complete = TextButton(token?.Status == TokenStatus.Completed ? "Completed" : "Complete service",
             () => RunCounterAction(() => _viewModel.CompleteCurrent(counter.Name)), true);
         complete.BackgroundColor = Teal;
@@ -1427,7 +1427,7 @@ public partial class MainPage : ContentPage
             Cobalt,
             Colors.White,
             Colors.Transparent);
-        callNext.IsEnabled = _viewModel.CanCallNext && counter.IsOnline;
+        callNext.IsEnabled = _viewModel.CanCallNextFor(counter.Name);
         var mobile = Width < 768;
         if (mobile)
         {

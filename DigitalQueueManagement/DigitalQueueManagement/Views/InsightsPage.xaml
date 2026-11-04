@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
              xmlns:chips="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:progress="clr-namespace:Syncfusion.Maui.ProgressBar;assembly=Syncfusion.Maui.ProgressBar"
+             xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              x:Class="DigitalQueueManagement.Views.InsightsPage"
              x:DataType="vm:QueueInsightsViewModel">
     <ContentView.Resources>
@@ -21,7 +22,9 @@
     <Grid RowDefinitions="*">
         <ScrollView Grid.Row="0"
                     VerticalOptions="Fill"
-                    HorizontalOptions="Fill">
+                    HorizontalOptions="Fill"
+                    VerticalScrollBarVisibility="Always"
+                    HorizontalScrollBarVisibility="Never">
             <VerticalStackLayout x:Name="PageContentLayout"
                                  BindingContext="{Binding QueueSession}"
                                  x:DataType="vm:QueueSessionViewModel"
@@ -29,13 +32,13 @@
                                  Spacing="14">
         <!-- MOBILE VIEW: compact queue overview shown on narrow screens. -->
         <!-- Card: Mobile queue overview. -->
-        <Border x:Name="MobileOverviewCard"
-                IsVisible="False"
-                Padding="16"
-                BackgroundColor="White"
-                Stroke="#E2E8F0"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 12">
+        <cards:SfCardView x:Name="MobileOverviewCard"
+                          IsVisible="False"
+                          Padding="16"
+                          BackgroundColor="White"
+                          BorderColor="#E2E8F0"
+                          BorderWidth="1"
+                          CornerRadius="12">
             <VerticalStackLayout Spacing="12">
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Text="QUEUE OVERVIEW" FontSize="11" FontAttributes="Bold" TextColor="#444653" VerticalOptions="Center" />
@@ -66,7 +69,7 @@
                     </VerticalStackLayout>
                 </Grid>
             </VerticalStackLayout>
-        </Border>
+        </cards:SfCardView>
         <!-- DESKTOP VIEW: summary metric cards shown on wider screens. -->
         <Grid x:Name="MetricGrid"
               ColumnDefinitions="*,*,*,*"
@@ -74,7 +77,7 @@
               ColumnSpacing="12"
               RowSpacing="12">
             <!-- Card: In line. -->
-            <Border Grid.Column="0" Padding="18" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+            <cards:SfCardView Grid.Column="0" Padding="18" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                 <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="IN LINE" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
@@ -91,9 +94,9 @@
                         <Label Text="Across all services" FontSize="9" TextColor="#183E91" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Grid>
-            </Border>
+            </cards:SfCardView>
             <!-- Card: Completed. -->
-            <Border Grid.Column="1" Padding="18" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+            <cards:SfCardView Grid.Column="1" Padding="18" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                 <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="COMPLETED" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
@@ -110,9 +113,9 @@
                         <Label Text="+18.5% vs. avg" FontSize="9" TextColor="#159B85" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Grid>
-            </Border>
+            </cards:SfCardView>
             <!-- Card: Counters. -->
-            <Border Grid.Column="2" Padding="18" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+            <cards:SfCardView Grid.Column="2" Padding="18" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                 <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="COUNTERS" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
@@ -129,9 +132,9 @@
                         <Label Text="100% capacity" FontSize="9" TextColor="#183E91" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Grid>
-            </Border>
+            </cards:SfCardView>
             <!-- Card: Average wait. -->
-            <Border Grid.Column="3" Padding="18" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+            <cards:SfCardView Grid.Column="3" Padding="18" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                 <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="AVERAGE WAIT" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
@@ -148,7 +151,7 @@
                         <Label Text="Target under 10m" FontSize="9" TextColor="#D18A16" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Grid>
-            </Border>
+            </cards:SfCardView>
         </Grid>
         <!-- SHARED RESPONSIVE VIEW: analytics cards adapt their layout to the available width. -->
         <Grid x:Name="ChartGrid"
@@ -157,14 +160,14 @@
               ColumnSpacing="14"
               RowSpacing="14">
             <!-- Card: Tokens by service type. -->
-            <Border x:Name="ServiceCard"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        BackgroundColor="White"
-                        Stroke="#E2E8F0"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="22,16,22,18">
+            <cards:SfCardView x:Name="ServiceCard"
+                              Grid.Row="0"
+                              Grid.Column="0"
+                              BackgroundColor="White"
+                              BorderColor="#E2E8F0"
+                              BorderWidth="1"
+                              CornerRadius="12"
+                              Padding="22,16,22,18">
                 <VerticalStackLayout Spacing="8">
                     <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="2">
                         <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" VerticalOptions="Start" />
@@ -279,17 +282,17 @@
                         <Label Grid.Row="1" Grid.Column="1" Text="100% (50 issued)" FontSize="9" FontAttributes="Bold" TextColor="#334155" HorizontalTextAlignment="End" />
                     </Grid>
                 </VerticalStackLayout>
-            </Border>
+            </cards:SfCardView>
 
             <!-- Card: Average wait time. -->
-            <Border x:Name="WaitCard"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        BackgroundColor="White"
-                        Stroke="#E2E8F0"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="22,16,22,18">
+            <cards:SfCardView x:Name="WaitCard"
+                              Grid.Row="0"
+                              Grid.Column="1"
+                              BackgroundColor="White"
+                              BorderColor="#E2E8F0"
+                              BorderWidth="1"
+                              CornerRadius="12"
+                              Padding="22,16,22,18">
                 <VerticalStackLayout Spacing="8">
                     <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="2">
                         <Label Text="schedule" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" VerticalOptions="Start" />
@@ -339,17 +342,18 @@
                         <Label Grid.Column="6" Text="15m max" FontSize="8" TextColor="#94A3B8" HorizontalTextAlignment="End" />
                     </Grid>
                 </VerticalStackLayout>
-            </Border>
+            </cards:SfCardView>
 
             <!-- Card: Completed versus pending. -->
-            <Border x:Name="FulfillmentCard"
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        BackgroundColor="White"
-                        Stroke="#E2E8F0"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="22,16,22,18">
+            <cards:SfCardView x:Name="FulfillmentCard"
+                              Grid.Row="1"
+                              Grid.Column="0"
+                              HeightRequest="295"
+                              BackgroundColor="White"
+                              BorderColor="#E2E8F0"
+                              BorderWidth="1"
+                              CornerRadius="12"
+                              Padding="22,16,22,18">
                 <VerticalStackLayout Spacing="8">
                     <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="2">
                         <Label Text="monitor_heart" FontFamily="MaterialIcons" FontSize="16" TextColor="#159B85" VerticalOptions="Start" />
@@ -428,17 +432,18 @@
                         </VerticalStackLayout>
                     </Grid>
                 </VerticalStackLayout>
-            </Border>
+            </cards:SfCardView>
 
             <!-- Card: Counter performance. -->
-            <Border x:Name="CounterCard"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        BackgroundColor="White"
-                        Stroke="#E2E8F0"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="22,16,22,18">
+            <cards:SfCardView x:Name="CounterCard"
+                              Grid.Row="1"
+                              Grid.Column="1"
+                              HeightRequest="295"
+                              BackgroundColor="White"
+                              BorderColor="#E2E8F0"
+                              BorderWidth="1"
+                              CornerRadius="12"
+                              Padding="22,16,22,18">
                 <VerticalStackLayout Spacing="8">
                     <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="2">
                         <Label Text="bar_chart" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" VerticalOptions="Start" />
@@ -471,7 +476,7 @@
                         <Label Grid.Column="1" Text="Desk throughput: ~14 tokens/desk" FontSize="9" TextColor="#64748B" />
                     </Grid>
                 </VerticalStackLayout>
-            </Border>
+            </cards:SfCardView>
         </Grid>
             </VerticalStackLayout>
         </ScrollView>

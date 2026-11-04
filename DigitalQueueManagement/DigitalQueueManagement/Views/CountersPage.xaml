@@ -4,25 +4,62 @@
              xmlns:models="clr-namespace:DigitalQueueManagement.Model"
              xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
              xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              x:Class="DigitalQueueManagement.Views.CountersPage"
              x:DataType="vm:CounterOperationsViewModel">
     <ContentView.Resources>
         <ResourceDictionary>
-            <Style x:Key="CounterCardHover" TargetType="Border">
+            <Style x:Key="CounterCardHover" TargetType="cards:SfCardView">
                 <Setter Property="VisualStateManager.VisualStateGroups">
                     <VisualStateGroupList>
                         <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal" />
                             <VisualState x:Name="PointerOver">
                                 <VisualState.Setters>
-                                    <Setter Property="Stroke" Value="#BFDBFE" />
-                                    <Setter Property="StrokeThickness" Value="1.2" />
+                                    <Setter Property="BorderColor" Value="#BFDBFE" />
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
                     </VisualStateGroupList>
                 </Setter>
             </Style>
+            <Style x:Key="CounterActionButton" TargetType="Button">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="1" />
+                                    <Setter Property="Opacity" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="0.96" />
+                                    <Setter Property="Opacity" Value="0.78" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="Opacity" Value="0.55" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            <DataTemplate x:Key="StatusTokenTemplate" x:DataType="models:QueueTokenListItem">
+                <cards:SfCardView Style="{StaticResource CounterCardHover}" Margin="0,3" Padding="9,7" BackgroundColor="#F8FAFF" BorderColor="#EEF2F7" BorderWidth="1" CornerRadius="8">
+                    <VerticalStackLayout Spacing="4">
+                        <HorizontalStackLayout Spacing="4">
+                            <Label Text="{Binding Id}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="·" FontSize="10" TextColor="#64748B" />
+                            <Label Text="{Binding Service}" FontSize="9" FontAttributes="Bold" TextColor="#0F172A" />
+                        </HorizontalStackLayout>
+                        <Label Text="{Binding Priority, StringFormat='{0} priority'}" FontSize="8" TextColor="#64748B" />
+                    </VerticalStackLayout>
+                </cards:SfCardView>
+            </DataTemplate>
         </ResourceDictionary>
     </ContentView.Resources>
     <VerticalStackLayout x:Name="PageContentLayout"
@@ -35,7 +72,7 @@
                   RowDefinitions="Auto"
                   ColumnSpacing="12"
                   RowSpacing="12">
-                <Border Grid.Column="0" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                <cards:SfCardView Grid.Column="0" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="Active counter" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
@@ -47,46 +84,46 @@
                         </Grid>
                         <Label Grid.Row="2" Text="{Binding SelectedCounterDisplayService, StringFormat='●  {0} terminal'}" FontSize="9" TextColor="#159B85" />
                     </Grid>
-                </Border>
-                <Border Grid.Column="1" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                </cards:SfCardView>
+                <cards:SfCardView Grid.Column="1" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="Waiting" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
                             <Label Grid.Column="1" Text="schedule" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding WaitingTokenCount}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="{Binding SelectedCounterWaitingCount}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
                             <Label Grid.Column="1" Text="Tokens" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
-                        <Label Grid.Row="2" Text="●  Across all counters" FontSize="9" TextColor="#183E91" />
+                        <Label Grid.Row="2" Text="●  Selected counter" FontSize="9" TextColor="#183E91" />
                     </Grid>
-                </Border>
-                <Border Grid.Column="2" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                </cards:SfCardView>
+                <cards:SfCardView Grid.Column="2" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="Completed" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
                             <Label Grid.Column="1" Text="verified_user" FontFamily="MaterialIcons" FontSize="17" TextColor="#159B85" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding CompletedTokenCount}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="{Binding SelectedCounterCompletedTokenCount}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
                             <Label Grid.Column="1" Text="Tokens" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
-                        <Label Grid.Row="2" Text="●  Today" FontSize="9" TextColor="#159B85" />
+                        <Label Grid.Row="2" Text="●  Selected counter" FontSize="9" TextColor="#159B85" />
                     </Grid>
-                </Border>
-                <Border Grid.Column="3" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                </cards:SfCardView>
+                <cards:SfCardView Grid.Column="3" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="Skipped" FontSize="10" FontAttributes="Bold" TextColor="#64748B" />
                             <Label Grid.Column="1" Text="monitor_heart" FontFamily="MaterialIcons" FontSize="17" TextColor="#DC6670" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding SkippedTokenCount}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="{Binding SelectedCounterSkippedTokenCount}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
                             <Label Grid.Column="1" Text="Tokens" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
-                        <Label Grid.Row="2" Text="●  Available for recall" FontSize="9" TextColor="#DC6670" />
+                        <Label Grid.Row="2" Text="●  Selected counter" FontSize="9" TextColor="#DC6670" />
                     </Grid>
-                </Border>
+                </cards:SfCardView>
             </Grid>
 
             <Grid x:Name="WorkspaceGrid"
@@ -114,7 +151,7 @@
                                     </HorizontalStackLayout>
                                 </Border>
                                 <Button Text="Manage"
-                                        FontSize="11"
+                                        FontSize="14"
                                         Padding="8,4"
                                         TextColor="#183E91"
                                         BackgroundColor="#EEF4FF"
@@ -128,12 +165,12 @@
                                                    Spacing="8">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate x:DataType="models:QueueCounterSummary">
-                                        <Border Style="{StaticResource CounterCardHover}"
-                                                Padding="12,8"
-                                                BackgroundColor="#F5F7FB"
-                                                Stroke="#E2E8F0"
-                                                StrokeThickness="1"
-                                                StrokeShape="RoundRectangle 10">
+                                        <cards:SfCardView Style="{StaticResource CounterCardHover}"
+                                                          Padding="12,8"
+                                                          BackgroundColor="#F5F7FB"
+                                                          BorderColor="#E2E8F0"
+                                                          BorderWidth="1"
+                                                          CornerRadius="10">
                                             <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
                                                 <Label Text="desktop_windows"
                                                        FontFamily="MaterialIcons"
@@ -150,16 +187,16 @@
                                                            TextColor="#64748B" />
                                                 </VerticalStackLayout>
                                             </Grid>
-                                            <Border.Triggers>
-                                                <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                            <cards:SfCardView.Triggers>
+                                                <DataTrigger TargetType="cards:SfCardView" Binding="{Binding IsSelected}" Value="True">
                                                     <Setter Property="BackgroundColor" Value="#EEF4FF" />
-                                                    <Setter Property="Stroke" Value="#183E91" />
+                                                    <Setter Property="BorderColor" Value="#183E91" />
                                                 </DataTrigger>
-                                            </Border.Triggers>
-                                            <Border.GestureRecognizers>
+                                            </cards:SfCardView.Triggers>
+                                            <cards:SfCardView.GestureRecognizers>
                                                 <TapGestureRecognizer Tapped="OnCounterTapped" />
-                                            </Border.GestureRecognizers>
-                                        </Border>
+                                            </cards:SfCardView.GestureRecognizers>
+                                        </cards:SfCardView>
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </HorizontalStackLayout>
@@ -173,57 +210,57 @@
                         Stroke="#E2E8F0"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 14">
-                    <VerticalStackLayout Spacing="12">
+                    <VerticalStackLayout Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <HorizontalStackLayout Spacing="7" VerticalOptions="Center">
-                                <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="16" TextColor="#183E91" />
-                                <Label Text="Terminals &amp; counters" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                                <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="18" TextColor="#183E91" />
+                                <Label Text="Terminals &amp; counters" FontSize="15" FontAttributes="Bold" TextColor="#0F172A" />
                             </HorizontalStackLayout>
-                            <Label Grid.Column="1" Text="{Binding OnlineCounterCount, StringFormat='{0} Active'}" FontSize="9" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding OnlineCounterCount, StringFormat='{0} Active'}" FontSize="10" TextColor="#64748B" VerticalOptions="Center" />
                         </Grid>
-                        <Grid HeightRequest="240">
+                        <Grid HeightRequest="288">
                             <listview:SfListView x:Name="CounterListView"
                                                  ItemsSource="{Binding CounterSummaries}"
-                                                 ItemSize="80"
-                                                 HeightRequest="240"
+                                                 ItemSize="96"
+                                                 HeightRequest="288"
                                                  SelectionMode="None"
                                                  IsVisible="{Binding HasCounters}">
                                 <listview:SfListView.ItemTemplate>
                                     <DataTemplate x:DataType="models:QueueCounterSummary">
                                         <Grid BackgroundColor="White">
-                                            <Border Style="{StaticResource CounterCardHover}" Margin="0,4" Padding="10,6" BackgroundColor="White" Stroke="#E9EEF5" StrokeThickness="1" StrokeShape="RoundRectangle 9">
-                                                <Grid RowDefinitions="Auto,1,Auto" RowSpacing="8">
-                                                    <Grid ColumnDefinitions="36,*,Auto" ColumnSpacing="9">
-                                                        <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 7" VerticalOptions="Center">
-                                                            <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="16" TextColor="#64748B" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                            <cards:SfCardView Style="{StaticResource CounterCardHover}" Margin="0,4" Padding="12,8" BackgroundColor="White" BorderColor="#E9EEF5" BorderWidth="1.5" CornerRadius="9">
+                                                <Grid RowDefinitions="Auto,1,Auto" RowSpacing="6">
+                                                    <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="10">
+                                                        <Border WidthRequest="40" HeightRequest="40" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 8" VerticalOptions="Center">
+                                                            <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="18" TextColor="#64748B" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         </Border>
-                                                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
-                                                            <Label Text="{Binding Name}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" />
-                                                            <Label Text="{Binding Service}" FontSize="8" TextColor="#64748B" />
+                                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                                            <Label Text="{Binding Name}" FontSize="12" FontAttributes="Bold" TextColor="#0F172A" />
+                                                            <Label Text="{Binding Service}" FontSize="9" TextColor="#64748B" />
                                                         </VerticalStackLayout>
-                                                        <Border Grid.Column="2" Padding="7,4" BackgroundColor="{Binding AvailabilityBackgroundColor}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
-                                                            <Label Text="{Binding AvailabilityText, StringFormat='• {0}'}" FontSize="8" FontAttributes="Bold" TextColor="{Binding AvailabilityColor}" />
+                                                        <Border Grid.Column="2" Padding="8,3" BackgroundColor="{Binding AvailabilityBackgroundColor}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                                            <Label Text="{Binding AvailabilityText, StringFormat='• {0}'}" FontSize="9" FontAttributes="Bold" TextColor="{Binding AvailabilityColor}" />
                                                         </Border>
                                                     </Grid>
                                                     <BoxView Grid.Row="1" HeightRequest="1" Color="#E2E8F0" />
                                                     <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="6" VerticalOptions="End">
-                                                        <HorizontalStackLayout Spacing="5">
-                                                            <Label Text="{Binding TokenStatus}" FontSize="8" FontAttributes="Bold" TextColor="#64748B" />
-                                                            <Label Text="{Binding TokenId}" FontSize="9" FontAttributes="Bold" TextColor="#183E91" />
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Label Text="{Binding TokenStatus}" FontSize="9" FontAttributes="Bold" TextColor="#64748B" />
+                                                            <Label Text="{Binding TokenId}" FontSize="11" FontAttributes="Bold" TextColor="#183E91" />
                                                         </HorizontalStackLayout>
-                                                        <Label Grid.Column="1" Text="{Binding AvailabilityText}" FontSize="8" TextColor="#64748B" />
+                                                        <Label Grid.Column="1" Text="{Binding AvailabilityText}" FontSize="9" TextColor="#64748B" />
                                                     </Grid>
                                                 </Grid>
-                                                <Border.Triggers>
-                                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                                        <Setter Property="Stroke" Value="#183E91" />
+                                                <cards:SfCardView.Triggers>
+                                                    <DataTrigger TargetType="cards:SfCardView" Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="BorderColor" Value="#5277CC" />
                                                         <Setter Property="BackgroundColor" Value="#F1F5FF" />
                                                     </DataTrigger>
-                                                </Border.Triggers>
-                                                <Border.GestureRecognizers>
+                                                </cards:SfCardView.Triggers>
+                                                <cards:SfCardView.GestureRecognizers>
                                                     <TapGestureRecognizer Tapped="OnCounterTapped" />
-                                                </Border.GestureRecognizers>
-                                            </Border>
+                                                </cards:SfCardView.GestureRecognizers>
+                                            </cards:SfCardView>
                                         </Grid>
                                     </DataTemplate>
                                 </listview:SfListView.ItemTemplate>
@@ -241,9 +278,10 @@
                                 BackgroundColor="White"
                                 BorderColor="#D8E2F0"
                                 BorderWidth="1"
-                                FontSize="10"
+                                FontSize="12"
                                 FontAttributes="Bold"
-                                Padding="12,9"
+                                Padding="12,10"
+                                MinimumHeightRequest="52"
                                 CornerRadius="8"
                                 Clicked="OnManageCountersClicked">
                             <Button.VisualStateManager.VisualStateGroups>
@@ -254,7 +292,6 @@
                                             <VisualState.Setters>
                                                 <Setter Property="BackgroundColor" Value="White" />
                                                 <Setter Property="BorderColor" Value="#BFDBFE" />
-                                                <Setter Property="BorderWidth" Value="1.2" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -314,18 +351,16 @@
                             </Border>
                         </VerticalStackLayout>
 
-                        <Border Padding="16,10" BackgroundColor="#F4F7FD" StrokeThickness="0" StrokeShape="RoundRectangle 8">
+                        <cards:SfCardView Padding="16,10" BackgroundColor="#F4F7FD" BorderWidth="0" CornerRadius="8">
                             <Grid ColumnDefinitions="*,1,*" ColumnSpacing="0">
                                 <VerticalStackLayout Spacing="4" VerticalOptions="Center">
                                     <Label Text="Serving duration" FontSize="9" TextColor="#64748B" />
                                     <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
-                                        <Label x:Name="ServingDurationLabel" Text="04:58" FontSize="18" FontAttributes="Bold" TextColor="#0F172A">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding SelectedCounterTokenStatus}" Value="Ready">
-                                                    <Setter Property="Text" Value="—" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
+                                        <Label x:Name="ServingDurationLabel"
+                                               Text="{Binding SelectedCounterServingDurationText}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="#0F172A" />
                                         <Border Padding="8,3" BackgroundColor="#D1FAE5" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
                                             <Label Text="{Binding SelectedCounterTokenStatus}" FontSize="8" FontAttributes="Bold" TextColor="#047857" VerticalOptions="Center" />
                                         </Border>
@@ -340,7 +375,7 @@
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
                             </Grid>
-                        </Border>
+                        </cards:SfCardView>
 
                             </VerticalStackLayout>
                         </Border>
@@ -353,10 +388,11 @@
                             <VerticalStackLayout Spacing="8">
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                             <Button x:Name="CallNextButton"
+                                    Style="{StaticResource CounterActionButton}"
                                     Text="Call next"
                                     TextColor="White"
                                     BackgroundColor="#153F9A"
-                                    FontSize="11"
+                                    FontSize="14"
                                     FontFamily="OpenSansSemibold"
                                     FontAttributes="Bold"
                                     Padding="12,12"
@@ -365,11 +401,12 @@
                                     IsEnabled="{Binding CanCallNext}"
                                     Clicked="OnCallNextClicked" />
                             <Button x:Name="CompleteButton"
+                                    Style="{StaticResource CounterActionButton}"
                                     Grid.Column="1"
                                     Text="Complete service"
                                     TextColor="White"
                                     BackgroundColor="#94A3B8"
-                                    FontSize="11"
+                                    FontSize="14"
                                     FontFamily="OpenSansSemibold"
                                     FontAttributes="Bold"
                                     Padding="12,12"
@@ -381,12 +418,13 @@
                         <BoxView x:Name="CounterActionsDivider" HeightRequest="1" Color="#E2E8F0" />
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                             <Button x:Name="SkipButton"
+                                    Style="{StaticResource CounterActionButton}"
                                     Text="Skip token"
                                     TextColor="#475569"
                                     BackgroundColor="#F8FAFC"
                                     BorderColor="#E2E8F0"
                                     BorderWidth="1"
-                                    FontSize="9"
+                                    FontSize="12"
                                     FontFamily="OpenSansSemibold"
                                     FontAttributes="Bold"
                                     Padding="8,6"
@@ -394,13 +432,14 @@
                                     IsEnabled="{Binding CanSkipCurrent}"
                                     Clicked="OnSkipClicked" />
                             <Button x:Name="RecallButton"
+                                    Style="{StaticResource CounterActionButton}"
                                     Grid.Column="1"
                                     Text="Recall token"
                                     TextColor="#475569"
                                     BackgroundColor="#F8FAFC"
                                     BorderColor="#E2E8F0"
                                     BorderWidth="1"
-                                    FontSize="9"
+                                    FontSize="12"
                                     FontFamily="OpenSansSemibold"
                                     FontAttributes="Bold"
                                     Padding="8,6"
@@ -408,13 +447,14 @@
                                     IsEnabled="{Binding CanRecallCurrent}"
                                     Clicked="OnRecallClicked" />
                             <Button x:Name="TransferButton"
+                                    Style="{StaticResource CounterActionButton}"
                                     Grid.Column="2"
                                     Text="Transfer token"
                                     TextColor="#183E91"
                                     BackgroundColor="#F8FAFC"
                                     BorderColor="#E2E8F0"
                                     BorderWidth="1"
-                                    FontSize="9"
+                                    FontSize="12"
                                     FontFamily="OpenSansSemibold"
                                     FontAttributes="Bold"
                                     Padding="8,6"
@@ -445,29 +485,29 @@
                                    TextColor="#64748B" />
                         </Grid>
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                            <Border Padding="8" BackgroundColor="#EEF4FF" Stroke="#DCE8FF" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                            <cards:SfCardView Padding="8" BackgroundColor="#EEF4FF" BorderColor="#DCE8FF" BorderWidth="1" CornerRadius="10">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="Waiting" FontSize="11" TextColor="#334155" HorizontalTextAlignment="Center" />
-                                    <Label Text="{Binding WaitingTokenCount}" FontSize="20" FontAttributes="Bold" TextColor="#183E91" HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding SelectedCounterWaitingCount}" FontSize="20" FontAttributes="Bold" TextColor="#183E91" HorizontalTextAlignment="Center" />
                                 </VerticalStackLayout>
-                            </Border>
-                            <Border Grid.Column="1" Padding="8" BackgroundColor="#E9FBF4" Stroke="#D3F3E9" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                            </cards:SfCardView>
+                            <cards:SfCardView Grid.Column="1" Padding="8" BackgroundColor="#E9FBF4" BorderColor="#D3F3E9" BorderWidth="1" CornerRadius="10">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="Completed" FontSize="11" TextColor="#334155" HorizontalTextAlignment="Center" />
-                                    <Label Text="{Binding CompletedTokenCount}" FontSize="20" FontAttributes="Bold" TextColor="#08796D" HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding SelectedCounterCompletedTokenCount}" FontSize="20" FontAttributes="Bold" TextColor="#08796D" HorizontalTextAlignment="Center" />
                                 </VerticalStackLayout>
-                            </Border>
-                            <Border Grid.Column="2" Padding="8" BackgroundColor="#F4F4F8" Stroke="#E7E7ED" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                            </cards:SfCardView>
+                            <cards:SfCardView Grid.Column="2" Padding="8" BackgroundColor="#F4F4F8" BorderColor="#E7E7ED" BorderWidth="1" CornerRadius="10">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="Skipped" FontSize="11" TextColor="#334155" HorizontalTextAlignment="Center" />
-                                    <Label Text="{Binding SkippedTokenCount}" FontSize="20" FontAttributes="Bold" TextColor="#7A7A87" HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding SelectedCounterSkippedTokenCount}" FontSize="20" FontAttributes="Bold" TextColor="#7A7A87" HorizontalTextAlignment="Center" />
                                 </VerticalStackLayout>
-                            </Border>
+                            </cards:SfCardView>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
 
-                <Border x:Name="QueuePreviewPanel"
+                <Border x:Name="QueueStatusPanel"
                         Grid.Row="1"
                         Grid.Column="1"
                         Padding="16"
@@ -475,67 +515,48 @@
                         Stroke="#E2E8F0"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 12">
-                    <VerticalStackLayout Spacing="10">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
-                                <Label Text="Waiting queue preview" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
-                                <Border Padding="7,3" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 9">
-                                    <Label Text="Next 3" FontSize="8" FontAttributes="Bold" TextColor="#183E91" />
-                                </Border>
-                            </HorizontalStackLayout>
-                            <Button Grid.Column="1"
-                                    Text="{Binding WaitingTokenCount, StringFormat='View all {0} waiting  ›'}"
-                                    TextColor="#183E91"
-                                    BackgroundColor="Transparent"
-                                    FontSize="8"
-                                    FontAttributes="Bold"
-                                    Padding="4,2"
-                                    Clicked="OnViewAllWaitingClicked" />
-                        </Grid>
-                        <Grid>
-                            <listview:SfListView ItemsSource="{Binding CounterWaitingPreview}"
-                                                 ItemSize="56"
-                                                 HeightRequest="168"
-                                                 SelectionMode="None"
-                                                 IsVisible="{Binding HasCounterWaitingTokens}">
-                                <listview:SfListView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:QueueTokenListItem">
-                                        <Border Style="{StaticResource CounterCardHover}" Margin="0,3" Padding="9,7" BackgroundColor="#F8FAFF" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
-                                            <Grid ColumnDefinitions="48,1,*,Auto" ColumnSpacing="10">
-                                                <Label Text="{Binding Id}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
-                                                <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="30" Color="#E2E8F0" VerticalOptions="Center" />
-                                                <VerticalStackLayout Grid.Column="2" Spacing="3" VerticalOptions="Center">
-                                                    <Label Text="{Binding Service}" FontSize="9" FontAttributes="Bold" TextColor="#0F172A" />
-                                                    <HorizontalStackLayout Spacing="4">
-                                                        <Label Text="{Binding CounterName}" FontSize="8" TextColor="#64748B" />
-                                                        <Label Text="·" FontSize="8" TextColor="#94A3B8" />
-                                                        <Label Text="{Binding Wait}" FontSize="8" TextColor="#64748B" />
-                                                    </HorizontalStackLayout>
-                                                </VerticalStackLayout>
-                                                <VerticalStackLayout Grid.Column="3" Spacing="3" HorizontalOptions="End" VerticalOptions="Center">
-                                                    <Border Padding="6,3" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 8">
-                                                        <Label Text="{Binding Priority}" FontSize="7" FontAttributes="Bold" TextColor="#475569" />
-                                                    </Border>
-                                                    <Label Text="{Binding QueuePositionText}" FontSize="7" TextColor="#64748B" HorizontalTextAlignment="End" />
-                                                </VerticalStackLayout>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </listview:SfListView.ItemTemplate>
-                            </listview:SfListView>
-                            <VerticalStackLayout IsVisible="{Binding HasNoCounterWaitingTokens}" Spacing="4" Padding="10">
-                                <Label Text="No waiting tokens" FontSize="10" FontAttributes="Bold" TextColor="#334155" />
-                                <Label Text="The queue preview is clear." FontSize="9" TextColor="#64748B" />
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                        <Border Padding="12" BackgroundColor="#FFFFFF" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Completed" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Grid.Column="1" Text="{Binding CompletedStatusTokenCount}" FontSize="11" FontAttributes="Bold" TextColor="#159B85" />
+                                </Grid>
+                                <Grid>
+                                    <listview:SfListView ItemsSource="{Binding CompletedStatusTokens}"
+                                                         ItemTemplate="{StaticResource StatusTokenTemplate}"
+                                                         ItemSize="56"
+                                                         HeightRequest="144"
+                                                         SelectionMode="None"
+                                                         IsVisible="{Binding HasCompletedStatusTokens}" />
+                                    <VerticalStackLayout IsVisible="{Binding HasNoCompletedStatusTokens}" Spacing="4" Padding="10">
+                                        <Label Text="No completed tokens" FontSize="10" FontAttributes="Bold" TextColor="#334155" />
+                                        <Label Text="Completed tokens will appear here." FontSize="9" TextColor="#64748B" />
+                                    </VerticalStackLayout>
+                                </Grid>
                             </VerticalStackLayout>
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto">
-                            <HorizontalStackLayout Spacing="6">
-                                <BoxView WidthRequest="6" HeightRequest="6" Color="#10B981" CornerRadius="3" VerticalOptions="Center" />
-                                <Label Text="Local sample data" FontSize="8" TextColor="#64748B" />
-                            </HorizontalStackLayout>
-                            <Label Grid.Column="1" Text="Estimated total queue: 24 min" FontSize="8" TextColor="#64748B" />
-                        </Grid>
-                    </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Padding="12" BackgroundColor="#FFFFFF" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Waiting" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Grid.Column="1" Text="{Binding WaitingStatusTokenCount}" FontSize="11" FontAttributes="Bold" TextColor="#183E91" />
+                                </Grid>
+                                <Grid>
+                                    <listview:SfListView ItemsSource="{Binding WaitingStatusTokens}"
+                                                         ItemTemplate="{StaticResource StatusTokenTemplate}"
+                                                         ItemSize="56"
+                                                         HeightRequest="144"
+                                                         SelectionMode="None"
+                                                         IsVisible="{Binding HasWaitingStatusTokens}" />
+                                    <VerticalStackLayout IsVisible="{Binding HasNoWaitingStatusTokens}" Spacing="4" Padding="10">
+                                        <Label Text="No waiting tokens" FontSize="10" FontAttributes="Bold" TextColor="#334155" />
+                                        <Label Text="There are no waiting tokens at this counter." FontSize="9" TextColor="#64748B" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
                 </Border>
             </Grid>
         </VerticalStackLayout>
