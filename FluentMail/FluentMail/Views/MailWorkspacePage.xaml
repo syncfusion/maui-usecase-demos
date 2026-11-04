@@ -31,13 +31,31 @@
                 <Label Grid.Column="1" FontFamily="MauiMaterialAssets" Text="&#xE8B6;" FontSize="22" TextColor="{StaticResource PrimaryLight}" VerticalOptions="Center" />
             </Grid>
 
+            <Grid Grid.Column="2" ColumnDefinitions="48,*" VerticalOptions="Center" ColumnSpacing="10">
+                <Border HeightRequest="42" WidthRequest="42" StrokeShape="Ellipse" BackgroundColor="{AppThemeBinding Light=#D7E8FB, Dark=#27405E}">
+                    <Label Text="{Binding CurrentAccount.DisplayName, Converter={StaticResource InitialsConverter}}" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" FontSize="13" />
+                </Border>
+                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                    <Label Text="{Binding CurrentAccount.DisplayName}" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="{Binding CurrentAccount.Email}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#B7BDC8}" />
+                </VerticalStackLayout>
+            </Grid>
         </Grid>
 
         <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#252525}" StrokeThickness="0">
-            <VerticalStackLayout Padding="10,12" Spacing="8">
+            <VerticalStackLayout Padding="10,12" Spacing="10">
                 <Grid Padding="12,6" ColumnDefinitions="Auto,*">
                     <Label FontFamily="MauiMaterialAssets" Text="&#xE313;" FontSize="18" Margin="0,0,10,0" />
-                    <Label Text="Favorites" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="{Binding CurrentAccount.DisplayName}" FontSize="18" FontAttributes="Bold" />
+                </Grid>
+                <Grid Padding="12,0,12,6" ColumnDefinitions="48,*" ColumnSpacing="10">
+                    <Border HeightRequest="42" WidthRequest="42" StrokeShape="Ellipse" BackgroundColor="{AppThemeBinding Light=#D7E8FB, Dark=#27405E}">
+                        <Label Text="{Binding CurrentAccount.DisplayName, Converter={StaticResource InitialsConverter}}" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" FontSize="13" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                        <Label Text="{Binding CurrentAccount.DisplayName}" FontSize="15" FontAttributes="Bold" />
+                        <Label Text="{Binding CurrentAccount.Email}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#B7BDC8}" />
+                    </VerticalStackLayout>
                 </Grid>
                 <syncfusion:SfTreeView ItemsSource="{Binding Folders}" SelectionBackground="{AppThemeBinding Light=#D7E8FB, Dark=#27405E}" SelectionMode="Single" ItemHeight="40" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
                     <syncfusion:SfTreeView.ItemTemplate>
