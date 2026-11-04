@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:VisitorPass.Controls;assembly=VisitorPass"
+             x:Class="VisitorPass.Controls.SideNavigation"
+             x:Name="Root">
+
+    <Border BackgroundColor="#F1F5FF"
+            StrokeThickness="0"
+            Padding="18,22,18,22">
+
+        <Grid RowSpacing="18"
+              RowDefinitions="Auto,*">
+
+            <!-- ==================================================
+                 1. Brand block
+                 ================================================== -->
+            <HorizontalStackLayout Grid.Row="0" Spacing="10">
+                <Border BackgroundColor="{StaticResource Primary}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        WidthRequest="32"
+                        HeightRequest="32"
+                        VerticalOptions="Center">
+                    <Image Source="shield.png" HeightRequest="14" WidthRequest="14"/>
+                </Border>
+                <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                    <Label Text="Visitor Pass"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="13"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Label Text="Enterprise OS"
+                           FontFamily="OpenSansRegular"
+                           FontSize="9"
+                           TextColor="{StaticResource TextMuted}" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+            <!-- ==================================================
+                 2. Nav items - Command Center + Visitor Directory.
+                 Each tile's BackgroundColor + the inner label's
+                 font / colour flip via DataTriggers keyed off
+                 the Bindable ActiveRoute property.
+                 ================================================== -->
+            <VerticalStackLayout Grid.Row="1" Spacing="4">
+
+                <!-- Command Center tile -->
+                <Border BackgroundColor="{StaticResource Primary}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="10,10">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border"
+                                     Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                     Value="directory">
+                            <Setter Property="BackgroundColor" Value="Transparent" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCommandCenterTapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Border StrokeThickness="0"
+                                StrokeShape="RoundRectangle 5"
+                                WidthRequest="22"
+                                HeightRequest="22"
+                                VerticalOptions="Center">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border"
+                                             Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                             Value="dashboard">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Border"
+                                             Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                             Value="directory">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+                                    <Setter Property="Stroke" Value="{StaticResource Border}" />
+                                    <Setter Property="StrokeThickness" Value="1" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Image Source="dashboard.png" HeightRequest="12" WidthRequest="12">
+                                <Image.Triggers>
+                                    <DataTrigger TargetType="Image"
+                                                 Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                                 Value="directory">
+                                        <Setter Property="Source"
+                                                Value="dashboard_inactive.png" />
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+                        </Border>
+                        <Label Text="Command Center"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="12"
+                               TextColor="{StaticResource White}"
+                               VerticalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                             Value="directory">
+                                    <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+                                    <Setter Property="FontFamily" Value="OpenSansRegular" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- Visitor Directory tile -->
+                <Border BackgroundColor="Transparent"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="10,10">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border"
+                                     Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                     Value="directory">
+                            <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDirectoryTapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Border StrokeThickness="0"
+                                StrokeShape="RoundRectangle 5"
+                                WidthRequest="22"
+                                HeightRequest="22"
+                                VerticalOptions="Center">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border"
+                                             Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                             Value="dashboard">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+                                    <Setter Property="Stroke" Value="{StaticResource Border}" />
+                                    <Setter Property="StrokeThickness" Value="1" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Border"
+                                             Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                             Value="directory">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Label Text="{x:Static controls:IconKeys.Group}"
+                                   FontFamily="MaterialAssets"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                                 Value="directory">
+                                        <Setter Property="TextColor" Value="{StaticResource White}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Border>
+                        <Label Text="Visitor Directory"
+                               FontFamily="OpenSansRegular"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}"
+                               VerticalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding ActiveRoute, Source={x:Reference Root}}"
+                                             Value="directory">
+                                    <Setter Property="TextColor" Value="{StaticResource White}" />
+                                    <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </HorizontalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+
+        </Grid>
+    </Border>
+</ContentView>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    VisitorStatusBadge - reusable status pill built on SfBadgeView.
+
+    The badge shows the status label as text; the badge's
+    BackgroundColor is driven by SfBadgeView's default theme brush
+    (overridden via SyncfusionThemeResourceDictionary) so the same
+    badge stays visually consistent with the rest of the app.
+
+    Two label variants share the badge so the same ContentView can
+    show the full label on desktop / tablet and the compact label on
+    phone.
+-->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             x:Class="VisitorPass.Controls.VisitorStatusBadge">
+
+    <core:SfBadgeView x:Name="Badge"
+                      HeightRequest="30"
+                      WidthRequest="90"
+                      HorizontalOptions="Center"
+                      VerticalOptions="Center">
+        <core:SfBadgeView.Content>
+            <Grid>
+                <Label Text="{Binding Status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToDisplayLabelConverter}}"
+                       TextColor="{StaticResource TextSecondary}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="11"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="{OnIdiom Phone=False, Default=True}" />
+                <Label Text="{Binding Status, Source={RelativeSource AncestorType={x:Type ContentView}}, Converter={StaticResource VisitorStatusToShortLabelConverter}}"
+                       TextColor="{StaticResource TextSecondary}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="11"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="{OnIdiom Phone=True, Default=False}" />
+            </Grid>
+        </core:SfBadgeView.Content>
+    </core:SfBadgeView>
+</ContentView>
