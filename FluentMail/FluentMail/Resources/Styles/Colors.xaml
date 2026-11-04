@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <Color x:Key="PrimaryLight">#0F6CBD</Color>
+    <Color x:Key="PrimaryLight">#0067C0</Color>
     <Color x:Key="PrimaryDark">#4DA3FF</Color>
     <Color x:Key="SurfaceLight">#FFFFFF</Color>
-    <Color x:Key="SurfaceDark">#111317</Color>
-    <Color x:Key="SurfaceAltLight">#F5F7FA</Color>
-    <Color x:Key="SurfaceAltDark">#1A1D23</Color>
-    <Color x:Key="TextPrimaryLight">#1B1B1B</Color>
+    <Color x:Key="SurfaceDark">#1E1E1E</Color>
+    <Color x:Key="SurfaceAltLight">#F5F5F5</Color>
+    <Color x:Key="SurfaceAltDark">#252525</Color>
+    <Color x:Key="TextPrimaryLight">#1F1F1F</Color>
     <Color x:Key="TextPrimaryDark">#F5F5F5</Color>
-    <Color x:Key="TextSecondaryLight">#5C5C5C</Color>
+    <Color x:Key="TextSecondaryLight">#666666</Color>
     <Color x:Key="TextSecondaryDark">#B7BDC8</Color>
-    <Color x:Key="DividerLight">#D8DEE9</Color>
-    <Color x:Key="DividerDark">#2A2F3A</Color>
-    <Color x:Key="DangerLight">#C42B1C</Color>
+    <Color x:Key="DividerLight">#E5E5E5</Color>
+    <Color x:Key="DividerDark">#333333</Color>
+    <Color x:Key="DangerLight">#D13438</Color>
     <Color x:Key="DangerDark">#FF7466</Color>
 </ResourceDictionary>

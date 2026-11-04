@@ -30,16 +30,26 @@ public static class MockData
             ("Camila Torres", "camila.torres@contoso.com", "Release notes draft", "I've drafted the release notes for the product update.", false, false),
         };
 
-        for (var i = 0; i < inbox.Length; i++)
+        for (var i = 0; i < 50; i++)
         {
-            var item = inbox[i];
+            var item = inbox[i % inbox.Length];
+            var round = i / inbox.Length;
             mailbox.Inbox.Add(new MailMessage
             {
                 Id = $"inbox-{i + 1}", Folder = "Inbox", Sender = item.Item1, SenderEmail = item.Item2,
-                Subject = item.Item3, Preview = item.Item4, Body = item.Item4 + "\n\n" + "Regards,\n" + item.Item1,
-                Recipients = "me@contoso.com", Cc = i % 3 == 0 ? "project.office@contoso.com" : string.Empty,
-                Status = item.Item5 ? "Attachments" : "Unread", HasAttachments = item.Item5, IsRead = item.Item6, IsFlagged = i % 4 == 0,
-                ReceivedOn = DateTime.Today.AddDays(-i).AddHours(9 + i % 6)
+                Subject = round switch
+                {
+                    0 => item.Item3,
+                    1 => item.Item3 + " follow-up",
+                    2 => item.Item3 + " updated",
+                    3 => item.Item3 + " action items",
+                    _ => item.Item3 + " latest"
+                },
+                Preview = item.Item4,
+                Body = item.Item4 + "\n\nRegards,\n" + item.Item1,
+                Recipients = "kerry.best@contoso.com", Cc = i % 3 == 0 ? "project.office@contoso.com" : string.Empty,
+                Status = item.Item5 ? "Attachments" : "Unread", HasAttachments = item.Item5, IsRead = item.Item6 || i % 4 == 0, IsFlagged = i % 7 == 0,
+                ReceivedOn = DateTime.Today.AddDays(-(i % 14)).AddHours(8 + (i % 9))
             });
         }
 
