@@ -100,9 +100,9 @@
                                     <Label Text="Optimal" FontSize="9" FontAttributes="Bold" TextColor="#159B85" />
                                 </Border>
                             </Grid>
-                            <Grid ColumnDefinitions="80,*" ColumnSpacing="16">
-                                <Grid WidthRequest="76" HeightRequest="76">
-                                    <gauge:SfRadialGauge>
+                            <Grid ColumnDefinitions="100,*" ColumnSpacing="16">
+                                <Grid WidthRequest="96" HeightRequest="96">
+                                    <gauge:SfRadialGauge HorizontalOptions="Fill" VerticalOptions="Fill">
                                         <gauge:SfRadialGauge.Axes>
                                             <gauge:RadialAxis Minimum="0"
                                                               Maximum="100"
@@ -121,13 +121,18 @@
                                             </gauge:RadialAxis>
                                         </gauge:SfRadialGauge.Axes>
                                     </gauge:SfRadialGauge>
-                                    <VerticalStackLayout Spacing="0" HorizontalOptions="Center" VerticalOptions="Center" ZIndex="1">
+                                    <VerticalStackLayout WidthRequest="76"
+                                                         HeightRequest="36"
+                                                         Spacing="0"
+                                                         HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         ZIndex="1">
                                         <Label Text="{Binding QueueLoad, StringFormat='{0}%'}"
-                                               FontSize="17"
+                                               FontSize="16"
                                                FontAttributes="Bold"
                                                TextColor="#0F172A"
                                                HorizontalTextAlignment="Center" />
-                                        <Label Text="LOAD" FontSize="7" FontAttributes="Bold" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
+                                        <Label Text="LOAD" FontSize="8" FontAttributes="Bold" TextColor="#64748B" HorizontalTextAlignment="Center" />
                                     </VerticalStackLayout>
                                 </Grid>
                                 <VerticalStackLayout Grid.Column="1" Spacing="12" VerticalOptions="Center">
@@ -163,39 +168,40 @@
                                                      IsVisible="{Binding HasCounters}">
                                     <listview:SfListView.ItemTemplate>
                                         <DataTemplate x:DataType="models:QueueCounterSummary">
-                                            <Border Margin="0,3" Padding="8,7" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
-                                                <VisualStateManager.VisualStateGroups>
-                                                    <VisualStateGroup x:Name="CommonStates">
-                                                        <VisualState x:Name="Normal" />
-                                                        <VisualState x:Name="PointerOver">
-                                                            <VisualState.Setters>
-                                                                <Setter Property="BackgroundColor" Value="#F7F9FD" />
-                                                                <Setter Property="Stroke" Value="#183E91" />
-                                                                <Setter Property="StrokeThickness" Value="1.2" />
-                                                            </VisualState.Setters>
-                                                        </VisualState>
-                                                    </VisualStateGroup>
-                                                </VisualStateManager.VisualStateGroups>
-                                                <Grid ColumnDefinitions="30,*,Auto" ColumnSpacing="10">
-                                                    <Border WidthRequest="28" HeightRequest="28" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 7" VerticalOptions="Center">
-                                                        <Label Text="{Binding CounterNumber}" FontSize="10" FontAttributes="Bold" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                                    </Border>
-                                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
-                                                        <HorizontalStackLayout Spacing="4">
-                                                            <Label Text="{Binding Name}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" />
-                                                            <Label Text="·" FontSize="10" TextColor="#64748B" />
-                                                            <Label Text="{Binding TokenId}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" />
-                                                        </HorizontalStackLayout>
-                                                        <Label Text="{Binding Service}" FontSize="9" TextColor="#64748B" />
-                                                    </VerticalStackLayout>
-                                                    <Border Grid.Column="2" Padding="8,4" BackgroundColor="{Binding AvailabilityBackgroundColor}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
-                                                        <Label Text="{Binding AvailabilityText}" FontSize="8" FontAttributes="Bold" TextColor="{Binding AvailabilityColor}" />
-                                                    </Border>
-                                                </Grid>
-                                                <Border.GestureRecognizers>
-                                                    <TapGestureRecognizer Tapped="OnCounterClicked" />
-                                                </Border.GestureRecognizers>
-                                            </Border>
+                                            <Grid BackgroundColor="White">
+                                                <Border Margin="0,3" Padding="8,7" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup x:Name="CommonStates">
+                                                            <VisualState x:Name="Normal" />
+                                                            <VisualState x:Name="PointerOver">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="Stroke" Value="#BFDBFE" />
+                                                                    <Setter Property="StrokeThickness" Value="1.2" />
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+                                                    <Grid ColumnDefinitions="30,*,Auto" ColumnSpacing="10">
+                                                        <Border WidthRequest="28" HeightRequest="28" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 7" VerticalOptions="Center">
+                                                            <Label Text="{Binding CounterNumber}" FontSize="11" FontAttributes="Bold" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        </Border>
+                                                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                                            <HorizontalStackLayout Spacing="4">
+                                                                <Label Text="{Binding Name}" FontSize="11" FontAttributes="Bold" TextColor="#0F172A" />
+                                                                <Label Text="·" FontSize="10" TextColor="#64748B" />
+                                                                <Label Text="{Binding TokenId}" FontSize="11" FontAttributes="Bold" TextColor="#0F172A" />
+                                                            </HorizontalStackLayout>
+                                                            <Label Text="{Binding Service}" FontSize="10" TextColor="#64748B" />
+                                                        </VerticalStackLayout>
+                                                        <Border Grid.Column="2" Padding="8,4" BackgroundColor="{Binding AvailabilityBackgroundColor}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                                            <Label Text="{Binding AvailabilityText}" FontSize="9" FontAttributes="Bold" TextColor="{Binding AvailabilityColor}" />
+                                                        </Border>
+                                                    </Grid>
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnCounterClicked" />
+                                                    </Border.GestureRecognizers>
+                                                </Border>
+                                            </Grid>
                                         </DataTemplate>
                                     </listview:SfListView.ItemTemplate>
                                 </listview:SfListView>
@@ -221,26 +227,38 @@
                             <Label Text="Upcoming Tokens" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" />
                             <Label Text="Next in line across all counters" FontSize="11" TextColor="#64748B" />
                             </VerticalStackLayout>
-                        <Border Grid.Column="1" Padding="3" BackgroundColor="#F8FAFC" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 9" VerticalOptions="Center">
+                        <Border Grid.Column="1"
+                                HeightRequest="40"
+                                Padding="3"
+                                Background="#F8FAFC"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 9"
+                                VerticalOptions="Center">
                             <buttons:SfSegmentedControl x:Name="UpcomingFilterControl"
-                                                       WidthRequest="155"
+                                                       Padding="0"
                                                        SegmentWidth="50"
-                                                       SegmentHeight="26"
-                                                       StrokeThickness="0"
+                                                       SegmentHeight="24"
+                                                       CornerRadius="7"
+                                                       SegmentCornerRadius="7"
                                                        ShowSeparator="False"
+                                                       StrokeThickness="0"
                                                        SegmentBackground="Transparent"
->
+                                                       HorizontalOptions="Start"
+                                                       VerticalOptions="Center">
                                 <buttons:SfSegmentedControl.TextStyle>
-                                    <buttons:SegmentTextStyle FontSize="10" TextColor="#64748B" />
+                                    <buttons:SegmentTextStyle FontSize="9" TextColor="#64748B" />
                                 </buttons:SfSegmentedControl.TextStyle>
-                            <buttons:SfSegmentedControl.SelectionIndicatorSettings>
-                                <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
-                                                                    Background="#183E91"
-                                                                    TextColor="White" />
-                            </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                                <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                                    <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Border"
+                                                                        Background="White"
+                                                                        Stroke="#E2E8F0"
+                                                                        StrokeThickness="1"
+                                                                        TextColor="#183E91" />
+                                </buttons:SfSegmentedControl.SelectionIndicatorSettings>
                             </buttons:SfSegmentedControl>
                         </Border>
-                    </Grid>
+                            </Grid>
                     <Grid>
                         <listview:SfListView ItemsSource="{Binding UpcomingTokens}"
                                              ItemSize="60"
@@ -249,46 +267,47 @@
                                              IsVisible="{Binding HasUpcomingTokens}">
                             <listview:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:QueueToken">
-                                    <Border Margin="0,4" Padding="10,8" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroup x:Name="CommonStates">
-                                                <VisualState x:Name="Normal" />
-                                                <VisualState x:Name="PointerOver">
-                                                    <VisualState.Setters>
-                                                        <Setter Property="BackgroundColor" Value="#F7F9FD" />
-                                                        <Setter Property="Stroke" Value="#183E91" />
-                                                        <Setter Property="StrokeThickness" Value="1.2" />
-                                                    </VisualState.Setters>
-                                                </VisualState>
-                                            </VisualStateGroup>
-                                        </VisualStateManager.VisualStateGroups>
-                                        <Grid ColumnDefinitions="56,1,*,Auto,48" ColumnSpacing="10">
-                                            <Label Text="{Binding Id}" FontSize="12" FontAttributes="Bold" TextColor="#183E91" VerticalOptions="Center" />
-                                            <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="32" Color="#E2E8F0" VerticalOptions="Center" />
-                                            <VerticalStackLayout Grid.Column="2" Spacing="3" VerticalOptions="Center">
-                                                <Label Text="{Binding Service}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" LineBreakMode="TailTruncation" />
-                                                <Label Text="{Binding CounterName}" FontSize="9" TextColor="#64748B" />
-                                            </VerticalStackLayout>
-                                            <Border x:Name="PriorityBadge" Grid.Column="3" Padding="8,4" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
-                                                <Label Text="{Binding Priority}" FontSize="8" FontAttributes="Bold" TextColor="#475569">
-                                                    <Label.Triggers>
-                                                        <DataTrigger TargetType="Label" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Priority}">
-                                                            <Setter Property="TextColor" Value="#BE123C" />
+                                    <Grid BackgroundColor="White">
+                                        <Border Margin="0,4" Padding="10,8" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="PointerOver">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="Stroke" Value="#BFDBFE" />
+                                                            <Setter Property="StrokeThickness" Value="1.2" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <Grid ColumnDefinitions="56,1,*,Auto,48" ColumnSpacing="10">
+                                                <Label Text="{Binding Id}" FontSize="14" FontAttributes="Bold" TextColor="#183E91" VerticalOptions="Center" />
+                                                <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="32" Color="#E2E8F0" VerticalOptions="Center" />
+                                                <VerticalStackLayout Grid.Column="2" Spacing="4" VerticalOptions="Center">
+                                                    <Label Text="{Binding Service}" FontSize="11" FontAttributes="Bold" TextColor="#0F172A" LineBreakMode="TailTruncation" />
+                                                    <Label Text="{Binding CounterName}" FontSize="10" TextColor="#64748B" />
+                                                </VerticalStackLayout>
+                                                <Border x:Name="PriorityBadge" Grid.Column="3" Padding="8,4" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                                    <Label Text="{Binding Priority}" FontSize="9" FontAttributes="Bold" TextColor="#475569">
+                                                        <Label.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Priority}">
+                                                                <Setter Property="TextColor" Value="#BE1238" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                    <Border.Triggers>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Priority}">
+                                                            <Setter Property="BackgroundColor" Value="#FEE2E2" />
                                                         </DataTrigger>
-                                                    </Label.Triggers>
-                                                </Label>
-                                                <Border.Triggers>
-                                                    <DataTrigger TargetType="Border" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Priority}">
-                                                        <Setter Property="BackgroundColor" Value="#FEE2E2" />
-                                                    </DataTrigger>
-                                                </Border.Triggers>
-                                            </Border>
-                                            <Label Grid.Column="4" Text="{Binding Wait}" FontSize="9" TextColor="#64748B" HorizontalTextAlignment="End" VerticalOptions="Center" />
-                                        </Grid>
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnTokenClicked" />
-                                        </Border.GestureRecognizers>
-                                    </Border>
+                                                    </Border.Triggers>
+                                                </Border>
+                                                <Label Grid.Column="4" Text="{Binding Wait}" FontSize="10" TextColor="#64748B" HorizontalTextAlignment="End" VerticalOptions="Center" />
+                                            </Grid>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnTokenClicked" />
+                                            </Border.GestureRecognizers>
+                                        </Border>
+                                    </Grid>
                                 </DataTemplate>
                             </listview:SfListView.ItemTemplate>
                         </listview:SfListView>
