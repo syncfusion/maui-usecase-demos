@@ -6,9 +6,11 @@ namespace DigitalQueueManagement.Views;
 
 public partial class InsightsPage : ContentView
 {
-    private static readonly Color Cobalt = Color.FromArgb("#183E91");
     private static readonly Color Teal = Color.FromArgb("#159B85");
     private static readonly Color Slate500 = Color.FromArgb("#64748B");
+
+    private const double AxisFullScale = 20;
+    private const double AxisFullScaleRatio = 0.75;
 
     public InsightsPage(QueueInsightsViewModel viewModel)
     {
@@ -22,7 +24,7 @@ public partial class InsightsPage : ContentView
                 new SolidColorBrush(Teal),
                 new SolidColorBrush(Color.FromArgb("#DCE8F5"))
             ]);
-        CounterChartHost.Content = CreateCounterChart(viewModel.QueueSession.CounterAnalytics);
+        CounterChartHost.Content = CreateCounterBarChart(viewModel.QueueSession.CounterAnalytics);
 
         SizeChanged += OnSizeChanged;
     }
@@ -33,15 +35,16 @@ public partial class InsightsPage : ContentView
     {
         var chart = new SfCircularChart
         {
-            HeightRequest = 160,
-            BackgroundColor = Colors.Transparent
+            BackgroundColor = Colors.Transparent,
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Fill
         };
         chart.Series.Add(new DoughnutSeries
         {
             ItemsSource = points,
             XBindingPath = nameof(QueueAnalyticsPoint.Category),
             YBindingPath = nameof(QueueAnalyticsPoint.Value),
-            InnerRadius = 0.72,
+            InnerRadius = 0.68,
             PaletteBrushes = palette
         });
         return chart;
@@ -51,8 +54,9 @@ public partial class InsightsPage : ContentView
     {
         var chart = new SfCartesianChart
         {
-            HeightRequest = 180,
-            BackgroundColor = Colors.Transparent
+            BackgroundColor = Colors.Transparent,
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Fill
         };
         chart.XAxes.Add(new CategoryAxis
         {
@@ -78,37 +82,61 @@ public partial class InsightsPage : ContentView
         return chart;
     }
 
-    private static SfCartesianChart CreateCounterChart(IReadOnlyList<QueueAnalyticsPoint> points)
+    private static SfCartesianChart CreateCounterBarChart(IReadOnlyList<QueueAnalyticsPoint> points)
     {
+        var maximumValue = points.Count == 0 ? 1 : points.Max(point => point.Value);
         var chart = new SfCartesianChart
         {
-            HeightRequest = 180,
-            BackgroundColor = Colors.Transparent
+            BackgroundColor = Colors.Transparent,
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Fill
         };
         chart.XAxes.Add(new CategoryAxis
         {
-            LabelStyle = new ChartAxisLabelStyle { TextColor = Slate500, FontSize = 9 }
+            LabelStyle = new ChartAxisLabelStyle
+            {
+                TextColor = Slate500,
+                FontSize = 9,
+                LabelAlignment = ChartAxisLabelAlignment.Center
+            },
+            AxisLineStyle = new ChartLineStyle { StrokeWidth = 0 },
+            MajorTickStyle = new ChartAxisTickStyle { StrokeWidth = 0, TickSize = 0 },
+            ShowMajorGridLines = false,
+            LabelPlacement = LabelPlacement.OnTicks
         });
         chart.YAxes.Add(new NumericalAxis
         {
-            LabelStyle = new ChartAxisLabelStyle { TextColor = Slate500, FontSize = 9 }
+            Minimum = 0,
+            Maximum = AxisFullScale / AxisFullScaleRatio,
+            IsVisible = false,
+            ShowMajorGridLines = false
         });
         chart.Series.Add(new ColumnSeries
         {
             ItemsSource = points,
             XBindingPath = nameof(QueueAnalyticsPoint.Category),
             YBindingPath = nameof(QueueAnalyticsPoint.Value),
-            Fill = Cobalt,
-            PaletteBrushes =
-            [
-                new SolidColorBrush(Cobalt),
-                new SolidColorBrush(Teal),
-                new SolidColorBrush(Color.FromArgb("#7589D4"))
-            ],
-            Width = 0.6,
-            Spacing = 0.25,
-            ShowDataLabels = true
+            PaletteBrushes = points.Select(point => (Brush)new SolidColorBrush(point.ChartColor)).ToList(),
+            Width = 0.3,
+            Spacing = 0.55,
+            CornerRadius = new CornerRadius(3, 3, 0, 0),
+            ShowDataLabels = true,
+            DataLabelSettings = new CartesianDataLabelSettings
+            {
+                LabelPlacement = DataLabelPlacement.Outer,
+                UseSeriesPalette = false,
+                LabelStyle = new ChartDataLabelStyle
+                {
+                    TextColor = Color.FromArgb("#334155"),
+                    FontSize = 10,
+                    FontAttributes = FontAttributes.Bold,
+                    Background = Brush.Transparent,
+                    Stroke = Brush.Transparent,
+                    StrokeWidth = 0
+                }
+            }
         });
+
         return chart;
     }
 
@@ -153,6 +181,8 @@ public partial class InsightsPage : ContentView
                 new(GridLength.Auto),
                 new(GridLength.Auto)
             };
+        FulfillmentContentGrid.WidthRequest = wide ? 545 : -1;
+        FulfillmentContentGrid.ColumnSpacing = wide ? 35 : 14;
 
         var cards = compact
             ? new[] { ServiceCard, WaitCard, CounterCard, FulfillmentCard }
