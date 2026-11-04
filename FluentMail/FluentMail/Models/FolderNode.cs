@@ -10,5 +10,8 @@ public partial class FolderNode : ObservableObject
     [ObservableProperty]
     private int count;
 
+    [ObservableProperty]
+    private int unreadCount;
+
     public List<FolderNode> Children { get; set; } = [];
 }

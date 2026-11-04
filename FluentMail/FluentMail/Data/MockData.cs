@@ -115,6 +115,11 @@ public static class MockData
         mailbox.Contacts.Add(new MailContact { Name = "Sophia Garcia", Email = "sophia.garcia@contoso.com" });
         mailbox.Attachments.Add(new AttachmentInfo { FileName = "Proposal.pdf", FileType = "PDF", FileSize = 218000 });
         mailbox.RefreshCounts();
+        mailbox.Folders[0].UnreadCount = mailbox.Inbox.Count(x => !x.IsRead);
+        mailbox.Folders[1].UnreadCount = 0;
+        mailbox.Folders[2].UnreadCount = mailbox.Drafts.Count(x => x.Status == "Unsaved Changes");
+        mailbox.Folders[3].UnreadCount = mailbox.Archive.Count(x => x.IsFlagged);
+        mailbox.Folders[4].UnreadCount = mailbox.Deleted.Count;
         return mailbox;
     }
 
