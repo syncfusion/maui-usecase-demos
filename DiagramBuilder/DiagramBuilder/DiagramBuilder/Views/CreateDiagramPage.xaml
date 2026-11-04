@@ -5,7 +5,6 @@
              xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:models="clr-namespace:DiagramBuilder.Models"
              xmlns:conv="clr-namespace:DiagramBuilder.Converters"
-             xmlns:listView="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="DiagramBuilder.Views.CreateDiagramPage"
              Title="{Binding Title}"
