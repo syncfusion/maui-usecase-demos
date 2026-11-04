@@ -35,6 +35,11 @@ public partial class MailWorkspaceViewModel : ObservableObject
     [ObservableProperty]
     private string selectedFilter = "All";
 
+    [ObservableProperty]
+    private bool isComposing;
+
+    public ComposeViewModel Composer { get; } = new();
+
     public MailWorkspaceViewModel()
     {
         SelectedFolder = mailbox.Folders.First();
@@ -66,10 +71,16 @@ public partial class MailWorkspaceViewModel : ObservableObject
     void SelectMessage(MailMessage? message) => SelectedMessage = message;
 
     [RelayCommand]
-    async Task NewMailAsync()
+    void NewMail()
     {
-        await Shell.Current.GoToAsync(nameof(Views.ComposePage));
+        IsComposing = true;
+        Composer.Subject = string.Empty;
+        Composer.Body = string.Empty;
+        Composer.StatusMessage = "Unsaved Changes";
     }
+
+    [RelayCommand]
+    void CloseComposer() => IsComposing = false;
 
     [RelayCommand]
     void SelectFolder(FolderNode? folder)
