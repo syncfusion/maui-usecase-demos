@@ -60,6 +60,11 @@ public class DiagramService : IDiagramService
                     TargetId = connector.TargetId,
                     ConnectorKind = connector.Kind,
                     StrokeColorKey = connector.StrokeColorKey,
+                    StrokeThickness = connector.StrokeThickness,
+                    SourceX = connector.SourceX,
+                    SourceY = connector.SourceY,
+                    TargetX = connector.TargetX,
+                    TargetY = connector.TargetY,
                 });
             }
 
