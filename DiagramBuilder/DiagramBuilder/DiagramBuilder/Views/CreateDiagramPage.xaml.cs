@@ -13,6 +13,20 @@ public partial class CreateDiagramPage : ContentPage
         _viewModel = viewModel;
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         Appearing += async (_, _) => await viewModel.InitializeAsync();
+        
+        // Wire the category list selection change to update the ViewModel
+        if (this.FindByName("CategoryList") is Syncfusion.Maui.ListView.SfListView categoryList)
+        {
+            categoryList.SelectionChanging += OnCategorySelectionChanging;
+        }
+    }
+    
+    private void OnCategorySelectionChanging(object? sender, Syncfusion.Maui.ListView.SelectionChangingEventArgs e)
+    {
+        if (e.AddedItems.Count > 0 && e.AddedItems[0] is string selectedCategory)
+        {
+            _viewModel.SelectedCategoryLabel = selectedCategory;
+        }
     }
 
     /// <summary>VM-raised CloseRequested → pop modal (no business logic in code-behind).</summary>
