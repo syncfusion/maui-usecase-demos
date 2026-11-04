@@ -68,4 +68,14 @@ public class TemplateConnector
     public ConnectorKind Kind { get; set; }
 
     public string StrokeColorKey { get; set; } = string.Empty;
+
+    public double StrokeThickness { get; set; } = 2.0;  // Default thickness
+
+    public double SourceX { get; set; }
+
+    public double SourceY { get; set; }
+
+    public double TargetX { get; set; }
+
+    public double TargetY { get; set; }
 }
