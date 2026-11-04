@@ -1,6 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 using Syncfusion.Licensing;
+#if MAUI_DEVFLOW
+using Microsoft.Maui.DevFlow.Agent;
+#endif
 
 namespace DigitalQueueManagement;
 
@@ -26,6 +29,10 @@ public static class MauiProgram
 				fonts.AddFont("MauiMaterialAssets.ttf", "MauiMaterialAssets");
 				fonts.AddFont("materialicon-regular.ttf", "MaterialIcons");
 			});
+
+#if MAUI_DEVFLOW
+		builder.AddMauiDevFlowAgent();
+#endif
 
 #if DEBUG
 		builder.Logging.AddDebug();

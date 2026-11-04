@@ -7,7 +7,6 @@ public partial class ManagePage : ContentView
 {
     private readonly QueueSessionViewModel _viewModel;
     private readonly Action<QueueToken> _openToken;
-    private readonly Action<QueueToken?> _openTokenForm;
     private readonly Action _manageCounters;
     private readonly Action<Func<QueueToken?>> _runTokenAction;
     private readonly Action<Func<bool>> _runBooleanAction;
@@ -16,7 +15,6 @@ public partial class ManagePage : ContentView
     public ManagePage(
         ManagePageViewModel viewModel,
         Action<QueueToken> openToken,
-        Action<QueueToken?> openTokenForm,
         Action manageCounters,
         Action<Func<QueueToken?>> runTokenAction,
         Action<Func<bool>> runBooleanAction,
@@ -27,32 +25,19 @@ public partial class ManagePage : ContentView
 
         _viewModel = viewModel.QueueSession;
         _openToken = openToken;
-        _openTokenForm = openTokenForm;
         _manageCounters = manageCounters;
         _runTokenAction = runTokenAction;
         _runBooleanAction = runBooleanAction;
         _openTransfer = openTransfer;
 
-        RefreshNavigationItems();
+        SectionTabs.ItemsSource = new[] { "Tokens", "Counters", "Insights" };
         RenderSection();
         SizeChanged += OnSizeChanged;
     }
 
-    public void RefreshNavigationItems()
-    {
-        SectionTabs.ItemsSource = Width < 768
-            ? new[] { "Tokens", "Counters", "Insights" }
-            : new[]
-            {
-                $"Tokens  {_viewModel.TotalTokenCount}",
-                $"Counters  {_viewModel.OnlineCounterCount} active",
-                "Insights  Today"
-            };
-    }
-
     private void RenderSection()
     {
-        PageContentHost.Content = _viewModel.ActiveTab switch
+        View pageContent = _viewModel.ActiveTab switch
         {
             "Counters" => new CountersPage(
                 new CounterOperationsViewModel(_viewModel),
@@ -62,8 +47,25 @@ public partial class ManagePage : ContentView
                 _runBooleanAction,
                 _openTransfer),
             "Insights" => new InsightsPage(new QueueInsightsViewModel(_viewModel)),
-            _ => new TokensPage(new TokenManagementViewModel(_viewModel), _openToken, _openTokenForm)
+            _ => new TokensPage(new TokenManagementViewModel(_viewModel), _openToken)
         };
+        PageContentHost.Content = pageContent is InsightsPage
+            ? pageContent
+            : new ScrollView { Content = pageContent };
+    }
+
+    public void ScrollToCounter(string counterName)
+    {
+        var countersPage = PageContentHost.Content switch
+        {
+            CountersPage directPage => directPage,
+            ScrollView { Content: CountersPage wrappedPage } => wrappedPage,
+            _ => null
+        };
+        if (countersPage is not null)
+        {
+            countersPage.ScrollToCounter(counterName);
+        }
     }
 
     private void OnSizeChanged(object? sender, EventArgs e)
@@ -73,8 +75,8 @@ public partial class ManagePage : ContentView
             return;
         }
 
-        RefreshNavigationItems();
-        SectionTabs.WidthRequest = Math.Min(600, Math.Max(100, Width - 36));
+        var horizontalPadding = Width >= 1100 ? 64 : 44;
+        SectionTabs.WidthRequest = Math.Min(480, Math.Max(100, Width - horizontalPadding));
         OperationalStatus.IsVisible = Width >= 600;
         NavigationRow.Margin = new Thickness(Width >= 1100 ? 28 : 18, Width < 768 ? 12 : 22, Width >= 1100 ? 28 : 18, 0);
     }

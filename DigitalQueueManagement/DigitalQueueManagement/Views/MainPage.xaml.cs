@@ -24,6 +24,8 @@ public partial class MainPage : ContentPage
 
     private readonly QueueSessionViewModel _viewModel = new(new QueueStore());
     private readonly AppShellViewModel _shellViewModel;
+    private IReadOnlyList<SfSegmentItem> _headerTabItems = Array.Empty<SfSegmentItem>();
+    private ManagePage? _managePage;
     private bool? _lastWideLayout;
     private bool? _lastMobileLayout;
     private VerticalStackLayout? _tokenList;
@@ -34,7 +36,10 @@ public partial class MainPage : ContentPage
         InitializeComponent();
         _shellViewModel = new AppShellViewModel(_viewModel);
         BindingContext = _shellViewModel;
-        HeaderTabs.ItemsSource = BuildHeaderTabItems();
+        _headerTabItems = BuildHeaderTabItems();
+        HeaderTabs.ItemsSource = _headerTabItems;
+        HeaderTabs.SelectionChanged += OnHeaderTabsSelectionChanged;
+        UpdateHeaderTabIcons();
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         SizeChanged += OnPageSizeChanged;
         UpdateShellPresentation();
@@ -48,60 +53,77 @@ public partial class MainPage : ContentPage
             new SfSegmentItem
             {
                 Text = "Overview",
-                ImageSource = new FontImageSource
-                {
-                    Glyph = "dashboard",
-                    FontFamily = "MaterialIcons",
-                    Color = Color.FromArgb("#64748B"),
-                    Size = 15
-                }
+                ImageSource = CreateHeaderTabIcon("dashboard", Slate500),
+                ImageSize = 15
             },
             new SfSegmentItem
             {
                 Text = "Manage",
-                ImageSource = new FontImageSource
-                {
-                    Glyph = "tune",
-                    FontFamily = "MaterialIcons",
-                    Color = Color.FromArgb("#64748B"),
-                    Size = 15
-                }
+                ImageSource = CreateHeaderTabIcon("tune", Slate500),
+                ImageSize = 15
             }
         };
+    }
+
+    private static FontImageSource CreateHeaderTabIcon(string glyph, Color color) =>
+        new()
+    {
+        Glyph = glyph,
+        FontFamily = "MaterialIcons",
+        Color = color,
+        Size = 15
+    };
+
+    private void OnHeaderTabsSelectionChanged(
+        object? sender,
+        Syncfusion.Maui.Buttons.SelectionChangedEventArgs e)
+    {
+        UpdateHeaderTabIcons();
+        if (e.NewIndex == 0)
+        {
+            _viewModel.SetHeader("Overview");
+        }
+        else if (e.NewIndex == 1)
+        {
+            _viewModel.SetHeader("Manage");
+        }
+    }
+
+    private void UpdateHeaderTabIcons()
+    {
+        for (var index = 0; index < _headerTabItems.Count; index++)
+        {
+            var glyph = index == 0 ? "dashboard" : "tune";
+            var color = index == _viewModel.HeaderTabIndex ? Colors.White : Slate500;
+            _headerTabItems[index].ImageSource = CreateHeaderTabIcon(glyph, color);
+        }
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(QueueSessionViewModel.ActiveHeaderTab) or nameof(QueueSessionViewModel.ActiveTab))
         {
+            UpdateHeaderTabIcons();
             UpdateShellPresentation();
             RenderPage();
-        }
-        else if ((e.PropertyName is nameof(QueueSessionViewModel.TotalTokenCount) or nameof(QueueSessionViewModel.OnlineCounterCount))
-                 && PageHost.Content is ManagePage managePage)
-        {
-            managePage.RefreshNavigationItems();
         }
     }
 
     private void OnOptionsClicked(object? sender, EventArgs e) => ShowResetConfirmation();
-
-    private void OnCreateTokenClicked(object? sender, EventArgs e) => ShowTokenForm(null);
 
     private void OnPageSizeChanged(object? sender, EventArgs e)
     {
         if (Width > 0)
         {
             var contentWidth = Math.Min(Width, 1440);
-            var horizontalOffset = Math.Max(0, (Width - contentWidth) / 2);
             var isMobile = Width < 768;
             DesktopHeader.IsVisible = !isMobile;
             MobileHeader.IsVisible = isMobile;
             MobileBottomNavigation.IsVisible = isMobile;
             HeaderLayout.WidthRequest = contentWidth;
-            HeaderLayout.Margin = new Thickness(horizontalOffset, 0, 0, 0);
+            HeaderLayout.Margin = Thickness.Zero;
             PageHost.WidthRequest = contentWidth;
-            PageHost.Margin = new Thickness(horizontalOffset, 0, 0, 0);
+            PageHost.Margin = Thickness.Zero;
             var wideLayout = contentWidth > 1050;
             if (_lastWideLayout != wideLayout || _lastMobileLayout != isMobile)
             {
@@ -122,14 +144,6 @@ public partial class MainPage : ContentPage
                 ? "Queue Overview"
                 : "Queue Management";
             MobileHeaderDate.IsVisible = _viewModel.ActiveHeaderTab == "Overview";
-        }
-
-        if (MobileHeaderCreateTokenButton is not null)
-        {
-            MobileHeaderCreateTokenButton.IsVisible =
-                isMobile
-                && _viewModel.ActiveHeaderTab == "Manage"
-                && _viewModel.ActiveTab == "Tokens";
         }
 
         if (MobileOverviewButton is not null)
@@ -170,16 +184,24 @@ public partial class MainPage : ContentPage
 
     private void RenderPage()
     {
-        PageHost.Content = _viewModel.ActiveHeaderTab == "Overview"
-            ? new OverviewPage(new QueueOverviewViewModel(_viewModel), ShowTokenDetails, ShowCounterOperations)
-            : new ManagePage(
-                new ManagePageViewModel(_viewModel),
+        if (_viewModel.ActiveHeaderTab == "Overview")
+        {
+            _managePage = null;
+            PageHost.Content = new OverviewPage(
+                new QueueOverviewViewModel(_viewModel),
                 ShowTokenDetails,
-                ShowTokenForm,
-                ShowCounterManagement,
-                action => RunCounterAction(action),
-                action => RunCounterAction(action),
-                ShowTokenPickerForTransfer);
+                ShowCounterOperations);
+            return;
+        }
+
+        _managePage = new ManagePage(
+            new ManagePageViewModel(_viewModel),
+            ShowTokenDetails,
+            ShowCounterManagement,
+            action => RunCounterAction(action),
+            action => RunCounterAction(action),
+            ShowTokenPickerForTransfer);
+        PageHost.Content = _managePage;
     }
 
     private View BuildManagePage()
@@ -217,7 +239,7 @@ public partial class MainPage : ContentPage
                 action => RunCounterAction(action),
                 ShowTokenPickerForTransfer),
             "Insights" => new InsightsPage(new QueueInsightsViewModel(_viewModel)),
-            _ => new TokensPage(new TokenManagementViewModel(_viewModel), ShowTokenDetails, ShowTokenForm)
+            _ => new TokensPage(new TokenManagementViewModel(_viewModel), ShowTokenDetails)
         });
         return content;
     }
@@ -389,7 +411,9 @@ public partial class MainPage : ContentPage
             details.Add(TextLabel($"{counter.Name} · {token?.Id ?? "Available"}", 12, Slate900, FontAttributes.Bold));
             details.Add(TextLabel(counter.Service, 10, Slate500));
             row.Add(details, 1, 0);
-            row.Add(StatusPill(counter.IsOnline ? "Online" : "Offline", counter.IsOnline ? Color.FromArgb("#E9FBF4") : Color.FromArgb("#FFF1F2"), counter.IsOnline ? Teal : Rose), 2, 0);
+            var status = _viewModel.GetCounterAvailabilityText(counter);
+            var statusColors = CounterStatusColors(status);
+            row.Add(StatusPill(status, statusColors.Background, statusColors.Foreground), 2, 0);
             var button = new Button
             {
                 Text = string.Empty,
@@ -496,14 +520,7 @@ public partial class MainPage : ContentPage
         title.Add(TextLabel("Token directory", 18, Slate900, FontAttributes.Bold));
         title.Add(TextLabel("Review, update, and manage queue tokens", 11, Slate500));
         _tokenCountLabel = TextLabel(string.Empty, 10, Slate500);
-        var titleRow = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
-            ColumnSpacing = 10
-        };
-        titleRow.Add(title, 0, 0);
-        titleRow.Add(TextButton("+  Create Token", () => ShowTokenForm(null), true), 1, 0);
-        list.Add(titleRow);
+        list.Add(title);
         var countRow = new Grid
         {
             ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
@@ -715,13 +732,13 @@ public partial class MainPage : ContentPage
         ShowModal(content);
     }
 
-    private void ShowTokenForm(QueueToken? token)
+    private void ShowTokenForm(QueueToken token)
     {
-        var servicePicker = BuildPicker(QueueServices.All, token?.Service ?? QueueServices.All[0]);
-        var priorityPicker = BuildPicker(Enum.GetNames<TokenPriority>(), token?.Priority.ToString() ?? nameof(TokenPriority.Normal));
+        var servicePicker = BuildPicker(QueueServices.All, token.Service);
+        var priorityPicker = BuildPicker(Enum.GetNames<TokenPriority>(), token.Priority.ToString());
         var onlineCounters = _viewModel.Counters.Where(counter => counter.IsOnline).Select(counter => counter.Name).ToArray();
-        var counterPicker = BuildPicker(onlineCounters, token?.CounterName ?? onlineCounters.FirstOrDefault() ?? string.Empty);
-        var form = BuildForm(token is null ? "Create Token" : $"Edit {token.Id}");
+        var counterPicker = BuildPicker(onlineCounters, token.CounterName);
+        var form = BuildForm($"Edit {token.Id}");
         AddFormField(form, "Service", servicePicker);
         AddFormField(form, "Priority", priorityPicker);
         AddFormField(form, "Counter", counterPicker);
@@ -747,9 +764,7 @@ public partial class MainPage : ContentPage
 
                 try
                 {
-                    var updated = token is null
-                        ? _viewModel.CreateToken(service, priority, counterName)
-                        : _viewModel.UpdateToken(token.Id, service, priority, counterName);
+                    var updated = _viewModel.UpdateToken(token.Id, service, priority, counterName);
                     HideModal();
                     RenderPage();
                     ShowTokenDetails(updated);
@@ -1132,7 +1147,7 @@ public partial class MainPage : ContentPage
         var stack = new VerticalStackLayout { Spacing = 12 };
         stack.Add(BuildMetrics(
         [
-            ("Active counter", _viewModel.SelectedCounter?.Name ?? "—", _viewModel.SelectedCounter?.IsOnline == true ? "Online" : "Offline", $"{_viewModel.SelectedCounter?.Service ?? "No service"} terminal", Teal),
+            ("Active counter", _viewModel.SelectedCounter?.Name ?? "—", _viewModel.SelectedCounterAvailabilityText, $"{_viewModel.SelectedCounter?.Service ?? "No service"} terminal", Teal),
             ("Waiting", _viewModel.WaitingTokenCount.ToString(), "Tokens", "Across all counters", Cobalt),
             ("Completed", _viewModel.CompletedTokenCount.ToString(), "Tokens", "Today", Teal),
             ("Skipped", _viewModel.SkippedTokenCount.ToString(), "Tokens", "Available for recall", Rose)
@@ -1166,7 +1181,7 @@ public partial class MainPage : ContentPage
                 Spacing = 7,
                 Children =
                 {
-                    TextLabel($"{counter.Name}  ·  {(counter.IsOnline ? "Online" : "Offline")}", 12, selected ? Cobalt : Slate900, FontAttributes.Bold),
+                    TextLabel($"{counter.Name} · {_viewModel.GetCounterAvailabilityText(counter)}", 12, selected ? Cobalt : Slate900, FontAttributes.Bold),
                     TextLabel(counter.Service, 10, Slate500),
                     TextLabel($"{current?.Status.ToString().ToUpperInvariant() ?? "READY"}   {current?.Id ?? "No token"}", 9, Slate500)
                 }
@@ -1207,12 +1222,14 @@ public partial class MainPage : ContentPage
         {
             ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) }
         };
+        var counterStatus = _viewModel.GetCounterAvailabilityText(counter);
+        var counterStatusColors = CounterStatusColors(counterStatus);
         heading.Add(new HorizontalStackLayout
         {
             Spacing = 8,
             Children =
             {
-                StatusPill(counter.IsOnline ? "Online" : "Offline", counter.IsOnline ? Color.FromArgb("#E9FBF4") : Slate100, counter.IsOnline ? Teal : Slate500),
+                StatusPill(counterStatus, counterStatusColors.Background, counterStatusColors.Foreground),
                 StatusPill(token?.Priority.ToString() ?? "Normal", Color.FromArgb("#FFF6E8"), Amber)
             }
         }, 0, 0);
@@ -1346,10 +1363,9 @@ public partial class MainPage : ContentPage
                 TextLabel($"{counter.Name} — {counter.Service}", 9, Slate500)
             }
         }, 1, 0);
-        header.Add(StatusPill(
-            counter.IsOnline ? "Online" : "Offline",
-            counter.IsOnline ? Color.FromArgb("#D1FAE5") : Slate100,
-            counter.IsOnline ? Color.FromArgb("#047857") : Slate500), 2, 0);
+        var counterStatus = _viewModel.GetCounterAvailabilityText(counter);
+        var counterStatusColors = CounterStatusColors(counterStatus);
+        header.Add(StatusPill(counterStatus, counterStatusColors.Background, counterStatusColors.Foreground), 2, 0);
         header.Add(DialogIconButton("close", HideModal, Slate500), 3, 0);
 
         var currentToken = new Grid
@@ -1642,8 +1658,9 @@ public partial class MainPage : ContentPage
         {
             if (service.SelectedItem is string selectedService)
             {
-                _viewModel.AddCounter(selectedService);
+                var counter = _viewModel.AddCounter(selectedService);
                 ShowCounterManagement();
+                _managePage?.ScrollToCounter(counter.Name);
             }
         }, Cobalt, Colors.White, Colors.Transparent), 1, 0);
         content.Add(new Border
@@ -1669,7 +1686,7 @@ public partial class MainPage : ContentPage
         var online = new Switch { IsToggled = counter?.IsOnline ?? true, OnColor = Teal };
         var form = BuildForm(counter is null ? "Add counter" : $"Edit {counter.Name}");
         AddFormField(form, "Service", service);
-        AddFormField(form, "Online", online);
+        AddFormField(form, "Enabled", online);
         form.Add(FormButtons("Cancel", "Save counter", ShowCounterManagement, async () =>
         {
             if (counter is null || service.SelectedItem is not string selectedService)
@@ -2035,6 +2052,14 @@ public partial class MainPage : ContentPage
             Content = TextLabel(text, 10, foreground, FontAttributes.Bold),
             VerticalOptions = LayoutOptions.Center,
             HorizontalOptions = LayoutOptions.End
+        };
+
+    private static (Color Background, Color Foreground) CounterStatusColors(string status) =>
+        status switch
+        {
+            "Online" => (Color.FromArgb("#E9FBF4"), Teal),
+            "Waiting" => (Color.FromArgb("#FFF6E8"), Amber),
+            _ => (Slate100, Slate500)
         };
 
     private static View Card(View content, double padding = 16) =>

@@ -71,11 +71,13 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Syncfusion.Licensing" Version="100.2.10" />
 		<PackageReference Include="Syncfusion.Maui.Buttons" Version="100.2.1810" />
+		<PackageReference Include="Syncfusion.Maui.Cards" Version="100.2.153" />
 		<PackageReference Include="Syncfusion.Maui.Charts" Version="100.2.1935" />
 		<PackageReference Include="Syncfusion.Maui.Core" Version="100.2.2779" />
 		<PackageReference Include="Syncfusion.Maui.Gauges" Version="100.2.1620" />
 		<PackageReference Include="Syncfusion.Maui.ListView" Version="100.2.1824" />
 		<PackageReference Include="Syncfusion.Maui.Popup" Version="100.2.1742" />
+		<PackageReference Include="Syncfusion.Maui.ProgressBar" Version="100.2.1599" />
 	</ItemGroup>
 
 </Project>

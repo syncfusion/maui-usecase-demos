@@ -57,13 +57,24 @@ public sealed record QueueCounterSummary(
             ? Name["Counter ".Length..]
             : Name;
 
-    public string AvailabilityText => IsOnline ? "Online" : "Offline";
+    public string AvailabilityText =>
+        !IsOnline ? "Offline" : TokenStatus == "Waiting" ? "Waiting" : "Online";
 
-    public bool IsOffline => !IsOnline;
+    public bool IsOffline => AvailabilityText == "Offline";
 
-    public string AvailabilityColor => IsOnline ? "#159B85" : "#64748B";
+    public string AvailabilityColor => AvailabilityText switch
+    {
+        "Online" => "#159B85",
+        "Waiting" => "#B45309",
+        _ => "#64748B"
+    };
 
-    public string AvailabilityBackgroundColor => IsOnline ? "#E9FBF4" : "#F1F5F9";
+    public string AvailabilityBackgroundColor => AvailabilityText switch
+    {
+        "Online" => "#E9FBF4",
+        "Waiting" => "#FFF6E8",
+        _ => "#F1F5F9"
+    };
 
     public string TokenAndStatusText => $"{TokenId} · {TokenStatus}";
 }

@@ -25,7 +25,7 @@ public partial class OverviewPage : ContentView
         UpcomingFilterControl.ItemsSource = new[] { "All", "Normal", "Priority" };
         UpcomingFilterControl.SetBinding(
             SfSegmentedControl.SelectedIndexProperty,
-            new Binding($"{nameof(QueueOverviewViewModel.QueueSession)}.{nameof(QueueSessionViewModel.UpcomingFilterIndex)}", BindingMode.TwoWay));
+            new Binding(nameof(QueueSessionViewModel.UpcomingFilterIndex), BindingMode.TwoWay));
 
         SizeChanged += OnSizeChanged;
     }

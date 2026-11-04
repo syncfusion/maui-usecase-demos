@@ -44,6 +44,27 @@ public partial class CountersPage : ContentView
     private void OnManageCountersClicked(object? sender, EventArgs e) =>
         _manageCounters();
 
+    public void ScrollToCounter(string counterName)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            var index = -1;
+            for (var rowIndex = 0; rowIndex < _viewModel.CounterSummaries.Count; rowIndex++)
+            {
+                if (_viewModel.CounterSummaries[rowIndex].Name == counterName)
+                {
+                    index = rowIndex;
+                    break;
+                }
+            }
+
+            if (index >= 0)
+            {
+                CounterListView.ItemsLayout.ScrollToRowIndex(index, ScrollToPosition.End, false);
+            }
+        });
+    }
+
     private void OnViewTokenClicked(object? sender, EventArgs e)
     {
         if (_viewModel.SelectedCounterToken is { } token)
@@ -157,7 +178,7 @@ public partial class CountersPage : ContentView
         PageContentLayout.Padding = compact
             ? new Thickness(16, 16, 16, 24)
             : new Thickness(wide ? 28 : 18, 22, wide ? 28 : 18, 36);
-        OperationsPanel.Padding = compact ? 0 : 22;
+        OperationsPanel.Padding = compact ? 0 : 18;
         OperationsPanel.BackgroundColor = compact ? Colors.Transparent : Colors.White;
         OperationsPanel.StrokeThickness = compact ? 0 : 1;
         MobileCurrentTokenPanel.Padding = compact ? 16 : 0;
@@ -170,23 +191,31 @@ public partial class CountersPage : ContentView
         MobileCounterActionsPanel.StrokeThickness = compact ? 1 : 0;
         CounterActionsDivider.IsVisible = compact;
         SelectedTokenIdLabel.TextColor = compact ? Color.FromArgb("#102A8C") : Color.FromArgb("#0F172A");
-        SelectedTokenIdLabel.FontSize = compact ? 58 : 54;
+        SelectedTokenIdLabel.FontSize = 58;
         ServingDurationLabel.Text = compact ? "02:48" : "04:58";
         InitialWaitLabel.Text = compact ? _viewModel.SelectedCounterTokenWait : "3m 12s";
-        CallNextButton.Text = compact ? "Call Next" : "↗  Call next";
-        CallNextButton.FontSize = compact ? 14 : 10;
-        CallNextButton.MinimumHeightRequest = compact ? 76 : -1;
+        CallNextButton.Text = compact ? "Call Next" : "Call next";
+        CallNextButton.FontSize = compact ? 14 : 11;
+        CallNextButton.MinimumHeightRequest = compact ? 76 : 50;
         CallNextButton.BackgroundColor = compact ? Color.FromArgb("#102A8C") : Color.FromArgb("#153F9A");
-        CallNextButton.ImageSource = compact
-            ? new FontImageSource { Glyph = "volume_up", FontFamily = "MaterialIcons", Color = Colors.White, Size = 18 }
-            : null;
+        CallNextButton.ImageSource = new FontImageSource
+        {
+            Glyph = compact ? "volume_up" : "north_east",
+            FontFamily = "MaterialIcons",
+            Color = Colors.White,
+            Size = compact ? 18 : 16
+        };
         CompleteButton.Text = compact ? "Complete\nService" : "Complete service";
-        CompleteButton.FontSize = compact ? 14 : 10;
-        CompleteButton.MinimumHeightRequest = compact ? 76 : -1;
+        CompleteButton.FontSize = compact ? 14 : 11;
+        CompleteButton.MinimumHeightRequest = compact ? 76 : 50;
         CompleteButton.BackgroundColor = compact ? Color.FromArgb("#00796F") : Color.FromArgb("#94A3B8");
-        CompleteButton.ImageSource = compact
-            ? new FontImageSource { Glyph = "check_circle", FontFamily = "MaterialIcons", Color = Colors.White, Size = 18 }
-            : null;
+        CompleteButton.ImageSource = new FontImageSource
+        {
+            Glyph = compact ? "check_circle" : "verified_user",
+            FontFamily = "MaterialIcons",
+            Color = Colors.White,
+            Size = compact ? 18 : 16
+        };
         SkipButton.Text = compact ? "Skip Token" : "Skip token";
         RecallButton.Text = compact ? "Recall Token" : "Recall token";
         TransferButton.Text = compact ? "Transfer Token" : "Transfer token";

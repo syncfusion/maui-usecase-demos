@@ -83,7 +83,7 @@ public partial class QueueSessionViewModel : ObservableObject
     public int QueueLoad => Math.Min(100, (int)Math.Round(
         WaitingTokenCount / (double)Math.Max(1, Counters.Count * 3) * 100));
 
-    public int OnlineCounterCount => Counters.Count(counter => counter.IsOnline);
+    public int OnlineCounterCount => Counters.Count(IsCounterActive);
 
     public string OnlineCounterSummary => $"{OnlineCounterCount} of {Counters.Count} active";
 
@@ -114,7 +114,23 @@ public partial class QueueSessionViewModel : ObservableObject
     public string SelectedCounterDisplayService => SelectedCounter?.Service ?? "Create a counter to begin";
 
     public string SelectedCounterAvailabilityText =>
-        SelectedCounter?.IsOnline == true ? "Online" : "Offline";
+        SelectedCounter is { } counter ? GetCounterAvailabilityText(counter) : "Offline";
+
+    public string SelectedCounterAvailabilityColor =>
+        SelectedCounterAvailabilityText switch
+        {
+            "Online" => "#159B85",
+            "Waiting" => "#B45309",
+            _ => "#64748B"
+        };
+
+    public string SelectedCounterAvailabilityBackgroundColor =>
+        SelectedCounterAvailabilityText switch
+        {
+            "Online" => "#E9FBF4",
+            "Waiting" => "#FFF6E8",
+            _ => "#F1F5F9"
+        };
 
     public string SelectedCounterTokenId => SelectedCounterToken?.Id ?? "—";
 
@@ -296,8 +312,27 @@ public partial class QueueSessionViewModel : ObservableObject
         ?? Tokens.FirstOrDefault(token =>
             token.CounterName == counterName && token.Status == TokenStatus.Waiting);
 
-    public QueueToken CreateToken(string service, TokenPriority priority, string counterName) =>
-        _store.CreateToken(service, priority, counterName);
+    public bool IsCounterActive(QueueCounter counter) =>
+        GetCounterAvailabilityText(counter) != "Offline";
+
+    public string GetCounterAvailabilityText(QueueCounter counter)
+    {
+        if (!counter.IsOnline)
+        {
+            return "Offline";
+        }
+
+        if (Tokens.Any(token =>
+                token.CounterName == counter.Name && token.Status == TokenStatus.Serving))
+        {
+            return "Online";
+        }
+
+        return Tokens.Any(token =>
+            token.CounterName == counter.Name && token.Status == TokenStatus.Waiting)
+            ? "Waiting"
+            : "Offline";
+    }
 
     public QueueToken UpdateToken(string tokenId, string service, TokenPriority priority, string counterName) =>
         _store.UpdateToken(tokenId, service, priority, counterName);
@@ -374,6 +409,8 @@ public partial class QueueSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedCounterDisplayName));
         OnPropertyChanged(nameof(SelectedCounterDisplayService));
         OnPropertyChanged(nameof(SelectedCounterAvailabilityText));
+        OnPropertyChanged(nameof(SelectedCounterAvailabilityColor));
+        OnPropertyChanged(nameof(SelectedCounterAvailabilityBackgroundColor));
         OnPropertyChanged(nameof(SelectedCounterTokenId));
         OnPropertyChanged(nameof(SelectedCounterTokenService));
         OnPropertyChanged(nameof(SelectedCounterTokenStatus));
@@ -414,7 +451,7 @@ public partial class QueueSessionViewModel : ObservableObject
                 counter.Service,
                 token?.Id ?? "Available",
                 token?.Status.ToString() ?? "Ready",
-                counter.IsOnline,
+                IsCounterActive(counter),
                 counter.Name == ActiveCounterName);
         }));
 

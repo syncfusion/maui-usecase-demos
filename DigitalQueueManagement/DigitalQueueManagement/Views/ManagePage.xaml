@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="DigitalQueueManagement.Views.ManagePage"
+             x:Name="ManagePageRoot"
              x:DataType="vm:ManagePageViewModel">
     <Grid RowDefinitions="Auto,*">
         <Grid x:Name="NavigationRow"
@@ -15,18 +16,185 @@
                     BackgroundColor="White"
                     Stroke="#E2E8F0"
                     StrokeThickness="1"
-                    StrokeShape="RoundRectangle 12"
+                    StrokeShape="RoundRectangle 10"
                     VerticalOptions="Center">
                 <buttons:SfSegmentedControl x:Name="SectionTabs"
+                                           WidthRequest="480"
                                            SegmentHeight="42"
                                            VisibleSegmentsCount="3"
+                                           CornerRadius="7"
+                                           SegmentCornerRadius="7"
                                            StrokeThickness="0"
                                            ShowSeparator="False"
                                            SegmentBackground="Transparent"
                                            SelectedIndex="{Binding QueueSession.ManageTabIndex, Mode=TwoWay}">
                     <buttons:SfSegmentedControl.TextStyle>
-                        <buttons:SegmentTextStyle FontSize="12" TextColor="#64748B" />
+                        <buttons:SegmentTextStyle FontFamily="Segoe UI" FontSize="12" TextColor="#64748B" />
                     </buttons:SfSegmentedControl.TextStyle>
+                    <buttons:SfSegmentedControl.SegmentTemplate>
+                        <DataTemplate x:DataType="buttons:SfSegmentItem">
+                            <Grid HeightRequest="42">
+                                <Border InputTransparent="True"
+                                        StrokeShape="RoundRectangle 7"
+                                        StrokeThickness="0">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal" />
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Opacity" Value="0" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                </Border>
+                                <Grid ColumnDefinitions="16,Auto,Auto"
+                                      ColumnSpacing="6"
+                                      HorizontalOptions="Center"
+                                      VerticalOptions="Center"
+                                      InputTransparent="True">
+                                    <Label Text="confirmation_number"
+                                           FontFamily="MaterialIcons"
+                                           FontSize="14"
+                                           TextColor="#64748B"
+                                           VerticalOptions="Center"
+                                           IsVisible="False">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Tokens">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Text="desktop_windows"
+                                           FontFamily="MaterialIcons"
+                                           FontSize="14"
+                                           TextColor="#64748B"
+                                           VerticalOptions="Center"
+                                           IsVisible="False">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Counters">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Text="bar_chart"
+                                           FontFamily="MaterialIcons"
+                                           FontSize="14"
+                                           TextColor="#64748B"
+                                           VerticalOptions="Center"
+                                           IsVisible="False">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Insights">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Text}"
+                                           FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           TextColor="#64748B"
+                                           VerticalTextAlignment="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="TextColor" Value="White" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Border Grid.Column="2"
+                                            Padding="6,3"
+                                            BackgroundColor="#F1F5F9"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            VerticalOptions="Center"
+                                            IsVisible="False">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding Text}" Value="Tokens">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding Text}" Value="Counters">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding Text}" Value="Insights">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="BackgroundColor" Value="#3B5FA5" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <Grid>
+                                            <Label Text="{Binding Source={x:Reference ManagePageRoot}, Path=BindingContext.QueueSession.TotalTokenCount}"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="10"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#64748B"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center"
+                                                   IsVisible="False">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Tokens">
+                                                        <Setter Property="IsVisible" Value="True" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="TextColor" Value="White" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                            <Label Text="{Binding Source={x:Reference ManagePageRoot}, Path=BindingContext.QueueSession.OnlineCounterCount, StringFormat='{0} active'}"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="10"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#64748B"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center"
+                                                   IsVisible="False">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Counters">
+                                                        <Setter Property="IsVisible" Value="True" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="TextColor" Value="White" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                            <Label Text="Today"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="10"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#64748B"
+                                                   HorizontalTextAlignment="Center"
+                                                   VerticalTextAlignment="Center"
+                                                   IsVisible="False">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Insights">
+                                                        <Setter Property="IsVisible" Value="True" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="TextColor" Value="White" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </buttons:SfSegmentedControl.SegmentTemplate>
                     <buttons:SfSegmentedControl.SelectionIndicatorSettings>
                         <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
                                                             Background="#183E91"
@@ -57,8 +225,6 @@
                 </HorizontalStackLayout>
             </Border>
         </Grid>
-        <ScrollView Grid.Row="1">
-            <ContentView x:Name="PageContentHost" />
-        </ScrollView>
+        <ContentView Grid.Row="1" x:Name="PageContentHost" />
     </Grid>
 </ContentView>

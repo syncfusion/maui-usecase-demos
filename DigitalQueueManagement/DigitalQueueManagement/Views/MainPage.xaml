@@ -17,7 +17,7 @@
             <Grid x:Name="HeaderLayout"
                   ColumnDefinitions="Auto,*,Auto"
                   MaximumWidthRequest="1440"
-                  HorizontalOptions="Fill"
+                  HorizontalOptions="Center"
                   Padding="28,0">
                 <Grid Grid.Column="0"
                       ColumnDefinitions="40,*"
@@ -61,10 +61,14 @@
                         Stroke="#E2E8F0"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 10"
+                        HorizontalOptions="Center"
                         VerticalOptions="Center">
                     <buttons:SfSegmentedControl x:Name="HeaderTabs"
-                                               WidthRequest="248"
-                                               SegmentHeight="34"
+                                               WidthRequest="240"
+                                               SegmentWidth="116"
+                                               SegmentHeight="38"
+                                               CornerRadius="7"
+                                               SegmentCornerRadius="7"
                                                StrokeThickness="0"
                                                ShowSeparator="False"
                                                SegmentBackground="Transparent"
@@ -72,6 +76,58 @@
                         <buttons:SfSegmentedControl.TextStyle>
                             <buttons:SegmentTextStyle FontSize="12" TextColor="#64748B" />
                         </buttons:SfSegmentedControl.TextStyle>
+                        <buttons:SfSegmentedControl.SegmentTemplate>
+                            <DataTemplate x:DataType="buttons:SfSegmentItem">
+                                <Grid HeightRequest="38">
+                                    <Border x:Name="HeaderTabHoverBackground"
+                                            InputTransparent="True"
+                                            StrokeShape="RoundRectangle 7"
+                                            StrokeThickness="0">
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal" />
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border"
+                                                         Binding="{Binding IsSelected}"
+                                                         Value="True">
+                                                <Setter Property="Opacity" Value="0" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                    </Border>
+                                    <Grid ColumnDefinitions="16,Auto"
+                                          ColumnSpacing="6"
+                                          HorizontalOptions="Center"
+                                          VerticalOptions="Center"
+                                          InputTransparent="True">
+                                        <Image Source="{Binding ImageSource}"
+                                               WidthRequest="15"
+                                               HeightRequest="15"
+                                               VerticalOptions="Center" />
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Text}"
+                                               FontSize="12"
+                                               TextColor="#64748B"
+                                               VerticalTextAlignment="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding IsSelected}"
+                                                             Value="True">
+                                                    <Setter Property="TextColor" Value="White" />
+                                                    <Setter Property="FontAttributes" Value="Bold" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </buttons:SfSegmentedControl.SegmentTemplate>
                         <buttons:SfSegmentedControl.SelectionIndicatorSettings>
                             <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
                                                                 Background="#183E91"
@@ -98,7 +154,7 @@
               Grid.Row="0"
               IsVisible="False"
               Padding="20,8"
-              ColumnDefinitions="*,Auto,Auto"
+              ColumnDefinitions="*,Auto"
               BackgroundColor="{StaticResource Canvas}">
             <VerticalStackLayout VerticalOptions="Center" Spacing="1">
                 <Label x:Name="MobileHeaderTitle"
@@ -111,18 +167,7 @@
                        FontSize="12"
                        TextColor="#475569" />
             </VerticalStackLayout>
-            <Button x:Name="MobileHeaderCreateTokenButton"
-                    Grid.Column="1"
-                    Text="add"
-                    FontFamily="MaterialIcons"
-                    FontSize="20"
-                    TextColor="#183E91"
-                    BackgroundColor="Transparent"
-                    Padding="8"
-                    IsVisible="False"
-                    Clicked="OnCreateTokenClicked"
-                    SemanticProperties.Description="Create token" />
-            <Button Grid.Column="2"
+            <Button Grid.Column="1"
                     Text="more_vert"
                     FontFamily="MaterialIcons"
                     FontSize="20"
@@ -134,7 +179,7 @@
         </Grid>
         <ContentView Grid.Row="1"
                      x:Name="PageHost"
-                     HorizontalOptions="Fill"
+                     HorizontalOptions="Center"
                      MaximumWidthRequest="1440" />
         <Grid x:Name="MobileBottomNavigation"
               Grid.Row="2"

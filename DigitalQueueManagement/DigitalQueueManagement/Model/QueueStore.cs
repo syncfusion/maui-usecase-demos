@@ -26,24 +26,6 @@ public sealed class QueueStore
 
     public IReadOnlyList<QueueCounter> Counters => _counters.AsReadOnly();
 
-    public QueueToken CreateToken(string service, TokenPriority priority, string counterName)
-    {
-        ValidateService(service);
-        EnsureOnlineCounter(counterName);
-
-        var token = new QueueToken(
-            NextTokenId(QueueServices.PrefixFor(service)),
-            service,
-            priority,
-            TokenStatus.Waiting,
-            counterName,
-            WaitFor(counterName));
-
-        _tokens.Add(token);
-        OnChanged();
-        return token;
-    }
-
     public QueueToken UpdateToken(
         string tokenId,
         string service,

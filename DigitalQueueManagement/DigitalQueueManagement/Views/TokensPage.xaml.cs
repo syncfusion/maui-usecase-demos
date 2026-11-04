@@ -6,28 +6,50 @@ public partial class TokensPage : ContentView
 {
     private readonly QueueSessionViewModel _viewModel;
     private readonly Action<QueueToken> _openToken;
-    private readonly Action<QueueToken?> _openTokenForm;
 
     public TokensPage(
         TokenManagementViewModel viewModel,
-        Action<QueueToken> openToken,
-        Action<QueueToken?> openTokenForm)
+        Action<QueueToken> openToken)
     {
         BindingContext = viewModel;
         InitializeComponent();
 
         _viewModel = viewModel.QueueSession;
         _openToken = openToken;
-        _openTokenForm = openTokenForm;
 
         SizeChanged += OnSizeChanged;
     }
 
-    private void OnCreateTokenClicked(object? sender, EventArgs e) =>
-        _openTokenForm(null);
+    private void OnPageTapped(object? sender, TappedEventArgs e)
+    {
+        if (FilterPanel.IsVisible && IsTapOutsideSearchBorder(e, DesktopSearchBorder))
+        {
+            DesktopSearchEntry.Unfocus();
+        }
+
+        if (MobileTokenFilterPanel.IsVisible && IsTapOutsideSearchBorder(e, MobileSearchBorder))
+        {
+            MobileSearchEntry.Unfocus();
+        }
+    }
+
+    private static bool IsTapOutsideSearchBorder(TappedEventArgs e, Border searchBorder)
+    {
+        var position = e.GetPosition(searchBorder);
+        return position is { } point
+            && (point.X < 0 || point.Y < 0 || point.X > searchBorder.Width || point.Y > searchBorder.Height);
+    }
+
+    private void UnfocusSearchEntries()
+    {
+        DesktopSearchEntry.Unfocus();
+        MobileSearchEntry.Unfocus();
+    }
 
     private void OnStatusFilterTapped(object? sender, TappedEventArgs e)
     {
+        UnfocusSearchEntries();
+
         if (e.Parameter is string filter)
         {
             _viewModel.SetStatusFilter(filter);
@@ -36,6 +58,8 @@ public partial class TokensPage : ContentView
 
     private void OnTokenTapped(object? sender, TappedEventArgs e)
     {
+        UnfocusSearchEntries();
+
         if (sender is Border { BindingContext: QueueTokenListItem item })
         {
             _openToken(item.Token);
@@ -76,7 +100,7 @@ public partial class TokensPage : ContentView
         MobileTokenContent.IsVisible = mobile;
 
         DirectoryGrid.ColumnDefinitions = wide
-            ? new ColumnDefinitionCollection { new(270), new(GridLength.Star) }
+            ? new ColumnDefinitionCollection { new(336), new(GridLength.Star) }
             : new ColumnDefinitionCollection { new(GridLength.Star) };
         DirectoryGrid.RowDefinitions = wide
             ? new RowDefinitionCollection { new(GridLength.Auto) }
