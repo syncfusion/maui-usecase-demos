@@ -144,10 +144,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     void UpdateFolderCounts()
     {
-        mailbox.Folders[0].UnreadCount = mailbox.Inbox.Count(x => !x.IsRead);
-        mailbox.Folders[1].UnreadCount = 0;
-        mailbox.Folders[2].UnreadCount = mailbox.Drafts.Count(x => x.Status == "Unsaved Changes");
-        mailbox.Folders[3].UnreadCount = mailbox.Archive.Count(x => x.IsFlagged);
-        mailbox.Folders[4].UnreadCount = mailbox.Deleted.Count;
+        mailbox.RefreshCounts();
     }
 }
