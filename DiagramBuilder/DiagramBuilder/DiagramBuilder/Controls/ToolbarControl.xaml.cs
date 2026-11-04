@@ -7,6 +7,7 @@ using Microsoft.Maui.Controls.Shapes;
 using Syncfusion.Maui.Buttons;
 using Syncfusion.Maui.Inputs;
 using Syncfusion.Maui.Popup;
+using DiagramToolbarItem = DiagramBuilder.Models.ToolbarItem;
 
 namespace DiagramBuilder.Controls;
 
@@ -108,7 +109,7 @@ public partial class ToolbarControl : ContentView
     public ToolbarControl()
     {
         InitializeComponent();
-        _propertyService = ServiceProvider.GetService<IPropertyService>();
+        _propertyService = MauiProgram.ServiceProvider?.GetService<IPropertyService>();
     }
 
     private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
