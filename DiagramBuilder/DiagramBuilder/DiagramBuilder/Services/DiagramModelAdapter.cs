@@ -143,10 +143,19 @@ public static class DiagramModelAdapter
 
     private static void ApplyConnectorStyle(Connector connector, ConnectorItem connectorItem)
     {
-        connector.Style = new ShapeStyle
+        var stroke = new ShapeStyle
         {
             StrokeColor = ResourceLookup.Color(connectorItem.StrokeColorKey),
             StrokeWidth = connectorItem.StrokeThickness,
+        };
+        
+        connector.Style = stroke;
+
+        // Add arrow decorator to the target end
+        connector.TargetDecorator = new DecoratorSettings
+        {
+            Shape = DecoratorShape.Arrow,
+            Style = stroke,
         };
 
         if (!string.IsNullOrEmpty(connectorItem.Text))
