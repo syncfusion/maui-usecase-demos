@@ -37,7 +37,8 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public MailWorkspaceViewModel()
     {
-        LoadFolder(mailbox.Folders.First());
+        SelectedFolder = mailbox.Folders.First();
+        LoadFolder(SelectedFolder);
         IsLoading = false;
     }
 

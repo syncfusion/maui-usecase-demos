@@ -31,6 +31,6 @@ public class Mailbox
         "Drafts" => Drafts,
         "Archive" => Archive,
         "Deleted" => Deleted,
-        _ => []
+        _ => Inbox
     };
 }
