@@ -57,6 +57,11 @@ public class PropertyService : IPropertyService
             case "Rotation":
                 if (element is Node n5 && property.Value is double r) n5.RotationAngle = r;
                 break;
+            case "BackgroundType":
+                break;
+            case "BackgroundColor":
+                ApplyStyle(element, fill: ResourceLookup.Color(property.Value?.ToString()));
+                break;
             case "Fill":
                 ApplyStyle(element, fill: ResourceLookup.Color(property.Value?.ToString()));
                 break;
@@ -69,8 +74,14 @@ public class PropertyService : IPropertyService
             case "BorderThickness":
                 if (element.Style is ShapeStyle s1 && property.Value is double t) s1.StrokeWidth = t;
                 break;
-            case "FillOpacity":
+            case "BorderStyle":
+                ApplyBorderStyle(element, property.Value?.ToString());
+                break;
+            case "BorderOpacity":
                 if (element.Style is ShapeStyle s2 && property.Value is double o) s2.Opacity = o;
+                break;
+            case "FillOpacity":
+                if (element.Style is ShapeStyle s3 && property.Value is double fo) s3.Opacity = fo;
                 break;
             case "Text":
                 SetAnnotationContent(element, property.Value?.ToString() ?? string.Empty);
@@ -83,6 +94,18 @@ public class PropertyService : IPropertyService
                 break;
             case "TextItalic":
                 ApplyTextStyle(element, italic: property.Value as bool?);
+                break;
+            case "TextUnderline":
+                ApplyTextStyle(element, underline: property.Value as bool?);
+                break;
+            case "TextColor":
+                ApplyTextStyle(element, color: ResourceLookup.Color(property.Value?.ToString()));
+                break;
+            case "HorizontalAlignment":
+                ApplyTextAlignment(element, horizontal: HorizontalAlignmentFor(property.Value?.ToString()));
+                break;
+            case "VerticalAlignment":
+                ApplyTextAlignment(element, vertical: VerticalAlignmentFor(property.Value?.ToString()));
                 break;
         }
     }
@@ -105,6 +128,8 @@ public class PropertyService : IPropertyService
             result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Rotation", LabelKey = AppStrings.PropertyRotation, Value = node.RotationAngle, Min = 0, Max = 360 });
 
             var style = node.Style as ShapeStyle;
+            result.Add(new PropertyModel { Group = PropertyGroup.Background, Key = "BackgroundType", LabelKey = AppStrings.PropertyBackgroundType, Value = AppStrings.PropertyBackgroundSolid });
+            result.Add(new PropertyModel { Group = PropertyGroup.Background, Key = "BackgroundColor", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill) });
             result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "Fill", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill) });
             result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "FillOpacity", LabelKey = AppStrings.PropertyOpacity, Value = style?.Opacity ?? 1.0, Min = 0, Max = 1 });
 
@@ -119,6 +144,7 @@ public class PropertyService : IPropertyService
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextUnderline", LabelKey = AppStrings.PropertyUnderline, Value = textStyle?.Underline ?? false });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color) });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "HorizontalAlignment", LabelKey = AppStrings.PropertyHorizontalAlign, Value = HorizontalKeyFor(annotation?.HorizontalAlignment) });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "VerticalAlignment", LabelKey = AppStrings.PropertyVerticalAlign, Value = VerticalKeyFor(annotation?.VerticalAlignment) });
@@ -205,7 +231,22 @@ public class PropertyService : IPropertyService
         }
     }
 
-    private static void ApplyTextStyle(NodeBase element, double? fontSize = null, bool? bold = null, bool? italic = null)
+    private static void ApplyBorderStyle(NodeBase element, string? value)
+    {
+        if (element.Style is not ShapeStyle style)
+        {
+            return;
+        }
+
+        style.StrokeDashArray = value switch
+        {
+            AppStrings.PropertyBorderDashed => "4 2",
+            AppStrings.PropertyBorderDotted => "1 2",
+            _ => string.Empty,
+        };
+    }
+
+    private static void ApplyTextStyle(NodeBase element, double? fontSize = null, bool? bold = null, bool? italic = null, bool? underline = null, Color? color = null)
     {
         TextStyle? textStyle = element switch
         {
@@ -233,7 +274,50 @@ public class PropertyService : IPropertyService
         {
             textStyle.Italic = italic.Value;
         }
+
+        if (underline.HasValue)
+        {
+            textStyle.Underline = underline.Value;
+        }
+
+        if (color is not null)
+        {
+            textStyle.Color = color;
+        }
     }
+
+    private static void ApplyTextAlignment(NodeBase element, Syncfusion.Maui.Diagram.HorizontalAlignment? horizontal = null, Syncfusion.Maui.Diagram.VerticalAlignment? vertical = null)
+    {
+        if (element is Node node)
+        {
+            foreach (var annotation in node.Annotations.OfType<ShapeAnnotation>())
+            {
+                if (horizontal.HasValue)
+                {
+                    annotation.HorizontalAlignment = horizontal.Value;
+                }
+
+                if (vertical.HasValue)
+                {
+                    annotation.VerticalAlignment = vertical.Value;
+                }
+            }
+        }
+    }
+
+    private static Syncfusion.Maui.Diagram.HorizontalAlignment? HorizontalAlignmentFor(string? value) => value switch
+    {
+        AppStrings.PropertyAlignCenter => Syncfusion.Maui.Diagram.HorizontalAlignment.Center,
+        AppStrings.PropertyAlignRight => Syncfusion.Maui.Diagram.HorizontalAlignment.Right,
+        _ => Syncfusion.Maui.Diagram.HorizontalAlignment.Left,
+    };
+
+    private static Syncfusion.Maui.Diagram.VerticalAlignment? VerticalAlignmentFor(string? value) => value switch
+    {
+        AppStrings.PropertyAlignMiddle => Syncfusion.Maui.Diagram.VerticalAlignment.Center,
+        AppStrings.PropertyAlignBottom => Syncfusion.Maui.Diagram.VerticalAlignment.Bottom,
+        _ => Syncfusion.Maui.Diagram.VerticalAlignment.Top,
+    };
 
     private static void SetAnnotationContent(NodeBase element, string content)
     {

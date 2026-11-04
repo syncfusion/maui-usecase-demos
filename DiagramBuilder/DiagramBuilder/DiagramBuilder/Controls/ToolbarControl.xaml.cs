@@ -380,15 +380,29 @@ public partial class ToolbarControl : ContentView
                 HeightRequest = 32,
                 ColumnDefinitions = new ColumnDefinitionCollection(new[]
                 {
+                    new ColumnDefinition { Width = new GridLength(18) },
                     new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 }),
             };
-            row.Children.Add(new Label
+            var icon = new Label
+            {
+                Text = GlyphFor(child.Id),
+                FontSize = 12,
+                TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+            };
+            var label = new Label
             {
                 Text = child.TextKey,
                 VerticalTextAlignment = TextAlignment.Center,
                 FontSize = 13,
-            });
+                Margin = new Thickness(8, 0, 0, 0),
+            };
+            row.Children.Add(icon);
+            row.Children.Add(label);
+            Grid.SetColumn(icon, 0);
+            Grid.SetColumn(label, 1);
             var tap = new TapGestureRecognizer
             {
                 Command = new Command(() => ToolCommand?.Execute(child.Id)),
@@ -419,9 +433,15 @@ public partial class ToolbarControl : ContentView
 
         // Group 3 — basic shapes flyout
         "tool.shape" => "\u25EF",                  // ◯ (open circle as shapes glyph)
+        "tool.shape.rectangle" => "\u25AD",        // ▭
+        "tool.shape.ellipse" => "\u25EF",          // ◯
+        "tool.shape.polygon" => "\u25B3",          // △
 
         // Group 4 — connectors flyout
         "tool.connector" => "\u279C",             // ➜ (arrow as connector glyph)
+        AppConstants.ToolConnectorStraight => "\u2500", // ─
+        AppConstants.ToolConnectorOrthogonal => "\u21AA", // ↪
+        AppConstants.ToolConnectorBezier => "\u223C", // ∼
 
         // Group 5 — text tool
         AppConstants.ToolText => "T",

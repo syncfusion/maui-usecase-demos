@@ -47,6 +47,8 @@ public partial class CreateDiagramViewModel : ObservableObject
     [ObservableProperty]
     private IReadOnlyList<DiagramTemplate> templates = [];
 
+    private IReadOnlyList<DiagramTemplate> _allTemplates = [];
+
     /// <summary>Set to true when the page should pop (raised after a successful create).</summary>
     [ObservableProperty]
     private bool closeRequested;
@@ -85,9 +87,7 @@ public partial class CreateDiagramViewModel : ObservableObject
             OnPropertyChanged(nameof(SelectedCategoryLabel));
         }
         OnPropertyChanged(nameof(SelectedCategoryName));
-        OnPropertyChanged(nameof(EmptyDiagramTemplate));
-        OnPropertyChanged(nameof(PredefinedTemplates));
-        _ = LoadTemplatesAsync(value);
+        UpdateTemplatesForCategory(value);
     }
 
     /// <summary>Called when the SfListView two-way binding pushes a new label up.</summary>
@@ -110,14 +110,13 @@ public partial class CreateDiagramViewModel : ObservableObject
     public async Task InitializeAsync()
     {
         await _templateService.PreloadAsync();
-        await LoadTemplatesAsync(SelectedCategory);
+        _allTemplates = await _templateService.GetAllAsync();
+        UpdateTemplatesForCategory(SelectedCategory);
     }
 
-    private async Task LoadTemplatesAsync(DiagramCategory category)
+    private void UpdateTemplatesForCategory(DiagramCategory category)
     {
-        var all = await _templateService.GetAllAsync();
-        var forCategory = all.Where(t => t.Category == category).ToList();
-        Templates = forCategory;
+        Templates = _allTemplates.Where(t => t.Category == category).ToList();
         OnPropertyChanged(nameof(EmptyDiagramTemplate));
         OnPropertyChanged(nameof(PredefinedTemplates));
     }

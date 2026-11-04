@@ -26,6 +26,15 @@ public partial class MenuBarControl : ContentView
     private static readonly Color TextSecondary = Color.FromArgb("#5F6368");
     private static readonly Color CheckBlue = Color.FromArgb("#0D6EFD");
 
+    private static readonly System.Collections.Generic.Dictionary<string, double> FlyoutMinWidths = new()
+    {
+        ["menu.file"] = 240,
+        ["menu.edit"] = 250,
+        ["menu.view"] = 220,
+        ["menu.arrange"] = 288,
+        ["menu.window"] = 190,
+    };
+
     public static readonly BindableProperty ItemsSourceProperty =
         BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(MenuBarControl),
             propertyChanged: OnItemsSourceChanged);
@@ -166,6 +175,7 @@ public partial class MenuBarControl : ContentView
             Shadow = new Shadow { Radius = 6, Offset = new Microsoft.Maui.Graphics.Point(0, 3), Opacity = 0.16f },
             Content = stack,
             HorizontalOptions = LayoutOptions.Start,
+            MinimumWidthRequest = GetFlyoutMinWidth(root.Id),
         };
         return border;
     }
@@ -174,11 +184,13 @@ public partial class MenuBarControl : ContentView
     {
         foreach (var child in items)
         {
-            // Submenu parents render as a section header with their children inlined below.
             if (child.Children.Count > 0)
             {
                 stack.Children.Add(BuildSubmenuHeaderRow(child, indent));
-                AppendRows(stack, child.Children.ToList(), indent + 1, isTopLevel: false);
+                if (child.IsExpanded)
+                {
+                    AppendRows(stack, child.Children.ToList(), indent + 1, isTopLevel: false);
+                }
             }
             else
             {
@@ -202,7 +214,7 @@ public partial class MenuBarControl : ContentView
         // The menu row is a single Syncfusion SfButton. Its native handler drives Normal /
         // Pressed / Checked visual states from Android touch events, so the touch overlay
         // is reliable (MAUI Button's VSM press is unreliable on this MAUI build). The row's
-        // check + label + shortcut are hosted inside SfButton.Content as a DataTemplate —
+        // check + icon + label + shortcut are hosted inside SfButton.Content as a DataTemplate —
         // the factory builds a NEW grid per expansion, as MAUI templates require.
         var row = new Syncfusion.Maui.Buttons.SfButton
         {
@@ -217,7 +229,7 @@ public partial class MenuBarControl : ContentView
         return row;
     }
 
-    /// <summary>Check mark + label + shortcut layout hosted inside the row's SfButton.Content.</summary>
+    /// <summary>Check mark + icon + label + shortcut layout hosted inside the row's SfButton.Content.</summary>
     private Grid BuildRowLayout(MenuCommandItem item, int indent)
     {
         var grid = new Grid
@@ -225,6 +237,7 @@ public partial class MenuBarControl : ContentView
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
                 new ColumnDefinition { Width = new GridLength(24) },                       // check slot
+                new ColumnDefinition { Width = new GridLength(18) },                       // icon slot
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },    // label
                 new ColumnDefinition { Width = new GridLength(64) },                      // shortcut
             }),
@@ -236,6 +249,14 @@ public partial class MenuBarControl : ContentView
             Text = (item.IsCheckable && IsCheckedSafe(item.Id)) ? "\u2713" : string.Empty,
             FontSize = 13,
             TextColor = CheckBlue,
+            HorizontalTextAlignment = TextAlignment.Center,
+            VerticalTextAlignment = TextAlignment.Center,
+        };
+        var icon = new Label
+        {
+            Text = MenuIconFor(item),
+            FontSize = 12,
+            TextColor = TextSecondary,
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
         };
@@ -259,11 +280,13 @@ public partial class MenuBarControl : ContentView
             VerticalOptions = LayoutOptions.Center,
         };
         grid.Children.Add(checkGlyph);
+        grid.Children.Add(icon);
         grid.Children.Add(label);
         grid.Children.Add(shortcut);
         Grid.SetColumn(checkGlyph, 0);
-        Grid.SetColumn(label, 1);
-        Grid.SetColumn(shortcut, 2);
+        Grid.SetColumn(icon, 1);
+        Grid.SetColumn(label, 2);
+        Grid.SetColumn(shortcut, 3);
         return grid;
     }
 
@@ -275,9 +298,18 @@ public partial class MenuBarControl : ContentView
             Padding = new Thickness(8 + (indent * 16), 0, 8, 0),
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
+                new ColumnDefinition { Width = new GridLength(18) },
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 new ColumnDefinition { Width = GridLength.Auto },
             }),
+        };
+        var icon = new Label
+        {
+            Text = MenuIconFor(item),
+            FontSize = 12,
+            TextColor = TextSecondary,
+            HorizontalTextAlignment = TextAlignment.Center,
+            VerticalTextAlignment = TextAlignment.Center,
         };
         var label = new Label
         {
@@ -291,18 +323,92 @@ public partial class MenuBarControl : ContentView
         };
         var chevron = new Label
         {
-            Text = "\u25B8", // ▸
+            Text = item.IsExpanded ? "\u25BE" : "\u25B8",
             FontSize = 11,
             TextColor = TextSecondary,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
+            Margin = new Thickness(0, 0, 2, 0),
         };
+        grid.Children.Add(icon);
         grid.Children.Add(label);
         grid.Children.Add(chevron);
-        Grid.SetColumn(label, 0);
-        Grid.SetColumn(chevron, 1);
+        Grid.SetColumn(icon, 0);
+        Grid.SetColumn(label, 1);
+        Grid.SetColumn(chevron, 2);
+
+        var tap = new TapGestureRecognizer();
+        tap.Tapped += (_, _) =>
+        {
+            item.IsExpanded = !item.IsExpanded;
+            Rebuild();
+        };
+        grid.GestureRecognizers.Add(tap);
         return grid;
     }
+
+    private static double GetFlyoutMinWidth(string rootId) => FlyoutMinWidths.TryGetValue(rootId, out var width)
+        ? width
+        : 220;
+
+    private static string MenuIconFor(MenuCommandItem item) => item.Id switch
+    {
+        // File
+        AppConstants.CmdNew => "\u2295",
+        AppConstants.CmdOpen => "\uD83D\uDCC2",
+        AppConstants.CmdSave => "\u2B73",
+        AppConstants.CmdSaveAs => "\u21E7",
+        AppConstants.CmdExport => "\u2B61",
+        AppConstants.CmdPrint => "\u2399",
+
+        // Edit
+        AppConstants.CmdUndo => "\u21B6",
+        AppConstants.CmdRedo => "\u21B7",
+        AppConstants.CmdCut => "\u2702",
+        AppConstants.CmdCopy => "\u2398",
+        AppConstants.CmdPaste => "\uD83D\uDCCB",
+        AppConstants.CmdDelete => "\u232B",
+        AppConstants.CmdDuplicate => "\u29C9",
+        AppConstants.CmdSelectAll => "\u25CE",
+
+        // View
+        AppConstants.CmdZoomIn => "+",
+        AppConstants.CmdZoomOut => "\u2212",
+        AppConstants.CmdFitToScreen => "\u26F6",
+        AppConstants.CmdShowGrid => "\u25A6",
+        AppConstants.CmdSnapToGrid => "\u22A5",
+
+        // Arrange leaf commands
+        AppConstants.CmdSendToBack => "\u21E3",
+        AppConstants.CmdBringToFront => "\u21E1",
+        AppConstants.CmdSendBackward => "\u2193",
+        AppConstants.CmdBringForward => "\u2191",
+        AppConstants.CmdAlignLeft => "\u21E6",
+        AppConstants.CmdAlignRight => "\u21E8",
+        AppConstants.CmdAlignCenter => "\u21C4",
+        AppConstants.CmdAlignTop => "\u21E7",
+        AppConstants.CmdAlignBottom => "\u21E9",
+        AppConstants.CmdAlignMiddle => "\u21C5",
+        AppConstants.CmdDistributeHorizontally => "\u2194",
+        AppConstants.CmdDistributeVertically => "\u2195",
+        AppConstants.CmdSameWidth => "\u2B1A",
+        AppConstants.CmdSameHeight => "\u2B1B",
+        AppConstants.CmdSameWidthAndHeight => "\u25A1",
+        AppConstants.CmdGroup => "\u2295",
+        AppConstants.CmdUngroup => "\u2296",
+
+        // Window
+        AppConstants.CmdShowToolbar => "\u25A3",
+        AppConstants.CmdShowStencil => "\u25A3",
+        AppConstants.CmdShowProperties => "\u25A3",
+
+        // Submenu headers
+        "arrange.align" => "\u2261",
+        "arrange.distribute" => "\u2194",
+        "arrange.matchsize" => "\u25A1",
+
+        _ => string.Empty,
+    };
 
     private bool IsCheckedSafe(string id) => IsChecked?.Invoke(id) ?? false;
 }

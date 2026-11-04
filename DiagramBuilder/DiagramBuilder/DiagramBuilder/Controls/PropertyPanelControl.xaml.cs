@@ -196,22 +196,40 @@ public partial class PropertyPanelControl : ContentView
             Style = (Style)Application.Current!.Resources["PropertyLabelStyle"],
             VerticalOptions = LayoutOptions.Center,
         });
-        var picker = new ColorPickerButton
+        View editor = model.Key switch
         {
-            ColorValue = model.Value as string ?? string.Empty,
-            AutomationId = "property_" + model.Key,
-        };
-        picker.ColorChanged += (_, key) =>
-        {
-            // Picker has updated its own ColorValue; mirror into the model so Apply sees it.
-            model.Value = key;
-            if (vm.ApplyCommand.CanExecute(model))
+            "BackgroundType" => BuildSegmented(
+                new[] { AppStrings.PropertyBackgroundSolid, AppStrings.PropertyBackgroundGradient },
+                model.Value as string ?? AppStrings.PropertyBackgroundSolid,
+                "property_background_type",
+                value =>
+                {
+                    model.Value = value;
+                    if (vm.ApplyCommand.CanExecute(model))
+                    {
+                        vm.ApplyCommand.Execute(model);
+                    }
+                }),
+            _ => new ColorPickerButton
             {
-                vm.ApplyCommand.Execute(model);
-            }
+                ColorValue = model.Value as string ?? string.Empty,
+                AutomationId = "property_" + model.Key,
+            },
         };
-        Grid.SetColumn(picker, 1);
-        grid.Add(picker);
+        if (editor is ColorPickerButton picker)
+        {
+            picker.ColorChanged += (_, key) =>
+            {
+                // Picker has updated its own ColorValue; mirror into the model so Apply sees it.
+                model.Value = key;
+                if (vm.ApplyCommand.CanExecute(model))
+                {
+                    vm.ApplyCommand.Execute(model);
+                }
+            };
+        }
+        Grid.SetColumn(editor, 1);
+        grid.Add(editor);
         return grid;
     }
 
@@ -304,7 +322,15 @@ public partial class PropertyPanelControl : ContentView
             "BorderStyle" => BuildSegmented(
                 new[] { AppStrings.PropertyBorderSolid, AppStrings.PropertyBorderDashed, AppStrings.PropertyBorderDotted },
                 model.Value as string ?? AppStrings.PropertyBorderSolid,
-                "property_border_style"),
+                "property_border_style",
+                value =>
+                {
+                    model.Value = value;
+                    if (vm.ApplyCommand.CanExecute(model))
+                    {
+                        vm.ApplyCommand.Execute(model);
+                    }
+                }),
             "Border" => new ColorPickerButton { ColorValue = model.Value as string ?? string.Empty, AutomationId = "property_border" },
             "BorderThickness" => new Syncfusion.Maui.Inputs.SfNumericEntry
             {
@@ -323,7 +349,18 @@ public partial class PropertyPanelControl : ContentView
             _ => new Entry { Text = model.Value?.ToString() ?? string.Empty, Style = (Style)Application.Current!.Resources["PropertyEntryStyle"] },
         };
 
-        if (editor is Slider s)
+        if (editor is ColorPickerButton picker)
+        {
+            picker.ColorChanged += (_, key) =>
+            {
+                model.Value = key;
+                if (vm.ApplyCommand.CanExecute(model))
+                {
+                    vm.ApplyCommand.Execute(model);
+                }
+            };
+        }
+        else if (editor is Slider s)
         {
             s.ValueChanged += (_, args) =>
             {
@@ -390,19 +427,53 @@ public partial class PropertyPanelControl : ContentView
                 AutomationId = "property_font_size",
             },
             "TextColor" => new ColorPickerButton { ColorValue = model.Value as string ?? string.Empty, AutomationId = "property_text_color" },
-            "TextBold" or "TextItalic" or "TextUnderline" => BuildToggle(model.Value as bool? ?? false, "property_text_" + model.Key.ToLowerInvariant()),
+            "TextBold" or "TextItalic" or "TextUnderline" => BuildToggle(model.Value as bool? ?? false, "property_text_" + model.Key.ToLowerInvariant(), value =>
+            {
+                model.Value = value;
+                if (vm.ApplyCommand.CanExecute(model))
+                {
+                    vm.ApplyCommand.Execute(model);
+                }
+            }),
             "HorizontalAlignment" => BuildSegmented(
                 new[] { AppStrings.PropertyAlignLeft, AppStrings.PropertyAlignCenter, AppStrings.PropertyAlignRight },
                 model.Value as string ?? AppStrings.PropertyAlignLeft,
-                "property_text_halign"),
+                "property_text_halign",
+                value =>
+                {
+                    model.Value = value;
+                    if (vm.ApplyCommand.CanExecute(model))
+                    {
+                        vm.ApplyCommand.Execute(model);
+                    }
+                }),
             "VerticalAlignment" => BuildSegmented(
                 new[] { AppStrings.PropertyAlignTop, AppStrings.PropertyAlignMiddle, AppStrings.PropertyAlignBottom },
                 model.Value as string ?? AppStrings.PropertyAlignTop,
-                "property_text_valign"),
+                "property_text_valign",
+                value =>
+                {
+                    model.Value = value;
+                    if (vm.ApplyCommand.CanExecute(model))
+                    {
+                        vm.ApplyCommand.Execute(model);
+                    }
+                }),
             _ => new Entry { Text = model.Value?.ToString() ?? string.Empty, Style = (Style)Application.Current!.Resources["PropertyEntryStyle"] },
         };
 
-        if (editor is Entry entry)
+        if (editor is ColorPickerButton picker)
+        {
+            picker.ColorChanged += (_, key) =>
+            {
+                model.Value = key;
+                if (vm.ApplyCommand.CanExecute(model))
+                {
+                    vm.ApplyCommand.Execute(model);
+                }
+            };
+        }
+        else if (editor is Entry entry)
         {
             entry.TextChanged += (_, args) =>
             {
@@ -471,7 +542,7 @@ public partial class PropertyPanelControl : ContentView
         return grid;
     }
 
-    private static View BuildSegmented(string[] options, string selected, string automationId)
+    private static View BuildSegmented(string[] options, string selected, string automationId, Action<string> onChanged)
     {
         // Wrap each segment in a Border so we can apply Stroke / StrokeThickness
         // (Button doesn't expose those — only BorderColor / BorderWidth).
@@ -495,18 +566,35 @@ public partial class PropertyPanelControl : ContentView
                 BorderWidth = 1,
                 AutomationId = automationId + "_" + opt,
             };
+            btn.Clicked += (_, _) =>
+            {
+                foreach (var child in stack.Children.OfType<Button>())
+                {
+                    var isActive = string.Equals(child.Text, opt, StringComparison.Ordinal);
+                    child.BackgroundColor = isActive
+                        ? Services.ResourceLookup.ResourceColor("PrimaryColor")
+                        : Services.ResourceLookup.ResourceColor("CanvasBackground");
+                    child.TextColor = isActive
+                        ? Colors.White
+                        : Services.ResourceLookup.ResourceColor("TextPrimary");
+                }
+
+                onChanged(opt);
+            };
             stack.Children.Add(btn);
         }
         return stack;
     }
 
-    private static View BuildToggle(bool isChecked, string automationId)
+    private static View BuildToggle(bool isChecked, string automationId, Action<bool> onChanged)
     {
-        return new Switch
+        var toggle = new Switch
         {
             IsToggled = isChecked,
             OnColor = Services.ResourceLookup.ResourceColor("PrimaryColor"),
             AutomationId = automationId,
         };
+        toggle.Toggled += (_, args) => onChanged(args.Value);
+        return toggle;
     }
 }

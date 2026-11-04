@@ -26,6 +26,8 @@ public class MenuCommandItem
     public bool IsChecked { get; set; }
 
     public bool IsEnabled { get; set; } = true;
+
+    public bool IsExpanded { get; set; } = true;
 }
 
 /// <summary>
