@@ -23,7 +23,7 @@ public static class MockData
         });
         mailbox.Folders.Add(new FolderNode
         {
-            Name = "Andrew Fuller",
+            Name = "Kerry Best",
             Children = [
                 new FolderNode { Name = "Inbox" },
                 new FolderNode { Name = "Clutter" },
@@ -41,7 +41,7 @@ public static class MockData
             ]
         });
 
-        string BuildBody(string preview, string sender) => string.Join("\n\n", new[]
+        string BuildBody(string preview, string sender) => string.Join("\n", new[]
         {
             preview,
             "I wanted to share the latest update and make sure you have the current details.",

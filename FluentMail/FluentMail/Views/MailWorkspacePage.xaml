@@ -6,6 +6,7 @@
              xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:vm="clr-namespace:FluentMail.ViewModels"
              xmlns:richtext="clr-namespace:Syncfusion.Maui.RichTextEditor;assembly=Syncfusion.Maui.RichTextEditor"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              x:Class="FluentMail.Views.MailWorkspacePage"
              x:Name="MailWorkspaceRoot"
@@ -16,33 +17,117 @@
         <vm:MailWorkspaceViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="48,*" ColumnDefinitions="300,350,*" Padding="0" BackgroundColor="White">
-        <Grid BackgroundColor="#EAF4FE" Padding="14,0" ColumnDefinitions="*,Auto">
-            <SearchBar Text="{Binding SearchQuery, Mode=TwoWay}" Placeholder="Search Mail and People" BackgroundColor="Transparent" />
-            <Label Grid.Column="1" FontFamily="MauiMaterialAssets" Text="&#xE8B6;" FontSize="22" TextColor="{StaticResource PrimaryLight}" VerticalOptions="Center" />
+    <Grid RowDefinitions="56,1,*" ColumnDefinitions="300,380,1,*" Padding="0" BackgroundColor="White">
+        
+        <Grid HeightRequest="64"
+              Grid.ColumnSpan="4"
+              Padding="16,10"
+              ColumnDefinitions="Auto,*,Auto">
+
+            <!-- New Mail -->
+            <buttons:SfButton Grid.Column="0"
+                              Command="{Binding NewMailCommand}"
+                              Background="#106EBE"
+                              CornerRadius="6"
+                              HeightRequest="44"
+                              WidthRequest="120"
+                              HorizontalTextAlignment="Center"
+                              Padding="16,6">
+
+                <buttons:SfButton.Content>
+                    <DataTemplate>
+                        <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                         <!--Compose Icon--> 
+                        <Label FontFamily="MauiMaterialAssets"
+                               Text="&#xE756;"
+                               FontSize="18"
+                               TextColor="White"
+                               VerticalOptions="Center" />
+
+                         <!--Text--> 
+                        <Label Text="New Mail"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </DataTemplate>
+                </buttons:SfButton.Content>
+
+            </buttons:SfButton>
+
+            <!-- Search -->
+            <Border Grid.Column="1"
+                    Margin="24,0"
+                    BackgroundColor="White"
+                    Stroke="#D9D9D9"
+                    StrokeShape="RoundRectangle 6"
+                    HeightRequest="44"
+                    VerticalOptions="Center">
+
+                <Grid ColumnDefinitions="Auto,*"
+                      Padding="12,0">
+
+                    <Label Grid.Column="0"
+                           Text="&#xE715;"
+                           FontFamily="MauiMaterialAssets"
+                           FontSize="20"
+                           TextColor="#605E5C"
+                           VerticalOptions="Center"/>
+
+                    <controls:SfEntry Grid.Column="1"
+                                       Text="{Binding SearchQuery}"
+                                       Placeholder="Search Mail and People"
+                                       BackgroundColor="Transparent"
+                                       Margin="8,0"
+                                       VerticalOptions="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- User Profile -->
+            <HorizontalStackLayout Grid.Column="2"
+                           Spacing="10"
+                           VerticalOptions="Center">
+
+                <VerticalStackLayout IsVisible="{OnIdiom Default=true, Phone=false}">
+                    <Label Text="Kerry Best"
+                           FontSize="15"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                    <Label Text="kerry.best@contoso.com"
+                           FontSize="13"
+                           VerticalOptions="Center"/>
+                </VerticalStackLayout>
+                
+                <Border WidthRequest="36"
+                        HeightRequest="36"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 26">
+
+                    <Image Source="profile.png"
+                           Aspect="AspectFill"/>
+                </Border>
+            </HorizontalStackLayout>
         </Grid>
 
-        <Grid Grid.Column="1" Grid.ColumnSpan="2" BackgroundColor="#EAF4FE" ColumnDefinitions="Auto,Auto,*">
-            <HorizontalStackLayout IsVisible="{Binding IsComposing, Converter={StaticResource BooleanNegationConverter}}" Spacing="8" Padding="10,0">
-                <Button Text="+  New" Command="{Binding NewMailCommand}" BackgroundColor="Transparent" TextColor="Black" FontSize="16" />
-                <Button Text="Mark all as read" Command="{Binding MarkAllAsReadCommand}" BackgroundColor="Transparent" TextColor="Black" FontSize="16" />
-            </HorizontalStackLayout>
-            <HorizontalStackLayout Grid.Column="1" IsVisible="{Binding IsComposing}" Spacing="8" Padding="10,0" HorizontalOptions="End">
-                <Button Text="Send" Command="{Binding Composer.SendCommand}" BackgroundColor="Transparent" TextColor="Black" FontSize="16" />
-                <Button Text="Attach" Command="{Binding Composer.AttachCommand}" BackgroundColor="Transparent" TextColor="Black" FontSize="16" />
-                <Button Text="Discard" Command="{Binding CloseComposerCommand}" BackgroundColor="Transparent" TextColor="Black" FontSize="16" />
-            </HorizontalStackLayout>
-        </Grid>
+        <BoxView Grid.Row="1"
+                 Grid.ColumnSpan="4"
+                 HeightRequest="1"
+                 BackgroundColor="#E1DFDD"
+                 HorizontalOptions="Fill"
+                 VerticalOptions="Fill" />
 
-        <Border Grid.Row="1" BackgroundColor="#F4F4F4" StrokeThickness="0">
+        <Border Grid.Row="2" BackgroundColor="#F4F4F4" StrokeThickness="1">
             <syncfusion:SfTreeView ItemsSource="{Binding Folders}"
+                                   VerticalScrollBarVisibility="Never"
                                    ChildPropertyName="Children"
                                    AutoExpandMode="AllNodesExpanded"
                                    ExpandActionTarget="Node"
                                    ItemTemplateContextType="Item"
                                    SelectionBackground="#D7E8FB"
                                    SelectionMode="Single"
-                                   ItemHeight="44"
+                                   ItemHeight="34"
                                    SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
                 <syncfusion:SfTreeView.ItemTemplate>
                     <DataTemplate>
@@ -61,14 +146,14 @@
             </syncfusion:SfTreeView>
         </Border>
 
-        <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" StrokeThickness="0">
+        <Border Grid.Row="2" Grid.Column="1" BackgroundColor="White" StrokeThickness="1">
             <Grid RowDefinitions="Auto,*">
                 <Grid Padding="40,16,20,8" ColumnDefinitions="*,Auto">
-                    <Label Text="{Binding SelectedFolder.Name}" FontSize="30" VerticalOptions="Center" />
+                    <Label Text="{Binding SelectedFolder.Name}" FontSize="22" VerticalOptions="Center" />
                     <Picker Grid.Column="1" Title="Filter" ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" TextColor="{StaticResource PrimaryLight}" WidthRequest="110" VerticalOptions="Center" />
                 </Grid>
                 <Grid Grid.Row="1">
-                    <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" AutoFitMode="DynamicHeight" ItemSpacing="0" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" BackgroundColor="White">
+                    <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ScrollBarVisibility="Never" AutoFitMode="DynamicHeight" SelectionBackground="#D7E8FB" ItemSpacing="0" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" BackgroundColor="White">
                         <listview:SfListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid Padding="0,10" ColumnDefinitions="5,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="0" RowSpacing="6">
@@ -79,15 +164,15 @@
                                             </DataTrigger>
                                         </BoxView.Triggers>
                                     </BoxView>
-                                    <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="20" TextColor="#222222" />
-                                    <Label Grid.Row="1" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Subject}" FontSize="15" TextColor="#2F8FE0" LineBreakMode="TailTruncation">
+                                    <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="16" TextColor="#222222" />
+                                    <Label Grid.Row="1" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Subject}" FontSize="14" TextColor="#2F8FE0" LineBreakMode="TailTruncation">
                                         <Label.Triggers>
                                             <DataTrigger TargetType="Label" Binding="{Binding IsRead}" Value="True">
                                                 <Setter Property="TextColor" Value="#222222" />
                                             </DataTrigger>
                                         </Label.Triggers>
                                     </Label>
-                                    <Label Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" FontSize="15" TextColor="#2F8FE0" />
+                                    <Label Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" FontSize="14" TextColor="#2F8FE0" />
                                     <Label Grid.Row="2" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Preview}" FontSize="14" TextColor="#777777" LineBreakMode="TailTruncation" />
                                     <Label Grid.Row="2" Grid.Column="2" Margin="0,0,10,0" FontFamily="MauiMaterialAssets" Text="&#xE838;" FontSize="18" TextColor="#F2B01E" Opacity="0.25">
                                         <Label.Triggers>
@@ -108,7 +193,14 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" Grid.Column="2" BackgroundColor="White">
+        <BoxView Grid.Row="2"
+                 Grid.Column="2"
+                 WidthRequest="1"
+                 BackgroundColor="#E1DFDD"
+                 HorizontalOptions="Fill"
+                 VerticalOptions="Fill" />
+
+        <Grid Grid.Row="2" Grid.Column="3" BackgroundColor="White">
             <Grid IsVisible="{Binding IsComposing}" Padding="24,28,24,16" RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="12" ColumnDefinitions="60,*" ColumnSpacing="10">
                 <Label Text="To" VerticalOptions="Center" HorizontalOptions="Center" FontSize="16" BackgroundColor="#EEEEEE" HeightRequest="46" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="60" />
                 <Entry Grid.Column="1" Text="{Binding Composer.To, Mode=TwoWay}" />
@@ -124,7 +216,7 @@
 
             <Grid IsVisible="{Binding IsComposing, Converter={StaticResource BooleanNegationConverter}}">
                 <VerticalStackLayout IsVisible="{Binding HasSelectedMessage, Converter={StaticResource BooleanNegationConverter}}" VerticalOptions="Center" HorizontalOptions="Center" Spacing="16">
-                    <Label FontFamily="MauiMaterialAssets" Text="&#xE0BE;" FontSize="110" TextColor="#2F8FE0" HorizontalOptions="Center" />
+                    <Label FontFamily="MauiMaterialAssets" Text="&#xE717;" FontSize="80" TextColor="#2F8FE0" HorizontalOptions="Center" />
                     <Label Text="Choose a message to read it." FontSize="22" HorizontalOptions="Center" />
                 </VerticalStackLayout>
                 <ScrollView IsVisible="{Binding HasSelectedMessage}">
@@ -140,7 +232,7 @@
                             </VerticalStackLayout>
                         </Grid>
                         <Label Text="Hi Kerry Best," FontSize="16" FontAttributes="Bold" />
-                        <Label Text="{Binding SelectedMessage.Body}" FontSize="16" LineBreakMode="WordWrap" />
+                        <Label Text="{Binding SelectedMessage.Body}" FontSize="14" LineBreakMode="WordWrap" LineHeight="2" CharacterSpacing="0.5"/>
                         <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="10" Padding="0,10,0,0">
                             <Label Text="To" FontAttributes="Bold" FontSize="16" />
                             <Label Grid.Column="1" Text="{Binding SelectedMessage.Recipients}" FontSize="16" />

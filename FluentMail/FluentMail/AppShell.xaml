@@ -3,19 +3,5 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:FluentMail.Views"
        x:Class="FluentMail.AppShell">
-    <FlyoutItem Title="Mail">
-        <ShellContent ContentTemplate="{DataTemplate views:MailWorkspacePage}" />
-    </FlyoutItem>
-    <FlyoutItem Title="Drafts">
-        <ShellContent ContentTemplate="{DataTemplate views:DraftWorkspacePage}" />
-    </FlyoutItem>
-    <FlyoutItem Title="Archive">
-        <ShellContent ContentTemplate="{DataTemplate views:ArchivePage}" />
-    </FlyoutItem>
-    <FlyoutItem Title="Deleted">
-        <ShellContent ContentTemplate="{DataTemplate views:DeletedItemsPage}" />
-    </FlyoutItem>
-    <FlyoutItem Title="Compose">
-        <ShellContent ContentTemplate="{DataTemplate views:ComposePage}" />
-    </FlyoutItem>
+    <ShellContent ContentTemplate="{DataTemplate views:MailWorkspacePage}" />
 </Shell>

@@ -14,7 +14,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public ObservableCollection<FolderNode> Folders => mailbox.Folders;
     public IReadOnlyList<string> FilterOptions { get; } = ["All", "Unread", "Flagged", "With attachments"];
-    public MailAccount CurrentAccount { get; } = new() { DisplayName = "Andrew Fuller", Email = "andrew.fuller@contoso.com" };
+    public MailAccount CurrentAccount { get; } = new() { DisplayName = "Kerry Best", Email = "kerry.best@contoso.com" };
 
     [ObservableProperty]
     private FolderNode? selectedFolder;

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
              xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              xmlns:vm="clr-namespace:FluentMail.ViewModels"
              x:Class="FluentMail.Views.ComposePage"
              x:DataType="vm:ComposeViewModel"
@@ -18,7 +19,7 @@
             <inputs:SfAutocomplete Text="{Binding RecipientSearch}" ItemsSource="{Binding RecipientSuggestions}" SuggestionMode="Contains" DisplayMemberPath="Name" />
             <Button Text="Add selected recipient" Command="{Binding AddRecipientCommand}" CommandParameter="{Binding RecipientSuggestions[0]}" />
             <listview:SfListView ItemsSource="{Binding RecipientChips}" HeightRequest="90" />
-            <Entry Text="{Binding Subject}" Placeholder="Subject" />
+            <controls:SfEntry Text="{Binding Subject}" Placeholder="Subject" />
             <Editor Text="{Binding Body}" AutoSize="TextChanges" HeightRequest="180" />
             <listview:SfListView ItemsSource="{Binding Attachments}" HeightRequest="120" />
             <HorizontalStackLayout Spacing="12">
