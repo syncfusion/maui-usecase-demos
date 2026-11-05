@@ -106,7 +106,7 @@ Or open `PatientCare/PatientCare.slnx` in Visual Studio / VS Code, restore packa
 
 ## Output
 
-A demo recording of the sample is included in the repository: `patient-care-demo.mp4` — it walks through the splash page, dashboard with charts and care alerts, patient search and details, the day-view scheduler, and care plan progress.
+![Patient care demo](patient-care-demo.mp4)
 
 ## Project Structure
 
