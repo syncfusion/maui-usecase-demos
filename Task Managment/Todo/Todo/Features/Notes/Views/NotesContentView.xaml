@@ -40,7 +40,7 @@
                   Padding="20,14"
                   ColumnDefinitions="Auto,*,Auto">
                 <Border Grid.Column="0"
-                        Padding="4,2"
+                        Padding="8,4"
                         BackgroundColor="Transparent"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 8"
@@ -50,7 +50,9 @@
                                                   PointerExited="OnPointerExited" />
                         <TapGestureRecognizer Command="{Binding RenameSelectedListCommand}" />
                     </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <HorizontalStackLayout Spacing="10"
+                                            VerticalOptions="Center"
+                                            InputTransparent="True">
                         <Label WidthRequest="20" HeightRequest="20" FontSize="20" FontFamily="MaterialIconRegular"
                                VerticalTextAlignment="Center" HorizontalTextAlignment="Center">
                             <Label.Triggers>
