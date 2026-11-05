@@ -51,8 +51,7 @@
                         <TapGestureRecognizer Command="{Binding RenameSelectedListCommand}" />
                     </Border.GestureRecognizers>
                     <HorizontalStackLayout Spacing="10"
-                                            VerticalOptions="Center"
-                                            InputTransparent="True">
+                                            VerticalOptions="Center">
                         <Label WidthRequest="20" HeightRequest="20" FontSize="20" FontFamily="MaterialIconRegular"
                                VerticalTextAlignment="Center" HorizontalTextAlignment="Center">
                             <Label.Triggers>
