@@ -46,8 +46,6 @@
                         StrokeShape="RoundRectangle 8"
                         VerticalOptions="Center">
                     <Border.GestureRecognizers>
-                        <PointerGestureRecognizer PointerEntered="OnPointerEntered"
-                                                  PointerExited="OnPointerExited" />
                         <TapGestureRecognizer Command="{Binding RenameSelectedListCommand}" />
                     </Border.GestureRecognizers>
                     <HorizontalStackLayout Spacing="10"
@@ -95,7 +93,7 @@
                                       WidthRequest="40"
                                       HeightRequest="40"
                                       Padding="0"
-                                      Rotation="90"
+                                      Rotation="90" Margin="5,0,0,0"
                                       CornerRadius="20"
                                       Background="Transparent"
                                       TextColor="{Binding HeaderForegroundColor}"
@@ -345,8 +343,8 @@
                                                                       PointerExited="OnPointerExited" />
                                         </Border.GestureRecognizers>
                                         <buttons:SfButton Text="&#8943;"
-                                                          FontSize="22"
-                                                          Rotation="90"
+                                                          FontSize="22" Margin="5,0,0,0"
+                                                          Rotation="90" 
                                                           Background="Transparent"
                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                                           WidthRequest="40"
