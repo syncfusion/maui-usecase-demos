@@ -1,15 +1,15 @@
-# Stock Chart — .NET MAUI Use Case Sample
+# Stock Chart: .NET MAUI Use Case Sample
 
-A realistic stock-portfolio viewer built with **Syncfusion .NET MAUI controls**, demonstrating how to build a production-style financial charting experience — watchlists, multiple chart types, trendlines, and interactive range navigation — using self-contained local market data.
+A realistic stock-portfolio viewer built with **Syncfusion .NET MAUI controls**, demonstrating how to build a production-style financial charting experience with watchlists, multiple chart types, trendlines, and interactive range navigation using self-contained local market data.
 
 ## Overview
 
 Investors want to track a watchlist of stocks, switch between chart types, spot trends, and zoom into specific date ranges. This sample shows how to build that experience with .NET MAUI and Syncfusion controls:
 
-- **What the sample does** — Displays daily OHLCV price data for 7 stocks across 10 chart types with 6 trendline options, time-range filtering (including a custom date range), and full watchlist management (create, edit, delete, favorite, add/remove stocks).
-- **Who it is for** — Developers building financial dashboards, analytics viewers, or any data-visualization-heavy MAUI app.
-- **What it demonstrates** — Advanced use of `SfCartesianChart` (series, trendlines, tooltip, trackball, zoom & pan), `SfRangeSelector`, `SfPopup`, `SfTabView`, `SfComboBox`, `SfCalendar`, and `SfButton` in a single MVVM app.
-- **What outcome the user gets** — A complete, cross-platform stock chart viewer that runs locally with no backend, network calls, or credentials required.
+- **What the sample does**: Displays daily OHLCV price data for 7 stocks across 10 chart types with 6 trendline options, time-range filtering (including a custom date range), and full watchlist management (create, edit, delete, favorite, add/remove stocks).
+- **Who it is for**: Developers building financial dashboards, analytics viewers, or any data-visualization-heavy MAUI app.
+- **What it demonstrates**: Advanced use of `SfCartesianChart` (series, trendlines, tooltip, trackball, zoom & pan), `SfRangeSelector`, `SfPopup`, `SfTabView`, `SfComboBox`, `SfCalendar`, and `SfButton` in a single MVVM app.
+- **What outcome the user gets**: A complete, cross-platform stock chart viewer that runs locally with no backend, network calls, or credentials required.
 
 ## Key Features
 
@@ -28,30 +28,30 @@ Investors want to track a watchlist of stocks, switch between chart types, spot 
 3. The user selects a stock or watchlist, switches chart type/trendline, or applies a time range (preset or custom dates).
 4. The ViewModel recomputes the filtered series and the chart, trendlines, and range selector re-render.
 5. Popup dialogs (settings, add-stock, watchlist CRUD, disclaimers) collect further input and update the ViewModel.
-6. All data stays local — no network calls, retries, or fallbacks are needed.
+6. All data stays local: no network calls, retries, or fallbacks are needed.
 
 ## Controls Used
 
-- `SfCartesianChart` (Charts) — Main price chart: candle/OHLC/HiLo/area/line/column/step series, tooltip, trackball, zoom & pan.
-- Trendlines (Charts) — Linear, exponential, logarithmic, polynomial, power, and moving-average trendlines.
-- `SfRangeSelector` (Sliders) — Interactive chart range selection below the chart.
-- `SfPopup` (Popup) — Settings, disclaimer, add-stock, watchlist CRUD, and confirmation dialogs.
-- `SfTabView` (TabView) — Stocks / watchlist view switching.
-- `SfComboBox` (Inputs) — Watchlist selector and stock search.
-- `SfCalendar` (Calendar) — Custom start/end date selection.
-- `SfButton` / `SfRadioButton` (Buttons) — Dialog actions, toolbar, menu, and settings options.
-- `SfBusyIndicator` (Core) — Loading feedback while data is prepared.
-- `SfChipGroup` / `SfTextInputLayout` (Core) — Quick filters and styled text input.
+- `SfCartesianChart` (Charts): Main price chart with candle/OHLC/HiLo/area/line/column/step series, tooltip, trackball, zoom & pan.
+- Trendlines (Charts): Linear, exponential, logarithmic, polynomial, power, and moving-average trendlines.
+- `SfRangeSelector` (Sliders): Interactive chart range selection below the chart.
+- `SfPopup` (Popup): Settings, disclaimer, add-stock, watchlist CRUD, and confirmation dialogs.
+- `SfTabView` (TabView): Stocks / watchlist view switching.
+- `SfComboBox` (Inputs): Watchlist selector and stock search.
+- `SfCalendar` (Calendar): Custom start/end date selection.
+- `SfButton` / `SfRadioButton` (Buttons): Dialog actions, toolbar, menu, and settings options.
+- `SfBusyIndicator` (Core): Loading feedback while data is prepared.
+- `SfChipGroup` / `SfTextInputLayout` (Core): Quick filters and styled text input.
 
 ## Architecture
 
 The sample follows the MVVM pattern using the **CommunityToolkit.Mvvm** library:
 
-- **View** — `MainPage.xaml` plus partial code-behind files (`MainPage.ChartSurface.cs`, `MainPage.MobileLayout.cs`, `MainPage.PopupWorkflows.cs`); code-behind contains only view concerns (popup show/hide, breakpoint layout, gesture handling).
-- **ViewModels** — `StockChartViewModel*.cs` files with commands (`[RelayCommand]`) and observable state (`[ObservableProperty]`); all business logic (filtering, watchlist operations, series creation, range math) lives here, along with `ChartSettingsViewModel` and `TrendlineViewModel`.
-- **Services** — `StockDataService.cs` loads and validates stock data from bundled JSON (no network calls).
-- **Models** — `StockModel`, `CandleDataModel`, `WatchlistModel`, and selection models.
-- **Supporting components** — `Helpers/PopupPresentation.cs` (popup sizing/positioning/theming shared by all `SfPopup` instances) and `Converters/`.
+- **View**: `MainPage.xaml` plus partial code-behind files (`MainPage.ChartSurface.cs`, `MainPage.MobileLayout.cs`, `MainPage.PopupWorkflows.cs`); code-behind contains only view concerns (popup show/hide, breakpoint layout, gesture handling).
+- **ViewModels**: `StockChartViewModel*.cs` files with commands (`[RelayCommand]`) and observable state (`[ObservableProperty]`); all business logic (filtering, watchlist operations, series creation, range math) lives here, along with `ChartSettingsViewModel` and `TrendlineViewModel`.
+- **Services**: `StockDataService.cs` loads and validates stock data from bundled JSON (no network calls).
+- **Models**: `StockModel`, `CandleDataModel`, `WatchlistModel`, and selection models.
+- **Supporting components**: `Helpers/PopupPresentation.cs` (popup sizing/positioning/theming shared by all `SfPopup` instances) and `Converters/`.
 
 Data flows from the bundled JSON → `StockDataService` → ViewModel observable state → bound chart/list/popup views.
 
@@ -60,7 +60,7 @@ Data flows from the bundled JSON → `StockDataService` → ViewModel observable
 - .NET 10 SDK
 - .NET MAUI workload (plus platform workloads for Android, iOS, Mac Catalyst, or Windows)
 - Visual Studio 2022 (17.14+) or VS Code with the MAUI extension
-- Syncfusion .NET MAUI packages (v34.2.7) — restored automatically from NuGet; a Syncfusion license is required (see below)
+- Syncfusion .NET MAUI packages (v34.2.7): restored automatically from NuGet; a Syncfusion license is required (see below)
 
 ## Configuration
 
@@ -68,7 +68,7 @@ No configuration is required. All market data is fictional sample data bundled w
 
 ### Default Behavior
 
-- **Local/offline logic** — the sample is fully self-contained and runs without any network access. No authentication, backend services, or market data feeds are used.
+- **Local/offline logic**: the sample is fully self-contained and runs without any network access. No authentication, backend services, or market data feeds are used.
 
 ### Environment Variables / Secrets
 
@@ -107,13 +107,13 @@ Or open `StockChart/StockChart.slnx` in Visual Studio or VS Code, restore packag
 
 ## Project Structure
 
-- `Views` (MainPage + partials) — UI, chart surface, mobile layout, and popup workflows
-- `ViewModels/` — presentation logic and commands
-- `Models/` — stock, candle, and watchlist data structures
-- `Services/` — stock data loading from bundled JSON
-- `Helpers/` — shared popup presentation rules
-- `Converters/` — XAML value converters
-- `Resources/` — styles, fonts, images, and bundled raw stock data (`Resources/Raw/Stocks/`)
+- `Views` (MainPage + partials): UI, chart surface, mobile layout, and popup workflows
+- `ViewModels/`: presentation logic and commands
+- `Models/`: stock, candle, and watchlist data structures
+- `Services/`: stock data loading from bundled JSON
+- `Helpers/`: shared popup presentation rules
+- `Converters/`: XAML value converters
+- `Resources/`: styles, fonts, images, and bundled raw stock data (`Resources/Raw/Stocks/`)
 
 ## Troubleshooting
 
