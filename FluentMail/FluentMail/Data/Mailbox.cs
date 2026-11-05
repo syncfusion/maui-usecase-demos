@@ -30,12 +30,12 @@ public class Mailbox
 
     int CountFor(string folder) => folder switch
     {
-        "Inbox" => Inbox.Count(x => !x.IsRead),
+        "Inbox" => Inbox.Count(x => x.Folder == "Inbox" && !x.IsRead),
         "Sent Items" => SentItems.Count,
         "Drafts" => Drafts.Count,
         "Archive" => Archive.Count,
         "Deleted" or "Deleted Items" => Deleted.Count,
-        _ => Inbox.Count(x => x.Subject.Contains(folder, StringComparison.OrdinalIgnoreCase) || x.Preview.Contains(folder, StringComparison.OrdinalIgnoreCase))
+        _ => Inbox.Count(x => x.Folder == folder && !x.IsRead)
     };
 
     void SetCount(string folder, int count)
@@ -52,11 +52,10 @@ public class Mailbox
 
     public IEnumerable<MailMessage> GetMessages(string folder) => folder switch
     {
-        "Inbox" => Inbox,
         "Sent Items" => SentItems,
         "Drafts" => Drafts,
         "Archive" => Archive,
         "Deleted" or "Deleted Items" => Deleted,
-        _ => Inbox
+        _ => Inbox.Where(x => x.Folder == folder)
     };
 }

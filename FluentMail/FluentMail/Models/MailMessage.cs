@@ -13,6 +13,7 @@ public partial class MailMessage : ObservableObject
     public string Body { get; set; } = string.Empty;
     public string Recipients { get; set; } = string.Empty;
     public string Cc { get; set; } = string.Empty;
+    public string Greeting { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public bool HasAttachments { get; set; }
 

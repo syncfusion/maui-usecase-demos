@@ -65,6 +65,8 @@ public static class MockData
             ("Camila Torres", "camila.torres@contoso.com", "Release notes draft", "I've drafted the release notes for the product update.", false, false),
         };
 
+        string[] categories = ["Personnel", "Sales Reports", "Inbox", "My Team", "Personnel", "Marketing Reports", "Clutter", "Junk Mail", "Sales Reports", "Marketing Reports"];
+
         for (var i = 0; i < 50; i++)
         {
             var item = inbox[i % inbox.Length];
@@ -81,7 +83,7 @@ public static class MockData
             mailbox.Inbox.Add(new MailMessage
             {
                 Id = $"inbox-{i + 1}",
-                Folder = "Inbox",
+                Folder = i % 3 == 0 ? categories[i % inbox.Length] : "Inbox",
                 Sender = item.Item1,
                 SenderEmail = item.Item2,
                 Subject = subject,
@@ -215,6 +217,13 @@ public static class MockData
         mailbox.Contacts.Add(new MailContact { Name = "Liam Patel", Email = "liam.patel@contoso.com" });
         mailbox.Contacts.Add(new MailContact { Name = "Sophia Garcia", Email = "sophia.garcia@contoso.com" });
         mailbox.Attachments.Add(new AttachmentInfo { FileName = "Proposal.pdf", FileType = "PDF", FileSize = 218000 });
+        foreach (var message in mailbox.Inbox.Concat(mailbox.SentItems).Concat(mailbox.Drafts).Concat(mailbox.Archive).Concat(mailbox.Deleted))
+        {
+            var local = message.Recipients.Split(',')[0].Trim().Split('@')[0];
+            var name = string.Join(' ', local.Split('.', StringSplitOptions.RemoveEmptyEntries).Select(x => char.ToUpper(x[0]) + x[1..]));
+            message.Greeting = $"Hi {name},";
+        }
+
         mailbox.RefreshCounts();
         return mailbox;
     }
