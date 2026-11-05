@@ -41,6 +41,10 @@ public partial class PropertyPanelControl : ContentView
         {
             if (BindingContext is PropertyPanelViewModel vm)
             {
+                // Idempotent: BindingContext can be re-applied (e.g. when the host
+                // page re-appears) and a duplicate subscription would rebuild the
+                // panel twice per refresh.
+                vm.PropertyChanged -= OnVmPropertyChanged;
                 vm.PropertyChanged += OnVmPropertyChanged;
                 BuildSections();
             }

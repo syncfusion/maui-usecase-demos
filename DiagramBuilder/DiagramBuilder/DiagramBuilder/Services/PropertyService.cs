@@ -157,6 +157,27 @@ public class PropertyService : IPropertyService
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color), Editor = PropertyEditorKind.Color, PairIndex = 0, PairCount = 2 });
         }
+        else if (element is Connector connector)
+        {
+            // CONNECTOR — no position/size (its geometry is derived from the two
+            // endpoints), so the panel shows line style, colour, thickness and the
+            // label's text properties.
+            var style = connector.Style as ShapeStyle;
+
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorKeyFor(style?.StrokeColor), Editor = PropertyEditorKind.Color, PairIndex = 1, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, PairIndex = 2, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Opacity", LabelKey = AppStrings.PropertyOpacity, Value = (style?.Opacity ?? 1.0) * 100.0, Min = 0, Max = 100, Editor = PropertyEditorKind.Slider, Scale = 0.01 });
+
+            var annotation = connector.Annotations.OfType<PathAnnotation>().FirstOrDefault();
+            var textStyle = annotation?.Style;
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "Text", LabelKey = AppStrings.PropertyTextContent, Value = annotation?.Content, Editor = PropertyEditorKind.Text, IsFullWidth = true });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontFamily", LabelKey = AppStrings.PropertyFontFamily, Value = textStyle?.FontFamily ?? "Arial", Editor = PropertyEditorKind.Combo, Options = FontFamilyOptions, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color), Editor = PropertyEditorKind.Color, PairIndex = 0, PairCount = 2 });
+        }
 
         return result;
     }

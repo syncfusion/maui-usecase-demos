@@ -46,6 +46,15 @@ public partial class DiagramDesignerPage : ContentPage
         // discovery succeeds regardless of how the host page is laid out.
         WireWorkspace(Workspace);
 
+        // Template-loaded wiring is constructor-scoped (never torn down): pushing
+        // the Create-Diagram modal fires this page's OnDisappearing immediately
+        // after OnAppearing, which would unsubscribe the handler below before the
+        // user ever picks a template. With no listener, PropertyService.Track is
+        // never called, every Read() returns no rows and the property panel
+        // renders empty sections. The page is transient, so the subscription is
+        // released with the page itself (same lifetime policy as DocumentLoaded).
+        Workspace.TemplateLoaded += OnTemplateLoaded;
+
         // Mirror the shared Stencil VM palette groups into the native SymbolPalette
         // (inside the workspace control). Syncfusion's JS bridge caches the Palettes
         // reference at initialisation, so the collection must be ASSIGNED to
@@ -147,9 +156,6 @@ public partial class DiagramDesignerPage : ContentPage
         _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
         _viewModel.Zoom.PropertyChanged += _zoomSubscription;
 
-        Workspace.TemplateLoaded -= OnTemplateLoaded;
-        Workspace.TemplateLoaded += OnTemplateLoaded;
-
         if (_dialogShown)
         {
             return;
@@ -165,7 +171,8 @@ public partial class DiagramDesignerPage : ContentPage
         // Symmetric teardown for page-scoped UI subscriptions only. Service-level
         // subscriptions are kept (see OnAppearing for the rationale) so a
         // DocumentLoaded event fired while the modal is up still reaches the page.
-        Workspace.TemplateLoaded -= OnTemplateLoaded;
+        // TemplateLoaded is likewise constructor-scoped (see the ctor) — a template
+        // load must reach PropertyService.Track even while the modal is up.
         _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
     }
 }
