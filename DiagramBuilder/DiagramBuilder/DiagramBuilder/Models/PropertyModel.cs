@@ -60,6 +60,12 @@ public class PropertyModel
     /// a 0-1 value, so the panel scales it by 0.01 on the way out and back in.
     /// </summary>
     public double Scale { get; set; } = 1.0;
+
+    /// <summary>
+    /// True when the value is a whole number, so the numeric editor shows it
+    /// without decimals (rotation, font size, border thickness).
+    /// </summary>
+    public bool IsInteger { get; set; }
 }
 
 /// <summary>

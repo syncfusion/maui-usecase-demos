@@ -33,6 +33,21 @@ public class PropertyService : IPropertyService
         }
     }
 
+    public void TrackAdded(object element)
+    {
+        switch (element)
+        {
+            case Node node when !string.IsNullOrEmpty(node.Id):
+                _tracked[node.Id] = node;
+                break;
+            case Connector connector when !string.IsNullOrEmpty(connector.Id):
+                _tracked[connector.Id] = connector;
+                break;
+        }
+    }
+
+    public void Untrack(string elementId) => _tracked.Remove(elementId);
+
     public void Apply(string elementId, PropertyModel property)
     {
         if (!_tracked.TryGetValue(elementId, out var element))
@@ -117,11 +132,11 @@ public class PropertyService : IPropertyService
         {
             // DIMENSIONS — the design pairs the fields two-per-row (X | Y, W | H)
             // with a single-letter prefix rendered inside each editor.
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionX", LabelKey = AppStrings.PropertyPositionX, PrefixKey = "X", Value = node.OffsetX, Min = 0, Editor = PropertyEditorKind.Number, PairIndex = 0, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionY", LabelKey = AppStrings.PropertyPositionY, PrefixKey = "Y", Value = node.OffsetY, Min = 0, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Width", LabelKey = AppStrings.PropertyWidth, PrefixKey = "W", Value = node.Width, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, PairIndex = 0, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Height", LabelKey = AppStrings.PropertyHeight, PrefixKey = "H", Value = node.Height, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Rotation", LabelKey = AppStrings.PropertyRotation, PrefixKey = "R", Value = node.RotationAngle, Min = 0, Max = 360, Editor = PropertyEditorKind.Number, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionX", LabelKey = AppStrings.PropertyPositionX, PrefixKey = "X", Value = node.OffsetX, Min = 0, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionY", LabelKey = AppStrings.PropertyPositionY, PrefixKey = "Y", Value = node.OffsetY, Min = 0, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Width", LabelKey = AppStrings.PropertyWidth, PrefixKey = "W", Value = node.Width, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Height", LabelKey = AppStrings.PropertyHeight, PrefixKey = "H", Value = node.Height, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Rotation", LabelKey = AppStrings.PropertyRotation, PrefixKey = "R", Value = node.RotationAngle, Min = 0, Max = 360, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 0, PairCount = 2 });
 
             var style = node.Style as ShapeStyle;
 
@@ -137,7 +152,7 @@ public class PropertyService : IPropertyService
             // one row, each under its own caption.
             result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 3 });
             result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorKeyFor(style?.StrokeColor), Editor = PropertyEditorKind.Color, PairIndex = 1, PairCount = 3 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, PairIndex = 2, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 2, PairCount = 3 });
 
             // OPACITY — ShapeStyle.Opacity is the only opacity the control exposes and it
             // applies to the whole element (fill + stroke together), so a single row is shown.
@@ -150,7 +165,7 @@ public class PropertyService : IPropertyService
             // TEXT — the design lays out font family / size and the alignment
             // dropdowns two-per-row, then a bold/italic toggle row.
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontFamily", LabelKey = AppStrings.PropertyFontFamily, Value = textStyle?.FontFamily ?? "Arial", Editor = PropertyEditorKind.Combo, Options = FontFamilyOptions, PairIndex = 0, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "HorizontalAlignment", LabelKey = AppStrings.PropertyHorizontalAlign, Value = HorizontalKeyFor(annotation?.HorizontalAlignment), Editor = PropertyEditorKind.Combo, Options = HorizontalAlignOptions, PairIndex = 0, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "VerticalAlignment", LabelKey = AppStrings.PropertyVerticalAlign, Value = VerticalKeyFor(annotation?.VerticalAlignment), Editor = PropertyEditorKind.Combo, Options = VerticalAlignOptions, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 0, PairCount = 2 });
@@ -166,14 +181,14 @@ public class PropertyService : IPropertyService
 
             result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 3 });
             result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorKeyFor(style?.StrokeColor), Editor = PropertyEditorKind.Color, PairIndex = 1, PairCount = 3 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, PairIndex = 2, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 2, PairCount = 3 });
             result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Opacity", LabelKey = AppStrings.PropertyOpacity, Value = (style?.Opacity ?? 1.0) * 100.0, Min = 0, Max = 100, Editor = PropertyEditorKind.Slider, Scale = 0.01 });
 
             var annotation = connector.Annotations.OfType<PathAnnotation>().FirstOrDefault();
             var textStyle = annotation?.Style;
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "Text", LabelKey = AppStrings.PropertyTextContent, Value = annotation?.Content, Editor = PropertyEditorKind.Text, IsFullWidth = true });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontFamily", LabelKey = AppStrings.PropertyFontFamily, Value = textStyle?.FontFamily ?? "Arial", Editor = PropertyEditorKind.Combo, Options = FontFamilyOptions, PairIndex = 0, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 0, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color), Editor = PropertyEditorKind.Color, PairIndex = 0, PairCount = 2 });

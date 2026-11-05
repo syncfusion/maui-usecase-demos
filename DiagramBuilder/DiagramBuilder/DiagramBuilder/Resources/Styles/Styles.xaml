@@ -292,8 +292,9 @@
     <Style x:Key="PropertyCaptionStyle" TargetType="Label">
         <Setter Property="FontSize" Value="11" />
         <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
-        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="Margin" Value="0,0,0,3" />
         <Setter Property="VerticalOptions" Value="End" />
+        <Setter Property="LineBreakMode" Value="TailTruncation" />
     </Style>
 
     <!-- Flyout menu item row: 32 px tall, hover highlight. -->
