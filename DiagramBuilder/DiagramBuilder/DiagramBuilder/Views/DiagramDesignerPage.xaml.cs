@@ -12,6 +12,7 @@ public partial class DiagramDesignerPage : ContentPage
     private readonly DiagramDesignerViewModel _viewModel;
     private readonly IDiagramService _diagramService;
     private readonly IPropertyService _propertyService;
+    private readonly IPageSettingsService _pageSettings;
     private readonly CreateDiagramPage _createDiagramPage;
     private readonly Views.Dialogs.ExportDialog _exportDialog;
     private readonly ContentPage _exportDialogHost;
@@ -22,6 +23,7 @@ public partial class DiagramDesignerPage : ContentPage
         DiagramDesignerViewModel viewModel,
         IDiagramService diagramService,
         IPropertyService propertyService,
+        IPageSettingsService pageSettings,
         CreateDiagramPage createDiagramPage,
         Views.Dialogs.ExportDialog exportDialog)
     {
@@ -30,6 +32,7 @@ public partial class DiagramDesignerPage : ContentPage
         _viewModel = viewModel;
         _diagramService = diagramService;
         _propertyService = propertyService;
+        _pageSettings = pageSettings;
         _createDiagramPage = createDiagramPage;
         _exportDialog = exportDialog;
         _exportDialog.BindingContext = viewModel.Export;
@@ -61,6 +64,10 @@ public partial class DiagramDesignerPage : ContentPage
         // property rows and the panel renders empty sections.
         Workspace.ElementAdded += OnElementChanged;
         Workspace.ElementsReset += OnElementsReset;
+
+        // Page settings (format, orientation, canvas background) are applied to
+        // the live diagram whenever they change.
+        _pageSettings.Changed += OnPageSettingsChanged;
 
         // Mirror the shared Stencil VM palette groups into the native SymbolPalette
         // (inside the workspace control). Syncfusion's JS bridge caches the Palettes
@@ -137,6 +144,15 @@ public partial class DiagramDesignerPage : ContentPage
         {
             _propertyService.Untrack(payload.ElementId);
         }
+    }
+
+    /// <summary>Pushes the drawing-area settings onto the live diagram.</summary>
+    private void OnPageSettingsChanged(object? sender, EventArgs e)
+    {
+        Workspace.ApplyPageSettings(
+            _pageSettings.BackgroundColorKey,
+            _pageSettings.Format,
+            _pageSettings.IsPortrait);
     }
 
     /// <summary>Clears the tracked set when the diagram's collections are reset.</summary>

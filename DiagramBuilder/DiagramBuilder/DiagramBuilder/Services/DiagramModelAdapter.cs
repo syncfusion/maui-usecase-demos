@@ -118,11 +118,22 @@ public static class DiagramModelAdapter
             return;
         }
 
+        var horizontal = ToHorizontalAlignment(shape.HorizontalAlignment);
+        var vertical = ToVerticalAlignment(shape.VerticalAlignment);
+
+        // The offset must match the alignment: Syncfusion's MAUI wrapper writes
+        // the annotation offset as an {x, y} object while the underlying EJ2
+        // diagram expects a single 0-1 fraction, and derives the label position
+        // from it. Writing the matching fraction keeps the label on the side the
+        // user asked for (see PropertyService.ApplyTextAlignment).
         var annotation = new ShapeAnnotation
         {
             Content = shape.Text,
-            HorizontalAlignment = ToHorizontalAlignment(shape.HorizontalAlignment),
-            VerticalAlignment = ToVerticalAlignment(shape.VerticalAlignment),
+            HorizontalAlignment = horizontal,
+            VerticalAlignment = vertical,
+            Offset = new Syncfusion.Maui.Diagram.DiagramPoint(
+                HorizontalFraction(horizontal),
+                VerticalFraction(vertical)),
         };
 
         if (double.IsFinite(shape.FontSize) && shape.FontSize > 0)
@@ -275,5 +286,21 @@ public static class DiagramModelAdapter
         "Bottom" => VerticalAlignment.Bottom,
         "Stretch" => VerticalAlignment.Stretch,
         _ => VerticalAlignment.Center,
+    };
+
+    /// <summary>Horizontal offset fraction that matches an alignment.</summary>
+    private static double HorizontalFraction(Syncfusion.Maui.Diagram.HorizontalAlignment alignment) => alignment switch
+    {
+        Syncfusion.Maui.Diagram.HorizontalAlignment.Left => 0.0,
+        Syncfusion.Maui.Diagram.HorizontalAlignment.Right => 1.0,
+        _ => 0.5,
+    };
+
+    /// <summary>Vertical offset fraction that matches an alignment.</summary>
+    private static double VerticalFraction(Syncfusion.Maui.Diagram.VerticalAlignment alignment) => alignment switch
+    {
+        Syncfusion.Maui.Diagram.VerticalAlignment.Top => 0.0,
+        Syncfusion.Maui.Diagram.VerticalAlignment.Bottom => 1.0,
+        _ => 0.5,
     };
 }

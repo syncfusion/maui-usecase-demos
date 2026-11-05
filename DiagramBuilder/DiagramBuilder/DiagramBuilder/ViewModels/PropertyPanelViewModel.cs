@@ -7,9 +7,16 @@ using DiagramBuilder.Services;
 namespace DiagramBuilder.ViewModels;
 
 /// <summary>
-/// Property inspector state: six <see cref="PropertyGroup"/> sections built via
-/// <see cref="IPropertyService.Read"/>, edits applied via <see cref="IPropertyService.Apply"/>,
-/// empty-state flag, auto-show on selection.
+/// Property inspector state. The panel has two modes:
+/// <list type="bullet">
+///   <item><see cref="PropertyTarget.Page"/> — nothing is selected, so the
+///   drawing-area properties (format, orientation, background) are shown.</item>
+///   <item><see cref="PropertyTarget.Shape"/> — a shape or connector is
+///   selected, so its own properties are shown.</item>
+/// </list>
+/// Rows come from <see cref="IPropertyService.Read"/> (shape) or
+/// <see cref="IPropertyService.ReadPage"/> (page); edits are applied via
+/// <see cref="IPropertyService.Apply"/>.
 /// </summary>
 public partial class PropertyPanelViewModel : ObservableObject
 {
@@ -21,35 +28,53 @@ public partial class PropertyPanelViewModel : ObservableObject
         _propertyService = propertyService;
     }
 
-    /// <summary>True when nothing is selected — drives the empty-state view.</summary>
+    /// <summary>True when nothing is selected — the panel shows the page settings.</summary>
     [ObservableProperty]
-    private bool isEmptyState = true;
+    private bool isPageMode = true;
+
+    /// <summary>What the panel is currently describing.</summary>
+    public PropertyTarget Target => IsPageMode ? PropertyTarget.Page : PropertyTarget.Shape;
 
     /// <summary>Title of the panel (from constants).</summary>
-    public string Title => AppStrings.PropertyPanelTitle;
-
-    /// <summary>Empty-state message (from constants).</summary>
-    public string EmptyStateText => AppStrings.PropertyEmptyState;
+    public string Title => IsPageMode ? AppStrings.PropertyPageSettingsTitle : AppStrings.PropertyPanelTitle;
 
     /// <summary>
     /// Sections shown in the panel, in display order. The INSERT group is
     /// intentionally omitted — its Insert Link / Insert Image actions are not
     /// implemented yet.
     /// </summary>
-    public IReadOnlyList<PropertyGroup> SectionGroups { get; } =
+    public IReadOnlyList<PropertyGroup> SectionGroups =>
+        IsPageMode ? PageSectionGroups : ShapeSectionGroups;
+
+    /// <summary>Section headers (from constants), keyed by <see cref="SectionGroups"/> order.</summary>
+    public IReadOnlyList<string> SectionTitles =>
+        IsPageMode ? PageSectionTitles : ShapeSectionTitles;
+
+    private static readonly IReadOnlyList<PropertyGroup> PageSectionGroups =
+    [
+        PropertyGroup.Format,
+        PropertyGroup.Orientation,
+        PropertyGroup.Background,
+    ];
+
+    private static readonly IReadOnlyList<string> PageSectionTitles =
+    [
+        AppStrings.PropertyPageFormat,
+        AppStrings.PropertyPageOrientation,
+        AppStrings.PropertyPageBackground,
+    ];
+
+    private static readonly IReadOnlyList<PropertyGroup> ShapeSectionGroups =
     [
         PropertyGroup.Dimensions,
-        PropertyGroup.Background,
         PropertyGroup.Fill,
         PropertyGroup.Border,
         PropertyGroup.Text,
     ];
 
-    /// <summary>Section headers (from constants), keyed by <see cref="SectionGroups"/> order.</summary>
-    public IReadOnlyList<string> SectionTitles { get; } =
+    private static readonly IReadOnlyList<string> ShapeSectionTitles =
     [
         AppStrings.PropertySectionDimensions,
-        AppStrings.PropertySectionBackground,
         AppStrings.PropertySectionFill,
         AppStrings.PropertySectionBorder,
         AppStrings.PropertySectionText,
@@ -62,16 +87,21 @@ public partial class PropertyPanelViewModel : ObservableObject
     private Dictionary<PropertyGroup, IReadOnlyList<PropertyModel>> _sections = [];
 
     /// <summary>
-    /// Rebuilds the panel for the selected element (or clears to empty state).
+    /// Rebuilds the panel. With a selected element the shape's properties are
+    /// shown; without one the drawing-area (page) properties are shown.
     /// </summary>
     public void Refresh(string? elementId)
     {
         _selectedElementId = elementId;
-        IsEmptyState = elementId is null;
-        _sections = elementId is null
-            ? []
-            : Enum.GetValues<PropertyGroup>()
-                .ToDictionary(g => g, g => (IReadOnlyList<PropertyModel>)_propertyService.Read(elementId).Where(p => p.Group == g).ToList());
+        IsPageMode = elementId is null;
+
+        var rows = elementId is null
+            ? _propertyService.ReadPage()
+            : _propertyService.Read(elementId);
+
+        _sections = Enum.GetValues<PropertyGroup>()
+            .ToDictionary(g => g, g => (IReadOnlyList<PropertyModel>)rows.Where(p => p.Group == g).ToList());
+
         OnPropertyChanged(nameof(Sections));
     }
 
@@ -83,7 +113,18 @@ public partial class PropertyPanelViewModel : ObservableObject
         {
             _propertyService.Apply(_selectedElementId, property);
         }
+        else
+        {
+            // Page properties apply to the drawing area.
+            _propertyService.Apply(string.Empty, property);
+        }
     }
 
-    partial void OnIsEmptyStateChanged(bool value) => OnPropertyChanged(nameof(Sections));
+    partial void OnIsPageModeChanged(bool value)
+    {
+        OnPropertyChanged(nameof(Target));
+        OnPropertyChanged(nameof(Title));
+        OnPropertyChanged(nameof(SectionGroups));
+        OnPropertyChanged(nameof(SectionTitles));
+    }
 }

@@ -27,6 +27,7 @@ namespace DiagramBuilder
             builder.Services.AddSingleton<ITemplateService, TemplateService>();
             builder.Services.AddSingleton<IExportService, MockExportService>();
             builder.Services.AddSingleton<ISelectionService, SelectionService>();
+            builder.Services.AddSingleton<IPageSettingsService, PageSettingsService>();
             builder.Services.AddSingleton<IPropertyService, PropertyService>();
             builder.Services.AddSingleton<IDialogService, DialogService>();
 

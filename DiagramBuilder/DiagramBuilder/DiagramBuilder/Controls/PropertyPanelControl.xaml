@@ -30,21 +30,14 @@
                                          Grid.Row="0"
                                          Title="{Binding Title}" />
 
-            <!-- Empty state (centered) -->
-            <VerticalStackLayout x:Name="EmptyState"
-                                 Grid.Row="1"
-                                 IsVisible="{Binding IsEmptyState}"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center"
-                                 Spacing="6">
-                <Label Style="{StaticResource PropertyEmptyTitleStyle}"
-                       Text="{Binding EmptyStateText}" />
-            </VerticalStackLayout>
-
-            <!-- Six sections, rebuilt from SectionTitles (AppStrings) in code-behind -->
+            <!--
+              The panel always has content: with a shape selected it shows that
+              shape's properties, with nothing selected it shows the drawing-area
+              (page) settings. Sections are rebuilt from SectionGroups /
+              SectionTitles (AppStrings) in code-behind.
+            -->
             <ScrollView x:Name="SectionsScroll"
-                        Grid.Row="1"
-                        IsVisible="{Binding IsEmptyState, Converter={StaticResource InvertBoolConverter}}">
+                        Grid.Row="1">
                 <VerticalStackLayout x:Name="SectionsStack"
                                      Spacing="0"
                                      Padding="12,4,12,12" />

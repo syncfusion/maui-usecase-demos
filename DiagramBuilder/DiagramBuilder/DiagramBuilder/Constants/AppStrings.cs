@@ -150,6 +150,15 @@ public static class AppStrings
     public const string PropertySectionBorder = "BORDER";
     public const string PropertySectionText = "TEXT";
 
+    // Drawing-area (page) settings - shown when no shape is selected.
+    public const string PropertyPageSettingsTitle = "Page Settings";
+    public const string PropertyPageFormat = "Format";
+    public const string PropertyPageOrientation = "Orientation";
+    public const string PropertyPagePortrait = "Portrait";
+    public const string PropertyPageLandscape = "Landscape";
+    public const string PropertyPageBackground = "Background";
+    public const string PropertyPageBreaks = "Page Breaks";
+
     public const string PropertyPositionX = "Position X";
     public const string PropertyPositionY = "Position Y";
     public const string PropertyWidth = "Width";

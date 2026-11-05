@@ -54,7 +54,7 @@ public partial class PropertyPanelControl : ContentView
     private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if ((e.PropertyName == nameof(PropertyPanelViewModel.Sections)
-             || e.PropertyName == nameof(PropertyPanelViewModel.IsEmptyState)) && _built)
+             || e.PropertyName == nameof(PropertyPanelViewModel.IsPageMode)) && _built)
         {
             BuildSections();
         }
@@ -264,6 +264,7 @@ public partial class PropertyPanelControl : ContentView
             PropertyEditorKind.Color => BuildColorEditor(model, vm),
             PropertyEditorKind.Slider => BuildSliderEditor(model, vm),
             PropertyEditorKind.Segmented => BuildSegmentedEditor(model, vm),
+            PropertyEditorKind.Radio => BuildRadioEditor(model, vm),
             PropertyEditorKind.Toggle => BuildToggleEditor(model, vm),
             _ => BuildTextEditor(model, vm),
         };
@@ -411,18 +412,28 @@ public partial class PropertyPanelControl : ContentView
 
         slider.ValueChanged += (_, args) => valueLabel.Text = FormatSliderValue(model, args.NewValue);
 
+        // The readout is centred against the track, not the row, so the number
+        // sits on the slider's mid-line instead of floating at the top.
         var grid = new Grid
         {
-            ColumnSpacing = 10,
+            ColumnSpacing = 8,
+            RowDefinitions = new RowDefinitionCollection(new[]
+            {
+                new RowDefinition { Height = new GridLength(22) },
+            }),
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(38) },
+                new ColumnDefinition { Width = new GridLength(34) },
             }),
         };
 
+        slider.VerticalOptions = LayoutOptions.Center;
         Grid.SetColumn(slider, 0);
         grid.Add(slider);
+
+        valueLabel.VerticalOptions = LayoutOptions.Center;
+        valueLabel.HorizontalTextAlignment = TextAlignment.End;
         Grid.SetColumn(valueLabel, 1);
         grid.Add(valueLabel);
         return grid;
@@ -469,6 +480,45 @@ public partial class PropertyPanelControl : ContentView
         };
 
         return segmented;
+    }
+
+    /// <summary>
+    /// Radio-style option row (used by the page orientation picker). Rendered
+    /// with native radio buttons so the selected option is unmistakable.
+    /// </summary>
+    private View BuildRadioEditor(PropertyModel model, PropertyPanelViewModel vm)
+    {
+        var stack = new VerticalStackLayout { Spacing = 4 };
+        var options = model.Options.ToList();
+        var selected = model.Value as string;
+
+        foreach (var option in options)
+        {
+            var radio = new RadioButton
+            {
+                Content = option,
+                GroupName = model.Key,
+                FontSize = 13,
+                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                VerticalOptions = LayoutOptions.Center,
+                AutomationId = "property_" + model.Key.ToLowerInvariant() + "_" + option.ToLowerInvariant(),
+            };
+
+            radio.CheckedChanged += (_, args) =>
+            {
+                if (args.Value)
+                {
+                    Commit(vm, model, option);
+                }
+            };
+
+            // Set the checked state after the handler is attached so the initial
+            // value does not raise a spurious change.
+            radio.IsChecked = string.Equals(option, selected, StringComparison.Ordinal);
+            stack.Add(radio);
+        }
+
+        return stack;
     }
 
     private View BuildToggleEditor(PropertyModel model, PropertyPanelViewModel vm)

@@ -81,6 +81,13 @@ public interface IPropertyService
 
     /// <summary>Removes an element that was deleted from the diagram.</summary>
     void Untrack(string elementId);
+
+    /// <summary>
+    /// Reads the drawing-area (page) properties. Used when nothing is selected,
+    /// so the panel can offer page format, orientation and background instead of
+    /// shape properties.
+    /// </summary>
+    IReadOnlyList<PropertyModel> ReadPage();
 }
 
 /// <summary>

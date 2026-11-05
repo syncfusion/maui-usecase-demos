@@ -13,10 +13,12 @@ public class PropertyService : IPropertyService
 {
     private readonly Dictionary<string, NodeBase> _tracked = [];
     private readonly ISelectionService _selectionService;
+    private readonly IPageSettingsService _pageSettings;
 
-    public PropertyService(ISelectionService selectionService)
+    public PropertyService(ISelectionService selectionService, IPageSettingsService pageSettings)
     {
         _selectionService = selectionService;
+        _pageSettings = pageSettings;
     }
 
     public void Track(IEnumerable<object> nodes, IEnumerable<object> connectors)
@@ -50,6 +52,12 @@ public class PropertyService : IPropertyService
 
     public void Apply(string elementId, PropertyModel property)
     {
+        // Page-level properties apply to the drawing area, not to an element.
+        if (ApplyPage(property))
+        {
+            return;
+        }
+
         if (!_tracked.TryGetValue(elementId, out var element))
         {
             return;
@@ -140,12 +148,10 @@ public class PropertyService : IPropertyService
 
             var style = node.Style as ShapeStyle;
 
-            // BACKGROUND — the MAUI Diagram's ShapeStyle exposes a single flat Fill colour
-            // and has no gradient model, so only the solid colour picker is offered.
-            result.Add(new PropertyModel { Group = PropertyGroup.Background, Key = "BackgroundColor", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill), Editor = PropertyEditorKind.Color, IsFullWidth = true });
-
-            // FILL — same underlying ShapeStyle.Fill; kept as its own section to mirror
-            // the design's section order.
+            // FILL — the MAUI Diagram's ShapeStyle exposes a single flat Fill colour
+            // (no gradient model), so one colour picker covers it. A separate
+            // BACKGROUND section is not offered for shapes: it would duplicate
+            // the same ShapeStyle.Fill value.
             result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "Fill", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill), Editor = PropertyEditorKind.Color, IsFullWidth = true });
 
             // BORDER — the design puts the style / colour / thickness editors on
@@ -195,6 +201,78 @@ public class PropertyService : IPropertyService
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Applies a drawing-area property. Returns true when the property was a
+    /// page property and has been handled.
+    /// </summary>
+    private bool ApplyPage(PropertyModel property)
+    {
+        switch (property.Key)
+        {
+            case "PageFormat":
+                var format = PaperFormat.FromLabel(property.Value?.ToString());
+                if (format is not null)
+                {
+                    _pageSettings.SetFormat(format);
+                }
+
+                return true;
+
+            case "PageOrientation":
+                _pageSettings.SetOrientation(
+                    string.Equals(property.Value?.ToString(), AppStrings.PropertyPagePortrait, StringComparison.Ordinal));
+                return true;
+
+            case "PageBackground":
+                _pageSettings.SetBackgroundColor(property.Value?.ToString() ?? string.Empty);
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Drawing-area properties, shown when no shape is selected: the paper
+    /// format, the orientation and the canvas background.
+    /// </summary>
+    public IReadOnlyList<PropertyModel> ReadPage()
+    {
+        return
+        [
+            new PropertyModel
+            {
+                Group = PropertyGroup.Format,
+                Key = "PageFormat",
+                LabelKey = AppStrings.PropertyPageFormat,
+                Value = _pageSettings.Format.Label,
+                Editor = PropertyEditorKind.Combo,
+                Options = PaperFormat.All.Select(f => f.Label).ToList(),
+                IsFullWidth = true,
+            },
+            new PropertyModel
+            {
+                Group = PropertyGroup.Orientation,
+                Key = "PageOrientation",
+                LabelKey = AppStrings.PropertyPageOrientation,
+                Value = _pageSettings.IsPortrait ? AppStrings.PropertyPagePortrait : AppStrings.PropertyPageLandscape,
+                Editor = PropertyEditorKind.Radio,
+                Options = [AppStrings.PropertyPagePortrait, AppStrings.PropertyPageLandscape],
+                PairIndex = 0,
+                PairCount = 2,
+            },
+            new PropertyModel
+            {
+                Group = PropertyGroup.Background,
+                Key = "PageBackground",
+                LabelKey = AppStrings.PropertyPageBackground,
+                Value = _pageSettings.BackgroundColorKey,
+                Editor = PropertyEditorKind.Color,
+                IsFullWidth = true,
+            },
+        ];
     }
 
     /// <summary>Dash-style options offered by the border style dropdown.</summary>
@@ -366,24 +444,91 @@ public class PropertyService : IPropertyService
         }
     }
 
+    /// <summary>
+    /// Applies the horizontal/vertical label alignment.
+    ///
+    /// The alignment alone is not enough: Syncfusion's MAUI wrapper writes the
+    /// annotation offset as an <c>{x, y}</c> object while the underlying EJ2
+    /// diagram expects a single 0-1 fraction. EJ2 derives the label's position
+    /// from that offset, so with the wrapper's object shape the horizontal
+    /// alignment ends up driving the vertical axis and the label appears
+    /// mirrored (choosing "Left" moves the text up, "Right" moves it down).
+    ///
+    /// Writing the matching offset alongside the alignment makes the placement
+    /// explicit: Left -&gt; x 0, Center -&gt; x 0.5, Right -&gt; x 1 and
+    /// Top -&gt; y 0, Middle -&gt; y 0.5, Bottom -&gt; y 1.
+    /// </summary>
     private static void ApplyTextAlignment(NodeBase element, Syncfusion.Maui.Diagram.HorizontalAlignment? horizontal = null, Syncfusion.Maui.Diagram.VerticalAlignment? vertical = null)
     {
-        if (element is Node node)
+        switch (element)
         {
-            foreach (var annotation in node.Annotations.OfType<ShapeAnnotation>())
-            {
-                if (horizontal.HasValue)
+            case Node node:
+                foreach (var annotation in node.Annotations.OfType<ShapeAnnotation>())
                 {
-                    annotation.HorizontalAlignment = horizontal.Value;
+                    Align(annotation, horizontal, vertical);
                 }
 
-                if (vertical.HasValue)
+                break;
+
+            case Connector connector:
+                foreach (var annotation in connector.Annotations.OfType<PathAnnotation>())
                 {
-                    annotation.VerticalAlignment = vertical.Value;
+                    // A connector label is a path annotation: only the horizontal
+                    // alignment is meaningful (the MAUI API maps Left/Right to
+                    // EJ2's Before/After along the path).
+                    if (horizontal.HasValue)
+                    {
+                        annotation.HorizontalAlignment = horizontal.Value;
+                    }
+
+                    if (vertical.HasValue)
+                    {
+                        annotation.VerticalAlignment = vertical.Value;
+                    }
                 }
-            }
+
+                break;
         }
     }
+
+    /// <summary>
+    /// Sets a node label's alignment together with the offset fraction that
+    /// matches it, so the label lands where the user picked.
+    /// </summary>
+    private static void Align(ShapeAnnotation annotation, Syncfusion.Maui.Diagram.HorizontalAlignment? horizontal, Syncfusion.Maui.Diagram.VerticalAlignment? vertical)
+    {
+        var offset = annotation.Offset;
+
+        if (horizontal.HasValue)
+        {
+            annotation.HorizontalAlignment = horizontal.Value;
+            offset.X = HorizontalFraction(horizontal.Value);
+        }
+
+        if (vertical.HasValue)
+        {
+            annotation.VerticalAlignment = vertical.Value;
+            offset.Y = VerticalFraction(vertical.Value);
+        }
+
+        annotation.Offset = offset;
+    }
+
+    /// <summary>Horizontal offset fraction that matches an alignment.</summary>
+    private static double HorizontalFraction(Syncfusion.Maui.Diagram.HorizontalAlignment alignment) => alignment switch
+    {
+        Syncfusion.Maui.Diagram.HorizontalAlignment.Left => 0.0,
+        Syncfusion.Maui.Diagram.HorizontalAlignment.Right => 1.0,
+        _ => 0.5,
+    };
+
+    /// <summary>Vertical offset fraction that matches an alignment.</summary>
+    private static double VerticalFraction(Syncfusion.Maui.Diagram.VerticalAlignment alignment) => alignment switch
+    {
+        Syncfusion.Maui.Diagram.VerticalAlignment.Top => 0.0,
+        Syncfusion.Maui.Diagram.VerticalAlignment.Bottom => 1.0,
+        _ => 0.5,
+    };
 
     private static Syncfusion.Maui.Diagram.HorizontalAlignment? HorizontalAlignmentFor(string? value) => value switch
     {

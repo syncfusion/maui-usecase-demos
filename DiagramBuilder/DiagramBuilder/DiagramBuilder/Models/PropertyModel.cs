@@ -1,6 +1,19 @@
 namespace DiagramBuilder.Models;
 
 /// <summary>
+/// What the property panel is currently describing: the drawing surface
+/// (page settings) or a selected shape/connector.
+/// </summary>
+public enum PropertyTarget
+{
+    /// <summary>Nothing is selected — the panel shows the drawing-area properties.</summary>
+    Page,
+
+    /// <summary>A shape or connector is selected — the panel shows its properties.</summary>
+    Shape,
+}
+
+/// <summary>
 /// Generic property-inspector field descriptor: one editable row in a
 /// <see cref="PropertyGroup"/> section (label is a key into AppStrings).
 /// </summary>
@@ -88,12 +101,12 @@ public enum PropertyEditorKind
     /// <summary>Continuous value track (SfSlider).</summary>
     Slider,
 
-    /// <summary>Mutually exclusive option strip (SfSegmentedControl).</summary>
+    /// <summary>Mutually exclusive options rendered as a segmented bar.</summary>
     Segmented,
 
     /// <summary>On/off switch (SfSwitch).</summary>
     Toggle,
 
-    /// <summary>Read-only caption (no editor).</summary>
-    Caption,
+    /// <summary>Radio-style option row (mutually exclusive picks).</summary>
+    Radio,
 }
