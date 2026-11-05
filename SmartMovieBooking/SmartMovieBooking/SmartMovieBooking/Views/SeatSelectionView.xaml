@@ -156,7 +156,7 @@
                   RowSpacing="12"
                   ColumnSpacing="12">
                 <VerticalStackLayout Grid.Row="0"
-                                     Grid.Column="0"
+									 Grid.Column="0"
                                      Spacing="2"
                                      VerticalOptions="Center">
                     <Label Text="{Binding SelectedSeatSummary}"
@@ -171,8 +171,8 @@
                 </VerticalStackLayout>
                 <HorizontalStackLayout
                                        Grid.Column="{OnIdiom Default=1, Phone=0}"
-                                       Grid.ColumnSpan="{OnIdiom Default=1, Phone=1}"
-                                       Spacing="8"
+                                       Grid.Row="{OnIdiom Default=0, Phone=1}"
+									   Spacing="8"
                                        VerticalOptions="Center">
                     <syncfusionButtons:SfButton Text="Cancel"
                                                  BackgroundColor="#3525CD"
