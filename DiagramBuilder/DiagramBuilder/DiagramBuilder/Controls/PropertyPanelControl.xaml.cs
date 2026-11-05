@@ -396,8 +396,7 @@ public partial class PropertyPanelControl : ContentView
             Tooltip = new Syncfusion.Maui.Sliders.SliderTooltip { ShowAlways = false },
             NumberFormat = model.IsInteger ? "#,0" : "#,0.##",
             HeightRequest = 40,
-            VerticalOptions = LayoutOptions.Fill,
-            Padding = new Thickness(0),
+            VerticalOptions = LayoutOptions.Center,
         };
 
         slider.ValueChanged += (_, args) => Commit(vm, model, args.NewValue * model.Scale);
@@ -429,9 +428,7 @@ public partial class PropertyPanelControl : ContentView
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 new ColumnDefinition { Width = new GridLength(40) },
             }),
-            VerticalOptions = LayoutOptions.Fill,
-            MinimumHeightRequest = 40,
-            Padding = new Thickness(0),
+            VerticalOptions = LayoutOptions.Center,
         };
 
         Grid.SetColumn(slider, 0);

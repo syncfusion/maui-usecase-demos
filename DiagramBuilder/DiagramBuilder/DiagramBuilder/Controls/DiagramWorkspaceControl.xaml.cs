@@ -289,10 +289,18 @@ public partial class DiagramWorkspaceControl : ContentView
     public bool IsPortrait { get; private set; } = true;
 
     /// <summary>
-    /// Applies the drawing-area settings: the canvas background is applied
-    /// straight away, while the format and orientation are remembered for the
-    /// export/print calls (the MAUI Diagram's page settings live on
-    /// <c>DiagramExportOptions</c>, not on the control).
+    /// Applies the drawing-area settings.
+    ///
+    /// The canvas background is set on the MAUI visual elements hosting the
+    /// diagram, NOT on the SfDiagram's own Background/BackgroundColor: the
+    /// control is a HybridWebView over EJ2 whose bridge reads backgroundColor
+    /// only once at init and offers no runtime update channel, so a later
+    /// property write never reaches the renderer. The EJ2 canvas is created
+    /// with backgroundColor 'transparent', which makes the MAUI layer behind it
+    /// fully visible — the WebView's host background IS the canvas background.
+    ///
+    /// Format and orientation are remembered for the export/print calls
+    /// (page settings exist only on DiagramExportOptions, not on the control).
     /// </summary>
     public void ApplyPageSettings(string backgroundColorKey, Models.PaperFormat format, bool isPortrait)
     {
@@ -300,8 +308,13 @@ public partial class DiagramWorkspaceControl : ContentView
         IsPortrait = isPortrait;
 
         var color = Services.ResourceLookup.Color(backgroundColorKey, Colors.White);
-        Diagram.Background = new SolidColorBrush(color);
         Diagram.BackgroundColor = color;
+        // The HybridWebView itself must stay transparent; paint the host views.
+        DiagramGrid.BackgroundColor = color;
+        if (this.Content is Border border)
+        {
+            border.BackgroundColor = color;
+        }
     }
 
 
