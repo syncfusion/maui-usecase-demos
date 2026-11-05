@@ -53,8 +53,7 @@ public partial class PropertyPanelControl : ContentView
 
     private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if ((e.PropertyName == nameof(PropertyPanelViewModel.Sections)
-             || e.PropertyName == nameof(PropertyPanelViewModel.IsPageMode)) && _built)
+        if (e.PropertyName == nameof(PropertyPanelViewModel.Sections) && _built)
         {
             BuildSections();
         }
