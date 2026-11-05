@@ -131,16 +131,25 @@
                                    SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
                 <syncfusion:SfTreeView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="8,0,8,0" ColumnDefinitions="*,Auto,Auto">
+                        <Grid Padding="8,0,8,0" ColumnDefinitions="*,Auto,Auto" BackgroundColor="Transparent">
+                            <Grid.GestureRecognizers>
+                                <PointerGestureRecognizer PointerEnteredCommand="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.SetFolderHoverCommand}" PointerEnteredCommandParameter="{Binding .}"
+                                                          PointerExitedCommand="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ClearFolderHoverCommand}" PointerExitedCommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
                             <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center" />
-                            <Button Grid.Column="1" IsVisible="{Binding CanFavourite}" WidthRequest="32" HeightRequest="32" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFolderFavouriteCommand}" CommandParameter="{Binding .}">
-                                <Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE83A;" Size="18" Color="#B0B0B0" /></Button.ImageSource>
-                                <Button.Triggers>
-                                    <DataTrigger TargetType="Button" Binding="{Binding IsFavourite}" Value="True">
-                                        <Setter Property="ImageSource"><Setter.Value><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE838;" Size="18" Color="#F2B01E" /></Setter.Value></Setter>
-                                    </DataTrigger>
-                                </Button.Triggers>
-                            </Button>
+                            <Grid Grid.Column="1" WidthRequest="32" HeightRequest="32" IsVisible="{Binding ShowStar}" BackgroundColor="Transparent">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFolderFavouriteCommand}" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Label FontFamily="MauiMaterialAssets" Text="&#xE83A;" FontSize="18" TextColor="#B0B0B0" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsFavourite}" Value="True">
+                                            <Setter Property="Text" Value="&#xE838;" />
+                                            <Setter Property="TextColor" Value="#F2B01E" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Grid>
                             <Label Grid.Column="2" Text="{Binding Count}" FontSize="16" VerticalOptions="Center" TextColor="{StaticResource PrimaryLight}">
                                 <Label.Triggers>
                                     <DataTrigger TargetType="Label" Binding="{Binding Count}" Value="0">
@@ -177,18 +186,37 @@
                                         </BoxView.Triggers>
                                     </BoxView>
                                     <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" Spacing="2" IsVisible="{Binding IsHovered}" VerticalOptions="Start" HorizontalOptions="End">
-                                        <Button WidthRequest="40" HeightRequest="40" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}"><Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE70F;" Size="22" Color="#222222" /></Button.ImageSource></Button>
-                                        <Button WidthRequest="40" HeightRequest="40" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}"><Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE713;" Size="22" Color="#222222" /></Button.ImageSource><Button.Triggers>
-                                                <DataTrigger TargetType="Button" Binding="{Binding IsFlagged}" Value="True">
-                                                    <Setter Property="ImageSource"><Setter.Value><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE713;" Size="22" Color="#E81123" /></Setter.Value></Setter>
+                                    <Grid WidthRequest="40" HeightRequest="40" BackgroundColor="Transparent">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <Label FontFamily="MauiMaterialAssets" Text="&#xE70F;" FontSize="22" TextColor="#222222" HorizontalOptions="Center" VerticalOptions="Center"></Label>
+                                    </Grid>
+                                    <Grid WidthRequest="40" HeightRequest="40" BackgroundColor="Transparent">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <Label FontFamily="MauiMaterialAssets" Text="&#xE713;" FontSize="22" TextColor="#222222" HorizontalOptions="Center" VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsFlagged}" Value="True">
+                                                    <Setter Property="TextColor" Value="#E81123" />
                                                 </DataTrigger>
-                                            </Button.Triggers></Button>
-                                        <Button WidthRequest="40" HeightRequest="40" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}"><Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE717;" Size="22" Color="#222222" /></Button.ImageSource><Button.Triggers>
-                                                <DataTrigger TargetType="Button" Binding="{Binding IsRead}" Value="False">
-                                                    <Setter Property="ImageSource"><Setter.Value><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE717;" Size="22" Color="#2F8FE0" /></Setter.Value></Setter>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Grid>
+                                    <Grid WidthRequest="40" HeightRequest="40" BackgroundColor="Transparent">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <Label FontFamily="MauiMaterialAssets" Text="&#xE717;" FontSize="22" TextColor="#222222" HorizontalOptions="Center" VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsRead}" Value="False">
+                                                    <Setter Property="TextColor" Value="#2F8FE0" />
                                                 </DataTrigger>
-                                            </Button.Triggers></Button>
-                                    </HorizontalStackLayout>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Grid>
+                                </HorizontalStackLayout>
                                     <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="16" TextColor="#222222" />
                                     <Label Grid.Row="1" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Subject}" FontSize="14" TextColor="#2F8FE0" LineBreakMode="TailTruncation">
                                         <Label.Triggers>

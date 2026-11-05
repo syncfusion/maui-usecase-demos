@@ -17,6 +17,12 @@ public partial class FolderNode : ObservableObject
     [ObservableProperty]
     private bool isFavourite;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowStar))]
+    private bool isHovered;
+
+    public bool ShowStar => IsHovered && CanFavourite;
+
     public bool CanFavourite { get; set; }
 
     public ObservableCollection<FolderNode> Children { get; set; } = [];

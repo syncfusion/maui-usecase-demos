@@ -125,6 +125,18 @@ public partial class MailWorkspaceViewModel : ObservableObject
     }
 
     [RelayCommand]
+    void SetFolderHover(FolderNode? folder)
+    {
+        if (folder is not null) folder.IsHovered = true;
+    }
+
+    [RelayCommand]
+    void ClearFolderHover(FolderNode? folder)
+    {
+        if (folder is not null) folder.IsHovered = false;
+    }
+
+    [RelayCommand]
     void ToggleFolderFavourite(FolderNode? folder)
     {
         if (folder is null || !folder.CanFavourite) return;
