@@ -277,6 +277,34 @@ public partial class DiagramWorkspaceControl : ContentView
 
     public event EventHandler<TemplateLoadPayload>? TemplateLoaded;
 
+    /// <summary>
+    /// The drawing-area (page) settings currently in force. The paper format and
+    /// orientation are applied on export - the MAUI Diagram exposes no live
+    /// page-settings API - while the background colour is applied to the canvas
+    /// immediately.
+    /// </summary>
+    public Models.PaperFormat PageFormat { get; private set; } = Models.PaperFormat.Default;
+
+    /// <summary>True when the page orientation is portrait.</summary>
+    public bool IsPortrait { get; private set; } = true;
+
+    /// <summary>
+    /// Applies the drawing-area settings: the canvas background is applied
+    /// straight away, while the format and orientation are remembered for the
+    /// export/print calls (the MAUI Diagram's page settings live on
+    /// <c>DiagramExportOptions</c>, not on the control).
+    /// </summary>
+    public void ApplyPageSettings(string backgroundColorKey, Models.PaperFormat format, bool isPortrait)
+    {
+        PageFormat = format;
+        IsPortrait = isPortrait;
+
+        var color = Services.ResourceLookup.Color(backgroundColorKey, Colors.White);
+        Diagram.Background = new SolidColorBrush(color);
+        Diagram.BackgroundColor = color;
+    }
+
+
     public sealed record TemplateLoadPayload(IReadOnlyList<object> Nodes, IReadOnlyList<object> Connectors);
 
     /// <summary>
