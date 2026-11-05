@@ -53,17 +53,17 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 
-	  <PackageReference Include="Syncfusion.Maui.Core"        Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.ListView"     Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.Buttons"      Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.Cards"        Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.Carousel"     Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.Rotator"     Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.TabView"      Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.Popup"        Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.Core" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.ListView" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.Buttons" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.Cards" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.Carousel" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.Rotator" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.TabView" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.Popup" Version="34.2.6" />
 	  <PackageReference Include="Syncfusion.Maui.AIAssistView" Version="34.2.6" />
 	  <PackageReference Include="Syncfusion.Maui.Barcode" Version="34.2.6" />
-	  <PackageReference Include="Syncfusion.Maui.Toolkit" Version="34.2.6" />
+	  <PackageReference Include="Syncfusion.Maui.Toolkit" Version="1.0.11" />
 
     <!-- Syncfusion MAUI suite -->
 
@@ -73,13 +73,13 @@
        inflator instead of compile-time XamlC. The MauiXaml Update with
        Inflator="Runtime" override targets individual files only. -->
   <ItemGroup>
-    <MauiXaml Update="Views\MovieHomeView.xaml"         Inflator="Runtime" />
-    <MauiXaml Update="Views\TheatersView.xaml"          Inflator="Runtime" />
-    <MauiXaml Update="Views\BookingsView.xaml"          Inflator="Runtime" />
-    <MauiXaml Update="Views\SeatSelectionView.xaml"     Inflator="Runtime" />
+    <MauiXaml Update="Views\MovieHomeView.xaml" Inflator="Runtime" />
+    <MauiXaml Update="Views\TheatersView.xaml" Inflator="Runtime" />
+    <MauiXaml Update="Views\BookingsView.xaml" Inflator="Runtime" />
+    <MauiXaml Update="Views\SeatSelectionView.xaml" Inflator="Runtime" />
     <MauiXaml Update="Views\PaymentConfirmationView.xaml" Inflator="Runtime" />
-    <MauiXaml Update="Views\AiCopilotView.xaml"          Inflator="Runtime" />
-    <MauiXaml Update="AppShell.xaml"                     Inflator="Runtime" />
+    <MauiXaml Update="Views\AiCopilotView.xaml" Inflator="Runtime" />
+    <MauiXaml Update="AppShell.xaml" Inflator="Runtime" />
   </ItemGroup>
 
 </Project>
