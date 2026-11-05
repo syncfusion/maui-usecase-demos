@@ -34,9 +34,9 @@
 							StrokeThickness="1"
 							StrokeShape="RoundRectangle 22"
 							Padding="16">
-						<Grid ColumnDefinitions="84,*,Auto"
+						<Grid ColumnDefinitions="{OnIdiom Default='84,*,Auto', Phone='*,Auto'}"
 							  ColumnSpacing="16">
-							<Border WidthRequest="84"
+							<Border IsVisible="{OnIdiom Default=true, Phone=false}" WidthRequest="84"
 									HeightRequest="120"
 									StrokeThickness="0"
 									StrokeShape="RoundRectangle 18">
@@ -58,7 +58,7 @@
 										   TextColor="#F0F3FF" />
 								</VerticalStackLayout>
 							</Border>
-							<VerticalStackLayout Grid.Column="1"
+							<VerticalStackLayout Grid.Column="{OnIdiom Default='1', Phone='0'}"
 												 Spacing="6"
 												 VerticalOptions="Center">
 								<Label Text="{Binding MovieTitle, FallbackValue='Choose a movie'}"
@@ -101,7 +101,7 @@
 									</Border>
 								</HorizontalStackLayout>
 							</VerticalStackLayout>
-							<VerticalStackLayout Grid.Column="2"
+							<VerticalStackLayout Grid.Column="{OnIdiom Default='2', Phone='1'}"
 												 Spacing="6"
 												 VerticalOptions="Center"
 												 HorizontalOptions="End">
