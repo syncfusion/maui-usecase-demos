@@ -58,8 +58,11 @@ public partial class DiagramDesignerViewModel : ObservableObject
         _selectionService.SelectionChanged += (_, _) =>
         {
             OnPropertyChanged(nameof(SelectionSummary));
+            OnPropertyChanged(nameof(SelectedNodeId));
+            OnPropertyChanged(nameof(SelectedConnectorId));
+            OnPropertyChanged(nameof(SelectedElementId));
             Toolbar.RaiseSelectionChanged();
-            PropertyPanel.Refresh(SelectedNodeId);
+            PropertyPanel.Refresh(SelectedElementId);
             // Mirror the selection summary into the status strip (single status bar).
             Status = Selection.SelectionSummary;
         };
@@ -77,6 +80,16 @@ public partial class DiagramDesignerViewModel : ObservableObject
     public string? SelectedNodeId =>
         Selection.SelectedNodeIds.Count == 1 ? Selection.SelectedNodeIds[0] : null;
 
+    public string? SelectedConnectorId =>
+        Selection.SelectedConnectorIds.Count == 1 ? Selection.SelectedConnectorIds[0] : null;
+
+    public string? SelectedElementId =>
+        Selection.SelectedNodeIds.Count == 1 && Selection.SelectedConnectorIds.Count == 0
+            ? Selection.SelectedNodeIds[0]
+            : Selection.SelectedConnectorIds.Count == 1 && Selection.SelectedNodeIds.Count == 0
+                ? Selection.SelectedConnectorIds[0]
+                : null;
+
     // ---------- Event surface used by DiagramSurfaceBehavior (Task 6) ----------
     // The behavior extracts ids from control event args and passes plain strings here —
     // ViewModels never reference Syncfusion control types.
@@ -90,9 +103,9 @@ public partial class DiagramDesignerViewModel : ObservableObject
     [RelayCommand]
     private void OnGeometryChanged(object? parameter)
     {
-        if (SelectedNodeId is not null)
+        if (SelectedElementId is not null)
         {
-            PropertyPanel.Refresh(SelectedNodeId);
+            PropertyPanel.Refresh(SelectedElementId);
         }
     }
 

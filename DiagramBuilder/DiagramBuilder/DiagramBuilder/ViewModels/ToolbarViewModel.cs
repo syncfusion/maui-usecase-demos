@@ -25,7 +25,7 @@ public partial class ToolbarViewModel : ObservableObject
     [ObservableProperty]
     private string activeToolId = Constants.AppConstants.ToolSelect;
 
-    /// <summary>True when exactly one node is selected (drives group-6 visibility).</summary>
+    /// <summary>True when exactly one node is selected (drives arrange actions).</summary>
     [ObservableProperty]
     private bool hasSingleSelection;
 
