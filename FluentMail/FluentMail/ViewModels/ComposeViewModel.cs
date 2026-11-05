@@ -13,7 +13,7 @@ public partial class ComposeViewModel : ObservableObject
 
     [ObservableProperty] private string fromAccount = "Me <me@contoso.com>";
     [ObservableProperty] private string recipientSearch = string.Empty;
-    [ObservableProperty] private string to = string.Empty;
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(SendCommand))] private string to = string.Empty;
     [ObservableProperty] private string cc = string.Empty;
     [ObservableProperty] private string subject = string.Empty;
     [ObservableProperty] private string body = string.Empty;
@@ -37,6 +37,7 @@ public partial class ComposeViewModel : ObservableObject
     {
         if (contact is null || RecipientChips.Any(x => x.Email == contact.Email)) return;
         RecipientChips.Add(contact);
+        SendCommand.NotifyCanExecuteChanged();
         RecipientSearch = string.Empty;
         UpdateSuggestions();
     }
@@ -46,6 +47,7 @@ public partial class ComposeViewModel : ObservableObject
     {
         if (contact is null) return;
         RecipientChips.Remove(contact);
+        SendCommand.NotifyCanExecuteChanged();
         UpdateSuggestions();
     }
 
@@ -58,17 +60,18 @@ public partial class ComposeViewModel : ObservableObject
     [RelayCommand]
     void Attach() => AddAttachment(mailbox.Attachments.FirstOrDefault());
 
-    [RelayCommand]
+    bool CanSend() => !string.IsNullOrWhiteSpace(To) || RecipientChips.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanSend))]
     async Task SendAsync()
     {
         var plainBody = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(Body ?? string.Empty, "<[^>]+>", " ")).Trim();
         plainBody = System.Text.RegularExpressions.Regex.Replace(plainBody, @"\s+", " ");
         var recipients = string.IsNullOrWhiteSpace(To) ? string.Join(", ", RecipientChips.Select(x => x.Email)) : To.Trim();
         if (string.IsNullOrWhiteSpace(recipients)) { StatusMessage = "Add at least one recipient."; return; }
-        if (string.IsNullOrWhiteSpace(Subject)) { StatusMessage = "Enter a subject."; return; }
-        mailbox.SentItems.Insert(0, new MailMessage { Id=$"sent-{Guid.NewGuid():N}", Folder="Sent Items", Sender="Me", SenderEmail="me@contoso.com", Subject=Subject, Preview=plainBody[..Math.Min(plainBody.Length, 80)], Body=plainBody, ReceivedOn=DateTime.Now, Recipients=recipients, Cc=Cc.Trim(), Status="Sent", Greeting=$"Hi {recipients.Split(',')[0].Trim().Split('@')[0]},", IsRead=true, HasAttachments=Attachments.Count>0 });
+        mailbox.SentItems.Insert(0, new MailMessage { Id=$"sent-{Guid.NewGuid():N}", Folder="Sent Items", Sender="Me", SenderEmail="me@contoso.com", Subject=string.IsNullOrWhiteSpace(Subject) ? "(No subject)" : Subject, Preview=plainBody[..Math.Min(plainBody.Length, 80)], Body=plainBody, ReceivedOn=DateTime.Now, Recipients=recipients, Cc=Cc.Trim(), Status="Sent", IsRead=true, HasAttachments=Attachments.Count>0 });
         mailbox.RefreshCounts();
-        RecipientChips.Clear(); Attachments.Clear(); To=string.Empty; Cc=string.Empty; Subject=string.Empty; Body=string.Empty; StatusMessage="Message sent"; ShowMessage = true;
+        RecipientChips.Clear(); SendCommand.NotifyCanExecuteChanged(); Attachments.Clear(); To=string.Empty; Cc=string.Empty; Subject=string.Empty; Body=string.Empty; StatusMessage="Message sent"; ShowMessage = true;
         var page = Application.Current?.Windows.FirstOrDefault()?.Page;
         if (page is not null)
         {

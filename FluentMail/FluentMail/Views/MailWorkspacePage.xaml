@@ -131,9 +131,17 @@
                                    SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
                 <syncfusion:SfTreeView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="8,0,24,0" ColumnDefinitions="*,Auto">
+                        <Grid Padding="8,0,8,0" ColumnDefinitions="*,Auto,Auto">
                             <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding Count}" FontSize="16" VerticalOptions="Center" TextColor="{StaticResource PrimaryLight}">
+                            <Button Grid.Column="1" IsVisible="{Binding CanFavourite}" WidthRequest="32" HeightRequest="32" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFolderFavouriteCommand}" CommandParameter="{Binding .}">
+                                <Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE83A;" Size="18" Color="#B0B0B0" /></Button.ImageSource>
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsFavourite}" Value="True">
+                                        <Setter Property="ImageSource"><Setter.Value><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE838;" Size="18" Color="#F2B01E" /></Setter.Value></Setter>
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                            <Label Grid.Column="2" Text="{Binding Count}" FontSize="16" VerticalOptions="Center" TextColor="{StaticResource PrimaryLight}">
                                 <Label.Triggers>
                                     <DataTrigger TargetType="Label" Binding="{Binding Count}" Value="0">
                                         <Setter Property="IsVisible" Value="False" />
@@ -168,16 +176,16 @@
                                             </DataTrigger>
                                         </BoxView.Triggers>
                                     </BoxView>
-                                    <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" Spacing="4" IsVisible="{Binding IsHovered}" VerticalOptions="Start" HorizontalOptions="End">
-                                        <Button FontFamily="MauiMaterialAssets" Text="&#xE70F;" FontSize="20" TextColor="#222222" BorderColor="Transparent" BackgroundColor="Transparent" Padding="0" WidthRequest="32" HeightRequest="32" CornerRadius="0" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}"></Button>
-                                        <Button FontFamily="MauiMaterialAssets" Text="&#xE713;" FontSize="20" TextColor="#222222" BorderColor="Transparent"  BackgroundColor="Transparent" Padding="0" WidthRequest="32" HeightRequest="32" CornerRadius="0" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}"><Button.Triggers>
+                                    <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" Spacing="2" IsVisible="{Binding IsHovered}" VerticalOptions="Start" HorizontalOptions="End">
+                                        <Button WidthRequest="40" HeightRequest="40" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}"><Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE70F;" Size="22" Color="#222222" /></Button.ImageSource></Button>
+                                        <Button WidthRequest="40" HeightRequest="40" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}"><Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE713;" Size="22" Color="#222222" /></Button.ImageSource><Button.Triggers>
                                                 <DataTrigger TargetType="Button" Binding="{Binding IsFlagged}" Value="True">
-                                                    <Setter Property="TextColor" Value="#E81123" />
+                                                    <Setter Property="ImageSource"><Setter.Value><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE713;" Size="22" Color="#E81123" /></Setter.Value></Setter>
                                                 </DataTrigger>
                                             </Button.Triggers></Button>
-                                        <Button FontFamily="MauiMaterialAssets" Text="&#xE717;" FontSize="20" TextColor="#222222" BorderColor="Transparent"  BackgroundColor="Transparent" Padding="0" WidthRequest="32" HeightRequest="32" CornerRadius="0" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}"><Button.Triggers>
+                                        <Button WidthRequest="40" HeightRequest="40" Padding="0" CornerRadius="0" BackgroundColor="Transparent" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}"><Button.ImageSource><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE717;" Size="22" Color="#222222" /></Button.ImageSource><Button.Triggers>
                                                 <DataTrigger TargetType="Button" Binding="{Binding IsRead}" Value="False">
-                                                    <Setter Property="TextColor" Value="#2F8FE0" />
+                                                    <Setter Property="ImageSource"><Setter.Value><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE717;" Size="22" Color="#2F8FE0" /></Setter.Value></Setter>
                                                 </DataTrigger>
                                             </Button.Triggers></Button>
                                     </HorizontalStackLayout>
@@ -191,11 +199,6 @@
                                     </Label>
                                     <Label Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" FontSize="14" TextColor="#2F8FE0" />
                                     <Label Grid.Row="2" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Preview}" FontSize="14" TextColor="#777777" LineBreakMode="TailTruncation" />
-                                    <Button Grid.Row="2" Grid.Column="2" Margin="0,0,10,0" FontFamily="MauiMaterialAssets" Text="&#xE838;" FontSize="18" TextColor="#F2B01E" BackgroundColor="Transparent" BorderColor="Transparent"  Padding="0" WidthRequest="32" HeightRequest="32" CornerRadius="0" Opacity="0.25" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFavouriteCommand}" CommandParameter="{Binding .}"><Button.Triggers>
-                                            <DataTrigger TargetType="Button" Binding="{Binding IsFavourite}" Value="True">
-                                                <Setter Property="Opacity" Value="1" />
-                                            </DataTrigger>
-                                        </Button.Triggers></Button>
                                 </Grid>
                             </DataTemplate>
                         </listview:SfListView.ItemTemplate>
@@ -243,7 +246,13 @@
                                 <Label Text="{Binding SelectedMessage.ReceivedOn, StringFormat='{0:dd/MM/yyyy h:mm tt}'}" FontSize="15" TextColor="#666666" />
                             </VerticalStackLayout>
                         </Grid>
-                        <Label Text="{Binding SelectedMessage.Greeting}" FontSize="16" FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedMessage.Greeting}" FontSize="16" FontAttributes="Bold">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding SelectedMessage.Greeting}" Value="">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                         <Label Text="{Binding SelectedMessage.Body}" FontSize="14" LineBreakMode="WordWrap" LineHeight="2" CharacterSpacing="0.5"/>
                         <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="10" Padding="0,10,0,0">
                             <Label Text="To" FontAttributes="Bold" FontSize="16" />

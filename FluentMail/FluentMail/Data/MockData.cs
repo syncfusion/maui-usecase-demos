@@ -14,30 +14,30 @@ public static class MockData
         {
             Name = "Favorites",
             Children = [
-                new FolderNode { Name = "Inbox" },
-                new FolderNode { Name = "Sales Reports" },
-                new FolderNode { Name = "Personnel" },
-                new FolderNode { Name = "Marketing Reports" },
-                new FolderNode { Name = "Sent Items" }
+                new FolderNode { Name = "Inbox", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Sales Reports", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Personnel", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Marketing Reports", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Sent Items", CanFavourite = true, IsFavourite = true }
             ]
         });
         mailbox.Folders.Add(new FolderNode
         {
             Name = "Kerry Best",
             Children = [
-                new FolderNode { Name = "Inbox" },
-                new FolderNode { Name = "Clutter" },
-                new FolderNode { Name = "Drafts" },
-                new FolderNode { Name = "Sent Items" },
-                new FolderNode { Name = "Deleted Items" },
-                new FolderNode { Name = "Archive" },
-                new FolderNode { Name = "Junk Mail" },
-                new FolderNode { Name = "Personnel" },
-                new FolderNode { Name = "Sales Reports" },
-                new FolderNode { Name = "Marketing Reports" },
-                new FolderNode { Name = "My Team" },
-                new FolderNode { Name = "Trash" },
-                new FolderNode { Name = "Outbox" }
+                new FolderNode { Name = "Inbox", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Clutter", CanFavourite = true },
+                new FolderNode { Name = "Drafts", CanFavourite = true },
+                new FolderNode { Name = "Sent Items", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Deleted Items", CanFavourite = true },
+                new FolderNode { Name = "Archive", CanFavourite = true },
+                new FolderNode { Name = "Junk Mail", CanFavourite = true },
+                new FolderNode { Name = "Personnel", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Sales Reports", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "Marketing Reports", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = "My Team", CanFavourite = true },
+                new FolderNode { Name = "Trash", CanFavourite = true },
+                new FolderNode { Name = "Outbox", CanFavourite = true }
             ]
         });
 
@@ -221,7 +221,7 @@ public static class MockData
         {
             var local = message.Recipients.Split(',')[0].Trim().Split('@')[0];
             var name = string.Join(' ', local.Split('.', StringSplitOptions.RemoveEmptyEntries).Select(x => char.ToUpper(x[0]) + x[1..]));
-            message.Greeting = $"Hi {name},";
+            message.Greeting = message.Folder == "Sent Items" ? string.Empty : $"Hi {name},";
         }
 
         mailbox.RefreshCounts();

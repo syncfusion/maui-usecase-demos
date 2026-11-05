@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace FluentMail.Models;
@@ -13,5 +14,10 @@ public partial class FolderNode : ObservableObject
     [ObservableProperty]
     private int unreadCount;
 
-    public List<FolderNode> Children { get; set; } = [];
+    [ObservableProperty]
+    private bool isFavourite;
+
+    public bool CanFavourite { get; set; }
+
+    public ObservableCollection<FolderNode> Children { get; set; } = [];
 }

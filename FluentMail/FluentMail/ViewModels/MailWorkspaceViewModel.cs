@@ -125,10 +125,22 @@ public partial class MailWorkspaceViewModel : ObservableObject
     }
 
     [RelayCommand]
-    void ToggleFavourite(MailMessage? message)
+    void ToggleFolderFavourite(FolderNode? folder)
     {
-        if (message is null) return;
-        message.IsFavourite = !message.IsFavourite;
+        if (folder is null || !folder.CanFavourite) return;
+        var favorites = mailbox.Folders[0];
+        var existing = favorites.Children.FirstOrDefault(x => x.Name == folder.Name);
+        if (existing is null)
+        {
+            favorites.Children.Add(new FolderNode { Name = folder.Name, CanFavourite = true, IsFavourite = true });
+        }
+        else
+        {
+            favorites.Children.Remove(existing);
+        }
+
+        foreach (var node in mailbox.Folders.SelectMany(x => x.Children).Where(x => x.Name == folder.Name && x != existing))
+            node.IsFavourite = existing is null;
         UpdateFolderCounts();
     }
 

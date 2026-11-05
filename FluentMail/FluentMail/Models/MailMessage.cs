@@ -26,9 +26,6 @@ public partial class MailMessage : ObservableObject
     [ObservableProperty]
     private bool isHovered;
 
-    [ObservableProperty]
-    private bool isFavourite;
-
     public DateTime ReceivedOn { get; set; }
     public DateTime ArchivedOn { get; set; }
     public DateTime DeletedOn { get; set; }
