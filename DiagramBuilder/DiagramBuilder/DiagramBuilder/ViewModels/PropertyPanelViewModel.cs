@@ -31,11 +31,24 @@ public partial class PropertyPanelViewModel : ObservableObject
     /// <summary>Empty-state message (from constants).</summary>
     public string EmptyStateText => AppStrings.PropertyEmptyState;
 
-    /// <summary>Section headers (from constants).</summary>
+    /// <summary>
+    /// Sections shown in the panel, in display order. The INSERT group is
+    /// intentionally omitted — its Insert Link / Insert Image actions are not
+    /// implemented yet.
+    /// </summary>
+    public IReadOnlyList<PropertyGroup> SectionGroups { get; } =
+    [
+        PropertyGroup.Dimensions,
+        PropertyGroup.Background,
+        PropertyGroup.Fill,
+        PropertyGroup.Border,
+        PropertyGroup.Text,
+    ];
+
+    /// <summary>Section headers (from constants), keyed by <see cref="SectionGroups"/> order.</summary>
     public IReadOnlyList<string> SectionTitles { get; } =
     [
         AppStrings.PropertySectionDimensions,
-        AppStrings.PropertySectionInsert,
         AppStrings.PropertySectionBackground,
         AppStrings.PropertySectionFill,
         AppStrings.PropertySectionBorder,

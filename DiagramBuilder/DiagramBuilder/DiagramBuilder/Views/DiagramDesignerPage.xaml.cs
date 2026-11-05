@@ -58,7 +58,6 @@ public partial class DiagramDesignerPage : ContentPage
 
         // Wire panel-header chevrons to the show/hide relay commands.
         PropertyPanel.Header.ToggleCommand = new Command(() => viewModel.ShowProperties = !viewModel.ShowProperties);
-        PropertyPanel.Header.CloseCommand = new Command(() => viewModel.ShowProperties = false);
 
         // Wire surface request relays (VM → control, one-way; the VM stays
         // control-agnostic — each delegate only awaits a behavior method).
