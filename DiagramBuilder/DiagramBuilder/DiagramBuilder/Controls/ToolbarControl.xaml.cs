@@ -324,6 +324,7 @@ public partial class ToolbarControl : ContentView
 
     private void ShowFillColorPicker(Border swatch)
     {
+        var selectedId = SelectedElementId;
         var picker = new SfColorPicker
         {
             ColorMode = ColorPickerMode.Spectrum,
@@ -333,7 +334,7 @@ public partial class ToolbarControl : ContentView
 
         // Seed the picker (and the swatch) from the selected shape's current fill
         // so the dialog reflects reality rather than the toolbar's last pick.
-        var currentFill = ReadSelectedColor("Fill");
+        var currentFill = ReadSelectedColor("Fill", selectedId);
         if (currentFill is not null)
         {
             _fillColorKey = currentFill;
@@ -356,9 +357,9 @@ public partial class ToolbarControl : ContentView
                 var newColor = picker.SelectedColor ?? Colors.White;
                 _fillColorKey = FindNearestKey(newColor);
                 swatch.BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White);
-                
-                // Apply the color to the selected element
-                var selectedId = SelectedElementId;
+
+                // Apply the color to the element that was selected when the picker
+                // was opened; popup focus changes should not invalidate the target.
                 if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
                 {
                     var property = new PropertyModel
@@ -369,7 +370,7 @@ public partial class ToolbarControl : ContentView
                     };
                     _propertyService.Apply(selectedId, property);
                 }
-                
+
                 popup!.IsOpen = false;
             }),
             DeclineCommand = new Command(() => popup!.IsOpen = false),
@@ -381,6 +382,7 @@ public partial class ToolbarControl : ContentView
 
     private void ShowStrokeColorPicker(Border swatch)
     {
+        var selectedId = SelectedElementId;
         var picker = new SfColorPicker
         {
             ColorMode = ColorPickerMode.Spectrum,
@@ -388,7 +390,7 @@ public partial class ToolbarControl : ContentView
             ShowInputArea = true,
         };
 
-        var currentStroke = ReadSelectedColor("Border");
+        var currentStroke = ReadSelectedColor("Border", selectedId);
         if (currentStroke is not null)
         {
             _strokeColorKey = currentStroke;
@@ -411,9 +413,9 @@ public partial class ToolbarControl : ContentView
                 var newColor = picker.SelectedColor ?? Colors.White;
                 _strokeColorKey = FindNearestKey(newColor);
                 swatch.BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White);
-                
-                // Apply the color to the selected element
-                var selectedId = SelectedElementId;
+
+                // Apply the color to the element that was selected when the picker
+                // was opened; popup focus changes should not invalidate the target.
                 if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
                 {
                     var property = new PropertyModel
@@ -424,7 +426,7 @@ public partial class ToolbarControl : ContentView
                     };
                     _propertyService.Apply(selectedId, property);
                 }
-                
+
                 popup!.IsOpen = false;
             }),
             DeclineCommand = new Command(() => popup!.IsOpen = false),
@@ -438,9 +440,9 @@ public partial class ToolbarControl : ContentView
     /// Reads the selected element's current fill/stroke colour key so the toolbar
     /// swatches mirror the shape (empty when nothing is selected or untracked).
     /// </summary>
-    private string? ReadSelectedColor(string panelKey)
+    private string? ReadSelectedColor(string panelKey, string? selectedId = null)
     {
-        var selectedId = SelectedElementId;
+        selectedId ??= SelectedElementId;
         if (string.IsNullOrEmpty(selectedId) || _propertyService is null)
         {
             return null;
