@@ -171,6 +171,11 @@ public static class AppStrings
     public const string PropertyBorderColor = "Border Color";
     public const string PropertyThickness = "Thickness";
     public const string PropertyTextContent = "Text Content";
+
+    // Inline captions rendered above a property editor.
+    public const string PropertyBorderCaption = "Border";
+    public const string PropertyColorCaption = "Color";
+    public const string PropertyThicknessCaption = "Thickness";
     public const string PropertyFontFamily = "Font Family";
     public const string PropertyFontSize = "Font Size";
     public const string PropertyBold = "Bold";

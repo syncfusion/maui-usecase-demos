@@ -288,6 +288,14 @@
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
+    <!-- Small caption rendered above a property editor (Border / Color / Thickness). -->
+    <Style x:Key="PropertyCaptionStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="VerticalOptions" Value="End" />
+    </Style>
+
     <!-- Flyout menu item row: 32 px tall, hover highlight. -->
     <Style x:Key="MenuFlyoutItemStyle" TargetType="Button">
         <Setter Property="HeightRequest" Value="32" />

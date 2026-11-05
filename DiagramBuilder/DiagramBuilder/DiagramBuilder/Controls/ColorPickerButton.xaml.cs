@@ -62,9 +62,20 @@ public partial class ColorPickerButton : ContentView
 
     private void OnSwatchTapped(object? sender, TappedEventArgs e)
     {
+        ShowPicker(SwatchFrame);
+    }
+
+    private void OnDropdownTapped(object? sender, TappedEventArgs e)
+    {
+        ShowPicker(DropdownFrame);
+    }
+
+    /// <summary>Opens the colour picker popup anchored to the given element.</summary>
+    private void ShowPicker(View anchor)
+    {
         _popup = BuildPopup();
-        PopupXamlRootHelper.AttachIfAvailable(_popup, SwatchFrame);
-        _popup.ShowRelativeToView(SwatchFrame, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
+        PopupXamlRootHelper.AttachIfAvailable(_popup, anchor);
+        _popup.ShowRelativeToView(anchor, Syncfusion.Maui.Popup.PopupRelativePosition.AlignBottomLeft);
     }
 
     private SfPopup BuildPopup()
