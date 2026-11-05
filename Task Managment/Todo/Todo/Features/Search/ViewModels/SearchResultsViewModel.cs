@@ -131,6 +131,24 @@ public partial class SearchResultsViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task SetNotesCompletionAsync(SetNotesCompletionRequest? request)
+    {
+        if (request is null || request.NoteIds.Count == 0) return;
+
+        var noteIds = request.NoteIds.ToHashSet(StringComparer.Ordinal);
+        var notesToUpdate = _noteService.Notes
+            .Where(note => noteIds.Contains(note.Id)
+                           && note.DeletedAt is null
+                           && note.IsCompleted != request.IsCompleted)
+            .ToArray();
+
+        foreach (var note in notesToUpdate)
+            await _noteService.ToggleCompleteAsync(note.Id);
+
+        RefreshResults();
+    }
+
+    [RelayCommand]
     private async Task ToggleImportant(Note? note)
     {
         if (note is null) return;

@@ -61,7 +61,7 @@ public partial class NotesContentView : ContentView
     private void ShowNoteActions(View anchor)
     {
         if (BindingContext is NotesListViewModel vm && anchor.BindingContext is Note note)
-            ActionFlyout.ShowFor(anchor, note, vm.CustomLists);
+            ActionFlyout.ShowFor(anchor, note, vm.CustomLists, vm.FilteredNotes);
     }
 
     private void OnNoteActionRequested(object? sender, NoteActionRequestedEventArgs e)
@@ -73,6 +73,9 @@ public partial class NotesContentView : ContentView
         {
             case NoteActionKind.ToggleCompletion:
                 vm.ToggleCompleteCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.SetVisibleCompletion when e.IsCompleted.HasValue && e.NoteIds is not null:
+                vm.SetNotesCompletionCommand.Execute(new SetNotesCompletionRequest(e.NoteIds, e.IsCompleted.Value));
                 break;
             case NoteActionKind.Edit:
                 vm.EditNoteCommand.Execute(e.Note);

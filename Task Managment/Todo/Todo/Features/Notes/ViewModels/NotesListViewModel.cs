@@ -797,6 +797,22 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task SetNotesCompletionAsync(SetNotesCompletionRequest? request)
+    {
+        if (request is null || request.NoteIds.Count == 0) return;
+
+        var noteIds = request.NoteIds.ToHashSet(StringComparer.Ordinal);
+        var notesToUpdate = _noteService.Notes
+            .Where(note => noteIds.Contains(note.Id)
+                           && note.DeletedAt is null
+                           && note.IsCompleted != request.IsCompleted)
+            .ToArray();
+
+        foreach (var note in notesToUpdate)
+            await _noteService.ToggleCompleteAsync(note.Id);
+    }
+
+    [RelayCommand]
     private async Task ToggleImportant(Note? note)
     {
         if (note is null) return;
@@ -1214,6 +1230,8 @@ public sealed record DragReorderRequest(int OldIndex, int NewIndex);
 public sealed record ListReorderRequest(int OldIndex, int NewIndex);
 
 public sealed record NoteCompletionDropRequest(string NoteId, bool IsCompleted);
+
+public sealed record SetNotesCompletionRequest(IReadOnlyList<string> NoteIds, bool IsCompleted);
 
 /// <summary>
 /// Payload passed from the sidebar drop gesture to the

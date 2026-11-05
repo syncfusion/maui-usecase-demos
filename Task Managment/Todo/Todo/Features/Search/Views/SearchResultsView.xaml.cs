@@ -33,7 +33,7 @@ public partial class SearchResultsView : ContentView
     private void ShowNoteActions(View anchor)
     {
         if (BindingContext is SearchResultsViewModel vm && anchor.BindingContext is Note note)
-            ActionFlyout.ShowFor(anchor, note, vm.CustomLists);
+            ActionFlyout.ShowFor(anchor, note, vm.CustomLists, vm.Results);
     }
 
     private void OnNoteActionRequested(object? sender, NoteActionRequestedEventArgs e)
@@ -45,6 +45,9 @@ public partial class SearchResultsView : ContentView
         {
             case NoteActionKind.ToggleCompletion:
                 vm.ToggleCompleteCommand.Execute(e.Note);
+                break;
+            case NoteActionKind.SetVisibleCompletion when e.IsCompleted.HasValue && e.NoteIds is not null:
+                vm.SetNotesCompletionCommand.Execute(new SetNotesCompletionRequest(e.NoteIds, e.IsCompleted.Value));
                 break;
             case NoteActionKind.Edit:
                 vm.OpenNoteCommand.Execute(e.Note);

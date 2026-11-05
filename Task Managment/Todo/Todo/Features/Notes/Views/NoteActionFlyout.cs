@@ -13,10 +13,14 @@ public sealed class NoteActionFlyout : ContentView
 {
     private readonly SfPopup _popup;
     private readonly ObservableCollection<NoteActionDestination> _destinations = new();
+    private IReadOnlyList<Note> _visibleNotes = Array.Empty<Note>();
     private Note? _selectedNote;
     private VerticalStackLayout? _actionsLayout;
     private VerticalStackLayout? _destinationsLayout;
     private Border? _surface;
+    private Grid? _selectAllRow;
+    private CheckBox? _selectAllCheckBox;
+    private BoxView? _selectAllSeparator;
     private SfButton? _completionButton;
     private SfButton? _editButton;
     private SfButton? _moveButton;
@@ -25,6 +29,7 @@ public sealed class NoteActionFlyout : ContentView
     private BoxView? _deleteSeparator;
     private bool _closeAnimationRunning;
     private bool _allowPopupClose;
+    private bool _isUpdatingSelectAll;
 
     public event EventHandler<NoteActionRequestedEventArgs>? ActionRequested;
 
@@ -82,9 +87,10 @@ public sealed class NoteActionFlyout : ContentView
         Content = new Grid { Children = { _popup } };
     }
 
-    public void ShowFor(View anchor, Note note, IEnumerable<NoteList> customLists)
+    public void ShowFor(View anchor, Note note, IEnumerable<NoteList> customLists, IEnumerable<Note> visibleNotes)
     {
         _selectedNote = note;
+        _visibleNotes = visibleNotes.Where(visibleNote => visibleNote.DeletedAt is null).ToArray();
         _destinations.Clear();
         _destinations.Add(new("My Notes", NotesListViewModel.EncodeDropTarget(NotesListCategory.MyNotes)));
         _destinations.Add(new("Important", NotesListViewModel.EncodeDropTarget(NotesListCategory.Important)));
@@ -103,6 +109,46 @@ public sealed class NoteActionFlyout : ContentView
     {
         _actionsLayout = new VerticalStackLayout { Spacing = 5 , Margin = new Thickness(5, 0, 0, 0) };
         _destinationsLayout = new VerticalStackLayout { Spacing = 0, IsVisible = false };
+
+        _selectAllRow = new Grid
+        {
+            HeightRequest = 40,
+            ColumnDefinitions = new ColumnDefinitionCollection { new(32), new(GridLength.Star) },
+            ColumnSpacing = 4
+        };
+        _selectAllCheckBox = new CheckBox
+        {
+            WidthRequest = 32,
+            HeightRequest = 32,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+        _selectAllCheckBox.SetAppThemeColor(CheckBox.ColorProperty, Color.FromArgb("#6750A4"), Color.FromArgb("#D0BCFF"));
+        SemanticProperties.SetDescription(_selectAllCheckBox, "Select all visible notes");
+        _selectAllCheckBox.CheckedChanged += OnSelectAllCheckedChanged;
+        _selectAllRow.Children.Add(_selectAllCheckBox);
+        var selectAllLabel = new Label
+        {
+            Text = "Select all",
+            FontSize = 14,
+            VerticalTextAlignment = TextAlignment.Center
+        };
+        selectAllLabel.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
+        selectAllLabel.SetValue(Grid.ColumnProperty, 1);
+        selectAllLabel.GestureRecognizers.Add(new TapGestureRecognizer
+        {
+            Command = new Command(() =>
+            {
+                if (_selectAllCheckBox is not null)
+                    _selectAllCheckBox.IsChecked = !_selectAllCheckBox.IsChecked;
+            })
+        });
+        _selectAllRow.Children.Add(selectAllLabel);
+        _actionsLayout.Children.Add(_selectAllRow);
+
+        _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
+        _selectAllSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#494650"));
+        _actionsLayout.Children.Add(_selectAllSeparator);
 
         _completionButton = CreateButton("Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion), iconGlyph: "\ue876");
         _actionsLayout.Children.Add(_completionButton);
@@ -229,14 +275,42 @@ public sealed class NoteActionFlyout : ContentView
 
     private void UpdateMenu()
     {
-        if (_selectedNote is null || _completionButton is null || _editButton is null || _moveButton is null || _restoreButton is null || _deleteButton is null || _deleteSeparator is null) return;
+        if (_selectedNote is null || _selectAllRow is null || _selectAllCheckBox is null || _selectAllSeparator is null
+            || _completionButton is null || _editButton is null || _moveButton is null || _restoreButton is null || _deleteButton is null || _deleteSeparator is null) return;
         var isDeleted = _selectedNote.DeletedAt is not null;
+        var canSelectAll = !isDeleted && _visibleNotes.Count > 0;
+        _selectAllRow.IsVisible = canSelectAll;
+        _selectAllSeparator.IsVisible = canSelectAll;
+        UpdateSelectAllState();
         _completionButton.IsVisible = !isDeleted;
         _editButton.IsVisible = !isDeleted;
         _moveButton.IsVisible = !isDeleted;
         _restoreButton.IsVisible = isDeleted;
         _deleteSeparator.IsVisible = isDeleted;
         _deleteButton.Text = isDeleted ? "Delete permanently" : "Delete task";
+    }
+
+    private void OnSelectAllCheckedChanged(object? sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
+    {
+        if (_isUpdatingSelectAll || _visibleNotes.Count == 0 || _selectedNote is null)
+            return;
+
+        ActionRequested?.Invoke(this, new NoteActionRequestedEventArgs(
+            _selectedNote,
+            NoteActionKind.SetVisibleCompletion,
+            null,
+            e.Value,
+            _visibleNotes.Select(note => note.Id).ToArray()));
+    }
+
+    private void UpdateSelectAllState()
+    {
+        if (_selectAllCheckBox is null)
+            return;
+
+        _isUpdatingSelectAll = true;
+        _selectAllCheckBox.IsChecked = _visibleNotes.Count > 0 && _visibleNotes.All(note => note.IsCompleted);
+        _isUpdatingSelectAll = false;
     }
 
     private void ShowDestinations()
@@ -268,8 +342,8 @@ public sealed class NoteActionFlyout : ContentView
         }
         else
         {
-            // Completion, edit, move, and delete buttons.
-            contentHeight = (4 * 40) + (3 * 5);
+            // Select-all row, separator, and the four note actions.
+            contentHeight = 40 + 1 + (4 * 40) + (5 * 5);
         }
 
         var popupHeight = contentHeight + 16 + 20;
@@ -307,6 +381,13 @@ public sealed class NoteActionFlyout : ContentView
     }
 }
 
-public enum NoteActionKind { ToggleCompletion, Edit, Move, Restore, Delete, DeletePermanently }
+public enum NoteActionKind { ToggleCompletion, SetVisibleCompletion, Edit, Move, Restore, Delete, DeletePermanently }
 public sealed record NoteActionDestination(string Name, string Key);
-public sealed class NoteActionRequestedEventArgs(Note note, NoteActionKind action, string? targetKey) : EventArgs { public Note Note { get; } = note; public NoteActionKind Action { get; } = action; public string? TargetKey { get; } = targetKey; }
+public sealed class NoteActionRequestedEventArgs(Note note, NoteActionKind action, string? targetKey, bool? isCompleted = null, IReadOnlyList<string>? noteIds = null) : EventArgs
+{
+    public Note Note { get; } = note;
+    public NoteActionKind Action { get; } = action;
+    public string? TargetKey { get; } = targetKey;
+    public bool? IsCompleted { get; } = isCompleted;
+    public IReadOnlyList<string>? NoteIds { get; } = noteIds;
+}
