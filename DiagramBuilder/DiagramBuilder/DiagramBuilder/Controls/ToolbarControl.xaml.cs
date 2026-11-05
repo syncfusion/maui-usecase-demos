@@ -358,7 +358,8 @@ public partial class ToolbarControl : ContentView
                 swatch.BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White);
                 
                 // Apply the color to the selected element
-                if (!string.IsNullOrEmpty(SelectedElementId) && _propertyService is not null)
+                var selectedId = SelectedElementId;
+                if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
                 {
                     var property = new PropertyModel
                     {
@@ -366,7 +367,7 @@ public partial class ToolbarControl : ContentView
                         Value = _fillColorKey,
                         Group = PropertyGroup.Fill,
                     };
-                    _propertyService.Apply(SelectedElementId, property);
+                    _propertyService.Apply(selectedId, property);
                 }
                 
                 popup!.IsOpen = false;
@@ -412,7 +413,8 @@ public partial class ToolbarControl : ContentView
                 swatch.BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White);
                 
                 // Apply the color to the selected element
-                if (!string.IsNullOrEmpty(SelectedElementId) && _propertyService is not null)
+                var selectedId = SelectedElementId;
+                if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
                 {
                     var property = new PropertyModel
                     {
@@ -420,7 +422,7 @@ public partial class ToolbarControl : ContentView
                         Value = _strokeColorKey,
                         Group = PropertyGroup.Border,
                     };
-                    _propertyService.Apply(SelectedElementId, property);
+                    _propertyService.Apply(selectedId, property);
                 }
                 
                 popup!.IsOpen = false;
@@ -438,12 +440,13 @@ public partial class ToolbarControl : ContentView
     /// </summary>
     private string? ReadSelectedColor(string panelKey)
     {
-        if (string.IsNullOrEmpty(SelectedElementId) || _propertyService is null)
+        var selectedId = SelectedElementId;
+        if (string.IsNullOrEmpty(selectedId) || _propertyService is null)
         {
             return null;
         }
 
-        return _propertyService.Read(SelectedElementId)
+        return _propertyService.Read(selectedId)
             .FirstOrDefault(p => p.Key == panelKey)?.Value as string;
     }
 
