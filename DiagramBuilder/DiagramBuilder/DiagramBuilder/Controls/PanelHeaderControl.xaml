@@ -38,17 +38,6 @@
                                VerticalOptions="Center">
             <ContentView x:Name="TrailingHost"
                          VerticalOptions="Center" />
-            <Button x:Name="CloseButton"
-                    Text="✕"
-                    FontSize="14"
-                    TextColor="{DynamicResource TextSecondary}"
-                    BackgroundColor="Transparent"
-                    Padding="0"
-                    CornerRadius="0"
-                    BorderWidth="0"
-                    HeightRequest="24"
-                    WidthRequest="24"
-                    AutomationId="panel_close" />
         </HorizontalStackLayout>
     </Grid>
 </ContentView>

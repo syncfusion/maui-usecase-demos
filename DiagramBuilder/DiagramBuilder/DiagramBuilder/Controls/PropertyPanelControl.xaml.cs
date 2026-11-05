@@ -64,9 +64,9 @@ public partial class PropertyPanelControl : ContentView
         }
 
         SectionsStack.Clear();
-        for (var i = 0; i < vm.SectionTitles.Count; i++)
+        for (var i = 0; i < vm.SectionGroups.Count; i++)
         {
-            var section = (PropertyGroup)i;
+            var section = vm.SectionGroups[i];
 
             var rows = new VerticalStackLayout { Spacing = 6 };
             if (vm.Sections.TryGetValue(section, out var models))
@@ -79,12 +79,6 @@ public partial class PropertyPanelControl : ContentView
                 }
             }
 
-            if (rows.Children.Count == 0)
-            {
-                // Some sections (e.g. INSERT) are command-only and always visible.
-                rows = BuildStaticSection(section, vm);
-            }
-
             SectionsStack.Add(BuildSection(section, vm.SectionTitles[i], rows));
         }
 
@@ -94,6 +88,11 @@ public partial class PropertyPanelControl : ContentView
     /// <summary>
     /// Wraps a section's rows in an <see cref="SfExpander"/> so every group can be
     /// collapsed independently — the design shows a chevron beside each header.
+    ///
+    /// The content is attached on <c>Loaded</c> rather than in the initializer:
+    /// <c>SfExpander.OnContentChanged</c> returns early while the control is not
+    /// yet loaded, so content assigned before the view joins the visual tree is
+    /// silently dropped and the section renders empty.
     /// </summary>
     private static SfExpander BuildSection(PropertyGroup section, string title, View content)
     {
@@ -104,49 +103,47 @@ public partial class PropertyPanelControl : ContentView
             AutomationId = "property_section_" + section.ToString().ToLowerInvariant(),
         };
 
-        return new SfExpander
+        var expander = new SfExpander
         {
             Header = header,
-            Content = content,
             IsExpanded = true,
             HeaderIconPosition = ExpanderIconPosition.End,
             HeaderBackground = Colors.Transparent,
             HeaderIconColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             AnimationDuration = 120,
         };
+
+        AttachExpanderContent(expander, content);
+        return expander;
     }
 
-    /// <summary>Sections whose rows aren't backed by PropertyModel (mock commands).</summary>
-    private static VerticalStackLayout BuildStaticSection(PropertyGroup section, PropertyPanelViewModel vm)
+    /// <summary>
+    /// Assigns <paramref name="content"/> to <paramref name="expander"/> once the
+    /// control is loaded, so Syncfusion's <c>OnContentChanged</c> actually hosts it.
+    ///
+    /// <c>SfExpander.OnContentChanged</c> starts with an <c>IsViewLoaded</c> guard and
+    /// returns early when the control has not joined the visual tree yet — content
+    /// assigned beforehand is silently dropped and the section renders empty. The
+    /// assignment is therefore deferred to <c>Loaded</c>, and repeated defensively
+    /// because <c>Loaded</c> can fire again after the view is re-parented.
+    /// </summary>
+    private static void AttachExpanderContent(SfExpander expander, View content)
     {
-        var rows = new VerticalStackLayout { Spacing = 8 };
-        if (section == PropertyGroup.Insert)
+        void Attach()
         {
-            rows.Add(BuildActionRow(AppStrings.PropertyInsertLink, "property_insert_link"));
-            rows.Add(BuildActionRow(AppStrings.PropertyInsertImage, "property_insert_image"));
+            if (!ReferenceEquals(expander.Content, content))
+            {
+                expander.Content = content;
+            }
         }
 
-        return rows;
-    }
-
-    private static View BuildActionRow(string label, string automationId)
-    {
-        return new Border
+        if (expander.IsLoaded)
         {
-            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
-            StrokeThickness = 1,
-            Padding = new Thickness(8, 6),
-            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
-            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 4 },
-            Content = new Label
-            {
-                Text = label,
-                FontSize = 13,
-                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
-                VerticalTextAlignment = TextAlignment.Center,
-                AutomationId = automationId,
-            },
-        };
+            Attach();
+            return;
+        }
+
+        expander.Loaded += (_, _) => Attach();
     }
 
     private View BuildRow(PropertyModel model, PropertyPanelViewModel vm)

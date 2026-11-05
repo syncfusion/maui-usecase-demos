@@ -25,9 +25,6 @@ public partial class PanelHeaderControl : ContentView
         BindableProperty.Create(nameof(Trailing), typeof(View), typeof(PanelHeaderControl),
             propertyChanged: OnTrailingChanged);
 
-    public static readonly BindableProperty CloseCommandProperty =
-        BindableProperty.Create(nameof(CloseCommand), typeof(ICommand), typeof(PanelHeaderControl));
-
     public string Title
     {
         get => (string)GetValue(TitleProperty);
@@ -52,12 +49,6 @@ public partial class PanelHeaderControl : ContentView
         set => SetValue(TrailingProperty, value);
     }
 
-    public ICommand? CloseCommand
-    {
-        get => (ICommand?)GetValue(CloseCommandProperty);
-        set => SetValue(CloseCommandProperty, value);
-    }
-
     public PanelHeaderControl()
     {
         InitializeComponent();
@@ -66,7 +57,6 @@ public partial class PanelHeaderControl : ContentView
         {
             Command = new Command(() => ToggleCommand?.Execute(null)),
         });
-        CloseButton.Clicked += (_, _) => CloseCommand?.Execute(null);
     }
 
     private static void OnTitleChanged(BindableObject bindable, object oldValue, object newValue)

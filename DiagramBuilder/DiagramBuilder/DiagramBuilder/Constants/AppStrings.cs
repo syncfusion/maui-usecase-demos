@@ -145,7 +145,6 @@ public static class AppStrings
     public const string PropertyPanelTitle = "Properties";
     public const string PropertyEmptyState = "Select an object to edit its properties";
     public const string PropertySectionDimensions = "DIMENSIONS";
-    public const string PropertySectionInsert = "INSERT";
     public const string PropertySectionBackground = "BACKGROUND";
     public const string PropertySectionFill = "FILL";
     public const string PropertySectionBorder = "BORDER";
@@ -157,8 +156,6 @@ public static class AppStrings
     public const string PropertyHeight = "Height";
     public const string PropertyRotation = "Rotation Angle";
     public const string PropertyLockAspectRatio = "Lock Aspect Ratio";
-    public const string PropertyInsertLink = "Insert Link";
-    public const string PropertyInsertImage = "Insert Image";
     public const string PropertyBackgroundType = "Type";
     public const string PropertyBackgroundSolid = "Solid";
     public const string PropertyBackgroundGradient = "Gradient";
