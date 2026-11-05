@@ -82,7 +82,7 @@ If you target another platform, adjust the `-f` value to match the supported fra
 
 ## Output
 
-Add a screenshot, GIF, or short visual summary of the final UI.
+[.NET MAUI TicketBooking Sample Demo](TicketBookingDemo.gif)
 
 ## Project Structure
 
