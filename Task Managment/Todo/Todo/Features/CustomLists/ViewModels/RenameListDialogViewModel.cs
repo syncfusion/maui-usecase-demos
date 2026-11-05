@@ -25,7 +25,7 @@ public partial class RenameListDialogViewModel : ViewModelBase
     private string? errorMessage;
 
     public string DialogTitle => "Rename list";
-    public string PrimaryButtonText => "Save";
+    public string PrimaryButtonText => "Rename";
 
     /// <summary>The list being renamed. Surfaced so the View can show
     /// the current name in the title (per the design image).</summary>

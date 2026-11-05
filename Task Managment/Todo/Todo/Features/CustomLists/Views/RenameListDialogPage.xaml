@@ -35,32 +35,34 @@
                        FontAttributes="Bold"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
 
-                <!-- Pre-populated list-name input (matches the header search layout without the icon) -->
-                <syncfusionCore:SfTextInputLayout Hint="List name"
-                                                  ContainerType="Outlined"
-                                                  ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
-                                                  OutlineCornerRadius="8"
-                                                  FocusedStrokeThickness="1"
-                                                  UnfocusedStrokeThickness="1"
-                                                  ReserveSpaceForAssistiveLabels="False"
-                                                  InputViewPadding="16,0"
-                                                  EnableFloating="False"
-                                                  Margin="0"
-                                                  ShowHelperText="False"
-                                                  ShowHint="True"
-                                                  Stroke="Transparent"
-                                                  HorizontalOptions="Fill">
-                    <Entry Text="{Binding ListName, Mode=TwoWay}"
-                           Placeholder=""
-                           FontFamily="{StaticResource FontFamilyRegular}"
-                           FontSize="14"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
-                           VerticalTextAlignment="Center"
-                           HeightRequest="44"
-                           BackgroundColor="Transparent"
-                           Margin="0" />
-                </syncfusionCore:SfTextInputLayout>
+                <Grid ColumnDefinitions="*" ColumnSpacing="12">
+                    <syncfusionCore:SfTextInputLayout Grid.Column="1"
+                                                      Hint="List name"
+                                                      ContainerType="Outlined"
+                                                      ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
+                                                      OutlineCornerRadius="8"
+                                                      FocusedStrokeThickness="1"
+                                                      UnfocusedStrokeThickness="1"
+                                                      ReserveSpaceForAssistiveLabels="False"
+                                                      InputViewPadding="16,0"
+                                                      EnableFloating="False"
+                                                      Margin="0"
+                                                      ShowHelperText="False"
+                                                      ShowHint="True"
+                                                      Stroke="Transparent"
+                                                      HorizontalOptions="Fill">
+                        <Entry Text="{Binding ListName, Mode=TwoWay}"
+                               Placeholder=""
+                               FontFamily="{StaticResource FontFamilyRegular}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                               PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                               VerticalTextAlignment="Center"
+                               HeightRequest="44"
+                               BackgroundColor="Transparent"
+                               Margin="0" />
+                    </syncfusionCore:SfTextInputLayout>
+                </Grid>
 
                 <!-- Inline validation message -->
                 <Label Text="{Binding ErrorMessage}"
@@ -69,22 +71,14 @@
                        IsVisible="{Binding ErrorMessage, Converter={StaticResource NotNullToBoolConverter}}" />
 
                 <!-- Action buttons -->
-                <Grid ColumnDefinitions="*,Auto,Auto"
+                <Grid ColumnDefinitions="*,Auto"
                       ColumnSpacing="12"
                       HorizontalOptions="End"
                       Margin="0,8,0,0">
-                    <buttons:SfButton Grid.Column="1"
-                            Text="Cancel"
-                            BackgroundColor="Transparent"
-                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
-                            Command="{Binding CancelCommand}"
-                            HeightRequest="36"
-                            MinimumWidthRequest="72"
-                            CornerRadius="8" />
                     <buttons:SfButton Grid.Column="2"
                             Text="{Binding PrimaryButtonText}"
-                            BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
-                            TextColor="White"
+                            Background="Transparent"
+                            TextColor="#6750A4"
                             Command="{Binding SaveCommand}"
                             HeightRequest="36"
                             MinimumWidthRequest="72"
@@ -96,8 +90,8 @@
                                     <VisualState x:Name="PointerOver" />
                                     <VisualState x:Name="Pressed">
                                         <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                            <Setter Property="TextColor" Value="#6750A4" />
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>

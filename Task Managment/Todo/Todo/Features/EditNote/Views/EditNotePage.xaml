@@ -37,7 +37,7 @@
                                       HeightRequest="36"
                                       Padding="0"
                                       BackgroundColor="Transparent"
-                                      TextColor="#FFFFFF"
+                                      TextColor="#6750A4"
                                       FontSize="18"
                                       Command="{Binding CancelCommand}" />
                 </Grid>
@@ -148,12 +148,12 @@
                                         <buttons:SfButton Grid.Column="1"
                                                           Text="Cancel"
                                                           Background="Transparent"
-                                                          TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}"
+                                                          TextColor="#6750A4"
                                                           Command="{Binding CancelDueDateCommand}" />
                                         <buttons:SfButton Grid.Column="2"
                                                           Text="Save"
-                                                          Background="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
-                                                          TextColor="White"
+                                                          Background="Transparent"
+                                                          TextColor="#6750A4"
                                                           Command="{Binding SaveDueDateCommand}" />
                                     </Grid>
                                 </VerticalStackLayout>
@@ -285,12 +285,12 @@
                                         <buttons:SfButton Grid.Column="1"
                                                           Text="Cancel"
                                                           Background="Transparent"
-                                                          TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}"
+                                                          TextColor="#6750A4"
                                                           Command="{Binding CancelReminderCommand}" />
                                         <buttons:SfButton Grid.Column="2"
                                                           Text="Save"
-                                                          Background="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
-                                                          TextColor="White"
+                                                          Background="Transparent"
+                                                          TextColor="#6750A4"
                                                           Command="{Binding SaveReminderCommand}" />
                                     </Grid>
                                 </VerticalStackLayout>
@@ -317,15 +317,15 @@
                     <buttons:SfButton Grid.Column="1"
                                       Text="Cancel"
                                       Background="Transparent"
-                                      TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                      TextColor="#6750A4"
                                       HeightRequest="36"
                                       MinimumWidthRequest="72"
                                       CornerRadius="8"
                                       Command="{Binding CancelCommand}" />
                     <buttons:SfButton Grid.Column="2"
                                       Text="{Binding PrimaryButtonText}"
-                                      Background="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
-                                      TextColor="White"
+                                      Background="Transparent"
+                                      TextColor="#6750A4"
                                       HeightRequest="36"
                                       MinimumWidthRequest="72"
                                       CornerRadius="8"
@@ -337,8 +337,8 @@
                                     <VisualState x:Name="PointerOver" />
                                     <VisualState x:Name="Pressed">
                                         <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                            <Setter Property="TextColor" Value="#6750A4" />
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>

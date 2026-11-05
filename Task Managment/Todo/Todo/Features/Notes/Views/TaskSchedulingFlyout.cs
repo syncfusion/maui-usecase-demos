@@ -181,8 +181,11 @@ public sealed class TaskSchedulingFlyout : ContentView
         }
 
         content.Children.Add(new BoxView { HeightRequest = 1, Color = Color.FromArgb("#CAC4D0"), Margin = new Thickness(4, 4) });
-        content.Children.Add(CreateMenuButton("Custom", _viewModel?.DraftRepeatFrequency == NoteRepeatFrequency.Custom,
-            () => { _repeatPopup.Dismiss(); if (_repeatAnchor is not null) _customPopup.ShowRelativeToView(_repeatAnchor, PopupRelativePosition.AlignTopRight); }));
+        var customButton = CreateMenuButton("Custom", _viewModel?.DraftRepeatFrequency == NoteRepeatFrequency.Custom,
+            () => { _repeatPopup.Dismiss(); if (_repeatAnchor is not null) _customPopup.ShowRelativeToView(_repeatAnchor, PopupRelativePosition.AlignTopRight); },
+            iconGlyph: "\ue24f");
+        customButton.Margin = new Thickness(10, 4, 0, 0);
+        content.Children.Add(customButton);
         return CreateBorder(210, 332, content);
     }
 
@@ -297,7 +300,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         };
     }
 
-    private static SfButton CreateMenuButton(string text, bool selected, Action action)
+    private static SfButton CreateMenuButton(string text, bool selected, Action action, string? iconGlyph = null)
     {
         var button = new SfButton
         {
@@ -316,6 +319,41 @@ public sealed class TaskSchedulingFlyout : ContentView
         button.SetAppThemeColor(SfButton.TextColorProperty,
             selected ? Color.FromArgb("#7633DA") : Color.FromArgb("#1C1B1F"),
             selected ? Color.FromArgb("#D0BCFF") : Color.FromArgb("#E6E1E5"));
+        if (!string.IsNullOrEmpty(iconGlyph))
+        {
+            button.Content = new DataTemplate(() =>
+            {
+                var grid = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
+                    ColumnSpacing = 4
+                };
+                var iconLabel = new Label
+                {
+                    Text = iconGlyph,
+                    FontFamily = "MaterialIconRegular",
+                    FontSize = 18,
+                    Margin = new Thickness(0, 0, 5, 0),
+                    VerticalTextAlignment = TextAlignment.Center
+                };
+                iconLabel.SetAppThemeColor(Label.TextColorProperty,
+                    Color.FromArgb("#49454F"),
+                    Color.FromArgb("#CAC4D0"));
+                grid.Children.Add(iconLabel);
+                var textLabel = new Label
+                {
+                    FontSize = 14,
+                    VerticalTextAlignment = TextAlignment.Center
+                };
+                textLabel.SetBinding(Label.TextProperty,
+                    new Binding(nameof(SfButton.Text), source: button));
+                textLabel.SetBinding(Label.TextColorProperty,
+                    new Binding(nameof(SfButton.TextColor), source: button));
+                grid.Children.Add(textLabel);
+                textLabel.SetValue(Grid.ColumnProperty, 1);
+                return grid;
+            });
+        }
         return button;
     }
 
@@ -326,15 +364,12 @@ public sealed class TaskSchedulingFlyout : ContentView
             Text = text,
             MinimumWidthRequest = 72,
             HeightRequest = 36,
+            Background = Brush.Transparent,
+            TextColor = Color.FromArgb("#6750A4"),
             FontSize = 13,
             CornerRadius = 8,
             Command = new Command(action)
         };
-        button.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
-            new SolidColorBrush(Color.FromArgb("#7633DA")),
-            new SolidColorBrush(Color.FromArgb("#8D4CF5")));
-        button.SetAppThemeColor(SfButton.TextColorProperty, Colors.White, Colors.White);
-        ApplyButtonStates(button, false);
         return button;
     }
 
@@ -349,12 +384,9 @@ public sealed class TaskSchedulingFlyout : ContentView
             FontSize = 13,
             CornerRadius = 8,
             Padding = new Thickness(12, 8),
+            TextColor = Color.FromArgb("#6750A4"),
             Command = new Command(action)
         };
-        button.SetAppThemeColor(SfButton.TextColorProperty,
-            Color.FromArgb("#1C1B1F"),
-            Color.FromArgb("#E6E1E5"));
-        ApplyButtonStates(button, false);
         return button;
     }
 

@@ -63,7 +63,7 @@ public partial class SidebarView : ContentView
             || BindingContext is not NotesListViewModel vm)
             return;
 
-        this.ListOptionsFlyout.ShowFor(anchor, list, vm);
+        CustomListOptionsFlyout.ShowFor(anchor, list, vm);
     }
 
     // -----------------------------------------------------------------

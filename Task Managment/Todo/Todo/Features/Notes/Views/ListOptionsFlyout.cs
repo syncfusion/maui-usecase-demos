@@ -182,9 +182,14 @@ public sealed class ListOptionsFlyout : ContentView
         _menuActions.Children.Clear();
         _menuActions.Margin = new Thickness(10, MenuTopMargin, 10, 0);
         if (CanEditSelectedList)
-            _menuActions.Children.Add(CreateMenuButton("Rename list", RenameList));
+        {   
+            var renameButton = CreateMenuButton("Rename list", RenameList, iconGlyph: "\uf88c");
+            renameButton.Margin = new Thickness(10, 0, 10, 0);
+            _menuActions.Children.Add(renameButton);
+        }
 
-        _sortButton = CreateMenuButton("Sort by", ShowSortMenu);
+        _sortButton = CreateMenuButton("Sort by", ShowSortMenu, iconGlyph: "\uea18", iconRotation: 90);
+        _sortButton.Margin = new Thickness(10, 0, 0, 0); 
         var sortRow = new Grid { HeightRequest = 42 };
         sortRow.Children.Add(_sortButton);
         sortRow.Children.Add(new Label
@@ -223,10 +228,12 @@ public sealed class ListOptionsFlyout : ContentView
             _menuActions.Children.Add(new BoxView
             {
                 HeightRequest = 1,
-                Margin = new Thickness(12, 5),
+                Margin = new Thickness(12, 3),
                 Color = Color.FromArgb("#E6E2E8")
             });
-            _menuActions.Children.Add(CreateMenuButton("Delete list", DeleteList, destructive: true));
+            var deleteButton = CreateMenuButton("Delete list", DeleteList, destructive: true, iconGlyph: "\ue92e", iconColor: "#B3261E");
+            deleteButton.Margin = new Thickness(10, 0, 10, 0);
+            _menuActions.Children.Add(deleteButton);
         }
         RebuildThemePicker();
         RebuildCustomImageGallery();
@@ -240,10 +247,10 @@ public sealed class ListOptionsFlyout : ContentView
             Margin = new Thickness(10, MenuTopMargin, 10, 10),
         };
         var currentSort = _selectedList?.SortOrder ?? NoteListSortOrder.Custom;
-        actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important), currentSort == NoteListSortOrder.Important));
-        actions.Children.Add(CreateMenuButton("Reminder", () => ApplySort(NoteListSortOrder.Reminder), currentSort == NoteListSortOrder.Reminder));
-        actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate), currentSort == NoteListSortOrder.DueDate));
-        actions.Children.Add(CreateMenuButton("Alphabetically", () => ApplySort(NoteListSortOrder.Alphabetical), currentSort == NoteListSortOrder.Alphabetical));
+        actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important), currentSort == NoteListSortOrder.Important, iconGlyph: "\ue83a"));
+        actions.Children.Add(CreateMenuButton("Reminder", () => ApplySort(NoteListSortOrder.Reminder), currentSort == NoteListSortOrder.Reminder, iconGlyph: "\ue7f5"));
+        actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate), currentSort == NoteListSortOrder.DueDate, iconGlyph: "\ue24f"));
+        actions.Children.Add(CreateMenuButton("Alphabetically", () => ApplySort(NoteListSortOrder.Alphabetical), currentSort == NoteListSortOrder.Alphabetical, iconGlyph: "\ue241"));
         var sortHeight = MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance + 20;
         _sortSurface = CreateSurface(180, sortHeight, actions);
         return _sortSurface;
@@ -420,7 +427,7 @@ public sealed class ListOptionsFlyout : ContentView
         }
     }
 
-    private static SfButton CreateMenuButton(string text, Action action, bool selected = false, bool destructive = false)
+    private static SfButton CreateMenuButton(string text, Action action, bool selected = false, bool destructive = false, string? iconGlyph = null, double iconRotation = 0, string? iconColor = null)
     {
         var button = new SfButton
         {
@@ -437,6 +444,42 @@ public sealed class ListOptionsFlyout : ContentView
         button.SetAppThemeColor(SfButton.TextColorProperty,
             destructive ? Color.FromArgb("#D32F2F") : Color.FromArgb("#1C1B1F"),
             destructive ? Color.FromArgb("#FFB4AB") : Color.FromArgb("#E6E1E5"));
+        if (!string.IsNullOrEmpty(iconGlyph))
+        {
+            button.Content = new DataTemplate(() =>
+            {
+                var grid = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
+                    ColumnSpacing = 4
+                };
+                var iconLabel = new Label
+                {
+                    Text = iconGlyph,
+                    FontFamily = "MaterialIconRegular",
+                    FontSize = 18,
+                    Rotation = iconRotation,
+                    Margin = new Thickness(0, 0, 5, 0),
+                    VerticalTextAlignment = TextAlignment.Center
+                };
+                iconLabel.SetAppThemeColor(Label.TextColorProperty,
+                    Color.FromArgb(iconColor ?? "#49454F"),
+                    Color.FromArgb(iconColor ?? "#CAC4D0"));
+                grid.Children.Add(iconLabel);
+                var textLabel = new Label
+                {
+                    FontSize = 14,
+                    VerticalTextAlignment = TextAlignment.Center
+                };
+                textLabel.SetBinding(Label.TextProperty,
+                    new Binding(nameof(SfButton.Text), source: button));
+                textLabel.SetBinding(Label.TextColorProperty,
+                    new Binding(nameof(SfButton.TextColor), source: button));
+                grid.Children.Add(textLabel);
+                textLabel.SetValue(Grid.ColumnProperty, 1);
+                return grid;
+            });
+        }
         SemanticProperties.SetDescription(button, text);
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });

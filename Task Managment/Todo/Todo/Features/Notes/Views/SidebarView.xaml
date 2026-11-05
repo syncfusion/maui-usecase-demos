@@ -127,7 +127,7 @@
                                         <Label Text="{Binding Name}"
                                                Style="{StaticResource SidebarItemLabelStyle}"
                                                LineBreakMode="TailTruncation" />
-                                        <Label Text="{Binding NoteCountText, StringFormat='({0})'}"
+                                        <Label Text="{Binding NoteCountText}"
                                                Style="{StaticResource SidebarItemLabelStyle}"
                                                IsVisible="{Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}" />
                                     </HorizontalStackLayout>
@@ -171,7 +171,43 @@
                 </VisualStateGroupList>
             </VisualStateManager.VisualStateGroups>
         </buttons:SfButton>
-        <noteViews:ListOptionsFlyout x:Name="ListOptionsFlyout"
+        <Border Grid.RowSpan="4"
+                IsVisible="{Binding IsToastVisible}"
+                Padding="12,8"
+                Margin="8,0,8,16"
+                HorizontalOptions="Fill"
+                VerticalOptions="End"
+                BackgroundColor="#2D2A32"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 8"
+                ZIndex="10">
+            <Border.Shadow>
+                <Shadow Brush="#40000000"
+                        Radius="6"
+                        Offset="0,2"
+                        Opacity="1" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{Binding ToastMessage}"
+                       TextColor="White"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       LineBreakMode="TailTruncation"
+                       VerticalOptions="Center" />
+                <buttons:SfButton Grid.Column="1"
+                                  Text="&#xe5cd;"
+                                  FontFamily="MaterialIconRegular"
+                                  WidthRequest="28"
+                                  HeightRequest="28"
+                                  Padding="0"
+                                  CornerRadius="14"
+                                  Background="Transparent"
+                                  TextColor="White"
+                                  Command="{Binding DismissToastCommand}"
+                                  SemanticProperties.Description="Dismiss notification" />
+            </Grid>
+        </Border>
+        <noteViews:CustomListOptionsFlyout x:Name="CustomListOptionsFlyout"
                                      Grid.RowSpan="4"
                                      WidthRequest="0"
                                      HeightRequest="0"

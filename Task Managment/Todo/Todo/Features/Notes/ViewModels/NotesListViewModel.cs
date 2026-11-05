@@ -637,6 +637,13 @@ public partial class NotesListViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void DismissToast()
+    {
+        _toastCancellation?.Cancel();
+        IsToastVisible = false;
+    }
+
     // ---------------------------------------------------------------
     //  Search (Module-06)
     // ---------------------------------------------------------------

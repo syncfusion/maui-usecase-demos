@@ -41,20 +41,6 @@
                      Grid.Row="1"
                      Grid.Column="1" />
 
-        <Border Grid.RowSpan="2"
-          Grid.ColumnSpan="2"
-          IsVisible="{Binding IsToastVisible}"
-          Padding="16,10"
-          Margin="16,0,16,20"
-          HorizontalOptions="Center"
-          VerticalOptions="End"
-          BackgroundColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource SurfaceDarkColor}}"
-          StrokeThickness="0"
-          StrokeShape="RoundRectangle 8">
-            <Label Text="{Binding ToastMessage}"
-             TextColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-             FontAttributes="Bold" />
-        </Border>
     </Grid>
 
 </ContentView>

@@ -46,12 +46,11 @@ public static class NoteListThemePalette
 {
     public static IReadOnlyList<(string Name, string Hex)> Themes { get; } =
     [
-        ("Amber", "#FFF2CC"),
+        ("Amber", "#FFE4E9"),
         ("Lavender", "#EEE8FF"),
         ("Rose", "#FDE8E7"),
         ("Mint", "#E8F5E9"),
         ("Sky", "#E3F2FD"),
-        ("Soft Rose", "#FCE4EC"), 
     ];
 
     public static string GetRandomThemeColor()

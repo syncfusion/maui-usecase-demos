@@ -309,6 +309,7 @@
                                             Padding="0"
                                             Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ToggleImportantCommand}"
                                             CommandParameter="{Binding .}"
+                                            ToolTipProperties.Text="Important"
                                             SemanticProperties.Description="Toggle important" />
 
                                     <!-- More menu (three-dot) -->
@@ -323,6 +324,7 @@
                                             VerticalOptions="Center"
                                             Padding="0"
                                             Clicked="OnNoteMenuClicked"
+                                            ToolTipProperties.Text="More"
                                             SemanticProperties.Description="More note options" />
                                 </Grid>
                             </Border>
@@ -531,24 +533,60 @@
                             <Grid ColumnDefinitions="36,36,36,36" VerticalOptions="Center" HorizontalOptions="Fill" WidthRequest="150" Margin="0,8,0,0">
                                 <buttons:SfButton Grid.Column="0" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnDueDateClicked"
+                                                  CornerRadius="18"
+                                                  ToolTipProperties.Text="Due date"
                                                   SemanticProperties.Description="Set due date">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
                                             <Label Text="&#xe24f;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal" />
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Background" Value="{AppThemeBinding Light=#1449454F, Dark=#14CAC4D0}" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="1" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnRepeatClicked"
+                                                  CornerRadius="18"
+                                                  ToolTipProperties.Text="Repeat"
                                                   SemanticProperties.Description="Set repeat frequency">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
                                             <Label Text="&#xe040;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal" />
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Background" Value="{AppThemeBinding Light=#1449454F, Dark=#14CAC4D0}" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="2" WidthRequest="36" HeightRequest="36" Padding="0"
                                                   Background="Transparent" Clicked="OnReminderClicked"
+                                                  CornerRadius="18"
+                                                  ToolTipProperties.Text="Reminder"
                                                   SemanticProperties.Description="Set reminder date and time">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
                                             <Label Text="&#xe7f5;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal" />
+                                            <VisualState x:Name="PointerOver">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Background" Value="{AppThemeBinding Light=#1449454F, Dark=#14CAC4D0}" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
                                 </buttons:SfButton>
                                 <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="0,0,0,5"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
