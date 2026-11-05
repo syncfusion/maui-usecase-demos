@@ -3,8 +3,9 @@ using System.Windows.Input;
 namespace DiagramBuilder.Controls;
 
 /// <summary>
-/// Reusable panel header (title + collapse chevron + optional trailing content).
+/// Reusable panel header (title + optional collapse chevron + optional trailing content).
 /// Bindable: <see cref="Title"/> text, <see cref="Collapsed"/> state,
+/// <see cref="ShowChevron"/> to hide the chevron (used by property panel),
 /// <see cref="ToggleCommand"/> executed on chevron tap. Used by the stencil and
 /// property panels (see ui-spec.md §4 and §6).
 /// </summary>
@@ -17,6 +18,10 @@ public partial class PanelHeaderControl : ContentView
     public static readonly BindableProperty CollapsedProperty =
         BindableProperty.Create(nameof(Collapsed), typeof(bool), typeof(PanelHeaderControl), false,
             propertyChanged: OnCollapsedChanged);
+
+    public static readonly BindableProperty ShowChevronProperty =
+        BindableProperty.Create(nameof(ShowChevron), typeof(bool), typeof(PanelHeaderControl), true,
+            propertyChanged: OnShowChevronChanged);
 
     public static readonly BindableProperty ToggleCommandProperty =
         BindableProperty.Create(nameof(ToggleCommand), typeof(ICommand), typeof(PanelHeaderControl));
@@ -35,6 +40,12 @@ public partial class PanelHeaderControl : ContentView
     {
         get => (bool)GetValue(CollapsedProperty);
         set => SetValue(CollapsedProperty, value);
+    }
+
+    public bool ShowChevron
+    {
+        get => (bool)GetValue(ShowChevronProperty);
+        set => SetValue(ShowChevronProperty, value);
     }
 
     public ICommand? ToggleCommand
@@ -72,6 +83,14 @@ public partial class PanelHeaderControl : ContentView
         if (bindable is PanelHeaderControl header && newValue is bool collapsed)
         {
             header.Chevron.Text = collapsed ? "\u25C2" : "\u25B8"; // ◂ / ▸
+        }
+    }
+
+    private static void OnShowChevronChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is PanelHeaderControl header && newValue is bool show)
+        {
+            header.Chevron.IsVisible = show;
         }
     }
 

@@ -79,8 +79,10 @@ public partial class DiagramDesignerPage : ContentPage
         ((INotifyCollectionChanged)paletteGroups).CollectionChanged +=
             (_, _) => Workspace.ShapesPalette.Palettes = paletteGroups;
 
-        // Wire panel-header chevrons to the show/hide relay commands.
-        PropertyPanel.Header.ToggleCommand = new Command(() => viewModel.ShowProperties = !viewModel.ShowProperties);
+        // Wire panel-header chevron to the show/hide relay command (property panel has no chevron).
+        PropertyPanel.Header.ShowChevron = false;
+        // The stencil panel still has a collapsible chevron.
+        // (PropertyPanel does not need one per the design.)
 
         // Wire surface request relays (VM → control, one-way; the VM stays
         // control-agnostic — each delegate only awaits a behavior method).
