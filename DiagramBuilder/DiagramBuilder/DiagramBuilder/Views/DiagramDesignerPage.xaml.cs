@@ -55,6 +55,13 @@ public partial class DiagramDesignerPage : ContentPage
         // released with the page itself (same lifetime policy as DocumentLoaded).
         Workspace.TemplateLoaded += OnTemplateLoaded;
 
+        // Live element changes (palette drop, delete, duplicate) keep the property
+        // service's tracked set in step with the diagram. Without this, a shape
+        // dropped from the palette is never tracked, so selecting it yields no
+        // property rows and the panel renders empty sections.
+        Workspace.ElementAdded += OnElementChanged;
+        Workspace.ElementsReset += OnElementsReset;
+
         // Mirror the shared Stencil VM palette groups into the native SymbolPalette
         // (inside the workspace control). Syncfusion's JS bridge caches the Palettes
         // reference at initialisation, so the collection must be ASSIGNED to
@@ -113,6 +120,29 @@ public partial class DiagramDesignerPage : ContentPage
     private void OnTemplateLoaded(object? sender, DiagramWorkspaceControl.TemplateLoadPayload payload)
     {
         _propertyService.Track(payload.Nodes, payload.Connectors);
+    }
+
+    /// <summary>
+    /// Keeps the property service's tracked elements in step with the diagram so
+    /// shapes added after the template load (palette drop, duplicate, connector
+    /// tool) can be edited from the property panel.
+    /// </summary>
+    private void OnElementChanged(object? sender, DiagramWorkspaceControl.ElementChangePayload payload)
+    {
+        if (payload.Added)
+        {
+            _propertyService.TrackAdded(payload.Element);
+        }
+        else
+        {
+            _propertyService.Untrack(payload.ElementId);
+        }
+    }
+
+    /// <summary>Clears the tracked set when the diagram's collections are reset.</summary>
+    private void OnElementsReset(object? sender, EventArgs e)
+    {
+        _propertyService.Track([], []);
     }
 
     /// <summary>Document loaded by service → push to live SfDiagram (template load).</summary>

@@ -71,6 +71,16 @@ public interface IPropertyService
 
     /// <summary>Registers the live Syncfusion element collection for write-through.</summary>
     void Track(IEnumerable<object> nodes, IEnumerable<object> connectors);
+
+    /// <summary>
+    /// Registers a single element that was added to the diagram after the initial
+    /// track (e.g. a shape dragged in from the symbol palette) so it can be
+    /// inspected and edited from the property panel.
+    /// </summary>
+    void TrackAdded(object element);
+
+    /// <summary>Removes an element that was deleted from the diagram.</summary>
+    void Untrack(string elementId);
 }
 
 /// <summary>

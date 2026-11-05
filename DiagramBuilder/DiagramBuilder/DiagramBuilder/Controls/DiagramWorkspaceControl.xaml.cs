@@ -97,6 +97,93 @@ public partial class DiagramWorkspaceControl : ContentView
     public DiagramWorkspaceControl()
     {
         InitializeComponent();
+
+        // Track live additions/removals so elements dropped from the symbol
+        // palette (or deleted) are reflected in the property panel's tracked
+        // set. The palette writes straight into SfDiagram.Nodes/Connectors,
+        // so the ObservableCollection notifications are the only reliable hook.
+        Diagram.Nodes.CollectionChanged += OnNodesCollectionChanged;
+        Diagram.Connectors.CollectionChanged += OnConnectorsCollectionChanged;
+    }
+
+    private void OnNodesCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        RaiseElementsChanged(e, ElementKind.Node);
+    }
+
+    private void OnConnectorsCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        RaiseElementsChanged(e, ElementKind.Connector);
+    }
+
+    private void RaiseElementsChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e, ElementKind kind)
+    {
+        switch (e.Action)
+        {
+            case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                if (e.NewItems is not null)
+                {
+                    foreach (var item in e.NewItems)
+                    {
+                        if (item is not null)
+                        {
+                            ElementAdded?.Invoke(this, new ElementChangePayload(kind, item, Added: true));
+                        }
+                    }
+                }
+
+                break;
+
+            case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                if (e.OldItems is not null)
+                {
+                    foreach (var item in e.OldItems)
+                    {
+                        var id = item switch
+                        {
+                            Syncfusion.Maui.Diagram.Node node => node.Id,
+                            Syncfusion.Maui.Diagram.Connector connector => connector.Id,
+                            _ => string.Empty,
+                        };
+
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            ElementAdded?.Invoke(this, new ElementChangePayload(kind, id, Added: false));
+                        }
+                    }
+                }
+
+                break;
+
+            case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                // Bulk clear (e.g. Nodes.Clear() during a template load) — the
+                // subsequent Track() call re-registers everything.
+                ElementsReset?.Invoke(this, EventArgs.Empty);
+                break;
+        }
+    }
+
+    /// <summary>Raised when an element is added to or removed from the diagram.</summary>
+    public event EventHandler<ElementChangePayload>? ElementAdded;
+
+    /// <summary>Raised when the whole node/connector collection is cleared.</summary>
+    public event EventHandler? ElementsReset;
+
+    /// <summary>Identifies which live collection an element change came from.</summary>
+    public enum ElementKind
+    {
+        Node,
+        Connector,
+    }
+
+    /// <summary>
+    /// Describes an element entering or leaving the diagram. <see cref="Element"/>
+    /// carries the live object for additions and its id for removals.
+    /// </summary>
+    public sealed record ElementChangePayload(ElementKind Kind, object Element, bool Added)
+    {
+        /// <summary>Id of the affected element (empty when the element has no id).</summary>
+        public string ElementId => Element as string ?? string.Empty;
     }
 
     private static void OnReadyCommandChanged(BindableObject bindable, object oldValue, object newValue)

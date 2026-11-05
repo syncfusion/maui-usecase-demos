@@ -205,21 +205,27 @@ public partial class PropertyPanelControl : ContentView
     {
         var grid = new Grid
         {
-            ColumnSpacing = 8,
+            ColumnSpacing = 10,
             ColumnDefinitions = new ColumnDefinitionCollection(
                 Enumerable.Range(0, group.Count)
-                    .Select(_ => new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) })
+                    .Select(i => new ColumnDefinition { Width = new GridLength(ColumnWeight(group, i), GridUnitType.Star) })
                     .ToArray()),
         };
 
         for (var i = 0; i < group.Count; i++)
         {
-            var cell = new VerticalStackLayout { Spacing = 2 };
-            if (!string.IsNullOrEmpty(group[i].CaptionKey))
+            var cell = new VerticalStackLayout { Spacing = 3 };
+
+            // The explicit caption (Border / Color / Thickness) wins. Rows whose
+            // editor already carries an inline prefix (X, Y, W, H) keep that
+            // prefix instead of repeating the full label as a caption.
+            var hasInlinePrefix = !string.IsNullOrEmpty(group[i].PrefixKey);
+            var caption = group[i].CaptionKey ?? (hasInlinePrefix ? null : group[i].LabelKey);
+            if (!string.IsNullOrEmpty(caption))
             {
                 cell.Add(new Label
                 {
-                    Text = group[i].CaptionKey,
+                    Text = caption,
                     Style = (Style)Application.Current!.Resources["PropertyCaptionStyle"],
                     AutomationId = "property_caption_" + group[i].Key.ToLowerInvariant(),
                 });
@@ -231,6 +237,22 @@ public partial class PropertyPanelControl : ContentView
         }
 
         return grid;
+    }
+
+    /// <summary>
+    /// Relative width of a column in a multi-editor row. Text-bearing editors
+    /// (dropdowns) need more room than numeric ones, so "Solid" is not clipped
+    /// in the 320 px inspector.
+    /// </summary>
+    private static double ColumnWeight(IReadOnlyList<PropertyModel> group, int index)
+    {
+        var model = group[index];
+        return model.Editor switch
+        {
+            PropertyEditorKind.Combo => 1.4,
+            PropertyEditorKind.Color => 0.9,
+            _ => 1.0,
+        };
     }
 
     private View BuildEditor(PropertyModel model, PropertyPanelViewModel vm)
@@ -267,9 +289,14 @@ public partial class PropertyPanelControl : ContentView
         {
             Minimum = model.Min ?? 0,
             Maximum = model.Max ?? 100000,
-            CustomFormat = "{0:0.##}",
+            // SfNumericEntry.CustomFormat expects a .NET *custom numeric* format
+            // string ("#,0.00##"), not a composite format ("{0:0.##}"). Passing
+            // braces makes them render literally, e.g. "{35:0}".
+            CustomFormat = model.IsInteger ? "#,0" : "#,0.##",
             ShowBorder = true,
+            ShowClearButton = false,
             FontSize = 13,
+            HeightRequest = 30,
             HorizontalTextAlignment = TextAlignment.Start,
         };
 
@@ -288,10 +315,10 @@ public partial class PropertyPanelControl : ContentView
 
         var grid = new Grid
         {
-            ColumnSpacing = 4,
+            ColumnSpacing = 6,
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
-                new ColumnDefinition { Width = new GridLength(14) },
+                new ColumnDefinition { Width = new GridLength(12) },
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
             }),
         };
@@ -317,7 +344,12 @@ public partial class PropertyPanelControl : ContentView
             ItemsSource = model.Options.ToList(),
             FontSize = 13,
             ShowBorder = true,
+            HeightRequest = 30,
             HorizontalTextAlignment = TextAlignment.Start,
+            // The combo renders a clear (✕) button by default, which crowds the
+            // narrow panel and suggests the value can be emptied — these pickers
+            // always have a valid selection, so the button is hidden.
+            IsClearButtonVisible = false,
         };
 
         var selected = model.Value as string;
@@ -361,10 +393,47 @@ public partial class PropertyPanelControl : ContentView
                 ? Convert.ToDouble(convertible, System.Globalization.CultureInfo.InvariantCulture)
                 : model.Min ?? 0,
             Tooltip = new Syncfusion.Maui.Sliders.SliderTooltip { ShowAlways = false },
+            NumberFormat = model.IsInteger ? "#,0" : "#,0.##",
         };
 
         slider.ValueChanged += (_, args) => Commit(vm, model, args.NewValue * model.Scale);
-        return slider;
+
+        // The design pairs the track with a read-only value readout so the
+        // current level is visible without hovering the thumb.
+        var valueLabel = new Label
+        {
+            Text = FormatSliderValue(model, slider.Value),
+            FontSize = 12,
+            TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalTextAlignment = TextAlignment.End,
+        };
+
+        slider.ValueChanged += (_, args) => valueLabel.Text = FormatSliderValue(model, args.NewValue);
+
+        var grid = new Grid
+        {
+            ColumnSpacing = 10,
+            ColumnDefinitions = new ColumnDefinitionCollection(new[]
+            {
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(38) },
+            }),
+        };
+
+        Grid.SetColumn(slider, 0);
+        grid.Add(slider);
+        Grid.SetColumn(valueLabel, 1);
+        grid.Add(valueLabel);
+        return grid;
+    }
+
+    private static string FormatSliderValue(PropertyModel model, double value)
+    {
+        var scaled = value * model.Scale;
+        return model.IsInteger
+            ? string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0}", scaled)
+            : string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##}", scaled);
     }
 
     private View BuildSegmentedEditor(PropertyModel model, PropertyPanelViewModel vm)
@@ -411,10 +480,33 @@ public partial class PropertyPanelControl : ContentView
             {
                 TrackBackground = Services.ResourceLookup.ResourceColor("PrimaryColor"),
                 ThumbBackground = Colors.White,
+                // The default switch is far too large for a 320 px inspector;
+                // these are compact inline toggles.
+                TrackWidthRequest = 34,
+                TrackHeightRequest = 18,
+                ThumbWidthRequest = 14,
+                ThumbHeightRequest = 14,
             },
         };
         toggle.StateChanged += (_, args) => Commit(vm, model, args.NewValue);
-        return toggle;
+
+        // The design labels each toggle (Bold / Italic); without a caption the
+        // switch is unidentifiable.
+        return new HorizontalStackLayout
+        {
+            Spacing = 6,
+            Children =
+            {
+                toggle,
+                new Label
+                {
+                    Text = model.LabelKey,
+                    FontSize = 12,
+                    TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
+                    VerticalOptions = LayoutOptions.Center,
+                },
+            },
+        };
     }
 
     /// <summary>Pushes an edited value into the model and applies it to the live element.</summary>
