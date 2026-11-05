@@ -30,7 +30,7 @@ public partial class ManagePage : ContentView
         _runBooleanAction = runBooleanAction;
         _openTransfer = openTransfer;
 
-        SectionTabs.ItemsSource = new[] { "Tokens", "Counters", "Insights" };
+        SectionTabs.ItemsSource = new[] { "Tokens", "Counters" };
         RenderSection();
         SizeChanged += OnSizeChanged;
     }
@@ -46,12 +46,9 @@ public partial class ManagePage : ContentView
                 _runTokenAction,
                 _runBooleanAction,
                 _openTransfer),
-            "Insights" => new InsightsPage(new QueueInsightsViewModel(_viewModel)),
             _ => new TokensPage(new TokenManagementViewModel(_viewModel), _openToken)
         };
-        PageContentHost.Content = pageContent is InsightsPage
-            ? pageContent
-            : new ScrollView { Content = pageContent };
+        PageContentHost.Content = new ScrollView { Content = pageContent };
     }
 
     public void ScrollToCounter(string counterName)
@@ -76,7 +73,7 @@ public partial class ManagePage : ContentView
         }
 
         var horizontalPadding = Width >= 1100 ? 64 : 44;
-        SectionTabs.WidthRequest = Math.Min(480, Math.Max(100, Width - horizontalPadding));
+        SectionTabs.WidthRequest = Math.Min(340, Math.Max(100, Width - horizontalPadding));
         OperationalStatus.IsVisible = Width >= 600;
         NavigationRow.Margin = new Thickness(Width >= 1100 ? 28 : 18, Width < 768 ? 12 : 22, Width >= 1100 ? 28 : 18, 0);
     }

@@ -188,9 +188,7 @@ public partial class MainPage : ContentPage
         {
             _managePage = null;
             PageHost.Content = new OverviewPage(
-                new QueueOverviewViewModel(_viewModel),
-                ShowTokenDetails,
-                ShowCounterOperations);
+                new QueueOverviewViewModel(_viewModel));
             return;
         }
 
@@ -238,7 +236,6 @@ public partial class MainPage : ContentPage
                 action => RunCounterAction(action),
                 action => RunCounterAction(action),
                 ShowTokenPickerForTransfer),
-            "Insights" => new InsightsPage(new QueueInsightsViewModel(_viewModel)),
             _ => new TokensPage(new TokenManagementViewModel(_viewModel), ShowTokenDetails)
         });
         return content;
@@ -251,11 +248,10 @@ public partial class MainPage : ContentPage
             ItemsSource = new[]
             {
                 $"Tokens  {_viewModel.TotalTokenCount}",
-                $"Counters  {_viewModel.Counters.Count} active",
-                "Insights  Today"
+                $"Counters  {_viewModel.Counters.Count} active"
             },
             SegmentHeight = 38,
-            WidthRequest = 410
+            WidthRequest = 280
         };
         navigation.SetBinding(
             SfSegmentedControl.SelectedIndexProperty,

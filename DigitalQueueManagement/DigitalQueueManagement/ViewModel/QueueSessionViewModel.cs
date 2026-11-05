@@ -9,25 +9,11 @@ public partial class QueueSessionViewModel : ObservableObject
     private readonly QueueStore _store;
     private readonly Dictionary<string, string> _completedTokenByCounter = new(StringComparer.Ordinal);
 
-    public IReadOnlyList<QueueAnalyticsPoint> ServiceAnalytics { get; } =
-    [
-        new("Enquiry", 22, "#183E91", "44%"),
-        new("Payment", 18, "#159B85", "36%"),
-        new("Support", 10, "#7589D4", "20%")
-    ];
+    public ObservableCollection<QueueAnalyticsPoint> ServiceAnalytics { get; } = [];
 
-    public IReadOnlyList<QueueAnalyticsPoint> FulfillmentAnalytics { get; } =
-    [
-        new("Completed", 42, "#159B85"),
-        new("Pending", 8, "#93B4E2")
-    ];
+    public ObservableCollection<QueueAnalyticsPoint> FulfillmentAnalytics { get; } = [];
 
-    public IReadOnlyList<QueueAnalyticsPoint> CounterAnalytics { get; } =
-    [
-        new("Counter 1", 18, "#183E91"),
-        new("Counter 2", 14, "#159B85"),
-        new("Counter 3", 10, "#7589D4")
-    ];
+    public ObservableCollection<QueueAnalyticsPoint> CounterAnalytics { get; } = [];
 
     public IReadOnlyList<QueueAnalyticsPoint> AverageWaitAnalytics { get; } =
     [
@@ -75,6 +61,15 @@ public partial class QueueSessionViewModel : ObservableObject
     public int ServingTokenCount => Tokens.Count(token => token.Status == TokenStatus.Serving);
 
     public int CompletedTokenCount => Tokens.Count(token => token.Status == TokenStatus.Completed);
+
+    public int PendingTokenCount => TotalTokenCount - CompletedTokenCount;
+
+    public string CompletedTokenPercentageText => GetTokenPercentageText(CompletedTokenCount);
+
+    public string PendingTokenPercentageText => GetTokenPercentageText(PendingTokenCount);
+
+    public string CompletedTokensPerCounterText =>
+        $"{(Counters.Count == 0 ? 0 : CompletedTokenCount / (double)Counters.Count):0.#} tokens/counter";
 
     public int SkippedTokenCount => Tokens.Count(token => token.Status == TokenStatus.Skipped);
 
@@ -228,13 +223,11 @@ public partial class QueueSessionViewModel : ObservableObject
         get => ActiveTab switch
         {
             "Counters" => 1,
-            "Insights" => 2,
             _ => 0
         };
         set => SetManageTab(value switch
         {
             1 => "Counters",
-            2 => "Insights",
             _ => "Tokens"
         });
     }
@@ -316,7 +309,7 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public void SetManageTab(string tab)
     {
-        if (tab is not ("Tokens" or "Counters" or "Insights"))
+        if (tab is not ("Tokens" or "Counters"))
         {
             return;
         }
@@ -525,6 +518,10 @@ public partial class QueueSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(WaitingTokenCount));
         OnPropertyChanged(nameof(ServingTokenCount));
         OnPropertyChanged(nameof(CompletedTokenCount));
+        OnPropertyChanged(nameof(PendingTokenCount));
+        OnPropertyChanged(nameof(CompletedTokenPercentageText));
+        OnPropertyChanged(nameof(PendingTokenPercentageText));
+        OnPropertyChanged(nameof(CompletedTokensPerCounterText));
         OnPropertyChanged(nameof(SkippedTokenCount));
         OnPropertyChanged(nameof(PriorityWaitingCount));
         OnPropertyChanged(nameof(NormalWaitingCount));
@@ -581,11 +578,45 @@ public partial class QueueSessionViewModel : ObservableObject
     {
         Replace(Tokens, _store.Tokens);
         Replace(Counters, _store.Counters);
+        RefreshAnalytics();
         RefreshCounterSummaries();
         RefreshStatusTokens();
         RefreshVisibleTokens();
         RefreshUpcomingTokens();
     }
+
+    private void RefreshAnalytics()
+    {
+        var serviceColors = new[] { "#183E91", "#159B85", "#7589D4" };
+        Replace(ServiceAnalytics, QueueServices.All.Select((service, index) =>
+        {
+            var count = Tokens.Count(token => token.Service == service);
+            return new QueueAnalyticsPoint(
+                service,
+                count,
+                serviceColors[index % serviceColors.Length],
+                GetTokenPercentageText(count));
+        }));
+
+        Replace(FulfillmentAnalytics,
+        [
+            new QueueAnalyticsPoint("Completed", CompletedTokenCount, "#159B85"),
+            new QueueAnalyticsPoint("Not completed", PendingTokenCount, "#93B4E2")
+        ]);
+
+        var counterColors = new[] { "#183E91", "#159B85", "#7589D4" };
+        Replace(CounterAnalytics, Counters.Select((counter, index) =>
+            new QueueAnalyticsPoint(
+                counter.Name,
+                Tokens.Count(token =>
+                    token.CounterName == counter.Name && token.Status == TokenStatus.Completed),
+                counterColors[index % counterColors.Length])));
+    }
+
+    private string GetTokenPercentageText(int count) =>
+        TotalTokenCount == 0
+            ? "0%"
+            : $"{(int)Math.Round(count * 100d / TotalTokenCount)}%";
 
     private void RefreshStatusTokens()
     {

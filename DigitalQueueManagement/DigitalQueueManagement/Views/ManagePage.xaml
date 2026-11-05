@@ -19,9 +19,9 @@
                     StrokeShape="RoundRectangle 10"
                     VerticalOptions="Center">
                 <buttons:SfSegmentedControl x:Name="SectionTabs"
-                                           WidthRequest="480"
+                                           WidthRequest="340"
                                            SegmentHeight="42"
-                                           VisibleSegmentsCount="3"
+                                           VisibleSegmentsCount="2"
                                            CornerRadius="7"
                                            SegmentCornerRadius="7"
                                            StrokeThickness="0"
@@ -88,21 +88,6 @@
                                             </DataTrigger>
                                         </Label.Triggers>
                                     </Label>
-                                    <Label Text="bar_chart"
-                                           FontFamily="MaterialIcons"
-                                           FontSize="14"
-                                           TextColor="#64748B"
-                                           VerticalOptions="Center"
-                                           IsVisible="False">
-                                        <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Insights">
-                                                <Setter Property="IsVisible" Value="True" />
-                                            </DataTrigger>
-                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
-                                                <Setter Property="TextColor" Value="White" />
-                                            </DataTrigger>
-                                        </Label.Triggers>
-                                    </Label>
                                     <Label Grid.Column="1"
                                            Text="{Binding Text}"
                                            FontFamily="Segoe UI"
@@ -128,9 +113,6 @@
                                                 <Setter Property="IsVisible" Value="True" />
                                             </DataTrigger>
                                             <DataTrigger TargetType="Border" Binding="{Binding Text}" Value="Counters">
-                                                <Setter Property="IsVisible" Value="True" />
-                                            </DataTrigger>
-                                            <DataTrigger TargetType="Border" Binding="{Binding Text}" Value="Insights">
                                                 <Setter Property="IsVisible" Value="True" />
                                             </DataTrigger>
                                             <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
@@ -165,23 +147,6 @@
                                                    IsVisible="False">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Counters">
-                                                        <Setter Property="IsVisible" Value="True" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
-                                                        <Setter Property="TextColor" Value="White" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                            <Label Text="Today"
-                                                   FontFamily="Segoe UI"
-                                                   FontSize="10"
-                                                   FontAttributes="Bold"
-                                                   TextColor="#64748B"
-                                                   HorizontalTextAlignment="Center"
-                                                   VerticalTextAlignment="Center"
-                                                   IsVisible="False">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding Text}" Value="Insights">
                                                         <Setter Property="IsVisible" Value="True" />
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
