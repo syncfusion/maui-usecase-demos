@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
@@ -46,8 +46,8 @@
                         Grid.Row="1"
                         IsVisible="{Binding IsEmptyState, Converter={StaticResource InvertBoolConverter}}">
                 <VerticalStackLayout x:Name="SectionsStack"
-                                     Spacing="8"
-                                     Padding="0,8,0,8" />
+                                     Spacing="0"
+                                     Padding="12,4,12,12" />
             </ScrollView>
         </Grid>
     </Border>

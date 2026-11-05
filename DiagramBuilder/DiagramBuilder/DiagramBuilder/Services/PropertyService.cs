@@ -57,14 +57,8 @@ public class PropertyService : IPropertyService
             case "Rotation":
                 if (element is Node n5 && property.Value is double r) n5.RotationAngle = r;
                 break;
-            case "BackgroundType":
-                break;
             case "BackgroundColor":
-                ApplyStyle(element, fill: ResourceLookup.Color(property.Value?.ToString()));
-                break;
             case "Fill":
-                ApplyStyle(element, fill: ResourceLookup.Color(property.Value?.ToString()));
-                break;
             case "FillColorKey":
                 ApplyStyle(element, fill: ResourceLookup.Color(property.Value?.ToString()));
                 break;
@@ -77,14 +71,17 @@ public class PropertyService : IPropertyService
             case "BorderStyle":
                 ApplyBorderStyle(element, property.Value?.ToString());
                 break;
+            case "Opacity":
             case "BorderOpacity":
-                if (element.Style is ShapeStyle s2 && property.Value is double o) s2.Opacity = o;
-                break;
             case "FillOpacity":
-                if (element.Style is ShapeStyle s3 && property.Value is double fo) s3.Opacity = fo;
+                // ShapeStyle.Opacity is the single element-wide opacity the control exposes.
+                if (element.Style is ShapeStyle s2 && property.Value is double o) s2.Opacity = o;
                 break;
             case "Text":
                 SetAnnotationContent(element, property.Value?.ToString() ?? string.Empty);
+                break;
+            case "FontFamily":
+                ApplyTextStyle(element, fontFamily: property.Value?.ToString());
                 break;
             case "FontSize":
                 ApplyTextStyle(element, fontSize: property.Value as double?);
@@ -118,36 +115,87 @@ public class PropertyService : IPropertyService
 
         if (element is Node node)
         {
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionX", LabelKey = AppStrings.PropertyPositionX, Value = node.OffsetX, Min = 0 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionY", LabelKey = AppStrings.PropertyPositionY, Value = node.OffsetY, Min = 0 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Width", LabelKey = AppStrings.PropertyWidth, Value = node.Width, Min = 10, Max = 2000 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Height", LabelKey = AppStrings.PropertyHeight, Value = node.Height, Min = 10, Max = 2000 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Rotation", LabelKey = AppStrings.PropertyRotation, Value = node.RotationAngle, Min = 0, Max = 360 });
+            // DIMENSIONS — the design pairs the fields two-per-row (X | Y, W | H)
+            // with a single-letter prefix rendered inside each editor.
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionX", LabelKey = AppStrings.PropertyPositionX, PrefixKey = "X", Value = node.OffsetX, Min = 0, Editor = PropertyEditorKind.Number, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionY", LabelKey = AppStrings.PropertyPositionY, PrefixKey = "Y", Value = node.OffsetY, Min = 0, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Width", LabelKey = AppStrings.PropertyWidth, PrefixKey = "W", Value = node.Width, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Height", LabelKey = AppStrings.PropertyHeight, PrefixKey = "H", Value = node.Height, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Rotation", LabelKey = AppStrings.PropertyRotation, PrefixKey = "R", Value = node.RotationAngle, Min = 0, Max = 360, Editor = PropertyEditorKind.Number, PairIndex = 0, PairCount = 2 });
 
             var style = node.Style as ShapeStyle;
-            result.Add(new PropertyModel { Group = PropertyGroup.Background, Key = "BackgroundType", LabelKey = AppStrings.PropertyBackgroundType, Value = AppStrings.PropertyBackgroundSolid });
-            result.Add(new PropertyModel { Group = PropertyGroup.Background, Key = "BackgroundColor", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill) });
-            result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "Fill", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill) });
-            result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "FillOpacity", LabelKey = AppStrings.PropertyOpacity, Value = style?.Opacity ?? 1.0, Min = 0, Max = 1 });
 
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, Value = BorderStyleFor(style?.StrokeDashArray) });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, Value = ColorKeyFor(style?.StrokeColor) });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderOpacity", LabelKey = AppStrings.PropertyOpacity, Value = style?.Opacity ?? 1.0, Min = 0, Max = 1 });
+            // BACKGROUND — the MAUI Diagram's ShapeStyle exposes a single flat Fill colour
+            // and has no gradient model, so only the solid colour picker is offered.
+            result.Add(new PropertyModel { Group = PropertyGroup.Background, Key = "BackgroundColor", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill), Editor = PropertyEditorKind.Color, IsFullWidth = true });
+
+            // FILL — same underlying ShapeStyle.Fill; kept as its own section to mirror
+            // the design's section order.
+            result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "Fill", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill), Editor = PropertyEditorKind.Color, IsFullWidth = true });
+
+            // BORDER — the design puts the style / colour / thickness editors on
+            // one row, each under its own caption.
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorKeyFor(style?.StrokeColor), Editor = PropertyEditorKind.Color, PairIndex = 1, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, PairIndex = 2, PairCount = 3 });
+
+            // OPACITY — ShapeStyle.Opacity is the only opacity the control exposes and it
+            // applies to the whole element (fill + stroke together), so a single row is shown.
+            // The design shows a 0-100 scale, so the value is scaled on the way in and out.
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Opacity", LabelKey = AppStrings.PropertyOpacity, Value = (style?.Opacity ?? 1.0) * 100.0, Min = 0, Max = 100, Editor = PropertyEditorKind.Slider, Scale = 0.01 });
 
             var annotation = node.Annotations.OfType<ShapeAnnotation>().FirstOrDefault();
             var textStyle = annotation?.Style;
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "Text", LabelKey = AppStrings.PropertyTextContent, Value = annotation?.Content });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color) });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "HorizontalAlignment", LabelKey = AppStrings.PropertyHorizontalAlign, Value = HorizontalKeyFor(annotation?.HorizontalAlignment) });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "VerticalAlignment", LabelKey = AppStrings.PropertyVerticalAlign, Value = VerticalKeyFor(annotation?.VerticalAlignment) });
+
+            // TEXT — the design lays out font family / size and the alignment
+            // dropdowns two-per-row, then a bold/italic toggle row.
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontFamily", LabelKey = AppStrings.PropertyFontFamily, Value = textStyle?.FontFamily ?? "Arial", Editor = PropertyEditorKind.Combo, Options = FontFamilyOptions, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96, Editor = PropertyEditorKind.Number, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "HorizontalAlignment", LabelKey = AppStrings.PropertyHorizontalAlign, Value = HorizontalKeyFor(annotation?.HorizontalAlignment), Editor = PropertyEditorKind.Combo, Options = HorizontalAlignOptions, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "VerticalAlignment", LabelKey = AppStrings.PropertyVerticalAlign, Value = VerticalKeyFor(annotation?.VerticalAlignment), Editor = PropertyEditorKind.Combo, Options = VerticalAlignOptions, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color), Editor = PropertyEditorKind.Color, PairIndex = 0, PairCount = 2 });
         }
 
         return result;
     }
+
+    /// <summary>Dash-style options offered by the border style dropdown.</summary>
+    private static readonly string[] BorderStyleOptions =
+    [
+        AppStrings.PropertyBorderSolid,
+        AppStrings.PropertyBorderDashed,
+        AppStrings.PropertyBorderDotted,
+    ];
+
+    /// <summary>Font families offered by the text font dropdown.</summary>
+    private static readonly string[] FontFamilyOptions =
+    [
+        "Arial",
+        "Segoe UI",
+        "Calibri",
+        "Verdana",
+        "Tahoma",
+        "Times New Roman",
+        "Courier New",
+    ];
+
+    /// <summary>Horizontal text alignment options.</summary>
+    private static readonly string[] HorizontalAlignOptions =
+    [
+        AppStrings.PropertyAlignLeft,
+        AppStrings.PropertyAlignCenter,
+        AppStrings.PropertyAlignRight,
+    ];
+
+    /// <summary>Vertical text alignment options.</summary>
+    private static readonly string[] VerticalAlignOptions =
+    [
+        AppStrings.PropertyAlignTop,
+        AppStrings.PropertyAlignMiddle,
+        AppStrings.PropertyAlignBottom,
+    ];
 
     private static string? ColorKeyFor(Color? color)
     {
@@ -242,7 +290,7 @@ public class PropertyService : IPropertyService
         };
     }
 
-    private static void ApplyTextStyle(NodeBase element, double? fontSize = null, bool? bold = null, bool? italic = null, Color? color = null)
+    private static void ApplyTextStyle(NodeBase element, double? fontSize = null, bool? bold = null, bool? italic = null, Color? color = null, string? fontFamily = null)
     {
         TextStyle? textStyle = element switch
         {
@@ -274,6 +322,11 @@ public class PropertyService : IPropertyService
         if (color is not null)
         {
             textStyle.Color = color;
+        }
+
+        if (!string.IsNullOrWhiteSpace(fontFamily))
+        {
+            textStyle.FontFamily = fontFamily;
         }
     }
 

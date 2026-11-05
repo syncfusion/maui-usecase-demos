@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Color swatch + dropdown trigger. The design shows a small square swatch with a
+  chevron button beside it; tapping either opens the SfColorPicker popup.
+-->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
@@ -9,30 +13,54 @@
             <Style x:Key="ColorPickerSwatchStyle" TargetType="Border">
                 <Setter Property="Stroke" Value="{DynamicResource PanelBorderBrush}" />
                 <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="WidthRequest" Value="28" />
                 <Setter Property="HeightRequest" Value="28" />
+                <Setter Property="WidthRequest" Value="30" />
                 <Setter Property="VerticalOptions" Value="Center" />
-                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="Start" />
             </Style>
             <Style x:Key="ColorPickerSwatchFillStyle" TargetType="BoxView">
-                <Setter Property="WidthRequest" Value="22" />
-                <Setter Property="HeightRequest" Value="22" />
+                <Setter Property="WidthRequest" Value="26" />
+                <Setter Property="HeightRequest" Value="26" />
             </Style>
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Border x:Name="SwatchFrame"
-            Style="{StaticResource ColorPickerSwatchStyle}">
-        <Border.StrokeShape>
-            <shapes:RoundRectangle CornerRadius="4" />
-        </Border.StrokeShape>
-        <Grid>
+    <HorizontalStackLayout Spacing="0">
+        <Border x:Name="SwatchFrame"
+                Style="{StaticResource ColorPickerSwatchStyle}">
+            <Border.StrokeShape>
+                <shapes:RoundRectangle CornerRadius="4" />
+            </Border.StrokeShape>
             <BoxView x:Name="SwatchFill"
                      Style="{StaticResource ColorPickerSwatchFillStyle}"
                      CornerRadius="2" />
-        </Grid>
-        <Border.GestureRecognizers>
-            <TapGestureRecognizer Tapped="OnSwatchTapped" />
-        </Border.GestureRecognizers>
-    </Border>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSwatchTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+
+        <!-- Chevron trigger: opens the same picker popup as the swatch. -->
+        <Border x:Name="DropdownFrame"
+                Stroke="{DynamicResource PanelBorderBrush}"
+                StrokeThickness="1"
+                HeightRequest="28"
+                WidthRequest="28"
+                Padding="0"
+                VerticalOptions="Center"
+                HorizontalOptions="Start">
+            <Border.StrokeShape>
+                <shapes:RoundRectangle CornerRadius="4" />
+            </Border.StrokeShape>
+            <Grid>
+                <Label Text="&#x2304;"
+                       FontSize="12"
+                       TextColor="{DynamicResource TextPrimary}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Grid>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnDropdownTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+    </HorizontalStackLayout>
 </ContentView>
