@@ -106,7 +106,7 @@ Or open `PatientCare/PatientCare.slnx` in Visual Studio / VS Code, restore packa
 
 ## Output
 
-![Patient care demo](patient-care-demo.mp4)
+![Patient care demo](patient-care-demo.gif)
 
 ## Project Structure
 

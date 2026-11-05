@@ -103,7 +103,7 @@ Or open `StockChart/StockChart.slnx` in Visual Studio or VS Code, restore packag
 
 ## Output
 
-![Stock chart demo](stock-chart-demo.mp4)
+![Stock chart demo](stock-chart-demo.gif)
 
 ## Project Structure
 
