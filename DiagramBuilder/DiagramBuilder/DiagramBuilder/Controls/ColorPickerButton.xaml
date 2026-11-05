@@ -38,29 +38,5 @@
                 <TapGestureRecognizer Tapped="OnSwatchTapped" />
             </Border.GestureRecognizers>
         </Border>
-
-        <!-- Chevron trigger: opens the same picker popup as the swatch. -->
-        <Border x:Name="DropdownFrame"
-                Stroke="{DynamicResource PanelBorderBrush}"
-                StrokeThickness="1"
-                HeightRequest="30"
-                WidthRequest="28"
-                Padding="0"
-                VerticalOptions="Center"
-                HorizontalOptions="Start">
-            <Border.StrokeShape>
-                <shapes:RoundRectangle CornerRadius="4" />
-            </Border.StrokeShape>
-            <Grid>
-                <Label Text="&#x2304;"
-                       FontSize="12"
-                       TextColor="{DynamicResource TextPrimary}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center" />
-            </Grid>
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnDropdownTapped" />
-            </Border.GestureRecognizers>
-        </Border>
     </HorizontalStackLayout>
 </ContentView>

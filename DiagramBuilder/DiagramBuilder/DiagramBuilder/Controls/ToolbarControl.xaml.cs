@@ -331,6 +331,16 @@ public partial class ToolbarControl : ContentView
             ShowInputArea = true,
         };
 
+        // Seed the picker (and the swatch) from the selected shape's current fill
+        // so the dialog reflects reality rather than the toolbar's last pick.
+        var currentFill = ReadSelectedColor("Fill");
+        if (currentFill is not null)
+        {
+            _fillColorKey = currentFill;
+            swatch.BackgroundColor = Services.ResourceLookup.Color(currentFill, Colors.White);
+            SeedPicker(picker, currentFill);
+        }
+
         SfPopup? popup = null;
         popup = new SfPopup
         {
@@ -377,6 +387,14 @@ public partial class ToolbarControl : ContentView
             ShowInputArea = true,
         };
 
+        var currentStroke = ReadSelectedColor("Border");
+        if (currentStroke is not null)
+        {
+            _strokeColorKey = currentStroke;
+            swatch.BackgroundColor = Services.ResourceLookup.Color(currentStroke, Colors.White);
+            SeedPicker(picker, currentStroke);
+        }
+
         SfPopup? popup = null;
         popup = new SfPopup
         {
@@ -412,6 +430,32 @@ public partial class ToolbarControl : ContentView
 
         PopupXamlRootHelper.AttachIfAvailable(popup, swatch);
         popup.ShowRelativeToView(swatch, PopupRelativePosition.AlignBottomLeft);
+    }
+
+    /// <summary>
+    /// Reads the selected element's current fill/stroke colour key so the toolbar
+    /// swatches mirror the shape (empty when nothing is selected or untracked).
+    /// </summary>
+    private string? ReadSelectedColor(string panelKey)
+    {
+        if (string.IsNullOrEmpty(SelectedElementId) || _propertyService is null)
+        {
+            return null;
+        }
+
+        return _propertyService.Read(SelectedElementId)
+            .FirstOrDefault(p => p.Key == panelKey)?.Value as string;
+    }
+
+    /// <summary>Applies a colour key to an SfColorPicker via its writable colour property.</summary>
+    private static void SeedPicker(SfColorPicker picker, string colorKey)
+    {
+        var color = Services.ResourceLookup.Color(colorKey, Colors.White);
+        var property = picker.GetType().GetProperty("SelectedColor");
+        if (property?.CanWrite == true && property.PropertyType == typeof(Color))
+        {
+            property.SetValue(picker, color);
+        }
     }
 
     private View BuildShapesFlyout()

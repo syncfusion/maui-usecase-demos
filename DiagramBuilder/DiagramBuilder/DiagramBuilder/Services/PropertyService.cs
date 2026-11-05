@@ -83,9 +83,14 @@ public class PropertyService : IPropertyService
             case "BackgroundColor":
             case "Fill":
             case "FillColorKey":
+            case "FillColor":
+                // "FillColor"/"BorderColor" are sent by the toolbar colour swatches;
+                // "Fill" comes from the property panel. Both must be handled or the
+                // toolbar pickers silently do nothing.
                 ApplyStyle(element, fill: ResourceLookup.Color(property.Value?.ToString()));
                 break;
             case "Border":
+            case "BorderColor":
                 ApplyStyle(element, stroke: ResourceLookup.Color(property.Value?.ToString()));
                 break;
             case "BorderThickness":

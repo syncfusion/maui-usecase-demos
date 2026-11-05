@@ -65,11 +65,6 @@ public partial class ColorPickerButton : ContentView
         ShowPicker(SwatchFrame);
     }
 
-    private void OnDropdownTapped(object? sender, TappedEventArgs e)
-    {
-        ShowPicker(DropdownFrame);
-    }
-
     /// <summary>Opens the colour picker popup anchored to the given element.</summary>
     private void ShowPicker(View anchor)
     {
