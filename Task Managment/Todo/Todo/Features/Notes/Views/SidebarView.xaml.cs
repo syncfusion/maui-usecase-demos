@@ -29,30 +29,6 @@ public partial class SidebarView : ContentView
             PointerHoverSurface.Reset(border);
     }
 
-    private static void OnSidebarItemPointerEntered(object? sender, PointerEventArgs e)
-    {
-        if (sender is Border border)
-            PointerHoverSurface.SetHovered(border);
-    }
-
-    private void OnSidebarItemPointerExited(object? sender, PointerEventArgs e)
-    {
-        if (sender is not Border border)
-            return;
-
-        var isSelected = BindingContext is NotesListViewModel viewModel
-            && (border.BindingContext is NotesListCategory category
-                && viewModel.SelectedCategory == category
-                && string.IsNullOrEmpty(viewModel.SelectedListId)
-                || border.BindingContext is NoteList list
-                && string.Equals(viewModel.SelectedListId, list.Id, StringComparison.Ordinal));
-
-        var selectedColor = Application.Current?.RequestedTheme == AppTheme.Dark
-            ? Color.FromArgb("#4A4458")
-            : Color.FromArgb("#EADDFF");
-        PointerHoverSurface.Reset(border, isSelected ? selectedColor : Colors.Transparent);
-    }
-
     /// <summary>
     /// Forwards sidebar selection of a built-in category to the
     /// centralized ViewModel so it can navigate between the four

@@ -26,8 +26,6 @@
                             <Border Margin="10,2" Padding="14,0" BackgroundColor="Transparent"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" HeightRequest="44">
                                 <Border.GestureRecognizers>
-                                    <PointerGestureRecognizer PointerEntered="OnSidebarItemPointerEntered"
-                                                              PointerExited="OnSidebarItemPointerExited" />
                                     <DropGestureRecognizer AllowDrop="True" DragOver="OnSidebarDragOver"
                                                            DragLeave="OnSidebarDragLeave" Drop="OnSidebarDrop" />
                                 </Border.GestureRecognizers>
@@ -107,8 +105,6 @@
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" HeightRequest="44">
                                 <Border.GestureRecognizers>
                                     <DragGestureRecognizer CanDrag="True" DragStarting="OnListDragStarting" />
-                                    <PointerGestureRecognizer PointerEntered="OnSidebarItemPointerEntered"
-                                                              PointerExited="OnSidebarItemPointerExited" />
                                     <DropGestureRecognizer AllowDrop="True" DragOver="OnCustomListDragOver"
                                                            DragLeave="OnCustomListDragLeave" Drop="OnCustomListDrop" />
                                 </Border.GestureRecognizers>
