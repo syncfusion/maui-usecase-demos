@@ -312,22 +312,25 @@ public sealed class TaskSchedulingFlyout : ContentView
             FontSize = 14,
             CornerRadius = 8,
             Margin = new Thickness(0, 1),
-            Padding = new Thickness(12, 0),
+            Padding = 0,
             Command = new Command(action)
         };
         ApplyButtonStates(button, selected);
         button.SetAppThemeColor(SfButton.TextColorProperty,
             selected ? Color.FromArgb("#7633DA") : Color.FromArgb("#1C1B1F"),
             selected ? Color.FromArgb("#D0BCFF") : Color.FromArgb("#E6E1E5"));
-        if (!string.IsNullOrEmpty(iconGlyph))
+        button.Content = new DataTemplate(() =>
         {
-            button.Content = new DataTemplate(() =>
+            var hasIcon = !string.IsNullOrEmpty(iconGlyph);
+            var grid = new Grid
             {
-                var grid = new Grid
-                {
-                    ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
-                    ColumnSpacing = 4
-                };
+                ColumnDefinitions = hasIcon
+                    ? new ColumnDefinitionCollection { new(22), new(GridLength.Star) }
+                    : new ColumnDefinitionCollection { new(GridLength.Star) },
+                ColumnSpacing = 4
+            };
+            if (hasIcon)
+            {
                 var iconLabel = new Label
                 {
                     Text = iconGlyph,
@@ -340,20 +343,21 @@ public sealed class TaskSchedulingFlyout : ContentView
                     Color.FromArgb("#49454F"),
                     Color.FromArgb("#CAC4D0"));
                 grid.Children.Add(iconLabel);
-                var textLabel = new Label
-                {
-                    FontSize = 14,
-                    VerticalTextAlignment = TextAlignment.Center
-                };
-                textLabel.SetBinding(Label.TextProperty,
-                    new Binding(nameof(SfButton.Text), source: button));
-                textLabel.SetBinding(Label.TextColorProperty,
-                    new Binding(nameof(SfButton.TextColor), source: button));
-                grid.Children.Add(textLabel);
+            }
+            var textLabel = new Label
+            {
+                FontSize = 14,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+            textLabel.SetBinding(Label.TextProperty,
+                new Binding(nameof(SfButton.Text), source: button));
+            textLabel.SetBinding(Label.TextColorProperty,
+                new Binding(nameof(SfButton.TextColor), source: button));
+            grid.Children.Add(textLabel);
+            if (hasIcon)
                 textLabel.SetValue(Grid.ColumnProperty, 1);
-                return grid;
-            });
-        }
+            return PointerHoverSurface.Wrap(grid, 8, new Thickness(12, 0));
+        });
         return button;
     }
 

@@ -26,6 +26,8 @@
                             <Border Margin="10,2" Padding="14,0" BackgroundColor="Transparent"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" HeightRequest="44">
                                 <Border.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="OnSidebarItemPointerEntered"
+                                                              PointerExited="OnSidebarItemPointerExited" />
                                     <DropGestureRecognizer AllowDrop="True" DragOver="OnSidebarDragOver"
                                                            DragLeave="OnSidebarDragLeave" Drop="OnSidebarDrop" />
                                 </Border.GestureRecognizers>
@@ -105,6 +107,8 @@
                                     StrokeThickness="0" StrokeShape="RoundRectangle 8" HeightRequest="44">
                                 <Border.GestureRecognizers>
                                     <DragGestureRecognizer CanDrag="True" DragStarting="OnListDragStarting" />
+                                    <PointerGestureRecognizer PointerEntered="OnSidebarItemPointerEntered"
+                                                              PointerExited="OnSidebarItemPointerExited" />
                                     <DropGestureRecognizer AllowDrop="True" DragOver="OnCustomListDragOver"
                                                            DragLeave="OnCustomListDragLeave" Drop="OnCustomListDrop" />
                                 </Border.GestureRecognizers>
@@ -131,11 +135,20 @@
                                                Style="{StaticResource SidebarItemLabelStyle}"
                                                IsVisible="{Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}" />
                                     </HorizontalStackLayout>
-                                    <buttons:SfButton Grid.Column="2" Text="&#8943;" FontSize="18" Rotation="90"
-                                                      WidthRequest="32" HeightRequest="32" Padding="0"
-                                                      Background="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
-                                                      Clicked="OnCustomListMoreClicked"
-                                                      SemanticProperties.Description="More list options" />
+                                    <Border Grid.Column="2" WidthRequest="32" HeightRequest="32"
+                                            BackgroundColor="Transparent" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 16">
+                                        <Border.GestureRecognizers>
+                                            <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                      PointerExited="OnPointerExited" />
+                                        </Border.GestureRecognizers>
+                                        <buttons:SfButton Text="&#8943;" FontSize="18" Rotation="90"
+                                                          WidthRequest="32" HeightRequest="32" Padding="0"
+                                                          CornerRadius="16"
+                                                          Background="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                          Clicked="OnCustomListMoreClicked"
+                                                          SemanticProperties.Description="More list options" />
+                                    </Border>
                                 </Grid>
                             </Border>
                         </DataTemplate>

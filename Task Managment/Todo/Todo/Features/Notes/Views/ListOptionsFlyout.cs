@@ -330,12 +330,13 @@ public sealed class ListOptionsFlyout : ContentView
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(6) },
                 AutomationId = $"theme-{theme.Name.ToLowerInvariant()}"
             };
-            SemanticProperties.SetDescription(swatch, $"{theme.Name} theme");
-            swatch.GestureRecognizers.Add(new TapGestureRecognizer
+            var swatchSurface = PointerHoverSurface.Wrap(swatch, 8, new Thickness(3));
+            SemanticProperties.SetDescription(swatchSurface, $"{theme.Name} theme");
+            swatchSurface.GestureRecognizers.Add(new TapGestureRecognizer
             {
                 Command = new Command(() => ApplyColorTheme(theme.Hex))
             });
-            colors.Children.Add(swatch);
+            colors.Children.Add(swatchSurface);
         }
     }
 
@@ -433,7 +434,7 @@ public sealed class ListOptionsFlyout : ContentView
         {
             Text = text,
             HeightRequest = 42,
-            Padding = new Thickness(14, 0),
+            Padding = 0,
             Background = Brush.Transparent,
             FontSize = 14,
             HorizontalOptions = LayoutOptions.Fill,
@@ -477,7 +478,7 @@ public sealed class ListOptionsFlyout : ContentView
                     new Binding(nameof(SfButton.TextColor), source: button));
                 grid.Children.Add(textLabel);
                 textLabel.SetValue(Grid.ColumnProperty, 1);
-                return grid;
+                return PointerHoverSurface.Wrap(grid, 8, new Thickness(14, 0));
             });
         }
         SemanticProperties.SetDescription(button, text);

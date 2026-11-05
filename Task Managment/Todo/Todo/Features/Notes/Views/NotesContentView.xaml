@@ -39,61 +39,68 @@
             <Grid Grid.Row="0"
                   Padding="20,14"
                   ColumnDefinitions="Auto,*,Auto">
-                <HorizontalStackLayout Grid.Column="0"
-                                       Spacing="10"
-                                       VerticalOptions="Center">
-                    <Label WidthRequest="20" HeightRequest="20" FontSize="20" FontFamily="MaterialIconRegular"
-                           VerticalTextAlignment="Center" HorizontalTextAlignment="Center">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.MyNotes}">
-                                <Setter Property="Text" Value="&#xe8a6;" />
-                                <Setter Property="TextColor" Value="#0D7D12" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Important}">
-                                <Setter Property="Text" Value="&#xe838;" />
-                                <Setter Property="TextColor" Value="#2667A3" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Reminder}">
-                                <Setter Property="Text" Value="&#xe7f5;" />
-                                <Setter Property="TextColor" Value="#7D5294" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Bin}">
-                                <Setter Property="Text" Value="&#xe872;" />
-                                <Setter Property="TextColor" Value="#ED4B42" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
-                    <Label Text="{Binding HeaderTitle}"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="{Binding HeaderForegroundColor}"
-                           VerticalOptions="Center">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding RenameSelectedListCommand}" />
-                        </Label.GestureRecognizers>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Disabled" />
-                                <VisualState x:Name="Normal" />
-                                <VisualState x:Name="PointerOver">
-                                    <VisualState.Setters>
-                                        <Setter Property="Opacity" Value="0.78" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Label>
-                </HorizontalStackLayout>
-                <buttons:SfButton Grid.Column="2"
-                        Text="&#8943;"
-                        FontSize="22"
+                <Border Grid.Column="0"
+                        Padding="4,2"
+                        BackgroundColor="Transparent"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                  PointerExited="OnPointerExited" />
+                        <TapGestureRecognizer Command="{Binding RenameSelectedListCommand}" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Label WidthRequest="20" HeightRequest="20" FontSize="20" FontFamily="MaterialIconRegular"
+                               VerticalTextAlignment="Center" HorizontalTextAlignment="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.MyNotes}">
+                                    <Setter Property="Text" Value="&#xe8a6;" />
+                                    <Setter Property="TextColor" Value="#0D7D12" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Important}">
+                                    <Setter Property="Text" Value="&#xe838;" />
+                                    <Setter Property="TextColor" Value="#2667A3" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Reminder}">
+                                    <Setter Property="Text" Value="&#xe7f5;" />
+                                    <Setter Property="TextColor" Value="#7D5294" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding SelectedCategory}" Value="{x:Static common:NotesListCategory.Bin}">
+                                    <Setter Property="Text" Value="&#xe872;" />
+                                    <Setter Property="TextColor" Value="#ED4B42" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="{Binding HeaderTitle}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{Binding HeaderForegroundColor}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+                <Border Grid.Column="2"
                         WidthRequest="40"
                         HeightRequest="40"
-                        Padding="0" Rotation="90"
-                        Background="Transparent"
-                        TextColor="{Binding HeaderForegroundColor}"
-                        Clicked="OnListOptionsClicked"
-                        SemanticProperties.Description="More list options" />
+                        BackgroundColor="Transparent"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20">
+                    <Border.GestureRecognizers>
+                        <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                  PointerExited="OnPointerExited" />
+                    </Border.GestureRecognizers>
+                    <buttons:SfButton Text="&#8943;"
+                                      FontSize="22"
+                                      WidthRequest="40"
+                                      HeightRequest="40"
+                                      Padding="0"
+                                      Rotation="90"
+                                      CornerRadius="20"
+                                      Background="Transparent"
+                                      TextColor="{Binding HeaderForegroundColor}"
+                                      Clicked="OnListOptionsClicked"
+                                      SemanticProperties.Description="More list options" />
+                </Border>
             </Grid>
 
             <!-- Notes list / empty state -->
@@ -297,35 +304,59 @@
                                     </VerticalStackLayout>
 
                                     <!-- Star (Important) -->
-                                    <buttons:SfButton Grid.Column="2"
-                                            Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
-                                            TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
-                                            IsEnabled="{Binding IsActive}"
-                                            FontSize="20"
-                                            Background="Transparent"
+                                    <Border Grid.Column="2"
                                             WidthRequest="40"
                                             HeightRequest="40"
-                                            VerticalOptions="Center"
-                                            Padding="0"
-                                            Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ToggleImportantCommand}"
-                                            CommandParameter="{Binding .}"
-                                            ToolTipProperties.Text="Important"
-                                            SemanticProperties.Description="Toggle important" />
+                                            BackgroundColor="Transparent"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 20"
+                                            VerticalOptions="Center">
+                                        <Border.GestureRecognizers>
+                                            <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                      PointerExited="OnPointerExited" />
+                                        </Border.GestureRecognizers>
+                                        <buttons:SfButton Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                                          TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                                          IsEnabled="{Binding IsActive}"
+                                                          FontSize="20"
+                                                          Background="Transparent"
+                                                          WidthRequest="40"
+                                                          HeightRequest="40"
+                                                          CornerRadius="20"
+                                                          VerticalOptions="Center"
+                                                          Padding="0"
+                                                          Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ToggleImportantCommand}"
+                                                          CommandParameter="{Binding .}"
+                                                          ToolTipProperties.Text="Important"
+                                                          SemanticProperties.Description="Toggle important" />
+                                    </Border>
 
                                     <!-- More menu (three-dot) -->
-                                    <buttons:SfButton Grid.Column="3"
-                                            Text="&#8943;"
-                                            FontSize="22"
-                                            Rotation="90"
-                                            Background="Transparent"
-                                            TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                    <Border Grid.Column="3"
                                             WidthRequest="40"
                                             HeightRequest="40"
-                                            VerticalOptions="Center"
-                                            Padding="0"
-                                            Clicked="OnNoteMenuClicked"
-                                            ToolTipProperties.Text="More"
-                                            SemanticProperties.Description="More note options" />
+                                            BackgroundColor="Transparent"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 20"
+                                            VerticalOptions="Center">
+                                        <Border.GestureRecognizers>
+                                            <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                      PointerExited="OnPointerExited" />
+                                        </Border.GestureRecognizers>
+                                        <buttons:SfButton Text="&#8943;"
+                                                          FontSize="22"
+                                                          Rotation="90"
+                                                          Background="Transparent"
+                                                          TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                          WidthRequest="40"
+                                                          HeightRequest="40"
+                                                          CornerRadius="20"
+                                                          VerticalOptions="Center"
+                                                          Padding="0"
+                                                          Clicked="OnNoteMenuClicked"
+                                                          ToolTipProperties.Text="More"
+                                                          SemanticProperties.Description="More note options" />
+                                    </Border>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -531,11 +562,18 @@
                         </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                         <syncfusionCore:SfTextInputLayout.TrailingView>
                             <Grid ColumnDefinitions="36,36,36,36" VerticalOptions="Center" HorizontalOptions="Fill" WidthRequest="150" Margin="0,8,0,0">
-                                <buttons:SfButton Grid.Column="0" WidthRequest="36" HeightRequest="36" Padding="0"
-                                                  Background="Transparent" Clicked="OnDueDateClicked"
-                                                  CornerRadius="18"
-                                                  ToolTipProperties.Text="Due date"
-                                                  SemanticProperties.Description="Set due date">
+                                <Border Grid.Column="0" WidthRequest="36" HeightRequest="36"
+                                        BackgroundColor="Transparent" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 18">
+                                    <Border.GestureRecognizers>
+                                        <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                  PointerExited="OnPointerExited" />
+                                    </Border.GestureRecognizers>
+                                    <buttons:SfButton WidthRequest="36" HeightRequest="36" Padding="0"
+                                                      Background="Transparent" Clicked="OnDueDateClicked"
+                                                      CornerRadius="18"
+                                                      ToolTipProperties.Text="Due date"
+                                                      SemanticProperties.Description="Set due date">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
                                             <Label Text="&#xe24f;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
@@ -549,12 +587,20 @@
                                             </VisualState>
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
-                                </buttons:SfButton>
-                                <buttons:SfButton Grid.Column="1" WidthRequest="36" HeightRequest="36" Padding="0"
-                                                  Background="Transparent" Clicked="OnRepeatClicked"
-                                                  CornerRadius="18"
-                                                  ToolTipProperties.Text="Repeat"
-                                                  SemanticProperties.Description="Set repeat frequency">
+                                    </buttons:SfButton>
+                                </Border>
+                                <Border Grid.Column="1" WidthRequest="36" HeightRequest="36"
+                                        BackgroundColor="Transparent" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 18">
+                                    <Border.GestureRecognizers>
+                                        <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                  PointerExited="OnPointerExited" />
+                                    </Border.GestureRecognizers>
+                                    <buttons:SfButton WidthRequest="36" HeightRequest="36" Padding="0"
+                                                      Background="Transparent" Clicked="OnRepeatClicked"
+                                                      CornerRadius="18"
+                                                      ToolTipProperties.Text="Repeat"
+                                                      SemanticProperties.Description="Set repeat frequency">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
                                             <Label Text="&#xe040;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
@@ -568,12 +614,20 @@
                                             </VisualState>
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
-                                </buttons:SfButton>
-                                <buttons:SfButton Grid.Column="2" WidthRequest="36" HeightRequest="36" Padding="0"
-                                                  Background="Transparent" Clicked="OnReminderClicked"
-                                                  CornerRadius="18"
-                                                  ToolTipProperties.Text="Reminder"
-                                                  SemanticProperties.Description="Set reminder date and time">
+                                    </buttons:SfButton>
+                                </Border>
+                                <Border Grid.Column="2" WidthRequest="36" HeightRequest="36"
+                                        BackgroundColor="Transparent" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 18">
+                                    <Border.GestureRecognizers>
+                                        <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                  PointerExited="OnPointerExited" />
+                                    </Border.GestureRecognizers>
+                                    <buttons:SfButton WidthRequest="36" HeightRequest="36" Padding="0"
+                                                      Background="Transparent" Clicked="OnReminderClicked"
+                                                      CornerRadius="18"
+                                                      ToolTipProperties.Text="Reminder"
+                                                      SemanticProperties.Description="Set reminder date and time">
                                     <buttons:SfButton.Content>
                                         <DataTemplate>
                                             <Label Text="&#xe7f5;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></DataTemplate></buttons:SfButton.Content>
@@ -587,7 +641,8 @@
                                             </VisualState>
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
-                                </buttons:SfButton>
+                                    </buttons:SfButton>
+                                </Border>
                                 <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="0,0,0,5"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
                                                   TextColor="White"

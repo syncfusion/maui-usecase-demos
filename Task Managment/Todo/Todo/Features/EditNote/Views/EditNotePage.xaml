@@ -96,8 +96,11 @@
                             <Border Padding="0"
                                     StrokeThickness="0"
                                     BackgroundColor="Transparent"
+                                    StrokeShape="RoundRectangle 8"
                                     HeightRequest="48">
                                 <Border.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                              PointerExited="OnPointerExited" />
                                     <TapGestureRecognizer Command="{Binding OpenDueDatePickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="34,*" ColumnSpacing="8" VerticalOptions="Center">
@@ -165,8 +168,11 @@
                             <Border Padding="0"
                                     StrokeThickness="0"
                                     BackgroundColor="Transparent"
+                                    StrokeShape="RoundRectangle 8"
                                     HeightRequest="48">
                                 <Border.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                              PointerExited="OnPointerExited" />
                                     <TapGestureRecognizer Command="{Binding ToggleRepeatPickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="34,*" ColumnSpacing="8" VerticalOptions="Center">
@@ -222,8 +228,11 @@
                             <Border Padding="0"
                                     StrokeThickness="0"
                                     BackgroundColor="Transparent"
+                                    StrokeShape="RoundRectangle 8"
                                     HeightRequest="48">
                                 <Border.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                              PointerExited="OnPointerExited" />
                                     <TapGestureRecognizer Command="{Binding OpenReminderPickerCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="34,*" ColumnSpacing="8" VerticalOptions="Center">

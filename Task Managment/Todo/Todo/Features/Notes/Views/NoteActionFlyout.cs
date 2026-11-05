@@ -144,7 +144,7 @@ public sealed class NoteActionFlyout : ContentView
             })
         });
         _selectAllRow.Children.Add(selectAllLabel);
-        _actionsLayout.Children.Add(_selectAllRow);
+        _actionsLayout.Children.Add(PointerHoverSurface.Wrap(_selectAllRow, 8, Thickness.Zero));
 
         _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
         _selectAllSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#494650"));
@@ -199,7 +199,7 @@ public sealed class NoteActionFlyout : ContentView
         {
             Text = text,
             HeightRequest = 40,
-            Padding = new Thickness(12, 0),
+            Padding = 0,
             Background = Brush.Transparent,
             FontSize = 14,
             HorizontalOptions = LayoutOptions.Fill,
@@ -210,15 +210,18 @@ public sealed class NoteActionFlyout : ContentView
         button.SetAppThemeColor(SfButton.TextColorProperty,
             destructive ? Color.FromArgb("#D32F2F") : Color.FromArgb("#1C1B1F"),
             destructive ? Color.FromArgb("#FFB4AB") : Color.FromArgb("#E6E1E5"));
-        if (!string.IsNullOrEmpty(iconGlyph))
+        button.Content = new DataTemplate(() =>
         {
-            button.Content = new DataTemplate(() =>
+            var hasIcon = !string.IsNullOrEmpty(iconGlyph);
+            var grid = new Grid
             {
-                var grid = new Grid
-                {
-                    ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
-                    ColumnSpacing = 4
-                };
+                ColumnDefinitions = hasIcon
+                    ? new ColumnDefinitionCollection { new(22), new(GridLength.Star) }
+                    : new ColumnDefinitionCollection { new(GridLength.Star) },
+                ColumnSpacing = 4
+            };
+            if (hasIcon)
+            {
                 var iconLabel = new Label
                 {
                     Text = iconGlyph,
@@ -231,20 +234,21 @@ public sealed class NoteActionFlyout : ContentView
                     destructive ? Color.FromArgb("#B3261E") : Color.FromArgb("#1C1B1F"),
                     destructive ? Color.FromArgb("#FFB4AB") : Color.FromArgb("#E6E1E5"));
                 grid.Children.Add(iconLabel);
-                var textLabel = new Label
-                {
-                    FontSize = 14,
-                    VerticalTextAlignment = TextAlignment.Center
-                };
-                textLabel.SetBinding(Label.TextProperty,
-                    new Binding(nameof(SfButton.Text), source: button));
-                textLabel.SetBinding(Label.TextColorProperty,
-                    new Binding(nameof(SfButton.TextColor), source: button));
-                grid.Children.Add(textLabel);
+            }
+            var textLabel = new Label
+            {
+                FontSize = 14,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+            textLabel.SetBinding(Label.TextProperty,
+                new Binding(nameof(SfButton.Text), source: button));
+            textLabel.SetBinding(Label.TextColorProperty,
+                new Binding(nameof(SfButton.TextColor), source: button));
+            grid.Children.Add(textLabel);
+            if (hasIcon)
                 textLabel.SetValue(Grid.ColumnProperty, 1);
-                return grid;
-            });
-        }
+            return PointerHoverSurface.Wrap(grid, 8, new Thickness(12, 0));
+        });
         var commonStates = new VisualStateGroup { Name = "CommonStates" };
         commonStates.States.Add(new VisualState { Name = "Normal" });
         var pointerOver = new VisualState { Name = "PointerOver" };

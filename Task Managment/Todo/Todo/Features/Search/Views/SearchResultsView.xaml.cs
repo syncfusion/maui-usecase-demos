@@ -18,6 +18,35 @@ public partial class SearchResultsView : ContentView
         ActionFlyout.ActionRequested += OnNoteActionRequested;
     }
 
+    private static void OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+            PointerHoverSurface.SetHovered(border);
+    }
+
+    private static void OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+            PointerHoverSurface.Reset(border);
+    }
+
+    private void OnResultPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+            PointerHoverSurface.SetHovered(border);
+    }
+
+    private static void OnResultPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            var backgroundColor = Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#1E1E1E")
+                : Colors.White;
+            PointerHoverSurface.Reset(border, backgroundColor);
+        }
+    }
+
     private void OnNoteMenuClicked(object? sender, EventArgs e)
     {
         if (sender is View anchor)

@@ -97,12 +97,14 @@
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 17"
                 VerticalOptions="Center">
+            <Border.GestureRecognizers>
+                <PointerGestureRecognizer PointerEntered="OnProfilePointerEntered"
+                                          PointerExited="OnProfilePointerExited" />
+                <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+            </Border.GestureRecognizers>
             <Image Source="profile.png"
                    Aspect="AspectFill"
                    SemanticProperties.Description="Open theme settings" />
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
-            </Border.GestureRecognizers>
 
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">

@@ -111,6 +111,8 @@
                                                 CommandParameter="{Binding .}" />
                                                 <TapGestureRecognizer Buttons="Secondary"
                                                                   Tapped="OnNoteSecondaryTapped" />
+                                                <PointerGestureRecognizer PointerEntered="OnResultPointerEntered"
+                                                                          PointerExited="OnResultPointerExited" />
                                             </Border.GestureRecognizers>
 
                                             <Grid ColumnDefinitions="44,*,40,40"
@@ -154,31 +156,55 @@
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
 
-                                            <buttons:SfButton Grid.Column="2"
-                                                    Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
-                                                    TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
-                                                    FontSize="20"
-                                                    Background="Transparent"
+                                            <Border Grid.Column="2"
                                                     WidthRequest="40"
                                                     HeightRequest="40"
-                                                    VerticalOptions="Center"
-                                                    Padding="0"
-                                                    Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.ToggleImportantCommand}"
-                                                    CommandParameter="{Binding .}"
-                                                    SemanticProperties.Description="Toggle important" />
+                                                    BackgroundColor="Transparent"
+                                                    StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 20"
+                                                    VerticalOptions="Center">
+                                                <Border.GestureRecognizers>
+                                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                              PointerExited="OnPointerExited" />
+                                                </Border.GestureRecognizers>
+                                                <buttons:SfButton Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                                                  TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                                                  FontSize="20"
+                                                                  Background="Transparent"
+                                                                  WidthRequest="40"
+                                                                  HeightRequest="40"
+                                                                  CornerRadius="20"
+                                                                  VerticalOptions="Center"
+                                                                  Padding="0"
+                                                                  Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.ToggleImportantCommand}"
+                                                                  CommandParameter="{Binding .}"
+                                                                  SemanticProperties.Description="Toggle important" />
+                                            </Border>
 
-                                            <buttons:SfButton Grid.Column="3"
-                                                    Text="&#8943;"
-                                                    FontSize="22"
-                                                    Rotation="90"
-                                                    Background="Transparent"
-                                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                            <Border Grid.Column="3"
                                                     WidthRequest="40"
                                                     HeightRequest="40"
-                                                    VerticalOptions="Center"
-                                                    Padding="0"
-                                                    Clicked="OnNoteMenuClicked"
-                                                    SemanticProperties.Description="More note options" />
+                                                    BackgroundColor="Transparent"
+                                                    StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 20"
+                                                    VerticalOptions="Center">
+                                                <Border.GestureRecognizers>
+                                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                              PointerExited="OnPointerExited" />
+                                                </Border.GestureRecognizers>
+                                                <buttons:SfButton Text="&#8943;"
+                                                                  FontSize="22"
+                                                                  Rotation="90"
+                                                                  Background="Transparent"
+                                                                  TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                                  WidthRequest="40"
+                                                                  HeightRequest="40"
+                                                                  CornerRadius="20"
+                                                                  VerticalOptions="Center"
+                                                                  Padding="0"
+                                                                  Clicked="OnNoteMenuClicked"
+                                                                  SemanticProperties.Description="More note options" />
+                                            </Border>
                                             </Grid>
                                         </Border>
                                     </Grid>

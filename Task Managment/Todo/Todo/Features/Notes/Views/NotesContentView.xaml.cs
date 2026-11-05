@@ -12,6 +12,18 @@ public partial class NotesContentView : ContentView
         ActionFlyout.ActionRequested += OnNoteActionRequested;
     }
 
+    private static void OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+            PointerHoverSurface.SetHovered(border);
+    }
+
+    private static void OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+            PointerHoverSurface.Reset(border);
+    }
+
     private void OnDueDateClicked(object? sender, EventArgs e)
     {
         if (sender is View anchor && BindingContext is NotesListViewModel vm)

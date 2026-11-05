@@ -107,7 +107,7 @@ public sealed class CustomListOptionsFlyout : ContentView
         {
             Text = text,
             HeightRequest = MenuItemHeight,
-            Padding = new Thickness(10, 0),
+            Padding = 0,
             Background = Brush.Transparent,
             FontSize = 14,
             HorizontalOptions = LayoutOptions.Fill,
@@ -148,7 +148,7 @@ public sealed class CustomListOptionsFlyout : ContentView
             label.SetBinding(Label.TextColorProperty, new Binding(nameof(SfButton.TextColor), source: button));
             label.SetValue(Grid.ColumnProperty, 1);
             grid.Children.Add(label);
-            return grid;
+            return PointerHoverSurface.Wrap(grid, 8, new Thickness(10, 0));
         });
 
         SemanticProperties.SetDescription(button, text);
