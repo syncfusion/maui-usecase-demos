@@ -19,7 +19,11 @@ public partial class MailMessage : ObservableObject
     [ObservableProperty]
     private bool isRead;
 
-    public bool IsFlagged { get; set; }
+    [ObservableProperty]
+    private bool isFlagged;
+
+    [ObservableProperty]
+    private bool isHovered;
 
     [ObservableProperty]
     private bool isFavourite;

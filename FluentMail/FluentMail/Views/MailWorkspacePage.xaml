@@ -157,6 +157,10 @@
                         <listview:SfListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid Padding="0,10" ColumnDefinitions="5,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="0" RowSpacing="6">
+                                    <Grid.GestureRecognizers>
+                                        <PointerGestureRecognizer PointerEnteredCommand="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.SetHoverCommand}" PointerEnteredCommandParameter="{Binding .}"
+                                                                  PointerExitedCommand="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ClearHoverCommand}" PointerExitedCommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
                                     <BoxView Grid.RowSpan="3" WidthRequest="5" Color="Transparent" Margin="0,-10">
                                         <BoxView.Triggers>
                                             <DataTrigger TargetType="BoxView" Binding="{Binding IsRead}" Value="False">
@@ -164,6 +168,33 @@
                                             </DataTrigger>
                                         </BoxView.Triggers>
                                     </BoxView>
+                                    <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" Spacing="14" IsVisible="{Binding IsHovered}" VerticalOptions="Start" HorizontalOptions="End">
+                                        <Label FontFamily="MauiMaterialAssets" Text="&#xE872;" FontSize="20" TextColor="#222222">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Label FontFamily="MauiMaterialAssets" Text="&#xE153;" FontSize="20" TextColor="#222222">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsFlagged}" Value="True">
+                                                    <Setter Property="TextColor" Value="#E81123" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Label FontFamily="MauiMaterialAssets" Text="&#xE151;" FontSize="20" TextColor="#222222">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsRead}" Value="False">
+                                                    <Setter Property="TextColor" Value="#2F8FE0" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                    </HorizontalStackLayout>
                                     <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="16" TextColor="#222222" />
                                     <Label Grid.Row="1" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Subject}" FontSize="14" TextColor="#2F8FE0" LineBreakMode="TailTruncation">
                                         <Label.Triggers>

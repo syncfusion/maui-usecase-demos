@@ -73,6 +73,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
         OnPropertyChanged(nameof(HasSelectedMessage));
         if (value is not null)
         {
+            IsComposing = false;
             value.IsRead = true;
             UpdateFolderCounts();
         }
@@ -83,6 +84,45 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     [RelayCommand]
     void SelectMessage(MailMessage? message) => SelectedMessage = message;
+
+    [RelayCommand]
+    void SetHover(MailMessage? message)
+    {
+        foreach (var item in VisibleMessages.Where(x => x.IsHovered && x != message)) item.IsHovered = false;
+        if (message is not null) message.IsHovered = true;
+    }
+
+    [RelayCommand]
+    void ClearHover(MailMessage? message)
+    {
+        if (message is not null) message.IsHovered = false;
+    }
+
+    [RelayCommand]
+    void ToggleFlag(MailMessage? message)
+    {
+        if (message is not null) message.IsFlagged = !message.IsFlagged;
+    }
+
+    [RelayCommand]
+    void ToggleRead(MailMessage? message)
+    {
+        if (message is null) return;
+        message.IsRead = !message.IsRead;
+        UpdateFolderCounts();
+    }
+
+    [RelayCommand]
+    void DeleteMessage(MailMessage? message)
+    {
+        if (message is null) return;
+        foreach (var source in new[] { mailbox.Inbox, mailbox.SentItems, mailbox.Drafts, mailbox.Archive })
+            source.Remove(message);
+        message.IsHovered = false;
+        message.DeletedOn = DateTime.Now;
+        mailbox.Deleted.Insert(0, message);
+        LoadFolder(SelectedFolder ?? mailbox.Folders[^1].Children[0]);
+    }
 
     [RelayCommand]
     void ToggleFavourite(MailMessage? message)
