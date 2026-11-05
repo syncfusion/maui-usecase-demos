@@ -43,7 +43,11 @@ public sealed class NoteActionFlyout : ContentView
             PopupStyle = new PopupStyle
             {
                 OverlayColor = Colors.Transparent,
-                MessageBackground = Colors.Transparent
+                MessageBackground = Colors.Transparent,
+                HasShadow = true,
+                Stroke = Colors.Transparent,
+                StrokeThickness = 0,
+                CornerRadius = 27
             },
             ContentTemplate = new DataTemplate(CreateMenuSurface)
         };
@@ -131,8 +135,7 @@ public sealed class NoteActionFlyout : ContentView
             Padding = 8,
             StrokeThickness = 1,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(27) },
-            Content = stage,
-            Shadow = new Shadow { Brush = Color.FromArgb("#4D000000"), Opacity = 1f, Radius = 6, Offset = new Point(0, 2) }
+            Content = stage
         };
         _surface.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
             Brush.White,

@@ -18,9 +18,9 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     public TaskSchedulingFlyout()
     {
-        _datePopup = CreatePopup(340, 420, CreateDateSurface);
-        _repeatPopup = CreatePopup(210, 362, CreateRepeatSurface);
-        _customPopup = CreatePopup(300, 214, CreateCustomSurface);
+        _datePopup = CreatePopup(240, 350, CreateDateSurface);
+        _repeatPopup = CreatePopup(210, 332, CreateRepeatSurface);
+        _customPopup = CreatePopup(300, 224, CreateCustomSurface);
         foreach (var popup in new[] { _datePopup, _repeatPopup, _customPopup })
             popup.PositionChanging += ClampPosition;
         Content = new Grid { Children = { _datePopup, _repeatPopup, _customPopup } };
@@ -37,10 +37,15 @@ public sealed class TaskSchedulingFlyout : ContentView
         HeightRequest = height,
         AutoSizeMode = PopupAutoSizeMode.None,
         AnimationMode = PopupAnimationMode.None,
+        BackgroundColor = Colors.Transparent,
         PopupStyle = new PopupStyle
         {
             OverlayColor = Colors.Transparent,
-            MessageBackground = Colors.Transparent
+            MessageBackground = Colors.Transparent,
+            HasShadow = true,
+            Stroke = Colors.Transparent,
+            StrokeThickness = 0,
+            CornerRadius = 27
         },
         ContentTemplate = new DataTemplate(factory)
     };
@@ -66,17 +71,6 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     private View CreateDateSurface()
     {
-        var title = new Label
-        {
-            Text = _isReminder ? "Reminder" : "Due date",
-            FontSize = 18,
-            Margin = new Thickness(0, 10, 0, 0),
-            FontAttributes = FontAttributes.Bold,
-            TextColor = Color.FromArgb("#29272F"),
-        };
-        title.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
-
-        var closeButton = CreateIconButton("\ue5cd", () => _datePopup.Dismiss());
         var picker = new SfDateTimePicker
         {
             SelectedDate = _selectedDateTime,
@@ -119,9 +113,6 @@ public sealed class TaskSchedulingFlyout : ContentView
             ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
             Margin = new Thickness(10)
         };
-        header.Children.Add(title);
-        header.Children.Add(closeButton);
-        Grid.SetColumn(closeButton, 1);
 
         content.Children.Add(header);
         var divider = new BoxView
@@ -163,7 +154,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         content.Children.Add(buttons);
         Grid.SetRow(buttons, 4);
 
-        return CreateBorder(340, 400, content);
+        return CreateBorder(240, 350, content);
     }
 
     private View CreateRepeatSurface()
@@ -426,18 +417,11 @@ public sealed class TaskSchedulingFlyout : ContentView
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center,
             Padding = 0,
-            StrokeThickness = 1.5,
+            Stroke = Colors.Transparent,
+            StrokeThickness = 0,
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 27 },
-            Content = content,
-            Shadow = new Shadow
-            {
-                Brush = Color.FromArgb("#4D000000"),
-                Opacity = 1f,
-                Radius = 6,
-                Offset = new Point(0, 2)
-            }
+            Content = content
         };
-        border.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#D8D4DE"), Color.FromArgb("#494650"));
         border.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
             Brush.White,
             new SolidColorBrush(Color.FromArgb("#29272F")));

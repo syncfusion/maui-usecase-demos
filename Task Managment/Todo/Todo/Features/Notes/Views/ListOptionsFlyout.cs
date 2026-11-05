@@ -35,6 +35,8 @@ public sealed class ListOptionsFlyout : ContentView
     private bool _isOpen;
     private bool _isSortOpen;
     private bool _closingFlyoutsTogether;
+    private Point _mainPopupPosition;
+    private bool _hasMainPopupPosition;
     private bool CanEditSelectedList => _selectedList is { IsSystem: false };
 
 #if WINDOWS
@@ -107,6 +109,7 @@ public sealed class ListOptionsFlyout : ContentView
         _selectedList = list;
         _selectedCategory = category;
         _viewModel = viewModel;
+        _hasMainPopupPosition = false;
         RebuildMenu();
         _isOpen = true;
         var popupHeight = GetMainMenuHeight();
@@ -134,7 +137,11 @@ public sealed class ListOptionsFlyout : ContentView
             PopupStyle = new PopupStyle
             {
                 OverlayColor = Colors.Transparent,
-                MessageBackground = Colors.Transparent
+                MessageBackground = Colors.Transparent,
+                HasShadow = true,
+                Stroke = Colors.Transparent,
+                StrokeThickness = 0,
+                CornerRadius = 27
             },
             ContentTemplate = new DataTemplate(contentFactory)
         };
@@ -257,13 +264,6 @@ public sealed class ListOptionsFlyout : ContentView
                 VerticalScrollBarVisibility = ScrollBarVisibility.Never,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Never
             },
-            Shadow = new Shadow
-            {
-                Brush = Color.FromArgb("#4D000000"),
-                Opacity = 1f,
-                Radius = 6,
-                Offset = new Point(0, 2)
-            }
         };
         surface.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
             Brush.White,
@@ -584,10 +584,61 @@ public sealed class ListOptionsFlyout : ContentView
     }
 
     private void OnPopupPositionChanging(object? sender, PopupPositionChangingEventArgs e)
-        => ClampPopupPosition(e);
+    {
+        ClampPopupPosition(e);
+        _mainPopupPosition = e.MoveTo;
+        _hasMainPopupPosition = true;
+    }
 
     private void OnSortPopupPositionChanging(object? sender, PopupPositionChangingEventArgs e)
-        => ClampPopupPosition(e);
+    {
+        ClampPopupPosition(e);
+
+        var window = Window;
+        if (!_hasMainPopupPosition || window is null || window.Width <= 0 || window.Height <= 0)
+            return;
+
+        const double edgePadding = 8;
+        const double popupGap = 8;
+        var maxY = Math.Max(edgePadding, window.Height - e.Bounds.Height - edgePadding);
+        var mainRight = _mainPopupPosition.X + _popup.WidthRequest;
+        var mainBottom = _mainPopupPosition.Y + _popup.HeightRequest;
+        var sortRight = e.MoveTo.X + e.Bounds.Width;
+        var sortBottom = e.MoveTo.Y + e.Bounds.Height;
+        var overlapsMain = e.MoveTo.X < mainRight
+            && sortRight > _mainPopupPosition.X
+            && e.MoveTo.Y < mainBottom
+            && sortBottom > _mainPopupPosition.Y;
+
+        if (!overlapsMain)
+            return;
+
+        var rightX = mainRight + popupGap;
+        if (rightX + e.Bounds.Width <= window.Width - edgePadding)
+        {
+            e.MoveTo = new Point(rightX, Math.Clamp(e.MoveTo.Y, edgePadding, maxY));
+        }
+        else
+        {
+            var leftX = _mainPopupPosition.X - e.Bounds.Width - popupGap;
+            if (leftX >= edgePadding)
+            {
+                e.MoveTo = new Point(leftX, Math.Clamp(e.MoveTo.Y, edgePadding, maxY));
+            }
+            else
+            {
+                var belowY = mainBottom + popupGap;
+                var aboveY = _mainPopupPosition.Y - e.Bounds.Height - popupGap;
+                var y = belowY + e.Bounds.Height <= window.Height - edgePadding
+                    ? belowY
+                    : Math.Max(edgePadding, aboveY);
+                var maxX = Math.Max(edgePadding, window.Width - e.Bounds.Width - edgePadding);
+                e.MoveTo = new Point(Math.Clamp(e.MoveTo.X, edgePadding, maxX), y);
+            }
+        }
+
+        e.Handled = true;
+    }
 
     private void ClampPopupPosition(PopupPositionChangingEventArgs e)
     {
