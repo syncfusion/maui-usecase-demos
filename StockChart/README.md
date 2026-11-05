@@ -103,7 +103,7 @@ Or open `StockChart/StockChart.slnx` in Visual Studio or VS Code, restore packag
 
 ## Output
 
-A demo recording of the sample is included in the repository: `stock-chart-demo.mp4` — it walks through stock selection, chart type and trendline switching, time-range filtering with the range selector, watchlist management, and the settings dialogs.
+![Stock chart demo](stock-chart-demo.mp4)
 
 ## Project Structure
 
