@@ -27,20 +27,20 @@ This sample is for teams building entertainment or booking experiences in .NET M
 
 ## Controls Used
 
-- SfCarousel — displays featured movies in a swipeable experience
-- SfCardView — presents movie and booking content in structured cards
-- SfButton — handles primary booking and action triggers
-- SfPopup — shows booking confirmations and overlays
-- SfBarcodeGenerator — renders the ticket barcode for confirmation
-- SfAIAssistView — supports the conversational movie assistant experience
+- SfCarousel - displays featured movies in a swipeable experience
+- SfCardView - presents movie and booking content in structured cards
+- SfButton - handles primary booking and action triggers
+- SfPopup - shows booking confirmations and overlays
+- SfBarcodeGenerator - renders the ticket barcode for confirmation
+- SfAIAssistView - supports the conversational movie assistant experience
 
 ## Architecture
 
-- View / Page — XAML pages for home, theaters, bookings, seat selection, payment confirmation, and the AI copilot
-- ViewModel — handles navigation, selection state, and booking actions
-- AI service — provides the sample movie assistant responses
-- Models — represent movies, theaters, seats, bookings, and assistant messages
-- Supporting UI components — Syncfusion cards, carousel, popup, buttons, and barcode controls
+- View / Page - XAML pages for home, theaters, bookings, seat selection, payment confirmation, and the AI copilot
+- ViewModel - handles navigation, selection state, and booking actions
+- AI service - provides the sample movie assistant responses
+- Models - represent movies, theaters, seats, bookings, and assistant messages
+- Supporting UI components - Syncfusion cards, carousel, popup, buttons, and barcode controls
 
 ## Prerequisites
 
@@ -86,11 +86,11 @@ If you target another platform, adjust the `-f` value to match the supported fra
 
 ## Project Structure
 
-- Views/ — UI pages and layouts
-- ViewModels/ — presentation logic
-- Models/ — data structures
-- Services/ — AI and helper services
-- Resources/ — styles, images, and assets
+- Views/ - UI pages and layouts
+- ViewModels/ - presentation logic
+- Models/ - data structures
+- Services/ - AI and helper services
+- Resources/ - styles, images, and assets
 
 ## Troubleshooting
 
