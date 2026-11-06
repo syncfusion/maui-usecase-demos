@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:FluentMail.ViewModels"
              xmlns:richtext="clr-namespace:Syncfusion.Maui.RichTextEditor;assembly=Syncfusion.Maui.RichTextEditor"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              x:Class="FluentMail.Views.MailWorkspacePage"
              x:Name="MailWorkspaceRoot"
@@ -166,7 +167,16 @@
             <Grid RowDefinitions="Auto,*">
                 <Grid Padding="40,16,20,8" ColumnDefinitions="*,Auto">
                     <Label Text="{Binding SelectedFolder.Name}" FontSize="22" VerticalOptions="Center" />
-                    <Picker Grid.Column="1" Title="Filter" ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilter, Mode=TwoWay}" TextColor="{StaticResource PrimaryLight}" WidthRequest="110" VerticalOptions="Center" />
+                    <inputs:SfComboBox
+                            WidthRequest="100"
+                            Grid.Column="2"
+                            ItemsSource="{Binding FilterOptions}"
+                            SelectedItem="{Binding SelectedFilter}"
+                            IsDropDownShadowVisible="True"
+                            ShowBorder="False"
+                            TextColor="#0A6BD6"
+                            IsClearButtonVisible="False"
+                            DropDownBackground="Transparent" />
                 </Grid>
                 <Grid Grid.Row="1">
                     <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ScrollBarVisibility="Never" AutoFitMode="DynamicHeight" SelectionBackground="#D7E8FB" ItemSpacing="0" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" BackgroundColor="White">
@@ -184,32 +194,34 @@
                                             </DataTrigger>
                                         </BoxView.Triggers>
                                     </BoxView>
-                                    <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" Spacing="2" IsVisible="{Binding IsHovered}" VerticalOptions="Start" HorizontalOptions="End">
-                                        <Grid WidthRequest="30" HeightRequest="28" BackgroundColor="Transparent">
+                                    <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" IsVisible="{Binding IsHovered}" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Grid WidthRequest="30" HeightRequest="24" BackgroundColor="Transparent">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}" />
                                             </Grid.GestureRecognizers>
-                                            <Image Source="unread.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
+                                            <Image Source="unread.png" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
                                                 <Image.Triggers>
                                                     <DataTrigger TargetType="Image" Binding="{Binding IsRead}" Value="True"><Setter Property="Opacity" Value="0.45" /></DataTrigger>
                                                 </Image.Triggers>
                                             </Image>
                                         </Grid>
-                                        <Grid WidthRequest="30" HeightRequest="28" BackgroundColor="Transparent">
+                                        <Grid WidthRequest="30" HeightRequest="24" BackgroundColor="Transparent">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}" />
                                             </Grid.GestureRecognizers>
-                                            <Image Source="flag.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
+                                            <Image Source="flag_filled.png" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
                                                 <Image.Triggers>
-                                                    <DataTrigger TargetType="Image" Binding="{Binding IsFlagged}" Value="False"><Setter Property="Opacity" Value="0.45" /></DataTrigger>
+                                                    <DataTrigger TargetType="Image" Binding="{Binding IsFlagged}" Value="False">
+                                                        <Setter Property="Source" Value="flag.png" />
+                                                    </DataTrigger>
                                                 </Image.Triggers>
                                             </Image>
                                         </Grid>
-                                        <Grid WidthRequest="30" HeightRequest="28" BackgroundColor="Transparent">
+                                        <Grid WidthRequest="30" HeightRequest="24" BackgroundColor="Transparent">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}" />
                                             </Grid.GestureRecognizers>
-                                            <Image Source="archieve.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"></Image>
+                                            <Image Source="archieve.png" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"></Image>
                                         </Grid>
                                     </HorizontalStackLayout>
                                     <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="16" TextColor="#222222" />
@@ -222,11 +234,11 @@
                                     </Label>
                                     <HorizontalStackLayout Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Spacing="6" HorizontalOptions="End">
                                         <Label Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" FontSize="14" TextColor="#2F8FE0" VerticalOptions="Center" />
-                                        <Grid WidthRequest="26" HeightRequest="26" IsVisible="{Binding IsHovered}" BackgroundColor="Transparent">
+                                        <Grid WidthRequest="26" HeightRequest="20" IsVisible="{Binding IsHovered}" BackgroundColor="Transparent">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
                                             </Grid.GestureRecognizers>
-                                            <Label FontFamily="MauiMaterialAssets" Text="&#xE70F;" FontSize="18" TextColor="#555555" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True" />
+                                            <Label FontFamily="MauiMaterialAssets" Text="&#xE70F;" FontSize="16" TextColor="#555555" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True" />
                                         </Grid>
                                     </HorizontalStackLayout>
                                     <Label Grid.Row="2" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Preview}" FontSize="14" TextColor="#777777" LineBreakMode="TailTruncation" />
@@ -247,17 +259,111 @@
                  VerticalOptions="Fill" />
 
         <Grid Grid.Row="2" Grid.Column="3" BackgroundColor="White">
-            <Grid IsVisible="{Binding IsComposing}" Padding="24,28,24,16" RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="12" ColumnDefinitions="60,*" ColumnSpacing="10">
-                <Label Text="To" VerticalOptions="Center" HorizontalOptions="Center" FontSize="16" BackgroundColor="#EEEEEE" HeightRequest="46" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="60" />
-                <Entry Grid.Column="1" Text="{Binding Composer.To, Mode=TwoWay}" />
-                <Label Grid.Row="1" Text="Cc" FontSize="16" BackgroundColor="#EEEEEE" HeightRequest="46" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" />
-                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding Composer.Cc, Mode=TwoWay}" />
-                <Entry Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Enter Subject Here" />
-                <richtext:SfRichTextEditor Grid.Row="3" Grid.ColumnSpan="2" HtmlText="{Binding Composer.Body, Mode=TwoWay}" />
-                <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" Spacing="8">
-                    <Button Text="Send" Command="{Binding Composer.SendCommand}" BackgroundColor="#0A6BD6" TextColor="White" CornerRadius="0" WidthRequest="107" />
-                    <Button Text="Discard" Command="{Binding CloseComposerCommand}" BackgroundColor="#EEEEEE" TextColor="Black" CornerRadius="0" WidthRequest="130" />
+            <Grid IsVisible="{Binding IsComposing}"
+                    Padding="10"
+                    RowDefinitions="Auto,Auto,Auto,*,Auto"
+                    RowSpacing="8"
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="10">
+
+                <!-- To -->
+                <Label Grid.Row="0"
+                       Text="To"
+                       FontSize="14"
+                       BackgroundColor="#EEEEEE"
+                       HeightRequest="36"
+                       WidthRequest="40"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+
+                <inputLayout:SfTextInputLayout Grid.Row="0"
+                                               Grid.Column="1"
+                                               HeightRequest="60"
+                                               Margin="0,10,0,0"
+                                               InputViewPadding="8,0,15,0"
+                                               ErrorText="{Binding ToErrorText}"
+                                               HasError="{Binding HasToError}"
+                                               ContainerType="Outlined">
+
+                    <Entry Text="{Binding Composer.To, Mode=TwoWay}"
+                           Keyboard="Email" />
+                </inputLayout:SfTextInputLayout>
+
+                <!-- Cc -->
+                <Label Grid.Row="1"
+                       Text="Cc"
+                       FontSize="14"
+                       BackgroundColor="#EEEEEE"
+                       HeightRequest="36"
+                       WidthRequest="40"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+
+                <inputLayout:SfTextInputLayout Grid.Row="1"
+                                               HeightRequest="60"
+                                               Margin="0,10,0,0"
+                                               InputViewPadding="8,0,15,0"
+                                               Grid.Column="1"
+                                               ContainerType="Outlined">
+
+                    <Entry Text="{Binding Composer.Cc, Mode=TwoWay}"
+                           Keyboard="Email" />
+                </inputLayout:SfTextInputLayout>
+
+                <!-- Subject -->
+                <inputLayout:SfTextInputLayout Grid.Row="2"
+                               Grid.ColumnSpan="2"
+                                               HeightRequest="60"
+                                               InputViewPadding="8,0,15,0"
+                               ContainerType="Outlined">
+
+                    <controls:SfEntry Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Add a Subject"/>
+                </inputLayout:SfTextInputLayout>
+
+                <!-- Editor -->
+                <richtext:SfRichTextEditor Grid.Row="3"
+                                           Grid.ColumnSpan="2"
+                                           ShowToolbar="True"
+                                           HtmlText="{Binding Composer.Body, Mode=TwoWay}" >
+                    <richtext:SfRichTextEditor.ToolbarItems>
+                        <!-- Define a custom set of toolbar items -->
+                        <richtext:RichTextToolbarItem Type="Bold" />
+                        <richtext:RichTextToolbarItem Type="Underline" />
+                        <richtext:RichTextToolbarItem Type="Separator" />
+                        <richtext:RichTextToolbarItem Type="NumberList" />
+                        <richtext:RichTextToolbarItem Type="BulletList" />
+                        <richtext:RichTextToolbarItem Type="FontFamily" />
+                        <richtext:RichTextToolbarItem Type="FontSize" />
+                        <richtext:RichTextToolbarItem Type="TextColor" />
+                        <richtext:RichTextToolbarItem Type="Hyperlink" />
+                        <richtext:RichTextToolbarItem Type="Image" />
+                        <richtext:RichTextToolbarItem Type="Table" />
+                    </richtext:SfRichTextEditor.ToolbarItems>
+                    <richtext:SfRichTextEditor.ToolbarSettings>
+                        <richtext:RichTextEditorToolbarSettings BackgroundColor="Transparent" SelectionColor="#3B9DE8"/>
+                    </richtext:SfRichTextEditor.ToolbarSettings>
+                </richtext:SfRichTextEditor>
+
+                <!-- Actions -->
+                <HorizontalStackLayout Grid.Row="4"
+                           Grid.ColumnSpan="2"
+                           Spacing="12">
+
+                    <buttons:SfButton Text="Send"
+                             WidthRequest="120"
+                             HeightRequest="44"
+                             Command="{Binding Composer.SendCommand}"
+                             Background="#106EBE"
+                             TextColor="White" />
+
+                    <buttons:SfButton Text="Discard"
+                             WidthRequest="120"
+                             HeightRequest="44"
+                             Command="{Binding CloseComposerCommand}"
+                             Background="#E5E5E5"
+                             TextColor="Black" />
                 </HorizontalStackLayout>
+
             </Grid>
 
             <Grid IsVisible="{Binding IsComposing, Converter={StaticResource BooleanNegationConverter}}">

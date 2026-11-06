@@ -1,8 +1,10 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentMail.Data;
 using FluentMail.Models;
+using Syncfusion.Maui.Toolkit.TextInputLayout;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using MailAccount = FluentMail.Models.MailAccount;
 
 namespace FluentMail.ViewModels;
@@ -13,7 +15,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
     readonly List<MailMessage> folderMessages = [];
 
     public ObservableCollection<FolderNode> Folders => mailbox.Folders;
-    public IReadOnlyList<string> FilterOptions { get; } = ["All", "Unread", "Flagged", "With attachments"];
+    public IReadOnlyList<string> FilterOptions { get; } = ["All", "Unread", "Flagged"];
     public MailAccount CurrentAccount { get; } = new() { DisplayName = "Kerry Best", Email = "kerry.best@contoso.com" };
 
     [ObservableProperty]
@@ -21,6 +23,9 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     [ObservableProperty]
     private ObservableCollection<MailMessage> visibleMessages = [];
+
+    [ObservableProperty]
+    private bool hasAttemptedSend;
 
     [ObservableProperty]
     private MailMessage? selectedMessage;
@@ -42,8 +47,64 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public ComposeViewModel Composer { get; } = new();
 
+    [ObservableProperty]
+    private bool hasToError;
+
+    [ObservableProperty]
+    private string toErrorText = string.Empty;
+
+    [ObservableProperty]
+    private string to;
+
+    private void Composer_PropertyChanged(object? sender,
+     PropertyChangedEventArgs e)
+    {
+
+        if (e.PropertyName == nameof(ComposeViewModel.ShowMessage)
+            && Composer.ShowMessage)
+        {
+            IsComposing = false;
+            Composer.ShowMessage = false;
+            LoadFolder(SelectedFolder ?? mailbox.Folders.First());
+        }
+    }
+
+    private bool ValidateTo(string? email)
+    {
+        if (!HasAttemptedSend)
+        {
+            HasToError = false;
+            ToErrorText = string.Empty;
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            HasToError = true;
+            ToErrorText = "Recipient is required.";
+            return false;
+        }
+
+        try
+        {
+            _ = new System.Net.Mail.MailAddress(email);
+            HasToError = false;
+            ToErrorText = string.Empty;
+            return true;
+        }
+        catch
+        {
+            HasToError = true;
+            ToErrorText = "Enter a valid email address.";
+            return false;
+        }
+    }
+
+
     public MailWorkspaceViewModel()
     {
+        Composer.PropertyChanged += Composer_PropertyChanged;
+
         Composer.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(ComposeViewModel.ShowMessage) && Composer.ShowMessage)
@@ -171,6 +232,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
     [RelayCommand]
     async Task NewMailAsync()
     {
+        HasAttemptedSend = false;
         IsComposing = true;
         Composer.Subject = string.Empty;
         Composer.Body = string.Empty;
@@ -218,7 +280,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
         {
             "Unread" => query.Where(x => !x.IsRead),
             "Flagged" => query.Where(x => x.IsFlagged),
-            "With attachments" => query.Where(x => x.HasAttachments),
             _ => query
         };
 
