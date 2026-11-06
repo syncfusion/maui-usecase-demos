@@ -198,23 +198,25 @@ public partial class ToolbarControl : ContentView
             LeftGroupsBar.Children.Add(BuildDivider());
         }
 
-        // Group 5: Text + Colors
+        // Group 5: Colors + Delete (Delete replaces the old Text tool)
         if (byGroup.Any(g => g.Key == 5))
         {
             var group5Items = byGroup.First(g => g.Key == 5).ToList();
             foreach (var item in group5Items.OrderBy(x => x.Id))
             {
-                if (item.Id == AppConstants.ToolText)
-                {
-                    LeftGroupsBar.Children.Add(BuildIconButton(item));
-                }
-                else if (item.Id == "tool.stroke.color")
+                if (item.Id == "tool.stroke.color")
                 {
                     LeftGroupsBar.Children.Add(BuildStrokeColorSwatch());
                 }
                 else if (item.Id == "tool.fill.color")
                 {
                     LeftGroupsBar.Children.Add(BuildFillColorSwatch());
+                }
+                else
+                {
+                    // Delete (and any other plain command icon) renders as a button
+                    // whose click dispatches the command id.
+                    LeftGroupsBar.Children.Add(BuildIconButton(item));
                 }
             }
             LeftGroupsBar.Children.Add(BuildDivider());
@@ -332,15 +334,24 @@ public partial class ToolbarControl : ContentView
             ShowInputArea = true,
         };
 
+        // Track the user's live pick (SelectedColor alone is unreliable: the
+        // picker only updates it on certain interactions and the Accept read
+        // can be null/stale). This mirrors ColorPickerButton's working flow.
+        var pendingColor = Colors.White;
+
         // Seed the picker (and the swatch) from the selected shape's current fill
         // so the dialog reflects reality rather than the toolbar's last pick.
         var currentFill = ReadSelectedColor("Fill", selectedId);
         if (currentFill is not null)
         {
             _fillColorKey = currentFill;
-            swatch.BackgroundColor = Services.ResourceLookup.Color(currentFill, Colors.White);
-            SeedPicker(picker, currentFill);
+            var current = Services.ResourceLookup.Color(currentFill, Colors.White);
+            pendingColor = current;
+            swatch.BackgroundColor = current;
+            SeedPicker(picker, current);
         }
+
+        picker.ColorChanged += (_, args) => pendingColor = args.NewColor ?? pendingColor;
 
         SfPopup? popup = null;
         popup = new SfPopup
@@ -354,8 +365,7 @@ public partial class ToolbarControl : ContentView
             DeclineButtonText = "Cancel",
             AcceptCommand = new Command(() =>
             {
-                var newColor = picker.SelectedColor ?? Colors.White;
-                _fillColorKey = FindNearestKey(newColor);
+                _fillColorKey = FindNearestKey(pendingColor);
                 swatch.BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White);
 
                 // Apply the color to the element that was selected when the picker
@@ -390,13 +400,19 @@ public partial class ToolbarControl : ContentView
             ShowInputArea = true,
         };
 
+        var pendingColor = Colors.Black;
+
         var currentStroke = ReadSelectedColor("Border", selectedId);
         if (currentStroke is not null)
         {
             _strokeColorKey = currentStroke;
-            swatch.BackgroundColor = Services.ResourceLookup.Color(currentStroke, Colors.White);
-            SeedPicker(picker, currentStroke);
+            var current = Services.ResourceLookup.Color(currentStroke, Colors.Black);
+            pendingColor = current;
+            swatch.BackgroundColor = current;
+            SeedPicker(picker, current);
         }
+
+        picker.ColorChanged += (_, args) => pendingColor = args.NewColor ?? pendingColor;
 
         SfPopup? popup = null;
         popup = new SfPopup
@@ -410,8 +426,7 @@ public partial class ToolbarControl : ContentView
             DeclineButtonText = "Cancel",
             AcceptCommand = new Command(() =>
             {
-                var newColor = picker.SelectedColor ?? Colors.White;
-                _strokeColorKey = FindNearestKey(newColor);
+                _strokeColorKey = FindNearestKey(pendingColor);
                 swatch.BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White);
 
                 // Apply the color to the element that was selected when the picker
@@ -452,15 +467,10 @@ public partial class ToolbarControl : ContentView
             .FirstOrDefault(p => p.Key == panelKey)?.Value as string;
     }
 
-    /// <summary>Applies a colour key to an SfColorPicker via its writable colour property.</summary>
-    private static void SeedPicker(SfColorPicker picker, string colorKey)
+    /// <summary>Applies a colour to an SfColorPicker via its SelectedColor property.</summary>
+    private static void SeedPicker(SfColorPicker picker, Color color)
     {
-        var color = Services.ResourceLookup.Color(colorKey, Colors.White);
-        var property = picker.GetType().GetProperty("SelectedColor");
-        if (property?.CanWrite == true && property.PropertyType == typeof(Color))
-        {
-            property.SetValue(picker, color);
-        }
+        picker.SelectedColor = color;
     }
 
     private View BuildShapesFlyout()
@@ -643,7 +653,7 @@ public partial class ToolbarControl : ContentView
         AppConstants.ToolSelect => "↗",
         "tool.shape" => "◯",
         "tool.connector" => "→",
-        AppConstants.ToolText => "T",
+        AppConstants.CmdDelete => "🗑",
         "arrange" => "≡",
         _ => "□",
     };

@@ -394,8 +394,12 @@ public partial class PropertyPanelControl : ContentView
                 : model.Min ?? 0,
             Tooltip = new Syncfusion.Maui.Sliders.SliderTooltip { ShowAlways = false },
             NumberFormat = model.IsInteger ? "#,0" : "#,0.##",
-            HeightRequest = 40,
-            VerticalOptions = LayoutOptions.Center,
+            // Fill the row and let the control measure itself: a fixed
+            // HeightRequest fights the SfSlider's internal measurement and
+            // clips the track/thumb inside the 320 px panel (the rendered
+            // track sits at the very bottom edge of the clipped bounds).
+            VerticalOptions = LayoutOptions.Fill,
+            HorizontalOptions = LayoutOptions.Fill,
         };
 
         slider.ValueChanged += (_, args) => Commit(vm, model, args.NewValue * model.Scale);
@@ -409,6 +413,7 @@ public partial class PropertyPanelControl : ContentView
             TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             VerticalOptions = LayoutOptions.Center,
             HorizontalTextAlignment = TextAlignment.End,
+            WidthRequest = 40,
         };
 
         slider.ValueChanged += (_, args) => valueLabel.Text = FormatSliderValue(model, args.NewValue);
@@ -418,24 +423,17 @@ public partial class PropertyPanelControl : ContentView
         var grid = new Grid
         {
             ColumnSpacing = 8,
-            RowDefinitions = new RowDefinitionCollection(new[]
-            {
-                new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-            }),
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 new ColumnDefinition { Width = new GridLength(40) },
             }),
-            VerticalOptions = LayoutOptions.Center,
         };
 
         Grid.SetColumn(slider, 0);
-        Grid.SetRow(slider, 0);
         grid.Add(slider);
 
         Grid.SetColumn(valueLabel, 1);
-        Grid.SetRow(valueLabel, 0);
         grid.Add(valueLabel);
         return grid;
     }

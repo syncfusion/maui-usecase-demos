@@ -232,10 +232,12 @@ public static class ToolbarCatalog
         Tool(AppConstants.ToolConnectorOrthogonal, AppStrings.ToolbarOrthogonalConnector, group: 4),
         Tool(AppConstants.ToolConnectorBezier, AppStrings.ToolbarBezierConnector, group: 4),
 
-        // Group 5 — text tool + colors (stroke + fill swatches)
-        Tool(AppConstants.ToolText, AppStrings.ToolbarTextTool, group: 5),
+        // Group 5 — colors (stroke + fill swatches). The Text tool is replaced by
+        // Delete: the design needs a destructive action on the toolbar, and the
+        // MAUI Diagram has no text-tool API to back a "T" button anyway.
         Tool("tool.stroke.color", AppStrings.ToolbarBorderColor, group: 5),
         Tool("tool.fill.color", AppStrings.ToolbarFillColor, group: 5),
+        Tool(AppConstants.CmdDelete, AppStrings.ToolbarDeleteObject, group: 5),
 
         // Group 6 — selection-only: z-order, lock, delete, copy, paste
         Tool(AppConstants.CmdCopy, "Copy", group: 6),

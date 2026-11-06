@@ -78,6 +78,13 @@ public partial class ExportViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// Optional real-export hook (set by the designer page): runs the actual
+    /// SfDiagram.ExportDiagram with the current page settings before the mock
+    /// result is reported. Null keeps the pure-mock behaviour.
+    /// </summary>
+    public Func<Task>? RealExportRequested { get; set; }
+
     [RelayCommand]
     private async Task ExportAsync()
     {
@@ -85,6 +92,13 @@ public partial class ExportViewModel : ObservableObject
         HasResult = false;
         try
         {
+            // Run the real export first so the page settings (format/orientation)
+            // actually flow into the control's ExportDiagram call.
+            if (RealExportRequested is not null)
+            {
+                await RealExportRequested();
+            }
+
             var result = await _exportService.ExportAsync(SelectedFormat, Region, FileName);
             ResultText = result.Success
                 ? string.Format(AppStrings.ExportSuccessFormat, result.FileName)

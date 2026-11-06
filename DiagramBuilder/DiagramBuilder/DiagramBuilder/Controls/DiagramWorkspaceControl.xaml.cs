@@ -98,6 +98,16 @@ public partial class DiagramWorkspaceControl : ContentView
     {
         InitializeComponent();
 
+        // The SfDiagram ctor hardcodes BackgroundColor=White, which
+        // BuildInitConfigJson serializes into the EJ2 init payload
+        // (overriding the JS 'transparent' default). The EJ2 canvas would
+        // then be an opaque white rectangle covering every MAUI view behind
+        // it, and page-background edits would never be visible. Forcing
+        // transparency here — BEFORE the WebView loads, while the value is
+        // still picked up by init — makes the EJ2 canvas see-through, so the
+        // painted host views (DiagramGrid / workspace Border) show through.
+        Diagram.BackgroundColor = Colors.Transparent;
+
         // Track live additions/removals so elements dropped from the symbol
         // palette (or deleted) are reflected in the property panel's tracked
         // set. The palette writes straight into SfDiagram.Nodes/Connectors,
@@ -291,16 +301,18 @@ public partial class DiagramWorkspaceControl : ContentView
     /// <summary>
     /// Applies the drawing-area settings.
     ///
-    /// The canvas background is set on the MAUI visual elements hosting the
-    /// diagram, NOT on the SfDiagram's own Background/BackgroundColor: the
-    /// control is a HybridWebView over EJ2 whose bridge reads backgroundColor
-    /// only once at init and offers no runtime update channel, so a later
-    /// property write never reaches the renderer. The EJ2 canvas is created
-    /// with backgroundColor 'transparent', which makes the MAUI layer behind it
-    /// fully visible — the WebView's host background IS the canvas background.
+    /// Background: the SfDiagram control serializes its BackgroundColor into the
+    /// EJ2 init payload exactly once (DiagramManager.BuildInitConfigJson →
+    /// window.SfDiagram.init) and offers no runtime update channel, so a later
+    /// property write never reaches the renderer. The constructor is therefore
+    /// given a TRANSPARENT background (see DiagramWorkspaceControl ctor) so the
+    /// EJ2 canvas stays see-through, and the chosen colour is painted on the MAUI
+    /// host views behind it (DiagramGrid + the workspace Border). Those views ARE
+    /// the visible canvas background, and repainting them works at runtime.
     ///
-    /// Format and orientation are remembered for the export/print calls
-    /// (page settings exist only on DiagramExportOptions, not on the control).
+    /// Format and orientation have no live-renderer counterpart either — the MAUI
+    /// Diagram exposes them only on DiagramExportOptions — so they are remembered
+    /// here and flow into ExportAsync/PrintAsync below.
     /// </summary>
     public void ApplyPageSettings(string backgroundColorKey, Models.PaperFormat format, bool isPortrait)
     {
@@ -308,12 +320,60 @@ public partial class DiagramWorkspaceControl : ContentView
         IsPortrait = isPortrait;
 
         var color = Services.ResourceLookup.Color(backgroundColorKey, Colors.White);
-        Diagram.BackgroundColor = color;
         // The HybridWebView itself must stay transparent; paint the host views.
         DiagramGrid.BackgroundColor = color;
         if (this.Content is Border border)
         {
             border.BackgroundColor = color;
+        }
+    }
+
+    /// <summary>
+    /// Builds the export/print options that carry the page settings into the
+    /// control's ExportDiagram/Print calls. PageWidth/PageHeight are in inches
+    /// (matching PaperFormat), which EJ2 converts to its own page settings.
+    /// </summary>
+    public Syncfusion.Maui.Diagram.DiagramExportOptions BuildExportOptions() => new()
+    {
+        PageWidth = IsPortrait ? PageFormat.Width : PageFormat.Height,
+        PageHeight = IsPortrait ? PageFormat.Height : PageFormat.Width,
+        PageOrientation = IsPortrait
+            ? Syncfusion.Maui.Diagram.DiagramPageOrientation.Portrait
+            : Syncfusion.Maui.Diagram.DiagramPageOrientation.Landscape,
+        Region = Syncfusion.Maui.Diagram.DiagramExportRegion.PageSettings,
+    };
+
+    /// <summary>
+    /// Exports the diagram with the current page settings (format, orientation).
+    /// </summary>
+    public async Task<string?> ExportAsync(Syncfusion.Maui.Diagram.DiagramExportOptions? options = null)
+    {
+        await UntilReadyAsync();
+        return await Diagram.ExportDiagram(options ?? BuildExportOptions());
+    }
+
+    /// <summary>
+    /// Prints the diagram with the current page settings (format, orientation).
+    /// </summary>
+    public async Task PrintAsync(Syncfusion.Maui.Diagram.DiagramExportOptions? options = null)
+    {
+        await UntilReadyAsync();
+        await Diagram.Print(options ?? BuildExportOptions());
+    }
+
+    /// <summary>Waits until the diagram bridge is ready (bounded; then gives up silently).</summary>
+    private async Task UntilReadyAsync()
+    {
+        try
+        {
+            for (var i = 0; i < 40 && !SurfaceBehavior.IsReady; i++)
+            {
+                await Task.Delay(25);
+            }
+        }
+        catch
+        {
+            // Never block export/print on a readiness race.
         }
     }
 
