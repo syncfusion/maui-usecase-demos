@@ -392,14 +392,17 @@ public partial class PropertyPanelControl : ContentView
             Value = model.Value is IConvertible convertible
                 ? Convert.ToDouble(convertible, System.Globalization.CultureInfo.InvariantCulture)
                 : model.Min ?? 0,
-            Tooltip = new Syncfusion.Maui.Sliders.SliderTooltip { ShowAlways = false },
             NumberFormat = model.IsInteger ? "#,0" : "#,0.##",
-            // Fill the row and let the control measure itself: a fixed
-            // HeightRequest fights the SfSlider's internal measurement and
-            // clips the track/thumb inside the 320 px panel (the rendered
-            // track sits at the very bottom edge of the clipped bounds).
-            VerticalOptions = LayoutOptions.Fill,
+            // No Tooltip: the default tooltip is a large themed (purple) bubble drawn above
+            // the thumb. Inside the expander row it was clipped to a solid block that hid the
+            // track entirely. The header readout already shows the live value.
+            ShowLabels = false,
+            ShowTicks = false,
+            ShowDividers = false,
             HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Center,
+            // Explicit minimum so the track/thumb always get measured space.
+            MinimumHeightRequest = 32,
         };
 
         slider.ValueChanged += (_, args) => Commit(vm, model, args.NewValue * model.Scale);
@@ -416,8 +419,7 @@ public partial class PropertyPanelControl : ContentView
         };
         slider.ValueChanged += (_, args) => valueLabel.Text = FormatSliderValue(model, args.NewValue);
 
-        slider.Margin = new Thickness(-8, 0);
-        slider.VerticalOptions = LayoutOptions.Center;
+        slider.Margin = new Thickness(0);
         slider.TrackStyle = new Syncfusion.Maui.Sliders.SliderTrackStyle
         {
             ActiveSize = 4,
@@ -437,7 +439,7 @@ public partial class PropertyPanelControl : ContentView
             RowDefinitions = new RowDefinitionCollection(new[]
             {
                 new RowDefinition { Height = GridLength.Auto },
-                new RowDefinition { Height = new GridLength(28) },
+                new RowDefinition { Height = new GridLength(36) },
             }),
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
