@@ -219,6 +219,9 @@ public partial class DiagramDesignerViewModel : ObservableObject
     /// <summary>Moves the selection one step backward, or null when unbound.</summary>
     public Func<Task>? SendBackwardRequested { get; set; }
 
+    /// <summary>Runs an align / distribute / match-size / group command on the live diagram.</summary>
+    public Func<string, Task>? ArrangeRequested { get; set; }
+
     private async Task RunSurfaceRequestAsync(Func<Task>? request, string commandId)
     {
         if (request is null)
@@ -301,7 +304,15 @@ public partial class DiagramDesignerViewModel : ObservableObject
             case AppConstants.CmdSameWidthAndHeight:
             case AppConstants.CmdGroup:
             case AppConstants.CmdUngroup:
-                Status = string.Format(AppStrings.StatusCommandExecuted, commandId);
+                if (ArrangeRequested is null)
+                {
+                    Status = string.Format(AppStrings.StatusCommandExecuted, commandId);
+                }
+                else
+                {
+                    await ArrangeRequested(commandId);
+                }
+
                 break;
 
             // WINDOW
