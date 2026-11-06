@@ -12,12 +12,14 @@ namespace Todo.Features.Notes.Views;
 public sealed class NoteActionFlyout : ContentView
 {
     private readonly SfPopup _popup;
+    private readonly SfPopup _destinationsPopup;
     private readonly ObservableCollection<NoteActionDestination> _destinations = new();
     private IReadOnlyList<Note> _visibleNotes = Array.Empty<Note>();
     private Note? _selectedNote;
     private VerticalStackLayout? _actionsLayout;
     private VerticalStackLayout? _destinationsLayout;
     private Border? _surface;
+    private Border? _destinationsSurface;
     private Grid? _selectAllRow;
     private CheckBox? _selectAllCheckBox;
     private BoxView? _selectAllSeparator;
@@ -30,6 +32,9 @@ public sealed class NoteActionFlyout : ContentView
     private bool _closeAnimationRunning;
     private bool _allowPopupClose;
     private bool _isUpdatingSelectAll;
+    private bool _closingFlyoutsTogether;
+    private Point _mainPopupPosition;
+    private bool _hasMainPopupPosition;
 
     public event EventHandler<NoteActionRequestedEventArgs>? ActionRequested;
 
@@ -57,6 +62,28 @@ public sealed class NoteActionFlyout : ContentView
             ContentTemplate = new DataTemplate(CreateMenuSurface)
         };
 
+        _destinationsPopup = new SfPopup
+        {
+            ShowHeader = false,
+            ShowFooter = false,
+            ShowOverlayAlways = false,
+            OverlayMode = PopupOverlayMode.Transparent,
+            StaysOpen = false,
+            WidthRequest = 220,
+            AutoSizeMode = PopupAutoSizeMode.None,
+            AnimationMode = PopupAnimationMode.None,
+            PopupStyle = new PopupStyle
+            {
+                OverlayColor = Colors.Transparent,
+                MessageBackground = Colors.Transparent,
+                HasShadow = true,
+                Stroke = Colors.Transparent,
+                StrokeThickness = 0,
+                CornerRadius = 27
+            }
+        };
+        _destinationsPopup.ContentTemplate = new DataTemplate(CreateDestinationsSurface);
+
         _popup.Closing += async (_, e) =>
         {
             if (_allowPopupClose)
@@ -67,6 +94,11 @@ public sealed class NoteActionFlyout : ContentView
 
             if (_surface is null)
                 return;
+
+            var wasClosingFlyoutsTogether = _closingFlyoutsTogether;
+            _closingFlyoutsTogether = true;
+            _destinationsPopup.Dismiss();
+            _closingFlyoutsTogether = wasClosingFlyoutsTogether;
 
             e.Cancel = true;
             if (_closeAnimationRunning)
@@ -82,14 +114,31 @@ public sealed class NoteActionFlyout : ContentView
         };
 
         _popup.PositionChanging += OnPopupPositionChanging;
+        _destinationsPopup.PositionChanging += OnDestinationsPopupPositionChanging;
+        _destinationsPopup.Closing += (_, _) =>
+        {
+            if (_closingFlyoutsTogether)
+                return;
+
+            _popup.StaysOpen = false;
+            _closingFlyoutsTogether = true;
+            _popup.Dismiss();
+            _closingFlyoutsTogether = false;
+        };
         _popup.Opened += OnPopupOpened;
 
-        Content = new Grid { Children = { _popup } };
+        Content = new Grid { Children = { _popup, _destinationsPopup } };
     }
 
     public void ShowFor(View anchor, Note note, IEnumerable<NoteList> customLists, IEnumerable<Note> visibleNotes)
     {
         _selectedNote = note;
+        _hasMainPopupPosition = false;
+        _popup.StaysOpen = false;
+        var wasClosingFlyoutsTogether = _closingFlyoutsTogether;
+        _closingFlyoutsTogether = true;
+        _destinationsPopup.Dismiss();
+        _closingFlyoutsTogether = wasClosingFlyoutsTogether;
         _visibleNotes = visibleNotes.Where(visibleNote => visibleNote.DeletedAt is null).ToArray();
         _destinations.Clear();
         _destinations.Add(new("My Notes", NotesListViewModel.EncodeDropTarget(NotesListCategory.MyNotes)));
@@ -100,7 +149,6 @@ public sealed class NoteActionFlyout : ContentView
 
         UpdateMenu();
         UpdateDestinations();
-        ShowActions();
         UpdatePopupSize();
         _popup.ShowRelativeToView(anchor, PopupRelativePosition.AlignBottomRight);
     }
@@ -108,7 +156,6 @@ public sealed class NoteActionFlyout : ContentView
     private View CreateMenuSurface()
     {
         _actionsLayout = new VerticalStackLayout { Spacing = 5 , Margin = new Thickness(5, 0, 0, 0) };
-        _destinationsLayout = new VerticalStackLayout { Spacing = 0, IsVisible = false };
 
         _selectAllRow = new Grid
         {
@@ -173,7 +220,6 @@ public sealed class NoteActionFlyout : ContentView
         var stage = new Grid();
         stage.Margin = new Thickness(0,10);
         stage.Children.Add(_actionsLayout);
-        stage.Children.Add(_destinationsLayout);
 
         _surface = new Border
         {
@@ -187,11 +233,39 @@ public sealed class NoteActionFlyout : ContentView
             Brush.White,
             new SolidColorBrush(Color.FromArgb("#29272F")));
         _surface.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#E3DFEA"), Color.FromArgb("#44414B"));
+        _surface.Shadow = CreatePopupShadow();
 
         UpdateMenu();
-        UpdateDestinations();
         return _surface;
     }
+
+    private View CreateDestinationsSurface()
+    {
+        _destinationsLayout = new VerticalStackLayout { Spacing = 0, Margin = new Thickness(5, 10) };
+        _destinationsSurface = new Border
+        {
+            WidthRequest = 220,
+            Padding = 8,
+            StrokeThickness = 1,
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(27) },
+            Content = _destinationsLayout
+        };
+        _destinationsSurface.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
+            Brush.White,
+            new SolidColorBrush(Color.FromArgb("#29272F")));
+        _destinationsSurface.SetAppThemeColor(Border.StrokeProperty, Color.FromArgb("#E3DFEA"), Color.FromArgb("#44414B"));
+        _destinationsSurface.Shadow = CreatePopupShadow();
+        UpdateDestinations();
+        return _destinationsSurface;
+    }
+
+    private static Shadow CreatePopupShadow() => new()
+    {
+        Brush = Color.FromArgb("#40000000"),
+        Radius = 14,
+        Offset = new Point(0, 6),
+        Opacity = 1
+    };
 
     private static SfButton CreateButton(string text, Action action, bool destructive = false, string? iconGlyph = null, string? iconColor = null)
     {
@@ -269,12 +343,15 @@ public sealed class NoteActionFlyout : ContentView
     {
         if (_destinationsLayout is null) return;
         _destinationsLayout.Children.Clear();
-        _destinationsLayout.Children.Add(CreateButton("Move notes to", ShowActions, iconGlyph: "\ue5c4", iconColor: "#49454F"));
+        _destinationsLayout.Children.Add(CreateButton("Move notes to", HideDestinations, iconGlyph: "\ue5c4", iconColor: "#49454F"));
         var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
         separator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#494650"));
         _destinationsLayout.Children.Add(separator);
         foreach (var destination in _destinations)
             _destinationsLayout.Children.Add(CreateButton(destination.Name, () => RaiseAction(NoteActionKind.Move, destination.Key)));
+
+        if (_destinationsSurface is not null)
+            _destinationsSurface.HeightRequest = GetDestinationsPopupHeight();
     }
 
     private void UpdateMenu()
@@ -299,6 +376,7 @@ public sealed class NoteActionFlyout : ContentView
         if (_isUpdatingSelectAll || _visibleNotes.Count == 0 || _selectedNote is null)
             return;
 
+        _popup.Dismiss();
         ActionRequested?.Invoke(this, new NoteActionRequestedEventArgs(
             _selectedNote,
             NoteActionKind.SetVisibleCompletion,
@@ -319,27 +397,31 @@ public sealed class NoteActionFlyout : ContentView
 
     private void ShowDestinations()
     {
-        if (_actionsLayout is not null) _actionsLayout.IsVisible = false;
-        if (_destinationsLayout is not null) _destinationsLayout.IsVisible = true;
-        UpdatePopupSize();
+        if (_moveButton is null)
+            return;
+
+        UpdateDestinations();
+        _destinationsPopup.HeightRequest = GetDestinationsPopupHeight();
+        _popup.StaysOpen = true;
+        _destinationsPopup.ShowRelativeToView(_moveButton, PopupRelativePosition.AlignToRightOf);
     }
 
-    private void ShowActions()
+    private double GetDestinationsPopupHeight()
+        => ((_destinations.Count + 1) * 40) + 1 + 16 + 20;
+
+    private void HideDestinations()
     {
-        if (_actionsLayout is not null) _actionsLayout.IsVisible = true;
-        if (_destinationsLayout is not null) _destinationsLayout.IsVisible = false;
-        UpdatePopupSize();
+        var wasClosingFlyoutsTogether = _closingFlyoutsTogether;
+        _closingFlyoutsTogether = true;
+        _destinationsPopup.Dismiss();
+        _closingFlyoutsTogether = wasClosingFlyoutsTogether;
+        _popup.StaysOpen = false;
     }
 
     private void UpdatePopupSize()
     {
         double contentHeight;
-        if (_destinationsLayout?.IsVisible == true)
-        {
-            // Back button + separator + every destination, with no internal scrolling.
-            contentHeight = ((_destinations.Count + 1) * 40) + 1;
-        }
-        else if (_selectedNote?.DeletedAt is not null)
+        if (_selectedNote?.DeletedAt is not null)
         {
             // Restore button, separator, and delete button.
             contentHeight = 40 + 1 + 40 + 10;
@@ -361,7 +443,11 @@ public sealed class NoteActionFlyout : ContentView
     {
         if (_selectedNote is null) return;
         var args = new NoteActionRequestedEventArgs(_selectedNote, action, targetKey);
+        _closingFlyoutsTogether = true;
+        _destinationsPopup.Dismiss();
+        _popup.StaysOpen = false;
         _popup.Dismiss();
+        _closingFlyoutsTogether = false;
         ActionRequested?.Invoke(this, args);
     }
 
@@ -380,7 +466,47 @@ public sealed class NoteActionFlyout : ContentView
         const double edgePadding = 8;
         var maxX = Math.Max(edgePadding, window.Width - e.Bounds.Width - edgePadding);
         var maxY = Math.Max(edgePadding, window.Height - e.Bounds.Height - edgePadding);
-        e.MoveTo = new Point(Math.Clamp(e.MoveTo.X, edgePadding, maxX), Math.Clamp(e.MoveTo.Y, edgePadding, maxY));
+        var position = new Point(Math.Clamp(e.MoveTo.X, edgePadding, maxX), Math.Clamp(e.MoveTo.Y, edgePadding, maxY));
+        _mainPopupPosition = position;
+        _hasMainPopupPosition = true;
+        e.MoveTo = position;
+        e.Handled = true;
+    }
+
+    private void OnDestinationsPopupPositionChanging(object? sender, PopupPositionChangingEventArgs e)
+    {
+        var window = Window;
+        if (window is null || window.Width <= 0 || window.Height <= 0)
+            return;
+
+        const double edgePadding = 8;
+        var maxX = Math.Max(edgePadding, window.Width - e.Bounds.Width - edgePadding);
+        var maxY = Math.Max(edgePadding, window.Height - e.Bounds.Height - edgePadding);
+        var x = Math.Clamp(e.MoveTo.X, edgePadding, maxX);
+        var y = Math.Clamp(e.MoveTo.Y, edgePadding, maxY);
+
+        if (_hasMainPopupPosition)
+        {
+            var rightOfMain = _mainPopupPosition.X + _popup.WidthRequest + edgePadding;
+            var leftOfMain = _mainPopupPosition.X - e.Bounds.Width - edgePadding;
+
+            if (rightOfMain + e.Bounds.Width <= window.Width - edgePadding)
+                x = rightOfMain;
+            else if (leftOfMain >= edgePadding)
+                x = leftOfMain;
+            else
+            {
+                var belowMain = _mainPopupPosition.Y + _popup.HeightRequest + edgePadding;
+                var aboveMain = _mainPopupPosition.Y - e.Bounds.Height - edgePadding;
+                x = Math.Clamp(_mainPopupPosition.X, edgePadding, maxX);
+                if (belowMain + e.Bounds.Height <= window.Height - edgePadding)
+                    y = belowMain;
+                else if (aboveMain >= edgePadding)
+                    y = aboveMain;
+            }
+        }
+
+        e.MoveTo = new Point(x, y);
         e.Handled = true;
     }
 }

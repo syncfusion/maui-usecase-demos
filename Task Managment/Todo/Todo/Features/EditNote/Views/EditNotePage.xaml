@@ -30,16 +30,28 @@
                            FontSize="18"
                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                            VerticalOptions="Center" />
-                    <buttons:SfButton Grid.Column="1"
-                                      Text="&#xe5cd;"
-                                      FontFamily="MaterialIconRegular"
-                                      WidthRequest="36"
-                                      HeightRequest="36"
-                                      Padding="0"
-                                      BackgroundColor="Transparent"
-                                      TextColor="#6750A4"
-                                      FontSize="18"
-                                      Command="{Binding CancelCommand}" />
+                    <Border Grid.Column="1"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 20">
+                        <Border.GestureRecognizers>
+                            <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                      PointerExited="OnPointerExited" />
+                        </Border.GestureRecognizers>
+                        <buttons:SfButton Text="&#xe5cd;"
+                                          FontFamily="MaterialIconRegular"
+                                          WidthRequest="40"
+                                          HeightRequest="40"
+                                          Padding="0"
+                                          CornerRadius="20"
+                                          Background="Transparent"
+                                          TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                          FontSize="22"
+                                          Command="{Binding CancelCommand}"
+                                          SemanticProperties.Description="Close edit note" />
+                    </Border>
                 </Grid>
 
                 <BoxView Grid.Row="1"
