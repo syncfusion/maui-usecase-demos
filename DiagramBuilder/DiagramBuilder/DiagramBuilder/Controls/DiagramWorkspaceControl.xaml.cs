@@ -74,7 +74,8 @@ public partial class DiagramWorkspaceControl : ContentView
     }
 
     public static readonly BindableProperty SurfaceBehaviorZoomFactorProperty =
-        BindableProperty.Create(nameof(SurfaceBehaviorZoomFactor), typeof(double), typeof(DiagramWorkspaceControl), 1.0d);
+        BindableProperty.Create(nameof(SurfaceBehaviorZoomFactor), typeof(double), typeof(DiagramWorkspaceControl), 1.0d,
+            propertyChanged: OnSurfaceBehaviorZoomFactorChanged);
 
     public double SurfaceBehaviorZoomFactor
     {
@@ -118,6 +119,16 @@ public partial class DiagramWorkspaceControl : ContentView
         // so the ObservableCollection notifications are the only reliable hook.
         Diagram.Nodes.CollectionChanged += OnNodesCollectionChanged;
         Diagram.Connectors.CollectionChanged += OnConnectorsCollectionChanged;
+
+        SurfaceBehavior.ZoomFactor = SurfaceBehaviorZoomFactor;
+    }
+
+    private static void OnSurfaceBehaviorZoomFactorChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is DiagramWorkspaceControl ws && ws.SurfaceBehavior is not null && newValue is double zoom)
+        {
+            ws.SurfaceBehavior.ZoomFactor = zoom;
+        }
     }
 
     private void OnNodesCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

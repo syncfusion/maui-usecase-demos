@@ -523,9 +523,9 @@ public partial class ToolbarControl : ContentView
     {
         var subItems = new List<MenuCommandItem>
         {
-            new() { Id = "tool.shape.rectangle", TextKey = AppStrings.ToolbarRectangle },
-            new() { Id = "tool.shape.ellipse", TextKey = AppStrings.ToolbarEllipse },
-            new() { Id = "tool.shape.polygon", TextKey = AppStrings.ToolbarPolygon },
+            new() { Id = "tool.shape.rectangle", TextKey = AppStrings.ToolbarRectangle, IconKey = "tool.shape" },
+            new() { Id = "tool.shape.ellipse", TextKey = AppStrings.ToolbarEllipse, IconKey = "tool.shape" },
+            new() { Id = "tool.shape.polygon", TextKey = AppStrings.ToolbarPolygon, IconKey = "tool.shape" },
         };
         return BuildFlyoutDropdown("tool.shape", AppStrings.ToolbarBasicShapes, subItems);
     }
@@ -534,9 +534,9 @@ public partial class ToolbarControl : ContentView
     {
         var subItems = new List<MenuCommandItem>
         {
-            new() { Id = AppConstants.ToolConnectorStraight, TextKey = AppStrings.ToolbarStraightConnector },
-            new() { Id = AppConstants.ToolConnectorOrthogonal, TextKey = AppStrings.ToolbarOrthogonalConnector },
-            new() { Id = AppConstants.ToolConnectorBezier, TextKey = AppStrings.ToolbarBezierConnector },
+            new() { Id = AppConstants.ToolConnectorStraight, TextKey = AppStrings.ToolbarStraightConnector, IconKey = "tool.connector" },
+            new() { Id = AppConstants.ToolConnectorOrthogonal, TextKey = AppStrings.ToolbarOrthogonalConnector, IconKey = "tool.connector" },
+            new() { Id = AppConstants.ToolConnectorBezier, TextKey = AppStrings.ToolbarBezierConnector, IconKey = "tool.connector" },
         };
         return BuildFlyoutDropdown("tool.connector", AppStrings.ToolbarConnectors, subItems);
     }
@@ -545,20 +545,19 @@ public partial class ToolbarControl : ContentView
     {
         var subItems = new List<MenuCommandItem>
         {
-            new() { Id = AppConstants.CmdSendToBack, TextKey = AppStrings.ToolbarArrangeObject },
-            new() { Id = AppConstants.CmdBringToFront, TextKey = AppStrings.ToolbarArrangeObject },
-            new() { Id = AppConstants.CmdSendBackward, TextKey = AppStrings.ToolbarArrangeObject },
-            new() { Id = AppConstants.CmdBringForward, TextKey = AppStrings.ToolbarArrangeObject },
+            new() { Id = AppConstants.CmdBringToFront, TextKey = "Bring to Front", IconKey = AppConstants.CmdBringToFront },
+            new() { Id = AppConstants.CmdSendToBack, TextKey = "Send to Back", IconKey = AppConstants.CmdSendToBack },
+            new() { Id = AppConstants.CmdBringForward, TextKey = "Bring Forward", IconKey = AppConstants.CmdBringForward },
+            new() { Id = AppConstants.CmdSendBackward, TextKey = "Send Backward", IconKey = AppConstants.CmdSendBackward },
+            new() { Id = AppConstants.ToolLock, TextKey = AppStrings.ToolbarLockObject, IconKey = AppConstants.ToolLock },
         };
         return BuildFlyoutDropdown("arrange", "Arrange", subItems);
     }
 
     private View BuildFlyoutDropdown(string id, string headerKey, List<MenuCommandItem> items)
     {
-        SfPopup? popup = null;
-        popup = new SfPopup
+        var popup = new SfPopup
         {
-            ContentTemplate = new DataTemplate(() => BuildFlyoutContent(items, popup!)),
             ShowHeader = false,
             ShowFooter = false,
             ShowCloseButton = false,
@@ -575,6 +574,7 @@ public partial class ToolbarControl : ContentView
                 CornerRadius = new CornerRadius(8),
             },
         };
+        popup.ContentTemplate = new DataTemplate(() => BuildFlyoutContent(items, popup));
 
         // The icon and the caret are two separate labels in a horizontal stack
         // rather than one concatenated string: the shared icon-button style is
@@ -635,15 +635,35 @@ public partial class ToolbarControl : ContentView
                 Command = new Command(() =>
                 {
                     ToolCommand?.Execute(item.Id);
-                    popup.IsOpen = false;
+                    if (popup.IsOpen)
+                    {
+                        popup.IsOpen = false;
+                    }
                 }),
-                Content = new DataTemplate(() => new Label
+                Content = new DataTemplate(() => new HorizontalStackLayout
                 {
-                    Text = item.TextKey,
-                    FontSize = 12,
-                    TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
-                    VerticalTextAlignment = TextAlignment.Center,
-                    Margin = new Thickness(8, 0),
+                    Spacing = 8,
+                    VerticalOptions = LayoutOptions.Center,
+                    Children =
+                    {
+                        new Label
+                        {
+                            Text = string.IsNullOrEmpty(item.IconKey) ? string.Empty : Constants.MaterialIcons.TextFor(item.IconKey),
+                            FontFamily = string.IsNullOrEmpty(item.IconKey) ? string.Empty : "MaterialIcons",
+                            FontSize = 16,
+                            TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                            VerticalTextAlignment = TextAlignment.Center,
+                            IsVisible = !string.IsNullOrEmpty(item.IconKey),
+                            WidthRequest = 18,
+                        },
+                        new Label
+                        {
+                            Text = item.TextKey,
+                            FontSize = 12,
+                            TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                            VerticalTextAlignment = TextAlignment.Center,
+                        },
+                    },
                 }),
             };
             stack.Children.Add(row);
@@ -657,10 +677,8 @@ public partial class ToolbarControl : ContentView
 
     private View BuildZoomDropdown()
     {
-        SfPopup? popup = null;
-        popup = new SfPopup
+        var popup = new SfPopup
         {
-            ContentTemplate = new DataTemplate(() => BuildZoomContent(popup!)),
             ShowHeader = false,
             ShowFooter = false,
             ShowCloseButton = false,
@@ -677,6 +695,7 @@ public partial class ToolbarControl : ContentView
                 CornerRadius = new CornerRadius(8),
             },
         };
+        popup.ContentTemplate = new DataTemplate(() => BuildZoomContent(popup));
 
         var button = new SfButton
         {
@@ -728,6 +747,7 @@ public partial class ToolbarControl : ContentView
                 if (level is not ZoomLevel zl)
                     continue;
 
+                var isSelected = Math.Abs(CurrentZoom - zl.Value) < 0.0001;
                 var row = new SfButton
                 {
                     Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
@@ -736,15 +756,34 @@ public partial class ToolbarControl : ContentView
                     Command = new Command(() =>
                     {
                         SetZoomCommand?.Execute(zl);
-                        popup.IsOpen = false;
+                        if (popup.IsOpen)
+                        {
+                            popup.IsOpen = false;
+                        }
                     }),
-                    Content = new DataTemplate(() => new Label
+                    Content = new DataTemplate(() => new HorizontalStackLayout
                     {
-                        Text = zl.LabelKey,
-                        FontSize = 12,
-                        TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
-                        VerticalTextAlignment = TextAlignment.Center,
-                        Margin = new Thickness(8, 0),
+                        Spacing = 8,
+                        VerticalOptions = LayoutOptions.Center,
+                        Children =
+                        {
+                            new Label
+                            {
+                                Text = isSelected ? Constants.MaterialIcons.CheckGlyph : string.Empty,
+                                FontFamily = "MaterialIcons",
+                                FontSize = 16,
+                                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                                VerticalTextAlignment = TextAlignment.Center,
+                                WidthRequest = 18,
+                            },
+                            new Label
+                            {
+                                Text = zl.LabelKey,
+                                FontSize = 12,
+                                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                                VerticalTextAlignment = TextAlignment.Center,
+                            },
+                        },
                     }),
                 };
                 stack.Children.Add(row);
