@@ -156,6 +156,8 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
         {
             ReadyCommand.Execute(null);
         }
+
+        _ = ApplyZoomFactorAsync();
     }
 
     // Latest selection ids — control selection state is only observable through
@@ -321,13 +323,24 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
 
     private static async void OnZoomFactorChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (bindable is DiagramSurfaceBehavior behavior && behavior._diagram is { } diagram
+        if (bindable is DiagramSurfaceBehavior behavior && behavior._diagram is not null && behavior.IsReady
             && newValue is double factor && !factor.Equals(oldValue))
         {
-            var center = diagram.Width > 0 && diagram.Height > 0
-                ? new Microsoft.Maui.Graphics.Point(diagram.Width / 2, diagram.Height / 2)
-                : (Microsoft.Maui.Graphics.Point?)null;
-            await diagram.Zoom(factor, center);
+            await behavior.ApplyZoomFactorAsync(factor);
         }
+    }
+
+    private async Task ApplyZoomFactorAsync(double? factorOverride = null)
+    {
+        if (_diagram is not { } diagram)
+        {
+            return;
+        }
+
+        var factor = factorOverride ?? ZoomFactor;
+        var center = diagram.Width > 0 && diagram.Height > 0
+            ? new Microsoft.Maui.Graphics.Point(diagram.Width / 2, diagram.Height / 2)
+            : (Microsoft.Maui.Graphics.Point?)null;
+        await diagram.Zoom(factor, center);
     }
 }
