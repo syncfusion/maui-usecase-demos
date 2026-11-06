@@ -404,8 +404,8 @@ public partial class PropertyPanelControl : ContentView
 
         slider.ValueChanged += (_, args) => Commit(vm, model, args.NewValue * model.Scale);
 
-        // The design pairs the track with a read-only value readout so the
-        // current level is visible without hovering the thumb.
+        // Header row (label left, live readout right) above the full-width track,
+        // so the value no longer floats beside/above an off-centre track.
         var valueLabel = new Label
         {
             Text = FormatSliderValue(model, slider.Value),
@@ -413,37 +413,58 @@ public partial class PropertyPanelControl : ContentView
             TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             VerticalOptions = LayoutOptions.Center,
             HorizontalTextAlignment = TextAlignment.End,
-            WidthRequest = 40,
         };
-
         slider.ValueChanged += (_, args) => valueLabel.Text = FormatSliderValue(model, args.NewValue);
 
-        // The readout is centred against the track, not the row, so the number
-        // sits on the slider's mid-line instead of floating at the top.
+        slider.Margin = new Thickness(-8, 0);
+        slider.VerticalOptions = LayoutOptions.Center;
+        slider.TrackStyle = new Syncfusion.Maui.Sliders.SliderTrackStyle
+        {
+            ActiveSize = 4,
+            InactiveSize = 4,
+            ActiveFill = Services.ResourceLookup.ResourceColor("SelectionBlue"),
+            InactiveFill = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
+        };
+        slider.ThumbStyle = new Syncfusion.Maui.Sliders.SliderThumbStyle
+        {
+            Radius = 8,
+            Fill = Services.ResourceLookup.ResourceColor("SelectionBlue"),
+        };
+
         var grid = new Grid
         {
-            ColumnSpacing = 8,
+            RowSpacing = 2,
+            RowDefinitions = new RowDefinitionCollection(new[]
+            {
+                new RowDefinition { Height = GridLength.Auto },
+                new RowDefinition { Height = new GridLength(28) },
+            }),
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(40) },
+                new ColumnDefinition { Width = GridLength.Auto },
             }),
         };
 
-        Grid.SetColumn(slider, 0);
-        grid.Add(slider);
-
+        grid.Add(new Label
+        {
+            Text = model.LabelKey,
+            Style = (Style)Application.Current!.Resources["PropertyCaptionStyle"],
+            VerticalOptions = LayoutOptions.Center,
+        });
         Grid.SetColumn(valueLabel, 1);
         grid.Add(valueLabel);
+        Grid.SetRow(slider, 1);
+        Grid.SetColumnSpan(slider, 2);
+        grid.Add(slider);
         return grid;
     }
 
     private static string FormatSliderValue(PropertyModel model, double value)
     {
-        var scaled = value * model.Scale;
-        return model.IsInteger
-            ? string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0}", scaled)
-            : string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0.##}", scaled);
+        // The slider track is 0-100 (Scale converts to the 0-1 model value), so the
+        // readout shows the track value itself, e.g. "100%", not the scaled 1.
+        return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:0}%", value);
     }
 
     private View BuildSegmentedEditor(PropertyModel model, PropertyPanelViewModel vm)
