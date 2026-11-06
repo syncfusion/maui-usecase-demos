@@ -113,11 +113,8 @@ public static class DiagramModelAdapter
 
     private static void ApplyAnnotation(Node node, ShapeItem shape)
     {
-        if (string.IsNullOrEmpty(shape.Text))
-        {
-            return;
-        }
-
+        // Always attach a label, even when the template has no text: the property panel's
+        // text options and in-canvas text entry both need a native annotation to target.
         var horizontal = ToHorizontalAlignment(shape.HorizontalAlignment);
         var vertical = ToVerticalAlignment(shape.VerticalAlignment);
 
@@ -128,7 +125,7 @@ public static class DiagramModelAdapter
         // user asked for (see PropertyService.ApplyTextAlignment).
         var annotation = new ShapeAnnotation
         {
-            Content = shape.Text,
+            Content = shape.Text ?? string.Empty,
             HorizontalAlignment = horizontal,
             VerticalAlignment = vertical,
             Offset = new Syncfusion.Maui.Diagram.DiagramPoint(
@@ -169,10 +166,7 @@ public static class DiagramModelAdapter
             Style = stroke,
         };
 
-        if (!string.IsNullOrEmpty(connectorItem.Text))
-        {
-            connector.Annotations.Add(new PathAnnotation { Content = connectorItem.Text });
-        }
+        connector.Annotations.Add(new PathAnnotation { Content = connectorItem.Text ?? string.Empty });
     }
 
     /// <summary>

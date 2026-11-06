@@ -26,12 +26,36 @@ public class PropertyService : IPropertyService
         _tracked.Clear();
         foreach (var node in nodes.OfType<Node>())
         {
+            EnsureAnnotation(node);
             _tracked[node.Id] = node;
         }
 
         foreach (var connector in connectors.OfType<Connector>())
         {
+            EnsureAnnotation(connector);
             _tracked[connector.Id] = connector;
+        }
+    }
+
+    /// <summary>
+    /// Guarantees the element owns a native label. A shape dropped from the palette
+    /// (or a template shape without text) has no annotation on the C# side, so the
+    /// text properties had nothing to write to, and text typed in the canvas lived only
+    /// in the web page under an id the native model never heard of (its edit event was
+    /// dropped and the next native update even removed the label). With an empty
+    /// placeholder label the in-canvas edit targets this annotation, its content syncs
+    /// back, and the font / colour / alignment edits apply to it like to any other label.
+    /// </summary>
+    private static void EnsureAnnotation(NodeBase element)
+    {
+        switch (element)
+        {
+            case Node node when !node.Annotations.OfType<ShapeAnnotation>().Any():
+                node.Annotations.Add(new ShapeAnnotation());
+                break;
+            case Connector connector when !connector.Annotations.OfType<PathAnnotation>().Any():
+                connector.Annotations.Add(new PathAnnotation());
+                break;
         }
     }
 
@@ -40,9 +64,11 @@ public class PropertyService : IPropertyService
         switch (element)
         {
             case Node node when !string.IsNullOrEmpty(node.Id):
+                EnsureAnnotation(node);
                 _tracked[node.Id] = node;
                 break;
             case Connector connector when !string.IsNullOrEmpty(connector.Id):
+                EnsureAnnotation(connector);
                 _tracked[connector.Id] = connector;
                 break;
         }
