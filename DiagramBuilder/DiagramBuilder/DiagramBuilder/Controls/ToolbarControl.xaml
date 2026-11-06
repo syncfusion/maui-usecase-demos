@@ -24,14 +24,14 @@
           BackgroundColor="{DynamicResource PanelBackground}">
         <HorizontalStackLayout x:Name="LeftGroupsBar"
                                Grid.Column="0"
-                               Spacing="0"
+                               Spacing="4"
                                VerticalOptions="Center" />
         <!-- Center column: shape-selection actions (Fill / Stroke / Delete).
              Sits in the starred middle column so the group stays centered
              within the toolbar regardless of the side groups' widths. -->
         <HorizontalStackLayout x:Name="CenterGroupsBar"
                                Grid.Column="1"
-                               Spacing="0"
+                               Spacing="4"
                                VerticalOptions="Center"
                                HorizontalOptions="Center" />
         <HorizontalStackLayout x:Name="RightGroupsBar"

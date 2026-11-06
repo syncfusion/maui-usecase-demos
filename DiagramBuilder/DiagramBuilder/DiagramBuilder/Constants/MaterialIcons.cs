@@ -31,6 +31,7 @@ public static class MaterialIcons
     private const int FitScreen = 0xEA10;        // fit to screen
     private const int ExpandMore = 0xE5CF;       // dropdown caret / expanded
     private const int ExpandLess = 0xE5CE;      // collapsed caret
+    private const int ChevronRightIcon = 0xE5CC; // property panel collapse/close
     private const int Apps = 0xE5C3;
     private const int Lock = 0xE897;
     private const int Check = 0xE5CA;           // menu checkmark
@@ -148,6 +149,9 @@ public static class MaterialIcons
 
     /// <summary>Collapse caret icon (expand-less, pointing up).</summary>
     public static string CollapseCaret => Glyph(ExpandLess);
+
+    /// <summary>Chevron-right icon used for the property panel collapse/close button.</summary>
+    public static string ChevronRight => Glyph(ChevronRightIcon);
 
     /// <summary>Checkmark icon (checked menu items).</summary>
     public static string CheckGlyph => Glyph(Check);
