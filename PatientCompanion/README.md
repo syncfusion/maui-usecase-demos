@@ -129,15 +129,7 @@ Or open `PatientCompanion/PatientCompanion.slnx` in Visual Studio, select your t
 
 ## Output
 
-The final result is a five-tab patient companion app:
-
-1. **Home** – patient greeting, next-appointment card, care-plan progress, quick actions, and a vitals carousel.
-2. **Booking wizard** – four step views ending in a review screen that shows the doctor, date/time, visit type, and the hospital location on an offline map; confirming adds the visit to every list.
-3. **Visits** – the confirmed (and seeded) appointments as upcoming/past cards, with reschedule support.
-4. **Medications** – next-dose circular progress plus a grouped, filterable medication list.
-5. **Health** – trend line charts for Heart Rate, Blood Pressure, and SpO2 with a range switcher.
-
-<!-- Add visual assets under `media/` (e.g., media/booking-wizard.gif) and reference them here to complete the visual walkthrough. -->
+![Patient Companion output](PatientCompanion.gif)
 
 ## Project Structure
 
