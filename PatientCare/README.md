@@ -145,8 +145,3 @@ Fix: Register a valid license key in `MauiProgram.cs` (see the Notes section abo
 - Windows
 - macOS (Mac Catalyst)
 
-## License
-
-This sample is provided by Syncfusion under the repository's license. Syncfusion .NET MAUI components require a valid Syncfusion license for production use; see <https://www.syncfusion.com/products/maui> for details. Sample data is fictional and not medical advice.
-
-Syncfusion has no liability for any damage or consequence that may arise by the use or viewing of the Patient Care example. The Patient Care example is for demonstrative purposes and if you choose to use or access the Patient Care example you agree to not hold Syncfusion liable, in any form, for any damage that is related to use, accessing or otherwise viewing the Patient Care example. By accessing, viewing, or otherwise seeing the Patient Care example you acknowledge and agree Syncfusion's examples will not allow you to seek injunctive relief in any form for any claim related to the Patient Care sample. If you do not agree to this, do not view, access, utilize or otherwise do anything with Syncfusion's examples.
