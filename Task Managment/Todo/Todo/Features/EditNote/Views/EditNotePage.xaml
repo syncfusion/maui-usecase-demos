@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.EditNote.ViewModels"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
+             xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             x:Class="Todo.Features.EditNote.Views.EditNotePage"
+             x:DataType="vm:EditNoteViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.PresentationMode="ModalNotAnimated"
+             BackgroundColor="#80000000">
+
+    <Grid Padding="24" VerticalOptions="Center" HorizontalOptions="Center">
+        <Border WidthRequest="330"
+                MaximumHeightRequest="560"
+                BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
+                Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 24"
+                Padding="18,16,18,0">
+            <Border.Shadow>
+                <Shadow Brush="#4D000000" Radius="6" Offset="0,2" Opacity="1" />
+            </Border.Shadow>
+
+            <Grid RowDefinitions="Auto,1,*,1,Auto">
+                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                    <Label Text="{Binding DialogTitle}"
+                           FontFamily="{StaticResource FontFamilySemibold}"
+                           FontSize="18"
+                           TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                           VerticalOptions="Center" />
+                    <Border Grid.Column="1"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            BackgroundColor="Transparent"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 20">
+                        <Border.GestureRecognizers>
+                            <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                      PointerExited="OnPointerExited" />
+                        </Border.GestureRecognizers>
+                        <buttons:SfButton Text="&#xe5cd;"
+                                          FontFamily="MaterialIconRegular"
+                                          WidthRequest="40"
+                                          HeightRequest="40"
+                                          Padding="0"
+                                          CornerRadius="20"
+                                          Background="Transparent"
+                                          TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                          FontSize="22"
+                                          Command="{Binding CancelCommand}"
+                                          SemanticProperties.Description="Close edit note" />
+                    </Border>
+                </Grid>
+
+                <BoxView Grid.Row="1"
+                         HeightRequest="1"
+                         IsVisible="False"
+                         Color="Transparent" />
+
+                <ScrollView Grid.Row="2" Margin="0" VerticalScrollBarVisibility="Never">
+                    <VerticalStackLayout Spacing="0">
+                        <Grid ColumnDefinitions="34,*,40" ColumnSpacing="8" HeightRequest="50" VerticalOptions="Center">
+                            <CheckBox Grid.Column="0"
+                                      IsChecked="{Binding Target.IsCompleted, Mode=TwoWay}"
+                                      Color="{StaticResource PrimaryColor}"
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="Center" />
+                            <syncfusionCore:SfTextInputLayout Grid.Column="1"
+                                                              Hint="Add a note"
+                                                              ContainerType="Outlined"
+                                                              ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
+                                                              OutlineCornerRadius="8"
+                                                              FocusedStrokeThickness="1"
+                                                              UnfocusedStrokeThickness="1"
+                                                              ReserveSpaceForAssistiveLabels="False"
+                                                              InputViewPadding="16,0"
+                                                              EnableFloating="False"
+                                                              Margin="0"
+                                                              ShowHelperText="False"
+                                                              ShowHint="True"
+                                                              Stroke="Transparent"
+                                                              HorizontalOptions="Fill">
+                                <Entry Text="{Binding Title, Mode=TwoWay}"
+                                       Placeholder=""
+                                       PlaceholderColor="{AppThemeBinding Light=#686A6B, Dark=#CAC4D0}"
+                                       FontSize="14"
+                                       BackgroundColor="Transparent"
+                                       VerticalTextAlignment="Center"
+                                       HeightRequest="44"
+                                       TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                            </syncfusionCore:SfTextInputLayout>
+                            <buttons:SfButton Grid.Column="2"
+                                              Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                              TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                              WidthRequest="40"
+                                              HeightRequest="40"
+                                              Padding="0"
+                                              Background="Transparent"
+                                              FontSize="20"
+                                              VerticalOptions="Center"
+                                              Command="{Binding ToggleImportantCommand}"
+                                              SemanticProperties.Description="Toggle important" />
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="0">
+                            <Border Padding="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent"
+                                    StrokeShape="RoundRectangle 8"
+                                    HeightRequest="48">
+                                <Border.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                              PointerExited="OnPointerExited" />
+                                    <TapGestureRecognizer Command="{Binding OpenDueDatePickerCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="34,*" ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="18" TextColor="{StaticResource PrimaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="20" HeightRequest="20" />
+                                    <Grid Grid.Column="1">
+                                        <Label Text="Due date/time"
+                                               FontSize="13"
+                                               TextColor="{AppThemeBinding Light=#686A6B, Dark=#CAC4D0}"
+                                               VerticalTextAlignment="Center"
+                                               IsVisible="{Binding HasDueDate, Converter={StaticResource InvertedBoolConverter}}" />
+                                        <Border IsVisible="{Binding HasDueDate}"
+                                                HorizontalOptions="Start"
+                                                Padding="7,3"
+                                                Stroke="{AppThemeBinding Light=#E1DDED, Dark=#49454F}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 12"
+                                                BackgroundColor="{AppThemeBinding Light=#FAF9FC, Dark=#2B2930}">
+                                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                <Label Text="&#xe24f;"
+                                                       FontFamily="MaterialIconRegular"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                       WidthRequest="12"
+                                                       HeightRequest="12"
+                                                       HorizontalTextAlignment="Center"
+                                                       VerticalTextAlignment="Center" />
+                                                <Label Text="{Binding DueDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                       VerticalTextAlignment="Center" />
+                                            </HorizontalStackLayout>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                            <Border IsVisible="{Binding IsDueDatePickerVisible}"
+                                    Padding="12"
+                                    Margin="42,0,0,0"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{AppThemeBinding Light=#F7F2FA, Dark=#2B2930}">
+                                <VerticalStackLayout Spacing="8">
+                                    <picker:SfDateTimePicker SelectedDate="{Binding DraftDueDateSelection, Mode=TwoWay}"
+                                                             DateFormat="MMM_dd_yyyy"
+                                                             HeightRequest="220"
+                                                             Background="Transparent" />
+                                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                        <buttons:SfButton Grid.Column="1"
+                                                          Text="Cancel"
+                                                          Background="Transparent"
+                                                          TextColor="#6750A4"
+                                                          Command="{Binding CancelDueDateCommand}" />
+                                        <buttons:SfButton Grid.Column="2"
+                                                          Text="Save"
+                                                          Background="Transparent"
+                                                          TextColor="#6750A4"
+                                                          Command="{Binding SaveDueDateCommand}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Border>
+                            <BoxView HeightRequest="1"
+                                     Margin="42,0,0,0"
+                                     BackgroundColor="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}" />
+
+                            <Border Padding="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent"
+                                    StrokeShape="RoundRectangle 8"
+                                    HeightRequest="48">
+                                <Border.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                              PointerExited="OnPointerExited" />
+                                    <TapGestureRecognizer Command="{Binding ToggleRepeatPickerCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="34,*" ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="18" TextColor="{StaticResource PrimaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="20" HeightRequest="20" />
+                                    <Border Grid.Column="1"
+                                            Stroke="{StaticResource ChipStrokeColor}"
+                                            StrokeThickness="0"
+                                            BackgroundColor="Transparent">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
+                                            <Label Grid.Column="0"
+                                                   Text="Repeat"
+                                                   FontSize="13"
+                                                   TextColor="{AppThemeBinding Light=#686A6B, Dark=#CAC4D0}"
+                                                   VerticalTextAlignment="Center"
+                                                   IsVisible="{Binding HasRepeatSelection, Converter={StaticResource InvertedBoolConverter}}" />
+                                            <Border Grid.Column="0"
+                                                    IsVisible="{Binding HasRepeatSelection}"
+                                                    HorizontalOptions="Start"
+                                                    Padding="7,3"
+                                                    Stroke="{AppThemeBinding Light=#E1DDED, Dark=#49454F}"
+                                                    StrokeThickness="1"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    BackgroundColor="{AppThemeBinding Light=#FAF9FC, Dark=#2B2930}">
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                    <Label Text="&#xe040;"
+                                                           FontFamily="MaterialIconRegular"
+                                                           FontSize="12"
+                                                           TextColor="#2667A3"
+                                                           WidthRequest="12"
+                                                           HeightRequest="12"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center" />
+                                                    <Label Text="{Binding RepeatFrequency, Converter={StaticResource EnumDisplayNameConverter}}"
+                                                           FontSize="10"
+                                                           TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                           VerticalTextAlignment="Center" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <Picker IsVisible="{Binding IsRepeatPickerVisible}"
+                                    ItemsSource="{Binding RepeatOptions}"
+                                    SelectedItem="{Binding RepeatFrequency, Mode=TwoWay}"
+                                    HeightRequest="44"
+                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2B2B2B}"
+                                    TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                            <BoxView HeightRequest="1"
+                                     Margin="42,0,0,0"
+                                     BackgroundColor="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}" />
+
+                            <Border Padding="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="Transparent"
+                                    StrokeShape="RoundRectangle 8"
+                                    HeightRequest="48">
+                                <Border.GestureRecognizers>
+                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                              PointerExited="OnPointerExited" />
+                                    <TapGestureRecognizer Command="{Binding OpenReminderPickerCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="34,*" ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="18" TextColor="{StaticResource PrimaryColor}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="20" HeightRequest="20" />
+                                    <Border Grid.Column="1"
+                                            Stroke="{StaticResource ChipStrokeColor}"
+                                            StrokeThickness="0"
+                                            BackgroundColor="Transparent">
+                                        <Grid>
+                                            <Label Text="Reminder"
+                                                   FontSize="13"
+                                                   TextColor="{AppThemeBinding Light=#686A6B, Dark=#CAC4D0}"
+                                                   VerticalTextAlignment="Center"
+                                                   IsVisible="{Binding HasReminder, Converter={StaticResource InvertedBoolConverter}}" />
+                                            <Border IsVisible="{Binding HasReminder}"
+                                                    HorizontalOptions="Start"
+                                                    Padding="7,3"
+                                                    Stroke="{AppThemeBinding Light=#E1DDED, Dark=#49454F}"
+                                                    StrokeThickness="1"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    BackgroundColor="{AppThemeBinding Light=#FAF9FC, Dark=#2B2930}">
+                                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                    <Label Text="&#xe7f5;"
+                                                           FontFamily="MaterialIconRegular"
+                                                           FontSize="12"
+                                                           TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                           WidthRequest="12"
+                                                           HeightRequest="12"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center" />
+                                                    <Label Text="{Binding ReminderDateSelection, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}"
+                                                           FontSize="12"
+                                                           TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                           VerticalTextAlignment="Center" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <BoxView HeightRequest="1"
+                                     Margin="42,0,0,0"
+                                     BackgroundColor="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}" />
+                            <Border IsVisible="{Binding IsReminderPickerVisible}"
+                                    Padding="12"
+                                    Margin="28,0,0,0"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{AppThemeBinding Light=#F7F2FA, Dark=#2B2930}">
+                                <VerticalStackLayout Spacing="8">
+                                    <picker:SfDateTimePicker SelectedDate="{Binding DraftReminderDateSelection, Mode=TwoWay}"
+                                                             DateFormat="MMM_dd_yyyy"
+                                                             HeightRequest="220"
+                                                             Background="Transparent" />
+                                    <TimePicker Time="{Binding DraftReminderTimeSelection, Mode=TwoWay}"
+                                                BackgroundColor="Transparent"
+                                                TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" />
+                                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                        <buttons:SfButton Grid.Column="1"
+                                                          Text="Cancel"
+                                                          Background="Transparent"
+                                                          TextColor="#6750A4"
+                                                          Command="{Binding CancelReminderCommand}" />
+                                        <buttons:SfButton Grid.Column="2"
+                                                          Text="Save"
+                                                          Background="Transparent"
+                                                          TextColor="#6750A4"
+                                                          Command="{Binding SaveReminderCommand}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Border>
+                            <BoxView HeightRequest="45" Background="Transparent"
+                                     IsVisible="{Binding IsMetadataPickerClosed}" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <BoxView Grid.Row="3"
+                         HeightRequest="1"
+                         Color="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}"
+                         Margin="-18,0,-18,0" />
+
+                <Grid Grid.Row="4" HeightRequest="56" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                    
+                    <Label Grid.Column="0"
+                           Text="{Binding CreatedAgeText}"
+                           IsVisible="{Binding HasCreatedInfo}"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
+                           VerticalOptions="Center" />
+                    <buttons:SfButton Grid.Column="1"
+                                      Text="Cancel"
+                                      Background="Transparent"
+                                      TextColor="#6750A4"
+                                      HeightRequest="36"
+                                      MinimumWidthRequest="72"
+                                      CornerRadius="8"
+                                      Command="{Binding CancelCommand}" />
+                    <buttons:SfButton Grid.Column="2"
+                                      Text="{Binding PrimaryButtonText}"
+                                      Background="Transparent"
+                                      TextColor="#6750A4"
+                                      HeightRequest="36"
+                                      MinimumWidthRequest="72"
+                                      CornerRadius="8"
+                                      Command="{Binding SaveCommand}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                            <Setter Property="TextColor" Value="#6750A4" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

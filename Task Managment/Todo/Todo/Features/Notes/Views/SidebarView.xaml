@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.Notes.ViewModels"
+             xmlns:custmodels="clr-namespace:Todo.Features.CustomLists.Models"
+             xmlns:common="clr-namespace:Todo.Common"
+             xmlns:conv="clr-namespace:Todo.Converters"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:noteViews="clr-namespace:Todo.Features.Notes.Views"
+             x:Class="Todo.Features.Notes.Views.SidebarView"
+             x:Name="SidebarRoot"
+             x:DataType="vm:NotesListViewModel"
+             BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
+
+    <Grid RowDefinitions="192,Auto,*,Auto" Padding="0,12,0,16">
+        <syncfusion:SfListView x:Name="SidebarCategoriesView" Grid.Row="0"
+                                ItemSize="45"
+                                ItemsSource="{Binding AvailableCategories}"
+                                SelectionMode="Single" SelectionBackground="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}"
+                                SelectedItem="{Binding SelectedSidebarCategory, Mode=OneWay, Converter={StaticResource ObjectToCategoryConverter}}"
+                                BackgroundColor="Transparent"
+                                SelectionChanged="OnSidebarSelectionChanged">
+            <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="common:NotesListCategory">
+                            <Border Margin="10,2" Padding="14,0" BackgroundColor="Transparent"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 8" HeightRequest="44">
+                                <Border.GestureRecognizers>
+                                    <DropGestureRecognizer AllowDrop="True" DragOver="OnSidebarDragOver"
+                                                           DragLeave="OnSidebarDragLeave" Drop="OnSidebarDrop" />
+                                </Border.GestureRecognizers>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" /> 
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" VerticalOptions="Center">
+                                    <Label Grid.Column="0" WidthRequest="20" HeightRequest="20"
+                                           FontSize="18" FontFamily="MaterialIconRegular"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.MyNotes}">
+                                                <Setter Property="Text" Value="&#xe8a6;" />
+                                                <Setter Property="TextColor" Value="#0D7D12" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Important}">
+                                                <Setter Property="Text" Value="&#xe83a;" />
+                                                <Setter Property="TextColor" Value="#2667A3" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Reminder}">
+                                                <Setter Property="Text" Value="&#xe7f5;" />
+                                                <Setter Property="TextColor" Value="#7D5294" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding .}" Value="{x:Static common:NotesListCategory.Bin}">
+                                                <Setter Property="Text" Value="&#xe92e;" />
+                                                <Setter Property="TextColor" Value="#ED4B42" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding ., Converter={StaticResource EnumDisplayNameConverter}, FallbackValue=''}"
+                                           Style="{StaticResource SidebarItemLabelStyle}"
+                                           IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
+
+        <BoxView Grid.Row="1"
+                 HeightRequest="1"
+                 Margin="16,0"
+                 VerticalOptions="Center"
+                 Color="{AppThemeBinding Light={StaticResource DividerColor}, Dark={StaticResource DividerDarkColor}}" />
+
+        <Grid Grid.Row="2" RowDefinitions="Auto,*">
+            <Label Grid.Row="0" Text="Lists" Style="{StaticResource SidebarSectionHeaderStyle}"
+                       IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists}" />
+
+            <Grid Grid.Row="1">
+                <VerticalStackLayout Margin="16"
+                                     Spacing="{OnIdiom Phone=12, Default=8}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists, Converter={StaticResource InvertedBoolConverter}}">
+                    <Image Source="notesicon.png"
+                           WidthRequest="{OnIdiom Phone=48, Default=40}"
+                           HeightRequest="{OnIdiom Phone=48, Default=40}"
+                           Aspect="AspectFit" HorizontalOptions="Center" />
+                    <Label Text="No list was found. Please create a to-do list."
+                           Style="{StaticResource EmptyStateMessageStyle}"
+                           FontSize="{OnIdiom Phone=16, Default={StaticResource FontSizeBody}}"
+                           WidthRequest="{OnIdiom Phone=260, Default=-1}"
+                           MaxLines="2"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <syncfusion:SfListView x:Name="CustomListsView" ItemsSource="{Binding CustomLists}"
+                                SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45" SelectionBackground="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}"
+                                SelectedItem="{Binding SelectedCustomList, Mode=OneWay}"
+                                SelectionChanged="OnCustomListSelectionChanged">
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="custmodels:NoteList">
+                            <Border Margin="10,2" Padding="14,0" BackgroundColor="Transparent"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 8" HeightRequest="44">
+                                <Border.GestureRecognizers>
+                                    <DragGestureRecognizer CanDrag="True" DragStarting="OnListDragStarting" />
+                                    <DropGestureRecognizer AllowDrop="True" DragOver="OnCustomListDragOver"
+                                                           DragLeave="OnCustomListDragLeave" Drop="OnCustomListDrop" />
+                                </Border.GestureRecognizers>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" /> 
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                                     <Image Grid.Column="0" Source="notesicon.png" WidthRequest="20"
+                                         HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="4"
+                                                           VerticalOptions="Center"
+                                                           IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}">
+                                        <Label Text="{Binding Name}"
+                                               Style="{StaticResource SidebarItemLabelStyle}"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding NoteCountText}"
+                                               Style="{StaticResource SidebarItemLabelStyle}"
+                                               IsVisible="{Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}" />
+                                    </HorizontalStackLayout>
+                                    <Border Grid.Column="2" WidthRequest="32" HeightRequest="32"
+                                            BackgroundColor="Transparent" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 16">
+                                        <Border.GestureRecognizers>
+                                            <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                      PointerExited="OnPointerExited" />
+                                        </Border.GestureRecognizers>
+                                        <buttons:SfButton Text="&#8943;" FontSize="18" Rotation="90"
+                                                          WidthRequest="32" HeightRequest="32" Padding="0"
+                                                          CornerRadius="16"
+                                                          Background="Transparent" TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                          Clicked="OnCustomListMoreClicked"
+                                                          SemanticProperties.Description="More list options" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+            </Grid>
+        </Grid>
+
+        <buttons:SfButton x:Name="CreateListButton"
+                          Grid.Row="3" Text="&#65291;" FontSize="26"
+                          WidthRequest="{OnIdiom Phone=56, Default=52}"
+                          HeightRequest="{OnIdiom Phone=56, Default=52}"
+                          CornerRadius="{OnIdiom Phone=28, Default=26}"
+                          Padding="0"
+                          Margin="{OnIdiom Phone='16,12,16,0', Default='16,12,10,0'}"
+                          HorizontalOptions="End"
+                          BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
+                          TextColor="White"
+                          Command="{Binding OpenCreateListDialogCommand}"
+                          SemanticProperties.Description="Create a to-do list">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="White" />
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="White" />
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </VisualStateManager.VisualStateGroups>
+        </buttons:SfButton>
+        <Border Grid.RowSpan="4"
+                IsVisible="{Binding IsToastVisible}"
+                Padding="12,8"
+                Margin="8,0,8,16"
+                HorizontalOptions="Fill"
+                VerticalOptions="End"
+                BackgroundColor="#2D2A32"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 8"
+                ZIndex="10">
+            <Border.Shadow>
+                <Shadow Brush="#40000000"
+                        Radius="6"
+                        Offset="0,2"
+                        Opacity="1" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{Binding ToastMessage}"
+                       TextColor="White"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       LineBreakMode="TailTruncation"
+                       VerticalOptions="Center" />
+                <buttons:SfButton Grid.Column="1"
+                                  Text="&#xe5cd;"
+                                  FontFamily="MaterialIconRegular"
+                                  WidthRequest="28"
+                                  HeightRequest="28"
+                                  Padding="0"
+                                  CornerRadius="14"
+                                  Background="Transparent"
+                                  TextColor="White"
+                                  Command="{Binding DismissToastCommand}"
+                                  SemanticProperties.Description="Dismiss notification" />
+            </Grid>
+        </Border>
+        <noteViews:CustomListOptionsFlyout x:Name="CustomListOptionsFlyout"
+                                     Grid.RowSpan="4"
+                                     WidthRequest="0"
+                                     HeightRequest="0"
+                                     HorizontalOptions="Start"
+                                     VerticalOptions="Start"
+                                     ZIndex="1000" />
+    </Grid>
+</ContentView>
