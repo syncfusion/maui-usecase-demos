@@ -7,7 +7,7 @@ namespace DiagramBuilder.ViewModels;
 
 /// <summary>
 /// Toolbar state: 8 groups from <see cref="ToolbarCatalog"/>, active tool tracking
-/// (pan/selection/connector/shape/text), and selection-only group-6 visibility.
+/// (pan/selection/connector/shape/lock), and selection-gated group-6 visibility.
 /// </summary>
 public partial class ToolbarViewModel : ObservableObject
 {
@@ -29,7 +29,7 @@ public partial class ToolbarViewModel : ObservableObject
     [ObservableProperty]
     private bool hasSingleSelection;
 
-    /// <summary>True when any element is selected (drives Delete).</summary>
+    /// <summary>True when any element is selected (drives Delete and arrange/lock actions).</summary>
     [ObservableProperty]
     private bool hasAnySelection;
 
@@ -50,11 +50,15 @@ public partial class ToolbarViewModel : ObservableObject
             return Task.CompletedTask;
         }
 
-        // Tool ids toggle the active tool; command ids dispatch.
+        if (id == Constants.AppConstants.ToolLock)
+        {
+            return _owner.ExecuteToolAsync(id);
+        }
+
         if (id.StartsWith("tool.", StringComparison.Ordinal))
         {
             ActiveToolId = id;
-            return Task.CompletedTask;
+            return _owner.ExecuteToolAsync(id);
         }
 
         return _owner.ExecuteCommand(id);

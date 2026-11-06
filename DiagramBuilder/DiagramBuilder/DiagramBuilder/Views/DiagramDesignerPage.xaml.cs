@@ -95,6 +95,11 @@ public partial class DiagramDesignerPage : ContentPage
         viewModel.CopyRequested = () => Workspace.Behavior.CopyAsync();
         viewModel.PasteRequested = () => Workspace.Behavior.PasteAsync();
         viewModel.DeleteRequested = () => Workspace.Behavior.DeleteSelectionAsync();
+        viewModel.ToolRequested = Workspace.ApplyToolAsync;
+        viewModel.BringToFrontRequested = () => Workspace.BringToFrontAsync();
+        viewModel.SendToBackRequested = () => Workspace.SendToBackAsync();
+        viewModel.BringForwardRequested = () => Workspace.BringForwardAsync();
+        viewModel.SendBackwardRequested = () => Workspace.SendBackwardAsync();
         // Print/export use the control's defaults: the MAUI Diagram exposes page
         // settings only on DiagramExportOptions, and there is no live page
         // model backing them, so no unsupported overrides are passed.

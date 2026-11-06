@@ -223,8 +223,8 @@ public partial class ToolbarControl : ContentView
             LeftGroupsBar.Children.Add(BuildDivider());
         }
 
-        // Group 6: Arrange dropdown (selection-only)
-        if (HasSingleSelection && byGroup.Any(g => g.Key == 6))
+        // Group 6: Arrange / lock / clipboard actions (any selection)
+        if (HasAnySelection && byGroup.Any(g => g.Key == 6))
         {
             LeftGroupsBar.Children.Add(BuildArrangeDropdown());
             LeftGroupsBar.Children.Add(BuildDivider());

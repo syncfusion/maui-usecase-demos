@@ -93,6 +93,7 @@ public static class AppConstants
     public const string ToolConnectorStraight = "tool.connector.straight";
     public const string ToolConnectorOrthogonal = "tool.connector.orthogonal";
     public const string ToolConnectorBezier = "tool.connector.bezier";
+    public const string ToolLock = "tool.lock";
     public const string ToolText = "tool.text";
 
     // Shell routes

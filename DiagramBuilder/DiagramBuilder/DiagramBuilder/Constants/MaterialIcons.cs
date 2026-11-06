@@ -32,6 +32,7 @@ public static class MaterialIcons
     private const int ExpandMore = 0xE5CF;       // dropdown caret / expanded
     private const int ExpandLess = 0xE5CE;      // collapsed caret
     private const int Apps = 0xE5C3;
+    private const int Lock = 0xE897;
     private const int Check = 0xE5CA;           // menu checkmark
 
     // File menu
@@ -125,6 +126,7 @@ public static class MaterialIcons
         AppConstants.CmdShowProperties => Glyph(ViewQuilt),
 
         // Toolbar-only ids
+        AppConstants.ToolLock => Glyph(Lock),
         AppConstants.ToolPan => Glyph(PanTool),
         AppConstants.ToolSelect => Glyph(NearMe),
         "tool.shape" => Glyph(Category),

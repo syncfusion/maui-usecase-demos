@@ -246,7 +246,7 @@ public static class ToolbarCatalog
         Tool(AppConstants.CmdBringToFront, AppStrings.ToolbarArrangeObject, group: 6),
         Tool(AppConstants.CmdSendBackward, AppStrings.ToolbarArrangeObject, group: 6),
         Tool(AppConstants.CmdBringForward, AppStrings.ToolbarArrangeObject, group: 6),
-        Tool("tool.lock", AppStrings.ToolbarLockObject, group: 6),
+        Tool(AppConstants.ToolLock, AppStrings.ToolbarLockObject, group: 6),
         Tool(AppConstants.CmdDelete, AppStrings.ToolbarDeleteObject, group: 6),
 
         // Group 7 — zoom (only the dropdown, not individual zoom buttons)
