@@ -63,7 +63,7 @@ public partial class HomeViewModel : ObservableObject
         _session.SelectedShowtime = null;
         _session.SelectedDate = DateTime.Today;
         _session.SelectedSeats.Clear();
-        Shell.Current.GoToAsync("theaters");
+        MainThread.BeginInvokeOnMainThread(() => _ = Shell.Current.GoToAsync("//theaters"));
     }
 
     private void ApplyFilters()
