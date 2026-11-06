@@ -125,6 +125,18 @@ public partial class MailWorkspaceViewModel : ObservableObject
     }
 
     [RelayCommand]
+    void ArchiveMessage(MailMessage? message)
+    {
+        if (message is null) return;
+        foreach (var source in new[] { mailbox.Inbox, mailbox.SentItems, mailbox.Drafts })
+            source.Remove(message);
+        message.IsHovered = false;
+        message.ArchivedOn = DateTime.Now;
+        if (!mailbox.Archive.Contains(message)) mailbox.Archive.Insert(0, message);
+        LoadFolder(SelectedFolder ?? mailbox.Folders[^1].Children[0]);
+    }
+
+    [RelayCommand]
     void SetFolderHover(FolderNode? folder)
     {
         if (folder is not null) folder.IsHovered = true;

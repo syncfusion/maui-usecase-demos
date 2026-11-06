@@ -141,14 +141,13 @@
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFolderFavouriteCommand}" CommandParameter="{Binding .}" />
                                 </Grid.GestureRecognizers>
-                                <Label FontFamily="MauiMaterialAssets" Text="&#xE73f;" FontSize="16" TextColor="#B0B0B0" HorizontalOptions="Center" VerticalOptions="Center">
-                                    <Label.Triggers>
-                                        <DataTrigger TargetType="Label" Binding="{Binding IsFavourite}" Value="True">
-                                            <Setter Property="Text" Value="&#xE838;" />
-                                            <Setter Property="TextColor" Value="#F2B01E" />
+                                <Image Source="star.png" WidthRequest="16" HeightRequest="16" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
+                                    <Image.Triggers>
+                                        <DataTrigger TargetType="Image" Binding="{Binding IsFavourite}" Value="True">
+                                            <Setter Property="Source" Value="star_filled.png" />
                                         </DataTrigger>
-                                    </Label.Triggers>
-                                </Label>
+                                    </Image.Triggers>
+                                </Image>
                             </Grid>
                             <Label Grid.Column="2" Text="{Binding Count}" FontSize="16" VerticalOptions="Center" TextColor="{StaticResource PrimaryLight}">
                                 <Label.Triggers>
@@ -186,35 +185,31 @@
                                         </BoxView.Triggers>
                                     </BoxView>
                                     <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" Spacing="2" IsVisible="{Binding IsHovered}" VerticalOptions="Start" HorizontalOptions="End">
-                                        <Grid WidthRequest="30" HeightRequest="25" BackgroundColor="Transparent">
-                                            <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
-                                            </Grid.GestureRecognizers>
-                                            <Label FontFamily="MauiMaterialAssets" Text="&#xE70F;" FontSize="16" TextColor="#222222" HorizontalOptions="Center" VerticalOptions="Center"></Label>
-                                        </Grid>
-                                        <Grid WidthRequest="30" HeightRequest="25" BackgroundColor="Transparent">
-                                            <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}" />
-                                            </Grid.GestureRecognizers>
-                                            <Label FontFamily="MauiMaterialAssets" Text="&#xE713;" FontSize="16" TextColor="#222222" HorizontalOptions="Center" VerticalOptions="Center">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding IsFlagged}" Value="True">
-                                                        <Setter Property="TextColor" Value="#E81123" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </Grid>
-                                        <Grid WidthRequest="30" HeightRequest="25" BackgroundColor="Transparent">
+                                        <Grid WidthRequest="30" HeightRequest="28" BackgroundColor="Transparent">
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}" />
                                             </Grid.GestureRecognizers>
-                                            <Label FontFamily="MauiMaterialAssets" Text="&#xE717;" FontSize="16" TextColor="#222222" HorizontalOptions="Center" VerticalOptions="Center">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding IsRead}" Value="False">
-                                                        <Setter Property="TextColor" Value="#2F8FE0" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
+                                            <Image Source="unread.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
+                                                <Image.Triggers>
+                                                    <DataTrigger TargetType="Image" Binding="{Binding IsRead}" Value="True"><Setter Property="Opacity" Value="0.45" /></DataTrigger>
+                                                </Image.Triggers>
+                                            </Image>
+                                        </Grid>
+                                        <Grid WidthRequest="30" HeightRequest="28" BackgroundColor="Transparent">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                            <Image Source="flag.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
+                                                <Image.Triggers>
+                                                    <DataTrigger TargetType="Image" Binding="{Binding IsFlagged}" Value="False"><Setter Property="Opacity" Value="0.45" /></DataTrigger>
+                                                </Image.Triggers>
+                                            </Image>
+                                        </Grid>
+                                        <Grid WidthRequest="30" HeightRequest="28" BackgroundColor="Transparent">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                            <Image Source="archieve.png" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"></Image>
                                         </Grid>
                                     </HorizontalStackLayout>
                                     <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="16" TextColor="#222222" />
@@ -225,7 +220,15 @@
                                             </DataTrigger>
                                         </Label.Triggers>
                                     </Label>
-                                    <Label Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" HorizontalOptions="End" FontSize="14" TextColor="#2F8FE0" />
+                                    <HorizontalStackLayout Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Spacing="6" HorizontalOptions="End">
+                                        <Label Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" FontSize="14" TextColor="#2F8FE0" VerticalOptions="Center" />
+                                        <Grid WidthRequest="26" HeightRequest="26" IsVisible="{Binding IsHovered}" BackgroundColor="Transparent">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                            <Label FontFamily="MauiMaterialAssets" Text="&#xE70F;" FontSize="18" TextColor="#555555" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True" />
+                                        </Grid>
+                                    </HorizontalStackLayout>
                                     <Label Grid.Row="2" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Preview}" FontSize="14" TextColor="#777777" LineBreakMode="TailTruncation" />
                                 </Grid>
                             </DataTemplate>

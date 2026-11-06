@@ -22,7 +22,7 @@ public class Mailbox
             root.Count = 0;
         }
 
-        foreach (var folder in new[] { "Inbox", "Clutter", "Drafts", "Sent Items", "Deleted Items", "Archive", "Junk Mail", "Personnel", "Sales Reports", "Marketing Reports", "My Team", "Trash", "Outbox" })
+        foreach (var folder in new[] { "Inbox", "Deleted Items" })
         {
             SetCount(folder, CountFor(folder));
         }
