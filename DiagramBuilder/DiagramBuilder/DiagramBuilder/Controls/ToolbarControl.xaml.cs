@@ -552,7 +552,6 @@ public partial class ToolbarControl : ContentView
             new() { Id = AppConstants.CmdSendToBack, TextKey = "Send to Back", IconKey = AppConstants.CmdSendToBack },
             new() { Id = AppConstants.CmdBringForward, TextKey = "Bring Forward", IconKey = AppConstants.CmdBringForward },
             new() { Id = AppConstants.CmdSendBackward, TextKey = "Send Backward", IconKey = AppConstants.CmdSendBackward },
-            new() { Id = AppConstants.ToolLock, TextKey = AppStrings.ToolbarLockObject, IconKey = AppConstants.ToolLock },
         };
         return BuildFlyoutDropdown("arrange", "Arrange", subItems);
     }
