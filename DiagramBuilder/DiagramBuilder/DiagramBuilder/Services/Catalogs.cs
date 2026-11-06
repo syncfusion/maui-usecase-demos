@@ -87,13 +87,13 @@ public static class MenuCatalog
             TextKey = AppStrings.MenuFile,
             Children =
             {
-                Item(AppConstants.CmdNew, AppStrings.MenuNew, "Ctrl+N"),
+                Item(AppConstants.CmdNew, AppStrings.MenuNew),
                 Item(AppConstants.CmdOpen, AppStrings.MenuOpen),
-                Item(AppConstants.CmdSave, AppStrings.MenuSave, "Ctrl+S"),
+                Item(AppConstants.CmdSave, AppStrings.MenuSave),
                 Item(AppConstants.CmdSaveAs, AppStrings.MenuSaveAs),
                 Separator(),
                 Item(AppConstants.CmdExport, AppStrings.MenuExport),
-                Item(AppConstants.CmdPrint, AppStrings.MenuPrint, "Ctrl+P"),
+                Item(AppConstants.CmdPrint, AppStrings.MenuPrint),
             },
         },
         new MenuCommandItem
@@ -102,16 +102,16 @@ public static class MenuCatalog
             TextKey = AppStrings.MenuEdit,
             Children =
             {
-                Item(AppConstants.CmdUndo, AppStrings.MenuUndo, "Ctrl+Z"),
-                Item(AppConstants.CmdRedo, AppStrings.MenuRedo, "Ctrl+Y"),
+                Item(AppConstants.CmdUndo, AppStrings.MenuUndo),
+                Item(AppConstants.CmdRedo, AppStrings.MenuRedo),
                 Separator(),
-                Item(AppConstants.CmdCut, AppStrings.MenuCut, "Ctrl+X"),
-                Item(AppConstants.CmdCopy, AppStrings.MenuCopy, "Ctrl+C"),
-                Item(AppConstants.CmdPaste, AppStrings.MenuPaste, "Ctrl+V"),
-                Item(AppConstants.CmdDelete, AppStrings.MenuDelete, "Del"),
-                Item(AppConstants.CmdDuplicate, AppStrings.MenuDuplicate, "Ctrl+D"),
+                Item(AppConstants.CmdCut, AppStrings.MenuCut),
+                Item(AppConstants.CmdCopy, AppStrings.MenuCopy),
+                Item(AppConstants.CmdPaste, AppStrings.MenuPaste),
+                Item(AppConstants.CmdDelete, AppStrings.MenuDelete),
+                Item(AppConstants.CmdDuplicate, AppStrings.MenuDuplicate),
                 Separator(),
-                Item(AppConstants.CmdSelectAll, AppStrings.MenuSelectAll, "Ctrl+A"),
+                Item(AppConstants.CmdSelectAll, AppStrings.MenuSelectAll),
             },
         },
         new MenuCommandItem
@@ -120,9 +120,9 @@ public static class MenuCatalog
             TextKey = AppStrings.MenuView,
             Children =
             {
-                Item(AppConstants.CmdZoomIn, AppStrings.MenuZoomIn, "Ctrl+="),
-                Item(AppConstants.CmdZoomOut, AppStrings.MenuZoomOut, "Ctrl+-"),
-                Item(AppConstants.CmdFitToScreen, AppStrings.MenuFitToScreen, "Shift+F1"),
+                Item(AppConstants.CmdZoomIn, AppStrings.MenuZoomIn),
+                Item(AppConstants.CmdZoomOut, AppStrings.MenuZoomOut),
+                Item(AppConstants.CmdFitToScreen, AppStrings.MenuFitToScreen),
                 Separator(),
                 Check(AppConstants.CmdShowGrid, AppStrings.MenuShowGrid, isChecked: true),
                 Check(AppConstants.CmdSnapToGrid, AppStrings.MenuSnapToGrid, isChecked: true),
@@ -160,8 +160,8 @@ public static class MenuCatalog
                     Item(AppConstants.CmdSameWidthAndHeight, AppStrings.MenuSameWidthAndHeight),
                 ]),
                 Separator(),
-                Item(AppConstants.CmdGroup, AppStrings.MenuGroup, "Ctrl+G"),
-                Item(AppConstants.CmdUngroup, AppStrings.MenuUngroup, "Ctrl+Shift+G"),
+                Item(AppConstants.CmdGroup, AppStrings.MenuGroup),
+                Item(AppConstants.CmdUngroup, AppStrings.MenuUngroup),
             },
         },
         new MenuCommandItem

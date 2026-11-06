@@ -464,11 +464,7 @@
                             <Setter Property="Background" Value="#E8EAED" />
                         </VisualState.Setters>
                     </VisualState>
-                    <VisualState x:Name="Checked">
-                        <VisualState.Setters>
-                            <Setter Property="Background" Value="#E3F2FD" />
-                        </VisualState.Setters>
-                    </VisualState>
+                    <VisualState x:Name="Checked" />
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Property="Background" Value="Transparent" />

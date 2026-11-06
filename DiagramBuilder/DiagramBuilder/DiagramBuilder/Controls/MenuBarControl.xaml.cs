@@ -31,9 +31,9 @@ public partial class MenuBarControl : ContentView
     {
         ["menu.file"] = 240,
         ["menu.edit"] = 250,
-        ["menu.view"] = 220,
+        ["menu.view"] = 240,
         ["menu.arrange"] = 288,
-        ["menu.window"] = 190,
+        ["menu.window"] = 250,
     };
 
     public static readonly BindableProperty ItemsSourceProperty =
@@ -229,7 +229,7 @@ public partial class MenuBarControl : ContentView
             }
             else
             {
-                stack.Children.Add(BuildLeafRow(child, indent));
+                stack.Children.Add(BuildLeafRow(child, indent, refill));
             }
         }
     }
@@ -237,7 +237,7 @@ public partial class MenuBarControl : ContentView
     private bool IsItemEnabledSafe(MenuCommandItem item) =>
         item.IsEnabled && (IsItemEnabled?.Invoke(item.Id) ?? true);
 
-    private View BuildLeafRow(MenuCommandItem item, int indent)
+    private View BuildLeafRow(MenuCommandItem item, int indent, Action refill)
     {
         if (item.IsSeparator)
         {
@@ -259,11 +259,19 @@ public partial class MenuBarControl : ContentView
         {
             Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
             Content = new DataTemplate(() => BuildRowLayout(item, indent, enabled)),
-            IsCheckable = item.IsCheckable,
-            IsChecked = item.IsCheckable && IsCheckedSafe(item.Id),
+            // Checkable rows are NOT SfButton-checkable: that painted the blue "Checked"
+            // overlay. State is shown by the tick glyph in the row layout instead.
             IsEnabled = enabled,
             CommandParameter = item.Id,
-            Command = new Command<string?>(id => MenuCommand?.Execute(id)),
+            Command = new Command<string?>(id =>
+            {
+                MenuCommand?.Execute(id);
+                if (item.IsCheckable)
+                {
+                    // Re-evaluate the tick once the toggle has been applied.
+                    Dispatcher.Dispatch(refill);
+                }
+            }),
         };
         return row;
     }
@@ -271,33 +279,32 @@ public partial class MenuBarControl : ContentView
     /// <summary>Check mark + icon + label + shortcut layout hosted inside the row's SfButton.Content.</summary>
     private Grid BuildRowLayout(MenuCommandItem item, int indent, bool enabled)
     {
+        // Checkable rows: tick slot + label (no icon, no shortcut). Others: icon slot + label.
+        var checkable = item.IsCheckable;
         var grid = new Grid
         {
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
-                new ColumnDefinition { Width = new GridLength(24) },                       // check slot
-                new ColumnDefinition { Width = new GridLength(18) },                       // icon slot
+                new ColumnDefinition { Width = new GridLength(checkable ? 28 : 0) },       // tick slot
+                new ColumnDefinition { Width = new GridLength(checkable ? 0 : 18) },       // icon slot
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },    // label
-                new ColumnDefinition { Width = new GridLength(64) },                      // shortcut
             }),
-            Margin = new Thickness(indent * 16, 0, 0, 0),
+            Margin = new Thickness((indent * 16) + 4, 0, 8, 0),
         };
 
         var checkGlyph = new Label
         {
-            // Material check icon for checked menu items.
-            Text = (item.IsCheckable && IsCheckedSafe(item.Id))
-                ? Constants.MaterialIcons.CheckGlyph
-                : string.Empty,
+            // Tick is shown while the option is on and hidden when it is off.
+            Text = (checkable && IsCheckedSafe(item.Id)) ? Constants.MaterialIcons.CheckGlyph : string.Empty,
             FontFamily = "MaterialIcons",
-            FontSize = 13,
+            FontSize = 16,
             TextColor = CheckBlue,
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
         };
         var icon = new Label
         {
-            Text = MenuIconFor(item),
+            Text = checkable ? string.Empty : MenuIconFor(item),
             FontFamily = "MaterialIcons",
             FontSize = 14,
             TextColor = enabled ? TextSecondary : DisabledText,
@@ -308,29 +315,18 @@ public partial class MenuBarControl : ContentView
         {
             Text = item.TextKey,
             FontSize = 13,
+            LineBreakMode = LineBreakMode.NoWrap,
             TextColor = enabled ? Services.ResourceLookup.ResourceColor("TextPrimary") : DisabledText,
             Margin = new Thickness(8, 0, 0, 0),
-            VerticalTextAlignment = TextAlignment.Center,
-            VerticalOptions = LayoutOptions.Center,
-        };
-        var shortcut = new Label
-        {
-            Text = item.GestureKey,
-            FontSize = 12,
-            TextColor = TextSecondary,
-            Margin = new Thickness(0, 0, 14, 0),
-            HorizontalTextAlignment = TextAlignment.End,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
         };
         grid.Children.Add(checkGlyph);
         grid.Children.Add(icon);
         grid.Children.Add(label);
-        grid.Children.Add(shortcut);
         Grid.SetColumn(checkGlyph, 0);
         Grid.SetColumn(icon, 1);
         Grid.SetColumn(label, 2);
-        Grid.SetColumn(shortcut, 3);
         return grid;
     }
 

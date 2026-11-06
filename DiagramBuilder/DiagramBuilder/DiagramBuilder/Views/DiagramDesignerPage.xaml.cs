@@ -109,6 +109,24 @@ public partial class DiagramDesignerPage : ContentPage
         viewModel.PrintRequested = () => Workspace.Behavior.PrintAsync();
         viewModel.Zoom.FitToPageRequested = new Command(() => _ = Workspace.Behavior.FitToPageAsync());
 
+        // View / Window menu state → live diagram. Grid and snap are EJ2 snapSettings;
+        // the stencil is the palette div inside the diagram's web page.
+        viewModel.Zoom.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName is nameof(ZoomViewModel.ShowGrid) or nameof(ZoomViewModel.SnapToGrid))
+            {
+                _ = Workspace.ApplyGridSettingsAsync(viewModel.Zoom.ShowGrid, viewModel.Zoom.SnapToGrid);
+            }
+        };
+        viewModel.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName == nameof(DiagramDesignerViewModel.ShowStencil))
+            {
+                _ = Workspace.ApplyStencilVisibilityAsync(viewModel.ShowStencil);
+            }
+        };
+        _ = Workspace.ApplyGridSettingsAsync(viewModel.Zoom.ShowGrid, viewModel.Zoom.SnapToGrid);
+
         _zoomSubscription = OnZoomPropertyChanged;
         Workspace.SurfaceBehaviorZoomFactor = viewModel.Zoom.CurrentZoom;
 
@@ -177,7 +195,11 @@ public partial class DiagramDesignerPage : ContentPage
     /// <summary>Document loaded by service → push to live SfDiagram (template load).</summary>
     private void OnDocumentLoaded(object? sender, Models.DiagramDocument document)
     {
+        // Flow Chart and Organization Chart templates start with the grid hidden.
+        _viewModel.Zoom.ShowGrid = document.Category is not (Models.DiagramCategory.FlowChart or Models.DiagramCategory.OrganizationChart);
         Workspace.LoadTemplate(document);
+        _ = Workspace.ApplyGridSettingsAsync(_viewModel.Zoom.ShowGrid, _viewModel.Zoom.SnapToGrid);
+        _ = Workspace.ApplyStencilVisibilityAsync(_viewModel.ShowStencil);
         _viewModel.SetDocumentTitle(document.Title);
         _viewModel.SetStatus(string.Format(Constants.AppStrings.StatusOpenedFormat, document.Title));
     }
