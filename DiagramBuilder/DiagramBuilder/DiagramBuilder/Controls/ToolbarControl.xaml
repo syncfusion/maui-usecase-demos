@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
+             x:Class="DiagramBuilder.Controls.ToolbarControl">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style x:Key="ToolbarGroupDividerStyle" TargetType="BoxView">
+                <Setter Property="WidthRequest" Value="1" />
+                <Setter Property="HeightRequest" Value="24" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource PanelBorderColor}" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="Margin" Value="4,0" />
+            </Style>
+            <Style x:Key="ToolbarGroup6ToggleVisibilityConverterPlaceholder" TargetType="Label" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Grid x:Name="ToolbarLayout"
+          ColumnDefinitions="Auto,*,Auto"
+          HeightRequest="48"
+          Padding="8,0"
+          BackgroundColor="{DynamicResource PanelBackground}">
+        <HorizontalStackLayout x:Name="LeftGroupsBar"
+                               Grid.Column="0"
+                               Spacing="4"
+                               VerticalOptions="Center" />
+        <!-- Center column: shape-selection actions (Fill / Stroke / Delete).
+             Sits in the starred middle column so the group stays centered
+             within the toolbar regardless of the side groups' widths. -->
+        <HorizontalStackLayout x:Name="CenterGroupsBar"
+                               Grid.Column="1"
+                               Spacing="2"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+        <HorizontalStackLayout x:Name="RightGroupsBar"
+                               Grid.Column="2"
+                               Spacing="4"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End" />
+    </Grid>
+</ContentView>

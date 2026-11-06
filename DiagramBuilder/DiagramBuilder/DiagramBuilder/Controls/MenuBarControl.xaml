@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Menu bar: sits on the blue chrome (primary). Roots are white-on-blue pills (File, Edit,
+  View, Arrange, Window) with hover/pressed states; the open root gets a white pill + blue
+  label (Selected visual state, driven by SfPopup.Opened/Closed in code-behind).
+  Flyout rows carry an icon + label + shortcut, with hover + pressed feedback.
+-->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             x:Class="DiagramBuilder.Controls.MenuBarControl">
+
+    <HorizontalStackLayout x:Name="RootsBar"
+                           Spacing="0"
+                           HeightRequest="44"
+                           Padding="6,0"
+                           BackgroundColor="{DynamicResource PrimaryColor}">
+
+        <!-- Per-root flyouts are created dynamically in code-behind so each root
+             carries its own SfPopup host with the right RelativeView anchor. -->
+    </HorizontalStackLayout>
+</ContentView>

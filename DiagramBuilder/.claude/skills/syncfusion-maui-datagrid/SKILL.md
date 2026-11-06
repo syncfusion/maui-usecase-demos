@@ -1,0 +1,230 @@
+---
+name: syncfusion-maui-datagrid
+description: Implements and customize Syncfusion .NET MAUI DataGrid (SfDataGrid) for displaying tabular data. Use when working with MAUI data grids, SfDataGrid, tabular data display, data binding to grids, or column configuration. Covers editing cells, sorting, filtering, grouping, paging, exporting to Excel/PDF, row operations, selection, and summaries.
+metadata:
+  author: "Syncfusion Inc"
+  version: "34.1.29"
+---
+
+# Implementing .NET MAUI DataGrid
+
+A comprehensive skill for implementing and customizing the Syncfusion .NET MAUI DataGrid (SfDataGrid) control. The DataGrid displays and manipulates data in a tabular format with support for columns, editing, sorting, filtering, grouping, summaries, paging, and export features.
+
+## When to Use This Skill
+
+Use this skill when you need to:
+- Display tabular data in a .NET MAUI application
+- Bind data sources (IEnumerable, ObservableCollection, DataTable) to a grid
+- Configure columns (auto-generated or manual)
+- Implement cell editing and validation
+- Add sorting, filtering, or searching functionality
+- Group data and display summaries/aggregates
+- Implement paging or incremental loading
+- Enable row operations (drag-drop, swipe, add/delete)
+- Export grid data to Excel or PDF
+- Customize grid appearance and behavior
+- Optimize performance for large datasets
+- Implement master-detail views or custom row templates
+
+## Component Overview
+
+**SfDataGrid** is a high-performance data grid control for .NET MAUI that provides:
+
+**Core Features:**
+- Multiple data binding options (IEnumerable, DataTable, dynamic objects)
+- Auto-generated or manually defined columns
+- 8+ column types (Text, Numeric, Date, Checkbox, Image, ComboBox, Picker, Template)
+- In-cell editing with validation
+- Multi-column sorting and filtering
+- Interactive grouping with summaries
+- Selection modes (Single, Multiple, None)
+- Paging and data virtualization
+- Excel and PDF export
+- Advanced views (Master-Details, Record Templates)
+
+**NuGet Package:** `Syncfusion.Maui.DataGrid`
+
+## Documentation and Navigation Guide
+
+### Getting Started & Data Binding
+📄 **Read:** [references/getting-started.md](references/getting-started.md)
+- Installation and NuGet package setup
+- Handler registration in MauiProgram.cs
+- Basic DataGrid implementation (XAML & C#)
+- Creating data models and ViewModels
+- Binding with IEnumerable and ObservableCollection
+- Binding with DataTable and dynamic objects
+- Initial configuration and first steps
+
+### Columns & Column Configuration
+📄 **Read:** [references/columns.md](references/columns.md)
+- Auto-generating columns (AutoGenerateColumnsMode)
+- Manually defining columns
+- Column types (Text, Numeric, Date, Checkbox, Image, ComboBox, Picker, Template, TimePicker, Percent, Currency, CheckBoxSelector)
+- Column properties (MappingName, HeaderText, Format, Width)
+- Numeric column decimal digits and maximum digits (NumberDecimalDigits)
+- Column sizing and width options
+- Column visibility and ordering
+- AutoGenerateColumnsMode options (None, Reset, ResetAll, RetainOld)
+
+### Column Operations
+📄 **Read:** [references/column-operations.md](references/column-operations.md)
+- Column resizing (manual and auto-fit, OnMoved vs OnTouchUp modes)
+- Column drag and drop (reordering)
+- Stacked headers (multi-level column headers)
+- Unbound columns (calculated/expression columns)
+- Freeze panes (frozen columns)
+- Column hovering highlighting (AllowColumnHoverHighlighting)
+- Header cell hovering (AllowHeaderCellHoverHighlighting)
+- Column customization and events
+
+### Cell Editing
+📄 **Read:** [references/editing.md](references/editing.md)
+- Enabling editing (AllowEditing, NavigationMode, SelectionMode)
+- Column-level editing control
+- Edit modes and triggers (EditTapAction, LostFocusBehavior)
+- Editor selection behavior (SelectAll, MoveLast)
+- Cell editing events (BeginEdit, EndEdit, CellValueChanged)
+- Programmatic editing
+- Enter key and Tab navigation during editing
+- Undo and Redo functionality (AllowUndoRedo, MaxUndoRedoActions, UndoRedoController)
+
+### Data Validation
+📄 **Read:** [references/data-validation.md](references/data-validation.md)
+- Cell value validation
+- Row-level validation
+- Custom validation logic
+- Validation events
+- Error handling and display
+- IDataErrorInfo support
+
+### Sorting & Filtering
+📄 **Read:** [references/sorting-filtering.md](references/sorting-filtering.md)
+- Single and multi-column sorting
+- Custom sorting logic
+- Programmatic sorting
+- Sort icons and UI customization
+- Filtering basics and filter types
+- FilterPopupStyle and FilteringPopupDisplayStyle (full-screen or popup)
+- Filter row implementation
+- Programmatic filtering
+- Custom filter predicates
+
+### Searching
+📄 **Read:** [references/searching.md](references/searching.md)
+- Search functionality setup
+- Text search and highlighting
+- Case sensitivity options
+- Search navigation (next/previous)
+- Programmatic search control
+- Built-in Search UI
+
+### Grouping & Summaries
+📄 **Read:** [references/grouping-summaries.md](references/grouping-summaries.md)
+- Data grouping (single and multi-column)
+- Group expand/collapse behavior
+- Custom grouping logic
+- Group header customization
+- Group row height customization
+- Summary rows (Table, Group, Caption summaries)
+- Built-in aggregate functions (Sum, Average, Count, Min, Max)
+- Custom summary calculations
+- Summary display formatting
+
+### Selection & Navigation
+📄 **Read:** [references/selection.md](references/selection.md)
+- Selection modes (Single, Multiple, SingleDeselect, None)
+- Row and cell selection
+- Selection events (SelectionChanging, SelectionChanged)
+- Programmatic selection
+- Programmatic navigation (MoveToNextCell, MoveToPreviousCell, MoveToNextRow, MoveToPreviousRow)
+- Current cell vs selected items
+- Keyboard navigation (Windows platform)
+
+### Paging & Data Virtualization
+📄 **Read:** [references/paging-virtualization.md](references/paging-virtualization.md)
+- Paging integration with the standalone `SfDataPager` (separate `Syncfusion.Maui.DataPager` package)
+- DataGrid + DataPager binding pattern (`Source` → `PagedSource` → `ItemsSource`)
+- Page size, page count, and programmatic page navigation
+- On-demand paging with `UseOnDemandPaging` and `OnDemandLoading`
+- Load More (incremental loading)
+- Pull to Refresh
+- Data virtualization for performance
+- Large dataset handling
+- Scroll to row and column
+- Scroll orientation (ScrollOrientation: Both, Vertical, Horizontal, Neither)
+- Shrink wrap rows and columns (ShrinkWrapRows, ShrinkWrapColumns)
+
+> **Note:** The `SfDataPager` control ships as a **separate NuGet package** (`Syncfusion.Maui.DataPager`) with its own dedicated skill (`syncfusion-maui-datapager`). For full pager configuration — button shape, size, display mode, ellipsis, orientation, `DataPagerStyle`, and `PageChanging`/`PageChanged` events — see the `syncfusion-maui-datapager` skill. This DataGrid skill covers the DataGrid↔DataPager integration and DataGrid-specific data-loading features (Load More, Pull to Refresh, virtualization, scroll).
+
+### Row Operations
+📄 **Read:** [references/row-operations.md](references/row-operations.md)
+- Row height customization
+- Auto row height (QueryRowHeight event)
+- Row drag and drop (single and multi-row)
+- Row drag animation (AllowDraggingRowAnimation)
+- Row resizing (OnMoved vs OnTouchUp modes, AllowResizingRows)
+- Row swiping actions
+- Adding new rows programmatically
+- Deleting rows
+- Unbound rows (additional summary rows at top/bottom)
+- Row-level events
+
+### Exporting & Clipboard
+📄 **Read:** [references/exporting.md](references/exporting.md)
+- Export to Excel functionality
+- Excel export customization (columns, rows, styling)
+- Excel export options and events
+- Export to PDF functionality
+- PDF export customization
+- Clipboard operations (copy/paste)
+- Custom clipboard formats
+
+### Advanced Features & Views
+📄 **Read:** [references/advanced-features.md](references/advanced-features.md)
+- Master-Details View (hierarchical/relational data)
+- Record Template View (custom row layouts)
+- Empty view customization
+- Context menu implementation (with separator support)
+- Dynamic context menu loading (ContextMenuOpening event)
+- Tooltips for cells (with delay customization, TooltipDelay)
+- Merged cells
+- Serialization (save/load grid state)
+- Conditional styling by data
+
+### Multi-Row Column Layout
+📄 **Read:** [references/multi-row-view.md](references/multi-row-view.md)
+- Display a record across multiple rows (MultiRowViewDefinition)
+- RowsCount and ColumnsCount layout configuration
+- Column positioning (Row, Column, RowSpan, ColumnSpan)
+- Card-like record layouts for many-field records
+- Multi-Row View limitations
+
+### Styling & Customization
+📄 **Read:** [references/styling-customization.md](references/styling-customization.md)
+- Grid styling basics
+- Cell styling (CellStyle)
+- Conditional cell styling
+- Row styling and alternating row colors
+- Header styling
+- Theme customization
+- Custom cell templates
+- Liquid glass effect
+
+### Performance & Events
+📄 **Read:** [references/performance-events.md](references/performance-events.md)
+- Performance optimization techniques
+- Large dataset best practices
+- Memory management strategies
+- Grid events overview
+- Common event scenarios
+- Event handling patterns
+- Performance monitoring
+
+### Localization
+📄 **Read:** [references/localization.md](references/localization.md)
+- Localization setup
+- Multi-language support
+- RTL (Right-to-Left) support
+- Scrolling modes and optimization
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  DiagramWorkspaceControl: hosts the SfDiagram plus a hidden SymbolPalette
+  sibling. Syncfusion's palette discovery (FindSiblingSymbolPalette) looks for a
+  SymbolPalette among SfDiagram.Parent's immediate children, so the palette must
+  live inside this control's DiagramGrid next to the SfDiagram. It renders
+  nothing in MAUI (IsVisible=False) — once discovered, the palette's config is
+  applied and the shapes render inside the SfDiagram's own webview.
+-->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:diagram="clr-namespace:Syncfusion.Maui.Diagram;assembly=Syncfusion.Maui.Diagram"
+             xmlns:behaviors="clr-namespace:DiagramBuilder.Behaviors;assembly=DiagramBuilder"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="DiagramBuilder.Controls.DiagramWorkspaceControl">
+    <ContentView.Resources>
+        <ResourceDictionary />
+    </ContentView.Resources>
+
+    <Border Stroke="{DynamicResource PanelBorderBrush}"
+            StrokeThickness="1"
+            BackgroundColor="{DynamicResource CanvasBackground}">
+        <Border.StrokeShape>
+            <shapes:RoundRectangle CornerRadius="12" />
+        </Border.StrokeShape>
+        <Grid x:Name="DiagramGrid"
+              RowDefinitions="*">
+            <!--
+              No BackgroundColor here on purpose: SfDiagram.BackgroundColor is
+              inherited from VisualElement and is only READ once, when the EJ2
+              diagram is initialised (DiagramManager.BuildInitConfigJson), so a
+              DynamicResource binding would be captured at inflate time and
+              never update. The code-behind owns the value instead: it sets an
+              opaque default (never transparent — DiagramManager serializes it
+              with the parameterless Color.ToHex(), which drops the alpha
+              channel and would render "#000000" = black) and pushes later
+              changes straight into the live EJ2 diagram.
+            -->
+            <diagram:SfDiagram x:Name="Diagram">
+                <diagram:SfDiagram.Behaviors>
+                    <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
+                </diagram:SfDiagram.Behaviors>
+            </diagram:SfDiagram>
+
+            <!--
+              Hidden config carrier for the symbol palette. Syncfusion discovers
+              it as a sibling of the SfDiagram (same Grid) and mirrors its shape
+              list into the #symbolpalette div inside the SfDiagram webview.
+            -->
+            <diagram:SymbolPalette x:Name="ShapesPaletteView"
+                                   IsVisible="False"
+                                   SymbolWidth="64"
+                                   SymbolHeight="64"
+                                   EnableSearch="True"
+                                   ExpandMode="Multiple" />
+        </Grid>
+    </Border>
+</ContentView>

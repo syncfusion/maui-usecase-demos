@@ -1,0 +1,1296 @@
+# Advanced Features in .NET MAUI Scheduler
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Events](#events)
+  - [Interaction Events](#interaction-events)
+  - [View Changed Event](#view-changed-event)
+  - [Commands (MVVM Support)](#commands-mvvm-support)
+- [Context Menu Support](#context-menu-support)
+  - [Built-in Scheduler Commands](#built-in-scheduler-commands)
+  - [Context Menu for Timeslot Cells](#context-menu-for-timeslot-cells)
+  - [Context Menu for Appointments](#context-menu-for-appointments)
+  - [Customize Context Menu Appearance](#customize-context-menu-appearance)
+  - [Handle Context Menu Opening](#handle-context-menu-opening)
+- [Load On Demand](#load-on-demand)
+  - [QueryAppointments Event](#queryappointments-event)
+  - [QueryAppointments Command](#queryappointments-command)
+  - [Busy Indicator](#busy-indicator)
+- [Appointment Reminders](#appointment-reminders)
+  - [Enable Reminders](#enable-reminders)
+  - [Reminder Configuration](#reminder-configuration)
+  - [ReminderAlertOpening Event](#reminderalertopening-event)
+  - [Dismiss and Snooze](#dismiss-and-snooze)
+- [Time Zone Support](#time-zone-support)
+  - [Appointments in Different Time Zones](#appointments-in-different-time-zones)
+  - [Scheduler Time Zone](#scheduler-time-zone)
+  - [Client vs Scheduler Time Zone](#client-vs-scheduler-time-zone)
+- [ICS Import and Export](#ics-import-and-export)
+- [Week Number Support](#week-number-support)
+- [Complete Examples](#complete-examples)
+- [Troubleshooting](#troubleshooting)
+
+## Overview
+
+The .NET MAUI Scheduler provides advanced features for handling user interactions, loading appointments efficiently, managing reminders, and supporting multiple time zones. These features enable complex scheduling scenarios and improve performance with large datasets.
+
+## Events
+
+### Interaction Events
+
+The scheduler provides events to handle user interactions with scheduler elements.
+
+#### Tapped Event
+
+Triggered when any scheduler element is tapped:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" 
+                       Tapped="OnSchedulerTapped">
+</scheduler:SfScheduler>
+```
+
+```csharp
+scheduler.Tapped += OnSchedulerTapped;
+
+private void OnSchedulerTapped(object sender, SchedulerTappedEventArgs e)
+{
+    var appointments = e.Appointments;     // Tapped appointments
+    var selectedDate = e.Date;             // Tapped date
+    var element = e.Element;               // Tapped element
+    var weekNumber = e.WeekNumber;         // Tapped week number
+    
+    // Handle tap logic
+    if (appointments != null && appointments.Count > 0)
+    {
+        // Handle appointment tap
+    }
+    else
+    {
+        // Handle cell tap
+    }
+}
+```
+
+**Event args properties:**
+- **Appointments**: Selected appointments
+- **Date**: Selected date
+- **Element**: Scheduler element tapped
+- **WeekNumber**: Week number (if applicable)
+
+#### RightTapped Event
+
+Triggered when a user performs a right-click on scheduler elements on desktop platforms such as Windows or macOS:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" 
+                       RightTapped="OnSchedulerRightTapped">
+</scheduler:SfScheduler>
+```
+
+```csharp
+scheduler.RightTapped += OnSchedulerRightTapped;
+
+private void OnSchedulerRightTapped(object sender, SchedulerRightTappedEventArgs e)
+{
+    var element = e.Element;               // Right-clicked element
+    var appointments = e.Appointments;     // Right-clicked appointments
+    var selectedDate = e.Date;             // Right-clicked date
+    var resource = e.Resource;             // Associated resource (if any)
+    var weekNumber = e.WeekNumber;         // Right-clicked week number
+
+    // Show context menu or custom action
+}
+```
+
+**Event args properties:**
+- **Appointments**: Collection of appointments associated with the clicked element
+- **Date**: The date corresponding to the clicked cell or appointment
+- **Element**: The scheduler element interacted with (appointment, cell, header, resource, week number)
+- **Resource**: The resource associated with the clicked element (in resource views)
+- **WeekNumber**: The week number value (not applicable in TimelineMonth and Agenda views)
+
+#### DoubleTapped Event
+
+Triggered when scheduler element is double-tapped:
+
+```csharp
+scheduler.DoubleTapped += OnSchedulerDoubleTapped;
+
+private void OnSchedulerDoubleTapped(object sender, SchedulerDoubleTappedEventArgs e)
+{
+    var appointments = e.Appointments;
+    var selectedDate = e.Date;
+    var element = e.Element;
+    
+    // Open appointment details on double-tap
+    if (appointments != null && appointments.Count > 0)
+    {
+        OpenAppointmentDetails(appointments[0]);
+    }
+}
+```
+
+#### LongPressed Event
+
+Triggered when scheduler element is long-pressed:
+
+```csharp
+scheduler.LongPressed += OnSchedulerLongPressed;
+
+private void OnSchedulerLongPressed(object sender, SchedulerLongPressedEventArgs e)
+{
+    var appointments = e.Appointments;
+    var selectedDate = e.Date;
+    var element = e.Element;
+    
+    // Show context menu on long press
+    ShowContextMenu(e.Date, appointments);
+}
+```
+
+#### SelectionChanged Event
+
+Triggered when cell selection changes:
+
+```csharp
+scheduler.SelectionChanged += OnSchedulerSelectionChanged;
+
+private void OnSchedulerSelectionChanged(object sender, SchedulerSelectionChangedEventArgs e)
+{
+    var oldDateTime = e.OldValue;
+    var newDateTime = e.NewValue;
+    
+    // Update selected date display
+    UpdateSelectedDateDisplay(newDateTime);
+}
+```
+
+**Note:** `Tapped` event fires first, followed by `SelectionChanged`.
+
+### View Changed Event
+
+Notifies when the scheduler view changes (swipe or view switch):
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" 
+                       ViewChanged="OnSchedulerViewChanged">
+</scheduler:SfScheduler>
+```
+
+```csharp
+scheduler.ViewChanged += OnSchedulerViewChanged;
+
+private void OnSchedulerViewChanged(object sender, SchedulerViewChangedEventArgs e)
+{
+    var oldVisibleDates = e.OldVisibleDates;
+    var newVisibleDates = e.NewVisibleDates;
+    var oldView = e.OldView;
+    var newView = e.NewView;
+    
+    // Load appointments for new visible dates
+    LoadAppointmentsForDateRange(newVisibleDates);
+}
+```
+
+**Event args properties:**
+- **OldVisibleDates**: Previous visible date range
+- **NewVisibleDates**: New visible date range
+- **OldView**: Previous scheduler view
+- **NewView**: Current scheduler view
+
+**Note:** When view changes, `SelectableDayPredicate` is called to determine selectable cells.
+
+### Commands (MVVM Support)
+
+Scheduler supports MVVM pattern with commands for all events.
+
+#### TappedCommand
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler"
+                       TappedCommand="{Binding SchedulerTappedCommand}">
+    <scheduler:SfScheduler.BindingContext>
+        <local:SchedulerViewModel/>
+    </scheduler:SfScheduler.BindingContext>
+</scheduler:SfScheduler>
+```
+
+```csharp
+public class SchedulerViewModel
+{
+    public ICommand SchedulerTappedCommand { get; set; }
+    
+    public SchedulerViewModel()
+    {
+        SchedulerTappedCommand = new Command<SchedulerTappedEventArgs>(ExecuteTapped);
+    }
+    
+    private void ExecuteTapped(SchedulerTappedEventArgs args)
+    {
+        var selectedDate = args.Date;
+        // Handle tap in ViewModel
+    }
+}
+```
+
+#### RightTappedCommand
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler"
+                       RightTappedCommand="{Binding SchedulerRightTappedCommand}">
+    <scheduler:SfScheduler.BindingContext>
+        <local:SchedulerInteractionViewModel/>
+    </scheduler:SfScheduler.BindingContext>
+</scheduler:SfScheduler>
+```
+
+```csharp
+public class SchedulerInteractionViewModel
+{
+    public ICommand SchedulerRightTappedCommand { get; set; }
+
+    public SchedulerInteractionViewModel()
+    {
+        this.SchedulerRightTappedCommand = new Command<SchedulerRightTappedEventArgs>(ExecuteRightTapped, CanExecuteRightTapped);
+    }
+
+    private bool CanExecuteRightTapped(SchedulerRightTappedEventArgs arg)
+    {
+        return true;
+    }
+
+    private void ExecuteRightTapped(SchedulerRightTappedEventArgs obj)
+    {
+        var appointments = obj.Appointments;
+        var date = obj.Date;
+        var schedulerElement = obj.Element;
+        var resource = obj.Resource;
+        var weekNumber = obj.WeekNumber;
+    }
+}
+```
+
+#### Other Commands
+
+- **RightTappedCommand**: `Command<SchedulerRightTappedEventArgs>`
+- **DoubleTappedCommand**: `Command<SchedulerDoubleTappedEventArgs>`
+- **LongPressedCommand**: `Command<SchedulerLongPressedEventArgs>`
+- **ViewChangedCommand**: `Command<SchedulerViewChangedEventArgs>`
+- **SelectionChangedCommand**: `Command<SchedulerSelectionChangedEventArgs>`
+
+## Context Menu Support
+
+The scheduler supports context menus for timeslot cells, month cells, all-day panels, and appointments. These menus provide quick actions such as adding, editing, or deleting appointments and can be opened through right-click on desktop platforms or long press on touch devices.
+
+### Built-in Scheduler Commands
+
+Use built-in commands directly in context menu items:
+
+- **Add**: Creates a new appointment for the selected cell
+- **Edit**: Opens the selected appointment for editing
+- **Delete**: Deletes the selected appointment
+
+> Note: Built-in `Add` and `Edit` commands work only when `AppointmentEditorMode` includes the corresponding `Add` or `Edit` option.
+
+### Context Menu for Timeslot Cells
+
+Use `CellContextMenu` to define menu items for timeslot cells, month cells, and the all-day panel:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler"
+                       View="Week"
+                       AppointmentEditorMode="Add,Edit">
+    <scheduler:SfScheduler.CellContextMenu>
+        <scheduler:MenuItemCollection>
+            <scheduler:MenuItem Text="Add"
+                                 Command="{x:Static scheduler:SchedulerCommands.Add}"
+                                 CommandParameter="{Binding}"/>
+        </scheduler:MenuItemCollection>
+    </scheduler:SfScheduler.CellContextMenu>
+</scheduler:SfScheduler>
+```
+
+```csharp
+SfScheduler scheduler = new SfScheduler();
+scheduler.View = SchedulerView.Week;
+scheduler.AppointmentEditorMode = AppointmentEditorMode.Add | AppointmentEditorMode.Edit;
+scheduler.CellContextMenu = new MenuItemCollection()
+{
+    new Syncfusion.Maui.Scheduler.MenuItem
+    {
+        Text = "Add",
+        Command = SchedulerCommands.Add,
+        CommandParameter = new Binding("."),
+        Icon = new FontImageSource
+        {
+            FontFamily = "MauiMaterialAssets",
+            Glyph = "&#xE70D;",
+        }
+    },
+};
+```
+
+### Context Menu for Appointments
+
+Use `AppointmentContextMenu` to define menu items for appointments that appear when the user right-clicks or long-presses an appointment:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler"
+                       View="Week"
+                       AppointmentEditorMode="Edit">
+    <scheduler:SfScheduler.AppointmentContextMenu>
+        <scheduler:MenuItemCollection>
+            <scheduler:MenuItem Text="Edit"
+                                 Command="{x:Static scheduler:SchedulerCommands.Edit}"
+                                 CommandParameter="{Binding}"/>
+            <scheduler:MenuItem Text="Delete"
+                                 Command="{x:Static scheduler:SchedulerCommands.Delete}"
+                                 CommandParameter="{Binding}"/>
+        </scheduler:MenuItemCollection>
+    </scheduler:SfScheduler.AppointmentContextMenu>
+</scheduler:SfScheduler>
+```
+
+```csharp
+SfScheduler scheduler = new SfScheduler();
+scheduler.View = SchedulerView.Week;
+scheduler.AppointmentEditorMode = AppointmentEditorMode.Add | AppointmentEditorMode.Edit;
+scheduler.AppointmentContextMenu = new MenuItemCollection()
+{
+    new Syncfusion.Maui.Scheduler.MenuItem
+    {
+        Text = "Edit",
+        Command = SchedulerCommands.Edit,
+        CommandParameter = new Binding("."),
+        Icon = new FontImageSource
+        {
+            FontFamily = "MauiMaterialAssets",
+            Glyph = "&#xE710;",
+            Color = Colors.Blue,
+            Size = 16
+        }
+    },
+
+    new Syncfusion.Maui.Scheduler.MenuItem
+    {
+        Text = "Delete",
+        Command = SchedulerCommands.Delete,
+        CommandParameter = new Binding("."),
+        Icon = new FontImageSource
+        {
+            FontFamily = "MauiMaterialAssets",
+            Glyph = "&#xE70F;",
+            Color = Colors.Blue,
+            Size = 16
+            
+        }
+    },
+};
+```
+
+Each menu item uses `SchedulerContextMenuInfo` as its binding context, exposing the selected appointment, cell date and time, associated resource, and scheduler instance.
+
+### Customize Context Menu Appearance
+
+Use `ContextMenuBackground` and `ContextMenuTextStyle` to change the menu appearance:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler"
+                       View="Week"
+                       ContextMenuBackground="LightGreen">
+    <scheduler:SfScheduler.ContextMenuTextStyle>
+        <scheduler:SchedulerTextStyle TextColor="Red"
+                                     FontSize="14"/>
+    </scheduler:SfScheduler.ContextMenuTextStyle>
+</scheduler:SfScheduler>
+```
+
+```csharp
+SfScheduler scheduler = new SfScheduler();
+scheduler.View = SchedulerView.Week;
+scheduler.ContextMenuBackground = new SolidColorBrush(Colors.LightGreen);
+scheduler.ContextMenuTextStyle = new SchedulerTextStyle()
+{
+    TextColor = Colors.Red,
+    FontSize = 14,
+};
+```
+
+### Handle Context Menu Opening
+
+The `ContextMenuOpening` event lets you inspect the menu before it is displayed and optionally cancel it:
+
+```xaml
+<schedule:SfScheduler x:Name="scheduler"
+                      View="Week"
+                      ContextMenuOpening="scheduler_ContextMenuOpening">
+</schedule:SfScheduler>
+```
+
+```csharp
+scheduler.ContextMenuOpening += scheduler_ContextMenuOpening;
+
+private void scheduler_ContextMenuOpening(object sender, SchedulerContextMenuOpeningEventArgs e)
+{
+    var contextMenu = e.ContextMenu;
+    var menuType = e.MenuType;
+    var menuInfo = e.MenuInfo;
+    var appointment = menuInfo?.Appointment;
+    var dateTime = menuInfo?.DateTime;
+    var resource = menuInfo?.Resource;
+    var scheduler = menuInfo?.Scheduler;
+
+    if (e.MenuType == SchedulerContextMenuType.Appointment)
+    {
+        e.Cancel = true;
+    }
+}
+```
+
+The event args provide the following details:
+
+- **ContextMenu**: The collection of menu items that will be displayed
+- **MenuInfo**: Information about the scheduler element that triggered the menu, including the selected appointment, cell date and time, associated resource, and scheduler instance
+- **MenuType**: The type of element that opened the context menu, such as `Appointment`, `SchedulerCell`, or `AllDay`
+- **Cancel**: Set to `true` to prevent the context menu from opening
+
+## Load On Demand
+
+Improve performance by loading appointments only for visible dates.
+
+### QueryAppointments Event
+
+Triggered when view or visible dates change:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" 
+                       View="Week"
+                       QueryAppointments="OnSchedulerQueryAppointments">
+</scheduler:SfScheduler>
+```
+
+```csharp
+scheduler.QueryAppointments += OnSchedulerQueryAppointments;
+
+private async void OnSchedulerQueryAppointments(object sender, SchedulerQueryAppointmentsEventArgs e)
+{
+    // Show loading indicator
+    scheduler.ShowBusyIndicator = true;
+    
+    // Simulate async data load
+    await Task.Delay(500);
+    
+    // Generate/fetch appointments for visible dates
+    var appointments = GenerateAppointments(e.VisibleDates);
+    
+    // For Agenda view, add to existing collection
+    if (scheduler.View == SchedulerView.Agenda)
+    {
+        foreach (var appointment in appointments)
+        {
+            ((ObservableCollection<SchedulerAppointment>)scheduler.AppointmentsSource).Add(appointment);
+        }
+    }
+    else
+    {
+        // For other views, replace entire collection
+        scheduler.AppointmentsSource = appointments;
+    }
+    
+    // Hide loading indicator
+    scheduler.ShowBusyIndicator = false;
+}
+
+private ObservableCollection<SchedulerAppointment> GenerateAppointments(List<DateTime> visibleDates)
+{
+    var appointments = new ObservableCollection<SchedulerAppointment>();
+    var random = new Random();
+    
+    foreach (var date in visibleDates)
+    {
+        // Create appointments for each visible date
+        for (int i = 0; i < random.Next(1, 5); i++)
+        {
+            appointments.Add(new SchedulerAppointment
+            {
+                StartTime = date.AddHours(random.Next(9, 16)),
+                EndTime = date.AddHours(random.Next(10, 17)),
+                Subject = $"Appointment {i + 1}",
+                Background = GetRandomColor()
+            });
+        }
+    }
+    
+    return appointments;
+}
+```
+
+**Trigger conditions:**
+- `ViewChanged` event triggers `QueryAppointments`
+- Adding/removing appointments in visible dates does NOT trigger (already loaded)
+- **Agenda view**: Add to existing `AppointmentsSource`
+- **Other views**: Reset `AppointmentsSource` for new range
+
+### QueryAppointments Command
+
+MVVM pattern for load on demand:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler"
+                       View="Week"
+                       AppointmentsSource="{Binding Events}"
+                       ShowBusyIndicator="{Binding ShowBusyIndicator}"
+                       QueryAppointmentsCommand="{Binding QueryAppointmentsCommand}">
+    <scheduler:SfScheduler.BindingContext>
+        <local:LoadOnDemandViewModel/>
+    </scheduler:SfScheduler.BindingContext>
+</scheduler:SfScheduler>
+```
+
+```csharp
+public class LoadOnDemandViewModel : INotifyPropertyChanged
+{
+    private bool showBusyIndicator;
+    private ObservableCollection<SchedulerAppointment> events;
+    
+    public ICommand QueryAppointmentsCommand { get; set; }
+    
+    public ObservableCollection<SchedulerAppointment> Events
+    {
+        get => events;
+        set
+        {
+            events = value;
+            RaisePropertyChanged(nameof(Events));
+        }
+    }
+    
+    public bool ShowBusyIndicator
+    {
+        get => showBusyIndicator;
+        set
+        {
+            showBusyIndicator = value;
+            RaisePropertyChanged(nameof(ShowBusyIndicator));
+        }
+    }
+    
+    public LoadOnDemandViewModel()
+    {
+        QueryAppointmentsCommand = new Command<object>(LoadMoreAppointments);
+    }
+    
+    private async void LoadMoreAppointments(object obj)
+    {
+        ShowBusyIndicator = true;
+        await Task.Delay(1000);
+        
+        var args = (SchedulerQueryAppointmentsEventArgs)obj;
+        Events = GenerateAppointments(args.VisibleDates);
+        
+        ShowBusyIndicator = false;
+    }
+    
+    // INotifyPropertyChanged implementation
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void RaisePropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+```
+
+### Busy Indicator
+
+Show loading animation during appointment load:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" 
+                       ShowBusyIndicator="true">
+</scheduler:SfScheduler>
+```
+
+```csharp
+// Start busy indicator
+scheduler.ShowBusyIndicator = true;
+
+// Load data
+await LoadAppointmentsAsync();
+
+// Stop busy indicator
+scheduler.ShowBusyIndicator = false;
+```
+
+#### Custom Busy Indicator
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" ShowBusyIndicator="true">
+    <scheduler:SfScheduler.BusyIndicatorTemplate>
+        <DataTemplate>
+            <Grid Background="LightGray" Opacity="0.3">
+                <VerticalStackLayout HorizontalOptions="Center" 
+                                    VerticalOptions="Center"
+                                    Spacing="10">
+                    <ActivityIndicator IsRunning="true" 
+                                      Color="Blue"
+                                      HeightRequest="40"
+                                      WidthRequest="40"/>
+                    <Label Text="Loading appointments..." 
+                          TextColor="Blue"
+                          FontSize="14"/>
+                </VerticalStackLayout>
+            </Grid>
+        </DataTemplate>
+    </scheduler:SfScheduler.BusyIndicatorTemplate>
+</scheduler:SfScheduler>
+```
+
+## Appointment Reminders
+
+### Enable Reminders
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" 
+                       View="Week"
+                       EnableReminder="true"
+                       ReminderAlertOpening="OnReminderAlertOpening">
+</scheduler:SfScheduler>
+```
+
+```csharp
+scheduler.EnableReminder = true;
+scheduler.ReminderAlertOpening += OnReminderAlertOpening;
+```
+
+### Reminder Configuration
+
+Add reminders to appointments using `SchedulerReminder`:
+
+```csharp
+var appointments = new ObservableCollection<SchedulerAppointment>();
+
+// Normal appointment with reminder
+appointments.Add(new SchedulerAppointment
+{
+    StartTime = DateTime.Now.AddMinutes(30),
+    EndTime = DateTime.Now.AddHours(1),
+    Subject = "Team Meeting",
+    Reminders = new ObservableCollection<SchedulerReminder>
+    {
+        new SchedulerReminder 
+        { 
+            TimeBeforeStart = new TimeSpan(0, 15, 0) // 15 minutes before
+        }
+    }
+});
+
+// All-day appointment with reminder
+appointments.Add(new SchedulerAppointment
+{
+    StartTime = DateTime.Today.AddDays(1),
+    EndTime = DateTime.Today.AddDays(1),
+    Subject = "Conference",
+    IsAllDay = true,
+    Reminders = new ObservableCollection<SchedulerReminder>
+    {
+        new SchedulerReminder 
+        { 
+            TimeBeforeStart = new TimeSpan(1, 0, 0, 0) // 1 day before
+        }
+    }
+});
+
+// Recurring appointment with reminder
+appointments.Add(new SchedulerAppointment
+{
+    StartTime = DateTime.Today.AddHours(9),
+    EndTime = DateTime.Today.AddHours(10),
+    Subject = "Daily Standup",
+    RecurrenceRule = "FREQ=DAILY;COUNT=30",
+    Reminders = new ObservableCollection<SchedulerReminder>
+    {
+        new SchedulerReminder 
+        { 
+            TimeBeforeStart = new TimeSpan(0, 5, 0) // 5 minutes before
+        }
+    }
+});
+
+scheduler.AppointmentsSource = appointments;
+```
+
+**SchedulerReminder properties:**
+- **TimeBeforeStart**: Time interval before appointment start
+- **AlertTime**: Calculated reminder time (read-only)
+- **Appointment**: Associated appointment (read-only)
+- **DataItem**: Custom reminder data object (read-only)
+- **IsDismissed**: Whether reminder is dismissed
+
+#### Business Object Mapping
+
+```csharp
+// Custom reminder class
+public class CustomReminder
+{
+    public TimeSpan TimeBeforeStart { get; set; }
+    public bool IsDismissed { get; set; }
+}
+
+// Custom appointment class
+public class Meeting
+{
+    public DateTime From { get; set; }
+    public DateTime To { get; set; }
+    public string EventName { get; set; }
+    public ObservableCollection<CustomReminder> Reminders { get; set; }
+}
+```
+
+**Mapping:**
+
+```xaml
+<scheduler:SfScheduler EnableReminder="true">
+    <scheduler:SfScheduler.AppointmentMapping>
+        <scheduler:SchedulerAppointmentMapping
+            Subject="EventName"
+            StartTime="From"
+            EndTime="To"
+            Reminders="Reminders">
+            <scheduler:SchedulerAppointmentMapping.ReminderMapping>
+                <scheduler:SchedulerReminderMapping 
+                    TimeBeforeStart="TimeBeforeStart"
+                    IsDismissed="IsDismissed"/>
+            </scheduler:SchedulerAppointmentMapping.ReminderMapping>
+        </scheduler:SchedulerAppointmentMapping>
+    </scheduler:SfScheduler.AppointmentMapping>
+</scheduler:SfScheduler>
+```
+
+**Note:** Add `[Preserve(AllMembers = true)]` to custom classes for AOT (iOS/macOS).
+
+### ReminderAlertOpening Event
+
+Triggered when reminder time reaches:
+
+```csharp
+private async void OnReminderAlertOpening(object sender, ReminderAlertOpeningEventArgs e)
+{
+    var reminders = e.Reminders;
+    
+    if (reminders.Count > 0)
+    {
+        var reminder = reminders[0];
+        var appointment = reminder.Appointment;
+        
+        // Show reminder dialog
+        bool snooze = await DisplayAlert(
+            "Reminder",
+            $"{appointment.Subject}\n{appointment.StartTime:g}",
+            "Snooze",
+            "Dismiss"
+        );
+        
+        if (!snooze)
+        {
+            // Dismiss reminder
+            DismissReminder(reminder);
+        }
+        else
+        {
+            // Snooze for 5 minutes
+            SnoozeReminder(reminder, TimeSpan.FromMinutes(5));
+        }
+    }
+}
+```
+
+### Dismiss and Snooze
+
+#### Dismiss Reminder
+
+**Normal appointment:**
+
+```csharp
+private void DismissReminder(SchedulerReminder reminder)
+{
+    reminder.IsDismissed = true;
+}
+```
+
+**Recurring appointment (current occurrence only):**
+
+```csharp
+private void DismissRecurringReminder(SchedulerReminder reminder)
+{
+    var appointments = scheduler.AppointmentsSource as ObservableCollection<SchedulerAppointment>;
+    var patternAppointment = appointments.FirstOrDefault(x => x.Id == reminder.Appointment.Id);
+    
+    if (patternAppointment != null)
+    {
+        DateTime occurrenceDate = reminder.Appointment.StartTime;
+        
+        // Add exception date
+        patternAppointment.RecurrenceExceptionDates = new ObservableCollection<DateTime>
+        {
+            occurrenceDate
+        };
+        
+        // Create exception appointment with dismissed reminder
+        var exceptionAppointment = new SchedulerAppointment
+        {
+            Id = Guid.NewGuid().GetHashCode(),
+            Subject = patternAppointment.Subject,
+            StartTime = occurrenceDate,
+            EndTime = reminder.Appointment.EndTime,
+            Background = patternAppointment.Background,
+            RecurrenceId = patternAppointment.Id,
+            Reminders = new ObservableCollection<SchedulerReminder>
+            {
+                new SchedulerReminder 
+                { 
+                    TimeBeforeStart = reminder.TimeBeforeStart,
+                    IsDismissed = true 
+                }
+            }
+        };
+        
+        appointments.Add(exceptionAppointment);
+    }
+}
+```
+
+#### Snooze Reminder
+
+```csharp
+private void SnoozeReminder(SchedulerReminder reminder, TimeSpan snoozeTime)
+{
+    var appointment = reminder.Appointment;
+    
+    // Future appointment
+    if (appointment.ActualStartTime > DateTime.Now && !appointment.IsAllDay)
+    {
+        reminder.TimeBeforeStart = appointment.StartTime - reminder.AlertTime - snoozeTime;
+    }
+    // All-day appointment
+    else if (appointment.IsAllDay)
+    {
+        reminder.TimeBeforeStart = appointment.StartTime.Date.AddSeconds(DateTime.Now.Second) 
+                                  - DateTime.Now - snoozeTime;
+    }
+    // Overdue appointment
+    else
+    {
+        reminder.TimeBeforeStart = appointment.StartTime.AddSeconds(DateTime.Now.Second) 
+                                  - DateTime.Now - snoozeTime;
+    }
+    
+    // Handle recurring appointments
+    if (!string.IsNullOrEmpty(appointment.RecurrenceRule))
+    {
+        // Similar to dismiss, create exception appointment with snoozed reminder
+        CreateSnoozeException(reminder, snoozeTime);
+    }
+}
+```
+
+## Time Zone Support
+
+### Appointments in Different Time Zones
+
+Create appointments in specific time zones:
+
+```csharp
+var appointments = new ObservableCollection<SchedulerAppointment>();
+
+// New York time zone appointment
+appointments.Add(new SchedulerAppointment
+{
+    Subject = "New York Meeting",
+    StartTime = DateTime.Now,
+    EndTime = DateTime.Now.AddHours(1),
+    StartTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York"),
+    EndTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York")
+});
+
+// London time zone appointment
+appointments.Add(new SchedulerAppointment
+{
+    Subject = "London Conference",
+    StartTime = DateTime.Now.AddDays(1),
+    EndTime = DateTime.Now.AddDays(1).AddHours(2),
+    StartTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London"),
+    EndTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London")
+});
+
+scheduler.AppointmentsSource = appointments;
+```
+
+**Properties:**
+- **StartTime/EndTime**: Appointment time (converted based on time zone)
+- **ActualStartTime/ActualEndTime**: Actual rendering time in scheduler's time zone
+
+**Note:** 
+- All-day appointments: Time zone not applicable (set to 12:00 AM)
+- Recurring appointments: Recalculated for new time zone
+- Daylight saving time supported
+
+### Scheduler Time Zone
+
+Set scheduler's time zone to display all appointments in specific zone:
+
+```xaml
+<scheduler:SfScheduler x:Name="scheduler" 
+                       TimeZone="{Binding SchedulerTimeZone}">
+</scheduler:SfScheduler>
+```
+
+```csharp
+// Set scheduler to display in Tokyo time
+scheduler.TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Tokyo");
+
+// All appointments will be displayed in Tokyo time
+```
+
+### Client vs Scheduler Time Zone
+
+**Scenario 1: Client's local time zone (default)**
+- Scheduler time zone: Not set (uses device local time)
+- Appointment time zone: Set to specific zone
+- Result: Appointments displayed in device's local time relative to appointment's time zone
+
+**Scenario 2: Specific scheduler time zone**
+- Scheduler time zone: Set to specific zone
+- Appointment time zone: Set or null
+- Result: Appointments displayed in scheduler's time zone
+
+## ICS Import and Export
+
+Export the scheduler's appointments to an iCalendar (`.ics`) file and import appointments from an existing `.ics` file. The ICS format is the standard interchange format supported by Google Calendar, Apple Calendar, Microsoft Outlook, and most calendar applications. SfScheduler follows RFC 5545 for both directions.
+
+### Export Appointments to ICS
+
+Use `ExportToICalendar` to export the scheduler's appointments to an `.ics` file. The method writes the `.ics` file to the platform-appropriate Downloads/Documents folder and returns a `Task<bool>` indicating whether the export was successful.
+
+```csharp
+using Syncfusion.Maui.Scheduler;
+
+SfScheduler scheduler = new SfScheduler();
+scheduler.View = SchedulerView.Week;
+
+// Populate appointments as usual
+scheduler.AppointmentsSource = appointments;
+
+// Export the current appointment collection to calendarICS.ics in the platform's default location
+private async void OnExportClicked(object sender, EventArgs e)
+{
+    bool ok = await scheduler.ExportToICalendar();
+}
+
+// Export with a custom file name (extension is added automatically)
+private async void OnExportWithNameClicked(object sender, EventArgs e)
+{
+    bool ok = await scheduler.ExportToICalendar("TeamMeetings");
+}
+```
+
+**Notes:**
+- `ExportToICalendar(string fileName = "")` writes an RFC 5545‑compliant `.ics` file containing all appointments in the current `AppointmentsSource`.
+- Recurring appointments are expanded into individual `VEVENT` entries using their `RecurrenceRule`.
+- The exported file uses the scheduler's `TimeZone` for all `DTSTART`/`DTEND` values.
+- Output destinations per platform:
+  - **Windows** — `%USERPROFILE%\Downloads`
+  - **macOS** — `~/Documents` (Finder file sharing)
+  - **iOS** — app's Documents folder (visible via Files app when `UIFileSharingEnabled`)
+  - **Android** — public Downloads folder (requires `WRITE_EXTERNAL_STORAGE` on API < 29)
+
+### Import Appointments from ICS
+
+Use `ImportICalendar` to import appointments from an `.ics` file. The method opens the platform file picker filtered to `.ics` files and adds the imported appointments to the scheduler's `AppointmentsSource`.
+
+```csharp
+using Syncfusion.Maui.Scheduler;
+
+private async void OnImportClicked(object sender, EventArgs e)
+{
+    bool ok = await scheduler.ImportICalendar();
+}
+```
+
+**Notes:**
+- `ImportICalendar()` opens the platform file picker with the title "Import ICalendar" and file-type filter `.ics` (Windows), `text/calendar` (Android), `public.calendar-event` (iOS), or any file (MacCatalyst).
+- Imported appointments respect the existing `AppointmentMapping` so that custom business objects are populated correctly.
+- Recurring rules (`RRULE`) are preserved on imported appointments.
+- The method returns `true` if the import succeeded and `false` if the user cancelled or no file was selected.
+
+## Week Number Support
+
+Display ISO week numbers next to each row of dates in the Timeline Month view and alongside the date group headers in the Agenda view.
+
+```xaml
+<scheduler:SfScheduler x:Name="Scheduler" View="TimelineMonth" ShowWeekNumber="True" />
+```
+
+```csharp
+SfScheduler scheduler = new SfScheduler();
+scheduler.View = SchedulerView.TimelineMonth;
+scheduler.ShowWeekNumber = true;
+this.Content = scheduler;
+```
+
+**Default:** `false`
+
+**Supported views:**
+- TimelineMonth
+- Agenda (displayed on each week header)
+
+**Customize the week number appearance:**
+
+```csharp
+this.Scheduler.WeekNumberStyle = new SchedulerWeekNumberStyle
+{
+    Background = Brush.LightGray,
+    TextStyle = new SchedulerTextStyle
+    {
+        TextColor = Colors.DarkBlue,
+        FontSize = 12,
+        FontAttributes = FontAttributes.Bold
+    }
+};
+```
+
+## Complete Examples
+
+### Example 1: Load On Demand with Events
+
+```csharp
+public class SchedulerPage : ContentPage
+{
+    private SfScheduler scheduler;
+    
+    public SchedulerPage()
+    {
+        scheduler = new SfScheduler
+        {
+            View = SchedulerView.Week,
+            ShowBusyIndicator = false
+        };
+        
+        scheduler.QueryAppointments += OnQueryAppointments;
+        scheduler.ViewChanged += OnViewChanged;
+        scheduler.Tapped += OnTapped;
+        
+        Content = scheduler;
+    }
+    
+    private async void OnQueryAppointments(object sender, SchedulerQueryAppointmentsEventArgs e)
+    {
+        scheduler.ShowBusyIndicator = true;
+        
+        // Fetch from database/API
+        var appointments = await FetchAppointmentsFromDatabaseAsync(
+            e.VisibleDates.First(), 
+            e.VisibleDates.Last()
+        );
+        
+        scheduler.AppointmentsSource = appointments;
+        scheduler.ShowBusyIndicator = false;
+    }
+    
+    private void OnViewChanged(object sender, SchedulerViewChangedEventArgs e)
+    {
+        Debug.WriteLine($"View changed from {e.OldView} to {e.NewView}");
+    }
+    
+    private void OnTapped(object sender, SchedulerTappedEventArgs e)
+    {
+        if (e.Appointments != null && e.Appointments.Count > 0)
+        {
+            ShowAppointmentDetails(e.Appointments[0]);
+        }
+    }
+}
+```
+
+### Example 2: Reminder System
+
+```csharp
+public class ReminderScheduler : ContentPage
+{
+    public ReminderScheduler()
+    {
+        var scheduler = new SfScheduler
+        {
+            View = SchedulerView.Week,
+            EnableReminder = true
+        };
+        
+        scheduler.ReminderAlertOpening += OnReminderAlert;
+        
+        // Add appointments with reminders
+        var appointments = new ObservableCollection<SchedulerAppointment>
+        {
+            new SchedulerAppointment
+            {
+                Subject = "Team Standup",
+                StartTime = DateTime.Now.AddMinutes(10),
+                EndTime = DateTime.Now.AddMinutes(25),
+                Reminders = new ObservableCollection<SchedulerReminder>
+                {
+                    new SchedulerReminder { TimeBeforeStart = TimeSpan.FromMinutes(5) }
+                }
+            }
+        };
+        
+        scheduler.AppointmentsSource = appointments;
+        Content = scheduler;
+    }
+    
+    private async void OnReminderAlert(object sender, ReminderAlertOpeningEventArgs e)
+    {
+        foreach (var reminder in e.Reminders)
+        {
+            bool snooze = await DisplayAlert(
+                "Reminder",
+                $"{reminder.Appointment.Subject}\n" +
+                $"Starting at {reminder.Appointment.StartTime:t}",
+                "Snooze (5 min)",
+                "Dismiss"
+            );
+            
+            if (snooze)
+            {
+                SnoozeReminder(reminder, TimeSpan.FromMinutes(5));
+            }
+            else
+            {
+                reminder.IsDismissed = true;
+            }
+        }
+    }
+}
+```
+
+### Example 3: Multi-Time Zone Scheduler
+
+```csharp
+public class GlobalScheduler : ContentPage
+{
+    public GlobalScheduler()
+    {
+        var scheduler = new SfScheduler
+        {
+            View = SchedulerView.Week,
+            TimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York")
+        };
+        
+        var appointments = new ObservableCollection<SchedulerAppointment>
+        {
+            // NY office meeting
+            new SchedulerAppointment
+            {
+                Subject = "NY Office Meeting",
+                StartTime = new DateTime(2026, 4, 15, 9, 0, 0),
+                EndTime = new DateTime(2026, 4, 15, 10, 0, 0),
+                StartTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York"),
+                EndTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York"),
+                Background = Colors.Blue
+            },
+            // London office meeting
+            new SchedulerAppointment
+            {
+                Subject = "London Office Meeting",
+                StartTime = new DateTime(2026, 4, 15, 14, 0, 0),
+                EndTime = new DateTime(2026, 4, 15, 15, 0, 0),
+                StartTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London"),
+                EndTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London"),
+                Background = Colors.Green
+            },
+            // Tokyo office meeting
+            new SchedulerAppointment
+            {
+                Subject = "Tokyo Office Meeting",
+                StartTime = new DateTime(2026, 4, 16, 10, 0, 0),
+                EndTime = new DateTime(2026, 4, 16, 11, 0, 0),
+                StartTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Tokyo"),
+                EndTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Tokyo"),
+                Background = Colors.Red
+            }
+        };
+        
+        scheduler.AppointmentsSource = appointments;
+        Content = scheduler;
+    }
+}
+```
+
+## Troubleshooting
+
+### Event Issues
+
+**Problem:** Events not firing  
+**Solution:** Verify event handlers are attached before scheduler is loaded
+
+**Problem:** Multiple event fires  
+**Solution:** Check for duplicate event subscriptions; unsubscribe before re-subscribing
+
+**Problem:** Tapped vs SelectionChanged order  
+**Solution:** Remember `Tapped` fires before `SelectionChanged`; handle accordingly
+
+### Load On Demand Issues
+
+**Problem:** QueryAppointments not triggering  
+**Solution:** 
+- Verify `ViewChanged` is occurring
+- Check if appointments already loaded for visible dates
+- Ensure not modifying same visible date range
+
+**Problem:** Busy indicator not showing  
+**Solution:** 
+- Set `ShowBusyIndicator = true` before async operation
+- Set `ShowBusyIndicator = false` after operation completes
+- Ensure UI thread updates
+
+**Problem:** Performance degradation  
+**Solution:**
+- Reset `AppointmentsSource` for non-Agenda views (don't accumulate)
+- Use `ObservableCollection` for automatic UI updates
+- Limit appointment count per query
+
+### Reminder Issues
+
+**Problem:** Reminders not triggering  
+**Solution:** 
+- Verify `EnableReminder="true"`
+- Check `TimeBeforeStart` is positive
+- Ensure appointment time is in future
+- Verify `ReminderAlertOpening` event is subscribed
+
+**Problem:** Recurring appointment reminders incorrect  
+**Solution:** Create exception appointments for dismissed/snoozed occurrences
+
+**Problem:** Snooze not working  
+**Solution:** Recalculate `TimeBeforeStart` based on current time and appointment type (future/overdue/all-day)
+
+### Time Zone Issues
+
+**Problem:** Appointments showing wrong time  
+**Solution:**
+- Verify `StartTimeZone`/`EndTimeZone` are set correctly
+- Check scheduler `TimeZone` property
+- Use `ActualStartTime`/`ActualEndTime` for rendering time
+
+**Problem:** Time zone not found  
+**Solution:** Use correct time zone IDs from the supported list (e.g., "America/New_York", not "EST")
+
+**Problem:** Daylight saving time issues  
+**Solution:** Framework handles DST automatically; ensure time zone IDs are correct
+
+---
+
+**Related References:**
+- [Getting Started](getting-started.md) - Initial setup
+- [Appointments](appointments.md) - Creating appointments
+- [Appointment Interactions](appointment-interactions.md) - Drag, resize, editor
+- [Resources and Calendars](resources-calendars.md) - Resource management
