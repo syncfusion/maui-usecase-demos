@@ -211,25 +211,21 @@ public class PropertyService : IPropertyService
     /// <summary>
     /// Applies a drawing-area property. Returns true when the property was a
     /// page property and has been handled.
+    ///
+    /// Page settings support in the MAUI Diagram control (verified against the
+    /// Syncfusion.Maui.Diagram assembly): the control exposes NO page-settings
+    /// API — paper format and orientation exist only on
+    /// <c>DiagramExportOptions</c> (consumed by ExportDiagram/Print), and even
+    /// there EJ2 falls back to its own defaults unless every option is set.
+    /// Only the canvas background is genuinely controllable (via the MAUI host
+    /// views behind the transparent EJ2 canvas), so that is the only option
+    /// this panel exposes. Format/orientation options were removed rather than
+    /// kept as non-functional placeholders.
     /// </summary>
     private bool ApplyPage(PropertyModel property)
     {
         switch (property.Key)
         {
-            case "PageFormat":
-                var format = PaperFormat.FromLabel(property.Value?.ToString());
-                if (format is not null)
-                {
-                    _pageSettings.SetFormat(format);
-                }
-
-                return true;
-
-            case "PageOrientation":
-                _pageSettings.SetOrientation(
-                    string.Equals(property.Value?.ToString(), AppStrings.PropertyPagePortrait, StringComparison.Ordinal));
-                return true;
-
             case "PageBackground":
                 _pageSettings.SetBackgroundColor(property.Value?.ToString() ?? string.Empty);
                 return true;
@@ -240,34 +236,16 @@ public class PropertyService : IPropertyService
     }
 
     /// <summary>
-    /// Drawing-area properties, shown when no shape is selected: the paper
-    /// format, the orientation and the canvas background.
+    /// Drawing-area properties, shown when no shape is selected: only the
+    /// canvas background. The MAUI Diagram control has no page
+    /// format/orientation API (page settings exist solely on
+    /// <c>DiagramExportOptions</c> for export/print), so those unsupported
+    /// options are not exposed in the UI.
     /// </summary>
     public IReadOnlyList<PropertyModel> ReadPage()
     {
         return
         [
-            new PropertyModel
-            {
-                Group = PropertyGroup.Format,
-                Key = "PageFormat",
-                LabelKey = AppStrings.PropertyPageFormat,
-                Value = _pageSettings.Format.Label,
-                Editor = PropertyEditorKind.Combo,
-                Options = PaperFormat.All.Select(f => f.Label).ToList(),
-                IsFullWidth = true,
-            },
-            new PropertyModel
-            {
-                Group = PropertyGroup.Orientation,
-                Key = "PageOrientation",
-                LabelKey = AppStrings.PropertyPageOrientation,
-                Value = _pageSettings.IsPortrait ? AppStrings.PropertyPagePortrait : AppStrings.PropertyPageLandscape,
-                Editor = PropertyEditorKind.Radio,
-                Options = [AppStrings.PropertyPagePortrait, AppStrings.PropertyPageLandscape],
-                PairIndex = 0,
-                PairCount = 2,
-            },
             new PropertyModel
             {
                 Group = PropertyGroup.Background,

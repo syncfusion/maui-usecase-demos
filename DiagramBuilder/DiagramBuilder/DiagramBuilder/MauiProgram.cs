@@ -20,6 +20,9 @@ namespace DiagramBuilder
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    // Google Material Icons (regular) — used for toolbar/menu/panel icons
+                    // via the "MaterialIcons" FontFamily and UTF-32 codepoint text.
+                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 });
 
             // Services (mock implementations, in-memory, no backend)

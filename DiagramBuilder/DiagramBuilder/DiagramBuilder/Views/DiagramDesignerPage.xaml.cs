@@ -65,13 +65,12 @@ public partial class DiagramDesignerPage : ContentPage
         Workspace.ElementAdded += OnElementChanged;
         Workspace.ElementsReset += OnElementsReset;
 
-        // Page settings (format, orientation, canvas background) are applied to
-        // the live diagram whenever they change.
+        // Page settings: the canvas background is the only drawing-area property
+        // the MAUI Diagram control supports at runtime (format/orientation have
+        // no API), so it is the only one exposed. Applied whenever it changes…
         _pageSettings.Changed += OnPageSettingsChanged;
-        // Apply the seeded settings once so the canvas matches the service
-        // (format/orientation feed the export/print options; the background
-        // paints the host views behind the transparent EJ2 canvas).
-        Workspace.ApplyPageSettings(_pageSettings.BackgroundColorKey, _pageSettings.Format, _pageSettings.IsPortrait);
+        // …and once here so the canvas matches the service's seed.
+        Workspace.ApplyPageSettings(_pageSettings.BackgroundColorKey);
 
         // Mirror the shared Stencil VM palette groups into the native SymbolPalette
         // (inside the workspace control). Syncfusion's JS bridge caches the Palettes
@@ -96,11 +95,10 @@ public partial class DiagramDesignerPage : ContentPage
         viewModel.CopyRequested = () => Workspace.Behavior.CopyAsync();
         viewModel.PasteRequested = () => Workspace.Behavior.PasteAsync();
         viewModel.DeleteRequested = () => Workspace.Behavior.DeleteSelectionAsync();
-        // Print carries the current page settings (format/orientation) into
-        // DiagramExportOptions — the only API the MAUI Diagram exposes for them.
-        viewModel.PrintRequested = () => Workspace.PrintAsync();
-        // The export dialog's run mirrors the same real export.
-        viewModel.Export.RealExportRequested = () => Workspace.ExportAsync();
+        // Print/export use the control's defaults: the MAUI Diagram exposes page
+        // settings only on DiagramExportOptions, and there is no live page
+        // model backing them, so no unsupported overrides are passed.
+        viewModel.PrintRequested = () => Workspace.Behavior.PrintAsync();
         viewModel.Zoom.FitToPageRequested = new Command(() => _ = Workspace.Behavior.FitToPageAsync());
 
         _zoomSubscription = OnZoomPropertyChanged;
@@ -156,13 +154,10 @@ public partial class DiagramDesignerPage : ContentPage
         }
     }
 
-    /// <summary>Pushes the drawing-area settings onto the live diagram.</summary>
+    /// <summary>Pushes the drawing-area background colour onto the canvas host views.</summary>
     private void OnPageSettingsChanged(object? sender, EventArgs e)
     {
-        Workspace.ApplyPageSettings(
-            _pageSettings.BackgroundColorKey,
-            _pageSettings.Format,
-            _pageSettings.IsPortrait);
+        Workspace.ApplyPageSettings(_pageSettings.BackgroundColorKey);
     }
 
     /// <summary>Clears the tracked set when the diagram's collections are reset.</summary>

@@ -42,6 +42,11 @@ public partial class PropertyPanelViewModel : ObservableObject
     /// Sections shown in the panel, in display order. The INSERT group is
     /// intentionally omitted — its Insert Link / Insert Image actions are not
     /// implemented yet.
+    ///
+    /// Page mode exposes only the BACKGROUND section: the MAUI Diagram control
+    /// has no page format/orientation API (page settings exist solely on
+    /// <c>DiagramExportOptions</c> for export/print), so those unsupported
+    /// options were removed from the UI.
     /// </summary>
     public IReadOnlyList<PropertyGroup> SectionGroups =>
         IsPageMode ? PageSectionGroups : ShapeSectionGroups;
@@ -52,15 +57,11 @@ public partial class PropertyPanelViewModel : ObservableObject
 
     private static readonly IReadOnlyList<PropertyGroup> PageSectionGroups =
     [
-        PropertyGroup.Format,
-        PropertyGroup.Orientation,
         PropertyGroup.Background,
     ];
 
     private static readonly IReadOnlyList<string> PageSectionTitles =
     [
-        AppStrings.PropertyPageFormat,
-        AppStrings.PropertyPageOrientation,
         AppStrings.PropertyPageBackground,
     ];
 

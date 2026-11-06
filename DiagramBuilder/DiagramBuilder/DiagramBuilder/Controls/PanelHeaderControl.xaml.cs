@@ -63,7 +63,9 @@ public partial class PanelHeaderControl : ContentView
     public PanelHeaderControl()
     {
         InitializeComponent();
-        Chevron.Text = "\u25B8"; // ▸ chevron
+        // Material Icons chevron (expand-more / expand-less).
+        Chevron.FontFamily = "MaterialIcons";
+        Chevron.Text = Constants.MaterialIcons.DropdownCaret;
         Chevron.GestureRecognizers.Add(new TapGestureRecognizer
         {
             Command = new Command(() => ToggleCommand?.Execute(null)),
@@ -82,7 +84,11 @@ public partial class PanelHeaderControl : ContentView
     {
         if (bindable is PanelHeaderControl header && newValue is bool collapsed)
         {
-            header.Chevron.Text = collapsed ? "\u25C2" : "\u25B8"; // ◂ / ▸
+            // Expanded shows the expand-more caret; collapsed shows the
+            // expand-less caret (Material Icons).
+            header.Chevron.Text = collapsed
+                ? Constants.MaterialIcons.CollapseCaret
+                : Constants.MaterialIcons.DropdownCaret;
         }
     }
 

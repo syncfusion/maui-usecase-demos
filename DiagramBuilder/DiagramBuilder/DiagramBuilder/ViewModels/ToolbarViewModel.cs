@@ -25,14 +25,20 @@ public partial class ToolbarViewModel : ObservableObject
     [ObservableProperty]
     private string activeToolId = Constants.AppConstants.ToolSelect;
 
-    /// <summary>True when exactly one node is selected (drives arrange actions).</summary>
+    /// <summary>True when exactly one node is selected (drives color tools + arrange).</summary>
     [ObservableProperty]
     private bool hasSingleSelection;
+
+    /// <summary>True when any element is selected (drives Delete).</summary>
+    [ObservableProperty]
+    private bool hasAnySelection;
 
     internal void RaiseSelectionChanged()
     {
         HasSingleSelection = _owner.SelectedNodeId is not null;
-        OnPropertyChanged(nameof(HasSingleSelection));
+        HasAnySelection = _owner.SelectedElementId is not null
+            || _owner.Selection.SelectedNodeIds.Count > 0
+            || _owner.Selection.SelectedConnectorIds.Count > 0;
     }
 
     /// <summary>Executed by ToolbarControl with the item's id (tool or command).</summary>

@@ -247,7 +247,11 @@ public partial class MenuBarControl : ContentView
 
         var checkGlyph = new Label
         {
-            Text = (item.IsCheckable && IsCheckedSafe(item.Id)) ? "\u2713" : string.Empty,
+            // Material check icon for checked menu items.
+            Text = (item.IsCheckable && IsCheckedSafe(item.Id))
+                ? Constants.MaterialIcons.CheckGlyph
+                : string.Empty,
+            FontFamily = "MaterialIcons",
             FontSize = 13,
             TextColor = CheckBlue,
             HorizontalTextAlignment = TextAlignment.Center,
@@ -256,7 +260,8 @@ public partial class MenuBarControl : ContentView
         var icon = new Label
         {
             Text = MenuIconFor(item),
-            FontSize = 12,
+            FontFamily = "MaterialIcons",
+            FontSize = 14,
             TextColor = TextSecondary,
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
@@ -307,7 +312,8 @@ public partial class MenuBarControl : ContentView
         var icon = new Label
         {
             Text = MenuIconFor(item),
-            FontSize = 12,
+            FontFamily = "MaterialIcons",
+            FontSize = 14,
             TextColor = TextSecondary,
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
@@ -324,8 +330,12 @@ public partial class MenuBarControl : ContentView
         };
         var chevron = new Label
         {
-            Text = item.IsExpanded ? "\u25BE" : "\u25B8",
-            FontSize = 11,
+            // Material expand-more / expand-less caret.
+            Text = item.IsExpanded
+                ? Constants.MaterialIcons.DropdownCaret
+                : Constants.MaterialIcons.CollapseCaret,
+            FontFamily = "MaterialIcons",
+            FontSize = 14,
             TextColor = TextSecondary,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
@@ -354,64 +364,10 @@ public partial class MenuBarControl : ContentView
         ? width
         : 220;
 
-    private static string MenuIconFor(MenuCommandItem item) => item.Id switch
-    {
-        // File
-        AppConstants.CmdNew => "\u2295",
-        AppConstants.CmdOpen => "\uD83D\uDCC2",
-        AppConstants.CmdSave => "\u2B73",
-        AppConstants.CmdSaveAs => "\u21E7",
-        AppConstants.CmdExport => "\u2B61",
-        AppConstants.CmdPrint => "\u2399",
-
-        // Edit
-        AppConstants.CmdUndo => "\u21B6",
-        AppConstants.CmdRedo => "\u21B7",
-        AppConstants.CmdCut => "\u2702",
-        AppConstants.CmdCopy => "\u2398",
-        AppConstants.CmdPaste => "\uD83D\uDCCB",
-        AppConstants.CmdDelete => "\u232B",
-        AppConstants.CmdDuplicate => "\u29C9",
-        AppConstants.CmdSelectAll => "\u25CE",
-
-        // View
-        AppConstants.CmdZoomIn => "+",
-        AppConstants.CmdZoomOut => "\u2212",
-        AppConstants.CmdFitToScreen => "\u26F6",
-        AppConstants.CmdShowGrid => "\u25A6",
-        AppConstants.CmdSnapToGrid => "\u22A5",
-
-        // Arrange leaf commands
-        AppConstants.CmdSendToBack => "\u21E3",
-        AppConstants.CmdBringToFront => "\u21E1",
-        AppConstants.CmdSendBackward => "\u2193",
-        AppConstants.CmdBringForward => "\u2191",
-        AppConstants.CmdAlignLeft => "\u21E6",
-        AppConstants.CmdAlignRight => "\u21E8",
-        AppConstants.CmdAlignCenter => "\u21C4",
-        AppConstants.CmdAlignTop => "\u21E7",
-        AppConstants.CmdAlignBottom => "\u21E9",
-        AppConstants.CmdAlignMiddle => "\u21C5",
-        AppConstants.CmdDistributeHorizontally => "\u2194",
-        AppConstants.CmdDistributeVertically => "\u2195",
-        AppConstants.CmdSameWidth => "\u2B1A",
-        AppConstants.CmdSameHeight => "\u2B1B",
-        AppConstants.CmdSameWidthAndHeight => "\u25A1",
-        AppConstants.CmdGroup => "\u2295",
-        AppConstants.CmdUngroup => "\u2296",
-
-        // Window
-        AppConstants.CmdShowToolbar => "\u25A3",
-        AppConstants.CmdShowStencil => "\u25A3",
-        AppConstants.CmdShowProperties => "\u25A3",
-
-        // Submenu headers
-        "arrange.align" => "\u2261",
-        "arrange.distribute" => "\u2194",
-        "arrange.matchsize" => "\u25A1",
-
-        _ => string.Empty,
-    };
+    private static string MenuIconFor(MenuCommandItem item) =>
+        // Material Icons font (see Constants.MaterialIcons). Empty for ids with
+        // no icon so the label sits alone.
+        Constants.MaterialIcons.TextFor(item.Id) ?? string.Empty;
 
     private bool IsCheckedSafe(string id) => IsChecked?.Invoke(id) ?? false;
 }
