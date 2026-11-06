@@ -25,7 +25,12 @@ public partial class ToolbarControl : ContentView
         BindableProperty.Create(nameof(ToolCommand), typeof(ICommand), typeof(ToolbarControl));
 
     public static readonly BindableProperty HasSingleSelectionProperty =
-        BindableProperty.Create(nameof(HasSingleSelection), typeof(bool), typeof(ToolbarControl), false);
+        BindableProperty.Create(nameof(HasSingleSelection), typeof(bool), typeof(ToolbarControl), false,
+            propertyChanged: OnSelectionGateChanged);
+
+    public static readonly BindableProperty HasAnySelectionProperty =
+        BindableProperty.Create(nameof(HasAnySelection), typeof(bool), typeof(ToolbarControl), false,
+            propertyChanged: OnSelectionGateChanged);
 
     public static readonly BindableProperty CurrentZoomProperty =
         BindableProperty.Create(nameof(CurrentZoom), typeof(double), typeof(ToolbarControl), 1.0d,
@@ -63,6 +68,12 @@ public partial class ToolbarControl : ContentView
     {
         get => (bool)GetValue(HasSingleSelectionProperty);
         set => SetValue(HasSingleSelectionProperty, value);
+    }
+
+    public bool HasAnySelection
+    {
+        get => (bool)GetValue(HasAnySelectionProperty);
+        set => SetValue(HasAnySelectionProperty, value);
     }
 
     public double CurrentZoom
@@ -136,6 +147,15 @@ public partial class ToolbarControl : ContentView
         }
     }
 
+    /// <summary>Selection gates rebuild the toolbar (shape tools appear/disappear).</summary>
+    private static void OnSelectionGateChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is ToolbarControl tb)
+        {
+            tb.Rebuild();
+        }
+    }
+
     private void ApplyActiveToolHighlight()
     {
         var active = (Style)Application.Current!.Resources["ToolbarIconActiveStyle"];
@@ -149,6 +169,7 @@ public partial class ToolbarControl : ContentView
     private void Rebuild()
     {
         LeftGroupsBar.Children.Clear();
+        CenterGroupsBar.Children.Clear();
         RightGroupsBar.Children.Clear();
         _toggleButtons.Clear();
 
@@ -157,10 +178,14 @@ public partial class ToolbarControl : ContentView
 
         var items = ((IEnumerable)ItemsSource).Cast<DiagramToolbarItem>().ToList();
 
-        // Left side: Groups 1-6 (main toolbar items)
+        // Left side: Groups 1-4 (undo/redo, pan/select, shapes, connectors)
         BuildLeftToolbar(items);
 
-        // Right side: Groups 7-8 (zoom + properties)
+        // Center: Group 5 (Fill/Stroke/Delete) — only with a shape selection,
+        // mirroring the property panel's behaviour.
+        BuildCenterToolbar(items);
+
+        // Right side: zoom dropdown + properties toggle
         BuildRightToolbar(items);
 
         ApplyActiveToolHighlight();
@@ -198,30 +223,6 @@ public partial class ToolbarControl : ContentView
             LeftGroupsBar.Children.Add(BuildDivider());
         }
 
-        // Group 5: Colors + Delete (Delete replaces the old Text tool)
-        if (byGroup.Any(g => g.Key == 5))
-        {
-            var group5Items = byGroup.First(g => g.Key == 5).ToList();
-            foreach (var item in group5Items.OrderBy(x => x.Id))
-            {
-                if (item.Id == "tool.stroke.color")
-                {
-                    LeftGroupsBar.Children.Add(BuildStrokeColorSwatch());
-                }
-                else if (item.Id == "tool.fill.color")
-                {
-                    LeftGroupsBar.Children.Add(BuildFillColorSwatch());
-                }
-                else
-                {
-                    // Delete (and any other plain command icon) renders as a button
-                    // whose click dispatches the command id.
-                    LeftGroupsBar.Children.Add(BuildIconButton(item));
-                }
-            }
-            LeftGroupsBar.Children.Add(BuildDivider());
-        }
-
         // Group 6: Arrange dropdown (selection-only)
         if (HasSingleSelection && byGroup.Any(g => g.Key == 6))
         {
@@ -230,15 +231,58 @@ public partial class ToolbarControl : ContentView
         }
     }
 
+    /// <summary>
+    /// Center group: Fill / Stroke colour swatches + Delete. Only rendered when a
+    /// shape is selected (mirrors the property panel, which likewise shows shape
+    /// properties only for a selection), and centered via the toolbar's starred
+    /// middle column so it stays visually centered at any toolbar width.
+    /// Fill/Stroke need a single selected node (they paint the node's shape
+    /// style); Delete appears for any selection (nodes or connectors).
+    /// </summary>
+    private void BuildCenterToolbar(List<DiagramToolbarItem> allItems)
+    {
+        var byGroup = allItems.GroupBy(i => i.Group).OrderBy(g => g.Key).ToList();
+        if (!byGroup.Any(g => g.Key == 5))
+        {
+            return;
+        }
+
+        var group5Items = byGroup.First(g => g.Key == 5).ToList();
+
+        if (HasSingleSelection)
+        {
+            foreach (var item in group5Items.Where(i => i.Id is "tool.stroke.color" or "tool.fill.color"))
+            {
+                if (item.Id == "tool.stroke.color")
+                {
+                    CenterGroupsBar.Children.Add(BuildStrokeColorSwatch());
+                }
+                else
+                {
+                    CenterGroupsBar.Children.Add(BuildFillColorSwatch());
+                }
+            }
+        }
+
+        if (HasAnySelection)
+        {
+            foreach (var item in group5Items.Where(i => i.Id == AppConstants.CmdDelete))
+            {
+                CenterGroupsBar.Children.Add(BuildIconButton(item));
+            }
+        }
+    }
+
     private void BuildRightToolbar(List<DiagramToolbarItem> allItems)
     {
         // Group 7: Zoom dropdown
         RightGroupsBar.Children.Add(BuildZoomDropdown());
 
-        // Group 8: Properties button
+        // Group 8: Properties button (Material icon)
         var btn = new Button
         {
-            Text = "☰",
+            Text = Constants.MaterialIcons.TextFor(AppConstants.CmdShowProperties),
+            FontFamily = "MaterialIcons",
             Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_properties",
         };
@@ -268,7 +312,9 @@ public partial class ToolbarControl : ContentView
     {
         var btn = new Button
         {
-            Text = GlyphFor(item.Id),
+            // Material icon glyph (raw Unicode fallback only if the id is unknown).
+            Text = Constants.MaterialIcons.TextFor(item.Id) ?? item.Id,
+            FontFamily = "MaterialIcons",
             Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
         };
@@ -521,7 +567,8 @@ public partial class ToolbarControl : ContentView
 
         var button = new Button
         {
-            Text = GlyphFor(id) + " ▼",
+            Text = Constants.MaterialIcons.TextFor(id) + " " + Constants.MaterialIcons.DropdownCaret,
+            FontFamily = "MaterialIcons",
             Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_" + id.Replace('.', '_'),
         };
@@ -587,7 +634,8 @@ public partial class ToolbarControl : ContentView
 
         var button = new Button
         {
-            Text = Math.Round(CurrentZoom * 100).ToString("0") + "% ▼",
+            // Text zoom % + Material dropdown caret.
+            Text = Math.Round(CurrentZoom * 100).ToString("0") + "% " + Constants.MaterialIcons.DropdownCaret,
             Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
             AutomationId = "toolbar_zoom",
         };
@@ -644,19 +692,6 @@ public partial class ToolbarControl : ContentView
             BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
         };
     }
-
-    private static string GlyphFor(string id) => id switch
-    {
-        AppConstants.CmdUndo => "↶",
-        AppConstants.CmdRedo => "↷",
-        AppConstants.ToolPan => "✋",
-        AppConstants.ToolSelect => "↗",
-        "tool.shape" => "◯",
-        "tool.connector" => "→",
-        AppConstants.CmdDelete => "🗑",
-        "arrange" => "≡",
-        _ => "□",
-    };
 
     private static string FindNearestKey(Color color)
     {

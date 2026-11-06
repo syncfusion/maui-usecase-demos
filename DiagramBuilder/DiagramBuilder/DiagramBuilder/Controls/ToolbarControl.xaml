@@ -26,10 +26,14 @@
                                Grid.Column="0"
                                Spacing="0"
                                VerticalOptions="Center" />
-        <BoxView Grid.Column="1"
-                 Opacity="0"
-                 HorizontalOptions="Fill"
-                 VerticalOptions="Fill" />
+        <!-- Center column: shape-selection actions (Fill / Stroke / Delete).
+             Sits in the starred middle column so the group stays centered
+             within the toolbar regardless of the side groups' widths. -->
+        <HorizontalStackLayout x:Name="CenterGroupsBar"
+                               Grid.Column="1"
+                               Spacing="0"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
         <HorizontalStackLayout x:Name="RightGroupsBar"
                                Grid.Column="2"
                                Spacing="4"

@@ -288,21 +288,11 @@ public partial class DiagramWorkspaceControl : ContentView
     public event EventHandler<TemplateLoadPayload>? TemplateLoaded;
 
     /// <summary>
-    /// The drawing-area (page) settings currently in force. The paper format and
-    /// orientation are applied on export - the MAUI Diagram exposes no live
-    /// page-settings API - while the background colour is applied to the canvas
-    /// immediately.
-    /// </summary>
-    public Models.PaperFormat PageFormat { get; private set; } = Models.PaperFormat.Default;
-
-    /// <summary>True when the page orientation is portrait.</summary>
-    public bool IsPortrait { get; private set; } = true;
-
     /// <summary>
-    /// Applies the drawing-area settings.
+    /// Applies the drawing-area background colour.
     ///
-    /// Background: the SfDiagram control serializes its BackgroundColor into the
-    /// EJ2 init payload exactly once (DiagramManager.BuildInitConfigJson →
+    /// The SfDiagram control serializes its BackgroundColor into the EJ2 init
+    /// payload exactly once (DiagramManager.BuildInitConfigJson →
     /// window.SfDiagram.init) and offers no runtime update channel, so a later
     /// property write never reaches the renderer. The constructor is therefore
     /// given a TRANSPARENT background (see DiagramWorkspaceControl ctor) so the
@@ -310,70 +300,18 @@ public partial class DiagramWorkspaceControl : ContentView
     /// host views behind it (DiagramGrid + the workspace Border). Those views ARE
     /// the visible canvas background, and repainting them works at runtime.
     ///
-    /// Format and orientation have no live-renderer counterpart either — the MAUI
-    /// Diagram exposes them only on DiagramExportOptions — so they are remembered
-    /// here and flow into ExportAsync/PrintAsync below.
+    /// Paper format/orientation were removed: the MAUI Diagram exposes them only
+    /// on <c>DiagramExportOptions</c> (consumed by ExportDiagram/Print), with no
+    /// live canvas counterpart, so there is no supported behaviour to expose.
     /// </summary>
-    public void ApplyPageSettings(string backgroundColorKey, Models.PaperFormat format, bool isPortrait)
+    public void ApplyPageSettings(string backgroundColorKey)
     {
-        PageFormat = format;
-        IsPortrait = isPortrait;
-
         var color = Services.ResourceLookup.Color(backgroundColorKey, Colors.White);
         // The HybridWebView itself must stay transparent; paint the host views.
         DiagramGrid.BackgroundColor = color;
         if (this.Content is Border border)
         {
             border.BackgroundColor = color;
-        }
-    }
-
-    /// <summary>
-    /// Builds the export/print options that carry the page settings into the
-    /// control's ExportDiagram/Print calls. PageWidth/PageHeight are in inches
-    /// (matching PaperFormat), which EJ2 converts to its own page settings.
-    /// </summary>
-    public Syncfusion.Maui.Diagram.DiagramExportOptions BuildExportOptions() => new()
-    {
-        PageWidth = IsPortrait ? PageFormat.Width : PageFormat.Height,
-        PageHeight = IsPortrait ? PageFormat.Height : PageFormat.Width,
-        PageOrientation = IsPortrait
-            ? Syncfusion.Maui.Diagram.DiagramPageOrientation.Portrait
-            : Syncfusion.Maui.Diagram.DiagramPageOrientation.Landscape,
-        Region = Syncfusion.Maui.Diagram.DiagramExportRegion.PageSettings,
-    };
-
-    /// <summary>
-    /// Exports the diagram with the current page settings (format, orientation).
-    /// </summary>
-    public async Task<string?> ExportAsync(Syncfusion.Maui.Diagram.DiagramExportOptions? options = null)
-    {
-        await UntilReadyAsync();
-        return await Diagram.ExportDiagram(options ?? BuildExportOptions());
-    }
-
-    /// <summary>
-    /// Prints the diagram with the current page settings (format, orientation).
-    /// </summary>
-    public async Task PrintAsync(Syncfusion.Maui.Diagram.DiagramExportOptions? options = null)
-    {
-        await UntilReadyAsync();
-        await Diagram.Print(options ?? BuildExportOptions());
-    }
-
-    /// <summary>Waits until the diagram bridge is ready (bounded; then gives up silently).</summary>
-    private async Task UntilReadyAsync()
-    {
-        try
-        {
-            for (var i = 0; i < 40 && !SurfaceBehavior.IsReady; i++)
-            {
-                await Task.Delay(25);
-            }
-        }
-        catch
-        {
-            // Never block export/print on a readiness race.
         }
     }
 
