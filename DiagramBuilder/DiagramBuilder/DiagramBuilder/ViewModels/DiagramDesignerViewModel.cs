@@ -178,10 +178,10 @@ public partial class DiagramDesignerViewModel : ObservableObject
     public event EventHandler? ExportDialogRequested;
 
     // ---------- Surface request relays (set by the host page; VM stays control-agnostic) ----------
-    // The page assigns each delegate to the matching DiagramSurfaceBehavior method
-    // (architecture.md §12: one-way VM→control by awaiting the control's async
-    // methods). A null delegate degrades to an explicit status message so every
-    // command still executes without crash (Task 9 acceptance).
+    // The page assigns each delegate to the matching DiagramSurfaceBehavior or
+    // workspace method (architecture.md §12: one-way VM→control by awaiting the
+    // control's async methods). A null delegate degrades to an explicit status
+    // message so every command still executes without crash (Task 9 acceptance).
 
     /// <summary>Executes undo on the live diagram, or null when unbound.</summary>
     public Func<Task>? UndoRequested { get; set; }
@@ -204,6 +204,21 @@ public partial class DiagramDesignerViewModel : ObservableObject
     /// <summary>Prints the live diagram, or null when unbound.</summary>
     public Func<Task>? PrintRequested { get; set; }
 
+    /// <summary>Changes the live diagram's tool mode or starts a drawing interaction.</summary>
+    public Func<string, Task>? ToolRequested { get; set; }
+
+    /// <summary>Brings the selection to the front, or null when unbound.</summary>
+    public Func<Task>? BringToFrontRequested { get; set; }
+
+    /// <summary>Sends the selection to the back, or null when unbound.</summary>
+    public Func<Task>? SendToBackRequested { get; set; }
+
+    /// <summary>Moves the selection one step forward, or null when unbound.</summary>
+    public Func<Task>? BringForwardRequested { get; set; }
+
+    /// <summary>Moves the selection one step backward, or null when unbound.</summary>
+    public Func<Task>? SendBackwardRequested { get; set; }
+
     private async Task RunSurfaceRequestAsync(Func<Task>? request, string commandId)
     {
         if (request is null)
@@ -213,6 +228,17 @@ public partial class DiagramDesignerViewModel : ObservableObject
         }
 
         await request();
+    }
+
+    private async Task RunToolRequestAsync(string toolId)
+    {
+        if (ToolRequested is null)
+        {
+            Status = string.Format(AppStrings.StatusCommandExecuted, toolId);
+            return;
+        }
+
+        await ToolRequested(toolId);
     }
 
     [RelayCommand]
@@ -258,10 +284,10 @@ public partial class DiagramDesignerViewModel : ObservableObject
             case AppConstants.CmdSnapToGrid: Zoom.ToggleSnapToGridCommand.Execute(null); break;
 
             // ARRANGE
-            case AppConstants.CmdSendToBack:
-            case AppConstants.CmdBringToFront:
-            case AppConstants.CmdSendBackward:
-            case AppConstants.CmdBringForward:
+            case AppConstants.CmdSendToBack: await RunSurfaceRequestAsync(SendToBackRequested, commandId); break;
+            case AppConstants.CmdBringToFront: await RunSurfaceRequestAsync(BringToFrontRequested, commandId); break;
+            case AppConstants.CmdSendBackward: await RunSurfaceRequestAsync(SendBackwardRequested, commandId); break;
+            case AppConstants.CmdBringForward: await RunSurfaceRequestAsync(BringForwardRequested, commandId); break;
             case AppConstants.CmdAlignLeft:
             case AppConstants.CmdAlignRight:
             case AppConstants.CmdAlignCenter:
@@ -287,6 +313,9 @@ public partial class DiagramDesignerViewModel : ObservableObject
                 throw new NotSupportedException($"Unknown command id: {commandId}");
         }
     }
+
+    /// <summary>Executes a toolbar tool id against the live diagram.</summary>
+    public Task ExecuteToolAsync(string toolId) => RunToolRequestAsync(toolId);
 
     // ---------- Window panel toggles ----------
 

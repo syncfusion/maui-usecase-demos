@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using DiagramBuilder.Constants;
 using DiagramBuilder.Models;
 using DiagramBuilder.Behaviors;
 using DiagramBuilder.Services;
@@ -359,37 +360,89 @@ public partial class DiagramWorkspaceControl : ContentView
                 return;
             }
 
+            var hex = color.ToRgbaHex();
+            await ExecuteDiagramScriptAsync(
+                "var c='" + hex + "';" +
+                "inst.backgroundColor=c;" +
+                "var canvas=el&&el.firstElementChild;" +
+                "if(canvas){canvas.style.background=c;}" +
+                "inst.dataBind&&inst.dataBind();");
+        }
+        catch
+        {
+            // The renderer may not be up yet; the init payload already carries
+            // the colour, so a failure here is not fatal.
+        }
+    }
+
+    public Task ApplyToolAsync(string toolId)
+    {
+        var script = toolId switch
+        {
+            AppConstants.ToolPan =>
+                "inst.tool=4;inst.drawingObject=null;inst.dataBind&&inst.dataBind();",
+            AppConstants.ToolSelect =>
+                "inst.tool=1;inst.drawingObject=null;inst.dataBind&&inst.dataBind();",
+            "tool.shape.rectangle" =>
+                "inst.tool=16;inst.drawingObject={width:120,height:60,shape:{type:'Basic',shape:'Rectangle'}};inst.dataBind&&inst.dataBind();",
+            "tool.shape.ellipse" =>
+                "inst.tool=16;inst.drawingObject={width:120,height:60,shape:{type:'Basic',shape:'Ellipse'}};inst.dataBind&&inst.dataBind();",
+            "tool.shape.polygon" =>
+                "inst.tool=16;inst.drawingObject={width:120,height:110,shape:{type:'Basic',shape:'Polygon',points:[{x:0,y:55},{x:30,y:0},{x:90,y:0},{x:120,y:55},{x:90,y:110},{x:30,y:110}]}};inst.dataBind&&inst.dataBind();",
+            AppConstants.ToolConnectorStraight =>
+                "inst.tool=16;inst.drawingObject={type:'Straight'};inst.dataBind&&inst.dataBind();",
+            AppConstants.ToolConnectorOrthogonal =>
+                "inst.tool=16;inst.drawingObject={type:'Orthogonal'};inst.dataBind&&inst.dataBind();",
+            AppConstants.ToolConnectorBezier =>
+                "inst.tool=16;inst.drawingObject={type:'Bezier'};inst.dataBind&&inst.dataBind();",
+            AppConstants.ToolLock =>
+                "var locked=false;var nodes=(inst.selectedItems&&inst.selectedItems.nodes)||[];var connectors=(inst.selectedItems&&inst.selectedItems.connectors)||[];for(var i=0;i<nodes.length;i++){var n=nodes[i];locked=locked||!!(n.lockDelete||n.lockSelect||n.lockRotate||n.lockAspect||n.lockTextEdit||n.lockMoveX||n.lockMoveY);}" +
+                "for(var j=0;j<connectors.length;j++){var c=connectors[j];locked=locked||!!(c.lockDelete||c.lockSelect||c.lockBegin||c.lockEnd||c.lockTextEdit||c.lockVtxEdit||c.lockMoveX||c.lockMoveY);}" +
+                "for(var k=0;k<nodes.length;k++){var n2=nodes[k];n2.lockDelete=!locked;n2.lockSelect=!locked;n2.lockRotate=!locked;n2.lockAspect=!locked;n2.lockTextEdit=!locked;n2.lockHeight=!locked;n2.lockWidth=!locked;n2.lockMoveX=!locked;n2.lockMoveY=!locked;}" +
+                "for(var m=0;m<connectors.length;m++){var c2=connectors[m];c2.lockDelete=!locked;c2.lockSelect=!locked;c2.lockBegin=!locked;c2.lockEnd=!locked;c2.lockTextEdit=!locked;c2.lockVtxEdit=!locked;c2.lockMoveX=!locked;c2.lockMoveY=!locked;}" +
+                "inst.dataBind&&inst.dataBind();",
+            _ => null,
+        };
+
+        return script is null ? Task.CompletedTask : ExecuteDiagramScriptAsync(script);
+    }
+
+    public Task BringToFrontAsync() => ExecuteDiagramScriptAsync("inst.bringToFront&&inst.bringToFront();");
+
+    public Task SendToBackAsync() => ExecuteDiagramScriptAsync("inst.sendToBack&&inst.sendToBack();");
+
+    public Task BringForwardAsync() => ExecuteDiagramScriptAsync("inst.moveForward&&inst.moveForward();");
+
+    public Task SendBackwardAsync() => ExecuteDiagramScriptAsync("inst.sendBackward&&inst.sendBackward();");
+
+    private async Task ExecuteDiagramScriptAsync(string script)
+    {
+        try
+        {
+            for (var i = 0; i < 40 && !SurfaceBehavior.IsReady; i++)
+            {
+                await Task.Delay(25);
+            }
+
+            if (!SurfaceBehavior.IsReady)
+            {
+                return;
+            }
+
             var webView = FindHostedWebView();
             if (webView is null)
             {
                 return;
             }
 
-            // EJ2 reads the colour as a CSS value. Use the 6-digit form: it is
-            // the same shape DiagramManager serializes at init
-            // (Color.ToHex() -> "#RRGGBB") and it is valid CSS in every engine.
-            var hex = color.ToRgbaHex();
             await webView.EvaluateJavaScriptAsync(
-                "(function(){var c='" + hex + "';" +
-                "var el=document.getElementById('diagram');" +
-                "var inst=el&&el.ej2_instances&&el.ej2_instances[0];" +
-                "if(inst){" +
-                // Assigning the reactive EJ2 property makes the diagram run its
-                // own backgroundColor change handler, which repaints the canvas
-                // (intOffPageBackground -> canvas.style.background).
-                "inst.backgroundColor=c;" +
-                // Repaint the canvas element directly as well, so the change is
-                // visible even if the property handler is bypassed. EJ2 creates
-                // the canvas div without a class, as the first child of #diagram.
-                "var canvas=el&&el.firstElementChild;" +
-                "if(canvas){canvas.style.background=c;}" +
-                "inst.dataBind&&inst.dataBind();return 'ok';}" +
-                "return 'no-instance';})();");
+                "(function(){var el=document.getElementById('diagram');var inst=el&&el.ej2_instances&&el.ej2_instances[0];if(!inst){return 'no-instance';}" +
+                script +
+                "return 'ok';})();");
         }
         catch
         {
-            // The renderer may not be up yet; the init payload already carries
-            // the colour, so a failure here is not fatal.
+            // The bridge may not yet be available; the control can retry later.
         }
     }
 
