@@ -563,14 +563,53 @@ public partial class ToolbarControl : ContentView
             ShowFooter = false,
             ShowCloseButton = false,
             StaysOpen = false,
+            // Size the popup to its content instead of the default fixed width.
+            AutoSizeMode = PopupAutoSizeMode.Both,
+            AutoSizeTarget = PopupAutoSizeTarget.Content,
+            // Visible border around the dropdown surface.
+            PopupStyle = new PopupStyle
+            {
+                Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
+                StrokeThickness = 1,
+                PopupBackground = Services.ResourceLookup.ResourceColor("CanvasBackground"),
+                CornerRadius = new CornerRadius(8),
+            },
         };
 
-        var button = new Button
+        // The icon and the caret are two separate labels in a horizontal stack
+        // rather than one concatenated string: the shared icon-button style is
+        // a fixed 32 px wide, so a single "icon + caret" string overflowed the
+        // button and was clipped down to a couple of caret glyphs. The stack is
+        // sized to its own content, so both glyphs stay visible.
+        var button = new SfButton
         {
-            Text = Constants.MaterialIcons.TextFor(id) + " " + Constants.MaterialIcons.DropdownCaret,
-            FontFamily = "MaterialIcons",
-            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            Style = (Style)Application.Current!.Resources["ToolbarDropdownButtonStyle"],
             AutomationId = "toolbar_" + id.Replace('.', '_'),
+            // SfButton.Content is a DataTemplate (same pattern as the menu rows).
+            Content = new DataTemplate(() => new HorizontalStackLayout
+            {
+                Spacing = 0,
+                VerticalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = Constants.MaterialIcons.TextFor(id),
+                        FontFamily = "MaterialIcons",
+                        FontSize = 16,
+                        TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                        VerticalTextAlignment = TextAlignment.Center,
+                    },
+                    new Label
+                    {
+                        Text = Constants.MaterialIcons.DropdownCaret,
+                        FontFamily = "MaterialIcons",
+                        FontSize = 16,
+                        TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                        VerticalTextAlignment = TextAlignment.Center,
+                    },
+                },
+            }),
         };
 
         button.Clicked += (_, _) =>
@@ -610,14 +649,10 @@ public partial class ToolbarControl : ContentView
             stack.Children.Add(row);
         }
 
-        return new Border
-        {
-            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = 8 },
-            Content = stack,
-            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
-        };
+        // The popup root owns the surface: PopupStyle supplies the background,
+        // the border and the corner radius, so the content only contributes
+        // the rows (a second border here would double up).
+        return stack;
     }
 
     private View BuildZoomDropdown()
@@ -630,14 +665,47 @@ public partial class ToolbarControl : ContentView
             ShowFooter = false,
             ShowCloseButton = false,
             StaysOpen = false,
+            // Size the popup to its content instead of the default fixed width.
+            AutoSizeMode = PopupAutoSizeMode.Both,
+            AutoSizeTarget = PopupAutoSizeTarget.Content,
+            // Visible border around the dropdown surface.
+            PopupStyle = new PopupStyle
+            {
+                Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
+                StrokeThickness = 1,
+                PopupBackground = Services.ResourceLookup.ResourceColor("CanvasBackground"),
+                CornerRadius = new CornerRadius(8),
+            },
         };
 
-        var button = new Button
+        var button = new SfButton
         {
-            // Text zoom % + Material dropdown caret.
-            Text = Math.Round(CurrentZoom * 100).ToString("0") + "% " + Constants.MaterialIcons.DropdownCaret,
-            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            Style = (Style)Application.Current!.Resources["ToolbarDropdownButtonStyle"],
             AutomationId = "toolbar_zoom",
+            // SfButton.Content is a DataTemplate (same pattern as the menu rows).
+            Content = new DataTemplate(() => new HorizontalStackLayout
+            {
+                Spacing = 2,
+                VerticalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = Math.Round(CurrentZoom * 100).ToString("0") + "%",
+                        FontSize = 13,
+                        TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                        VerticalTextAlignment = TextAlignment.Center,
+                    },
+                    new Label
+                    {
+                        Text = Constants.MaterialIcons.DropdownCaret,
+                        FontFamily = "MaterialIcons",
+                        FontSize = 16,
+                        TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                        VerticalTextAlignment = TextAlignment.Center,
+                    },
+                },
+            }),
         };
 
         button.Clicked += (_, _) =>
@@ -683,14 +751,10 @@ public partial class ToolbarControl : ContentView
             }
         }
 
-        return new Border
-        {
-            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = 8 },
-            Content = stack,
-            BackgroundColor = Services.ResourceLookup.ResourceColor("CanvasBackground"),
-        };
+        // The popup root owns the surface: PopupStyle supplies the background,
+        // the border and the corner radius, so the content only contributes
+        // the rows (a second border here would double up).
+        return stack;
     }
 
     private static string FindNearestKey(Color color)

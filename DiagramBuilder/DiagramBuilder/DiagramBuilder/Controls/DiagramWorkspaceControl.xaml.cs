@@ -98,15 +98,18 @@ public partial class DiagramWorkspaceControl : ContentView
     {
         InitializeComponent();
 
-        // The SfDiagram ctor hardcodes BackgroundColor=White, which
-        // BuildInitConfigJson serializes into the EJ2 init payload
-        // (overriding the JS 'transparent' default). The EJ2 canvas would
-        // then be an opaque white rectangle covering every MAUI view behind
-        // it, and page-background edits would never be visible. Forcing
-        // transparency here — BEFORE the WebView loads, while the value is
-        // still picked up by init — makes the EJ2 canvas see-through, so the
-        // painted host views (DiagramGrid / workspace Border) show through.
-        Diagram.BackgroundColor = Colors.Transparent;
+        // The drawing-area background. The SfDiagram control serializes
+        // BackgroundColor into the EJ2 init payload exactly once
+        // (DiagramManager.BuildInitConfigJson → window.SfDiagram.init), and
+        // EJ2 paints its canvas div with it (diagramCanvas.style.background =
+        // this.backgroundColor) — so this value IS the visible canvas colour.
+        //
+        // It must be a real, opaque colour: DiagramManager calls the
+        // parameterless Color.ToHex(), which drops the alpha channel and turns
+        // Colors.Transparent into "#000000" — i.e. BLACK. The default is
+        // therefore the theme's canvas background (white), never transparent.
+        Diagram.BackgroundColor = Services.ResourceLookup.Color(
+            Constants.ResourceKeys.CanvasBackground, Colors.White);
 
         // Track live additions/removals so elements dropped from the symbol
         // palette (or deleted) are reflected in the property panel's tracked
@@ -291,14 +294,27 @@ public partial class DiagramWorkspaceControl : ContentView
     /// <summary>
     /// Applies the drawing-area background colour.
     ///
-    /// The SfDiagram control serializes its BackgroundColor into the EJ2 init
-    /// payload exactly once (DiagramManager.BuildInitConfigJson →
-    /// window.SfDiagram.init) and offers no runtime update channel, so a later
-    /// property write never reaches the renderer. The constructor is therefore
-    /// given a TRANSPARENT background (see DiagramWorkspaceControl ctor) so the
-    /// EJ2 canvas stays see-through, and the chosen colour is painted on the MAUI
-    /// host views behind it (DiagramGrid + the workspace Border). Those views ARE
-    /// the visible canvas background, and repainting them works at runtime.
+    /// The MAUI Diagram control has no public page/background API for this:
+    /// <c>SfDiagram.BackgroundColor</c> is inherited from <c>VisualElement</c>
+    /// and is only READ once, when the EJ2 diagram is initialised
+    /// (DiagramManager.BuildInitConfigJson). A later property write therefore
+    /// never reaches the renderer — which is exactly why the colour picker
+    /// used to have no visible effect.
+    ///
+    /// EJ2 itself DOES support a live background change: its Diagram exposes a
+    /// <c>backgroundColor</c> property, and assigning it re-paints the canvas
+    /// (diagramCanvas.style.background = this.backgroundColor, triggered through
+    /// EJ2's own propertyChange handling). The live instance is reachable in
+    /// the hosted page as <c>document.getElementById('diagram').ej2_instances[0]</c>
+    /// (EJ2 attaches instances to their DOM element), and the hosted WebView is
+    /// reachable from this control through the public visual tree
+    /// (SfView.Children → main grid → HybridWebView).
+    ///
+    /// So the background is applied by pushing the colour into the live EJ2
+    /// instance, with the MAUI-side BackgroundColor kept in sync so a later
+    /// re-initialisation (e.g. the page being re-created) starts from the same
+    /// colour. The host views are painted too, so the canvas edge matches even
+    /// before the renderer is ready.
     ///
     /// Paper format/orientation were removed: the MAUI Diagram exposes them only
     /// on <c>DiagramExportOptions</c> (consumed by ExportDiagram/Print), with no
@@ -307,12 +323,103 @@ public partial class DiagramWorkspaceControl : ContentView
     public void ApplyPageSettings(string backgroundColorKey)
     {
         var color = Services.ResourceLookup.Color(backgroundColorKey, Colors.White);
-        // The HybridWebView itself must stay transparent; paint the host views.
+
+        // Keep the control's own value in sync (used for the init payload and
+        // for any re-initialisation of the hosted diagram).
+        Diagram.BackgroundColor = color;
+
+        // Paint the host views as well: they frame the canvas and are what
+        // shows while the renderer is still starting up.
         DiagramGrid.BackgroundColor = color;
         if (this.Content is Border border)
         {
             border.BackgroundColor = color;
         }
+
+        // Push the colour into the live EJ2 diagram so the canvas repaints now.
+        _ = ApplyCanvasBackgroundAsync(color);
+    }
+
+    /// <summary>
+    /// Sets the live EJ2 diagram's background colour through the hosted WebView.
+    /// No-ops until the diagram is ready (the initial colour already came from
+    /// the init payload, so nothing is lost while it starts up).
+    /// </summary>
+    private async Task ApplyCanvasBackgroundAsync(Color color)
+    {
+        try
+        {
+            for (var i = 0; i < 40 && !SurfaceBehavior.IsReady; i++)
+            {
+                await Task.Delay(25);
+            }
+
+            if (!SurfaceBehavior.IsReady)
+            {
+                return;
+            }
+
+            var webView = FindHostedWebView();
+            if (webView is null)
+            {
+                return;
+            }
+
+            // EJ2 reads the colour as a CSS value. Use the 6-digit form: it is
+            // the same shape DiagramManager serializes at init
+            // (Color.ToHex() -> "#RRGGBB") and it is valid CSS in every engine.
+            var hex = color.ToRgbaHex();
+            await webView.EvaluateJavaScriptAsync(
+                "(function(){var c='" + hex + "';" +
+                "var el=document.getElementById('diagram');" +
+                "var inst=el&&el.ej2_instances&&el.ej2_instances[0];" +
+                "if(inst){" +
+                // Assigning the reactive EJ2 property makes the diagram run its
+                // own backgroundColor change handler, which repaints the canvas
+                // (intOffPageBackground -> canvas.style.background).
+                "inst.backgroundColor=c;" +
+                // Repaint the canvas element directly as well, so the change is
+                // visible even if the property handler is bypassed. EJ2 creates
+                // the canvas div without a class, as the first child of #diagram.
+                "var canvas=el&&el.firstElementChild;" +
+                "if(canvas){canvas.style.background=c;}" +
+                "inst.dataBind&&inst.dataBind();return 'ok';}" +
+                "return 'no-instance';})();");
+        }
+        catch
+        {
+            // The renderer may not be up yet; the init payload already carries
+            // the colour, so a failure here is not fatal.
+        }
+    }
+
+    /// <summary>
+    /// Locates the hosted HybridWebView inside the diagram control's visual tree
+    /// (SfView.Children → internal grid → the WebView). Returns null when the
+    /// tree has not been built yet.
+    /// </summary>
+    private HybridWebView? FindHostedWebView()
+    {
+        foreach (var child in Diagram.Children)
+        {
+            if (child is HybridWebView direct)
+            {
+                return direct;
+            }
+
+            if (child is Layout layout)
+            {
+                foreach (var nested in layout.Children)
+                {
+                    if (nested is HybridWebView webView)
+                    {
+                        return webView;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
 

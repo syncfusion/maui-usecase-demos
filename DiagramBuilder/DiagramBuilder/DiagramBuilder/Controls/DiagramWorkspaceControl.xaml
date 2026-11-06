@@ -25,12 +25,17 @@
         </Border.StrokeShape>
         <Grid x:Name="DiagramGrid"
               RowDefinitions="*">
-            <!-- BackgroundColor is deliberately TRANSPARENT (set in the SfDiagram ctor
-                 default override below): SfDiagram serializes BackgroundColor into the
-                 EJ2 init payload exactly once (DiagramManager.BuildInitConfigJson),
-                 and 'transparent' keeps the EJ2 canvas see-through so the MAUI host
-                 (DiagramGrid) behind the WebView shows through as the drawing-area
-                 background and can be repainted at runtime. -->
+            <!--
+              No BackgroundColor here on purpose: SfDiagram.BackgroundColor is
+              inherited from VisualElement and is only READ once, when the EJ2
+              diagram is initialised (DiagramManager.BuildInitConfigJson), so a
+              DynamicResource binding would be captured at inflate time and
+              never update. The code-behind owns the value instead: it sets an
+              opaque default (never transparent — DiagramManager serializes it
+              with the parameterless Color.ToHex(), which drops the alpha
+              channel and would render "#000000" = black) and pushes later
+              changes straight into the live EJ2 diagram.
+            -->
             <diagram:SfDiagram x:Name="Diagram">
                 <diagram:SfDiagram.Behaviors>
                     <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />

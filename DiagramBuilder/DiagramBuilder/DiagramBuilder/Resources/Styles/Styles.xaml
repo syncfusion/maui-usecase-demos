@@ -207,6 +207,23 @@
         </Setter>
     </Style>
 
+    <!-- Toolbar dropdown button (icon + caret, or a label + caret). An SfButton,
+         because it accepts a custom Content view (a plain MAUI Button only
+         takes a string) and its content decides the width — a fixed 32 px width
+         clipped the two-glyph content. -->
+    <Style x:Key="ToolbarDropdownButtonStyle" TargetType="buttons:SfButton">
+        <Setter Property="Text" Value="" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="6,0,4,0" />
+        <Setter Property="Margin" Value="2,0" />
+        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="MinimumHeightRequest" Value="32" />
+        <Setter Property="MinimumWidthRequest" Value="44" />
+        <Setter Property="EnableRippleEffect" Value="True" />
+    </Style>
+
     <!-- Active-tool variant: neutral dark background, white glyph. -->
     <Style x:Key="ToolbarIconActiveStyle" TargetType="Button" BasedOn="{StaticResource ToolbarIconButtonStyle}">
         <Setter Property="BackgroundColor" Value="#5F5F5F" />
