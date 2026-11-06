@@ -342,7 +342,7 @@ public partial class ToolbarControl : ContentView
             HeightRequest = 20,
             BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White),
             VerticalOptions = LayoutOptions.Center,
-            Margin = new Thickness(4, 8),
+            Margin = new Thickness(7, 0),
             AutomationId = "toolbar_fill_color",
         };
 
@@ -363,7 +363,7 @@ public partial class ToolbarControl : ContentView
             HeightRequest = 20,
             BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White),
             VerticalOptions = LayoutOptions.Center,
-            Margin = new Thickness(4, 8),
+            Margin = new Thickness(7, 0),
             AutomationId = "toolbar_stroke_color",
         };
 

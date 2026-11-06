@@ -216,11 +216,13 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="StrokeThickness" Value="0" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="8,0,6,0" />
+        <Setter Property="Padding" Value="6,0" />
         <Setter Property="Margin" Value="1,0" />
         <Setter Property="HeightRequest" Value="34" />
         <Setter Property="MinimumHeightRequest" Value="34" />
-        <Setter Property="MinimumWidthRequest" Value="48" />
+        <Setter Property="MinimumWidthRequest" Value="44" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
         <Setter Property="EnableRippleEffect" Value="True" />
     </Style>
 
