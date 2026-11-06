@@ -43,6 +43,7 @@ public partial class DiagramDesignerPage : ContentPage
         };
 
         MenuBar.IsChecked = viewModel.MenuBar.IsChecked;
+        MenuBar.IsItemEnabled = viewModel.MenuBar.IsEnabled;
 
         // Wire the single workspace. The SymbolPalette it discovers lives inside
         // the workspace control's DiagramGrid alongside the SfDiagram, so palette
@@ -101,6 +102,7 @@ public partial class DiagramDesignerPage : ContentPage
         viewModel.SendToBackRequested = () => Workspace.SendToBackAsync();
         viewModel.BringForwardRequested = () => Workspace.BringForwardAsync();
         viewModel.SendBackwardRequested = () => Workspace.SendBackwardAsync();
+        viewModel.ArrangeRequested = Workspace.ArrangeAsync;
         // Print/export use the control's defaults: the MAUI Diagram exposes page
         // settings only on DiagramExportOptions, and there is no live page
         // model backing them, so no unsupported overrides are passed.

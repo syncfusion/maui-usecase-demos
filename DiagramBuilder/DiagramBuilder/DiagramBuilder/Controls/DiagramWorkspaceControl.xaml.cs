@@ -424,6 +424,36 @@ public partial class DiagramWorkspaceControl : ContentView
         return script is null ? Task.CompletedTask : ExecuteDiagramScriptAsync(script);
     }
 
+    /// <summary>
+    /// Align / distribute / match size / group on the selected items, via the EJ2
+    /// instance's public methods (<c>align</c>, <c>distribute</c>, <c>sameSize</c>,
+    /// <c>group</c>, <c>unGroup</c>) — the MAUI wrapper does not surface them.
+    /// Align is relative to the first selected object; distribute spaces the
+    /// shapes evenly between the outer two (RightToLeft / BottomToTop = equal gaps).
+    /// </summary>
+    public Task ArrangeAsync(string commandId)
+    {
+        var script = commandId switch
+        {
+            AppConstants.CmdAlignLeft => "inst.align('Left');",
+            AppConstants.CmdAlignRight => "inst.align('Right');",
+            AppConstants.CmdAlignCenter => "inst.align('Center');",
+            AppConstants.CmdAlignTop => "inst.align('Top');",
+            AppConstants.CmdAlignBottom => "inst.align('Bottom');",
+            AppConstants.CmdAlignMiddle => "inst.align('Middle');",
+            AppConstants.CmdDistributeHorizontally => "inst.distribute('RightToLeft');",
+            AppConstants.CmdDistributeVertically => "inst.distribute('BottomToTop');",
+            AppConstants.CmdSameWidth => "inst.sameSize('Width');",
+            AppConstants.CmdSameHeight => "inst.sameSize('Height');",
+            AppConstants.CmdSameWidthAndHeight => "inst.sameSize('Size');",
+            AppConstants.CmdGroup => "inst.group();",
+            AppConstants.CmdUngroup => "inst.unGroup();",
+            _ => null,
+        };
+
+        return script is null ? Task.CompletedTask : ExecuteDiagramScriptAsync(script);
+    }
+
     public Task BringToFrontAsync() => ExecuteDiagramScriptAsync("inst.bringToFront&&inst.bringToFront();");
 
     public Task SendToBackAsync() => ExecuteDiagramScriptAsync("inst.sendToBack&&inst.sendToBack();");

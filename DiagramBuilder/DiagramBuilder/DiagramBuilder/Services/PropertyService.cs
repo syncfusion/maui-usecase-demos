@@ -480,21 +480,36 @@ public class PropertyService : IPropertyService
     /// </summary>
     private static void Align(ShapeAnnotation annotation, Syncfusion.Maui.Diagram.HorizontalAlignment? horizontal, Syncfusion.Maui.Diagram.VerticalAlignment? vertical)
     {
-        var offset = annotation.Offset;
+        // EJ2 anchors a label at its offset and places it relative to that anchor
+        // (Left = label starts at the anchor, Right = label ends at it). The anchor
+        // must therefore move together with the alignment. A *new* DiagramPoint is
+        // assigned: mutating the existing one and re-assigning the same reference
+        // raises no change notification, so the anchor stayed at 0.5 and the
+        // labels came out mirrored (Left pushed text right, Right pushed it left).
+        var x = annotation.Offset.X;
+        var y = annotation.Offset.Y;
+
+        if (horizontal.HasValue)
+        {
+            x = HorizontalFraction(horizontal.Value);
+        }
+
+        if (vertical.HasValue)
+        {
+            y = VerticalFraction(vertical.Value);
+        }
+
+        annotation.Offset = new Syncfusion.Maui.Diagram.DiagramPoint(x, y);
 
         if (horizontal.HasValue)
         {
             annotation.HorizontalAlignment = horizontal.Value;
-            offset.X = HorizontalFraction(horizontal.Value);
         }
 
         if (vertical.HasValue)
         {
             annotation.VerticalAlignment = vertical.Value;
-            offset.Y = VerticalFraction(vertical.Value);
         }
-
-        annotation.Offset = offset;
     }
 
     /// <summary>Horizontal offset fraction that matches an alignment.</summary>

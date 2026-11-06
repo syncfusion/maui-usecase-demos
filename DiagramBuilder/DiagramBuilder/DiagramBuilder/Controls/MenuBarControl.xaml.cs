@@ -24,6 +24,7 @@ public partial class MenuBarControl : ContentView
     // chrome is distinct from the app's HoverBackground which is for surfaces on light panels.
     private static readonly Color ChromeBackground = Color.FromArgb("#0D6EFD");
     private static readonly Color TextSecondary = Color.FromArgb("#5F6368");
+    private static readonly Color DisabledText = Color.FromArgb("#B0B4B9");
     private static readonly Color CheckBlue = Color.FromArgb("#0D6EFD");
 
     private static readonly System.Collections.Generic.Dictionary<string, double> FlyoutMinWidths = new()
@@ -44,6 +45,16 @@ public partial class MenuBarControl : ContentView
 
     public static readonly BindableProperty IsCheckedProperty =
         BindableProperty.Create(nameof(IsChecked), typeof(Func<string, bool>), typeof(MenuBarControl));
+
+    public static readonly BindableProperty IsItemEnabledProperty =
+        BindableProperty.Create(nameof(IsItemEnabled), typeof(Func<string, bool>), typeof(MenuBarControl));
+
+    /// <summary>Selection-aware enabled state per command id (evaluated each time a flyout opens).</summary>
+    public Func<string, bool>? IsItemEnabled
+    {
+        get => (Func<string, bool>?)GetValue(IsItemEnabledProperty);
+        set => SetValue(IsItemEnabledProperty, value);
+    }
 
     public IEnumerable? ItemsSource
     {
@@ -107,9 +118,15 @@ public partial class MenuBarControl : ContentView
         // PopupStyle: SfPopup's default CornerRadius is 28, which wrapped the flyout in a
         // large circular-cornered panel. The design uses ~2px sharp corners on a white panel,
         // so override it here (the inner Border below is the visible surface).
+        Action? refill = null;
         var popup = new Syncfusion.Maui.Popup.SfPopup
         {
-            ContentTemplate = new DataTemplate(() => BuildFlyoutContent(root)),
+            ContentTemplate = new DataTemplate(() =>
+            {
+                var content = BuildFlyoutContent(root, out var fill);
+                refill = fill;
+                return content;
+            }),
             ShowHeader = false,
             ShowFooter = false,
             ShowCloseButton = false,
@@ -130,7 +147,12 @@ public partial class MenuBarControl : ContentView
         // (.NET 9 Button has no programmatic GoToElementState, so the state is a style swap.)
         var normalStyle = (Style)Application.Current!.Resources["MenuRootStyle"];
         var activeStyle = (Style)Application.Current!.Resources["MenuRootActiveStyle"];
-        popup.Opened += (_, _) => button.Style = activeStyle;
+        popup.Opened += (_, _) =>
+        {
+            button.Style = activeStyle;
+            // Selection may have changed since the flyout was built: re-evaluate enabled states.
+            refill?.Invoke();
+        };
         popup.Closed += (_, _) => button.Style = normalStyle;
 
         button.Clicked += (_, _) =>
@@ -156,7 +178,7 @@ public partial class MenuBarControl : ContentView
             ["view"] = new Thickness(0, 4, 0, 4),
         };
 
-    private View BuildFlyoutContent(MenuCommandItem root)
+    private View BuildFlyoutContent(MenuCommandItem root, out Action refill)
     {
         // Use a per-menu padding so the Window menu is shorter overall; row height + row
         // padding (MenuFlyoutRowStyle / SfButton HeightRequest) are unchanged for every menu.
@@ -164,7 +186,19 @@ public partial class MenuBarControl : ContentView
             ? p
             : new Thickness(0, 4, 0, 4);
         var stack = new VerticalStackLayout { Spacing = 0, Padding = pad };
-        AppendRows(stack, root.Children, indent: 0, isTopLevel: true);
+
+        // Expanding / collapsing a section only re-fills this stack. Rebuilding the whole
+        // bar (the old behaviour) recreated the root button the popup is anchored to and
+        // dismissed the flyout, so sections appeared not to toggle.
+        void Fill()
+        {
+            stack.Children.Clear();
+            AppendRows(stack, root.Children, indent: 0, Fill);
+        }
+
+        Fill();
+        refill = Fill;
+
         // The SfPopup panel is transparent (see BuildRootButton), so this Border is the actual
         // white flyout surface. ~2px corners + a thin border + soft shadow, per the design.
         var border = new Border
@@ -181,16 +215,16 @@ public partial class MenuBarControl : ContentView
         return border;
     }
 
-    private void AppendRows(VerticalStackLayout stack, IList<MenuCommandItem> items, int indent, bool isTopLevel)
+    private void AppendRows(VerticalStackLayout stack, IList<MenuCommandItem> items, int indent, Action refill)
     {
         foreach (var child in items)
         {
             if (child.Children.Count > 0)
             {
-                stack.Children.Add(BuildSubmenuHeaderRow(child, indent));
+                stack.Children.Add(BuildSubmenuHeaderRow(child, indent, refill));
                 if (child.IsExpanded)
                 {
-                    AppendRows(stack, child.Children.ToList(), indent + 1, isTopLevel: false);
+                    AppendRows(stack, child.Children.ToList(), indent + 1, refill);
                 }
             }
             else
@@ -199,6 +233,9 @@ public partial class MenuBarControl : ContentView
             }
         }
     }
+
+    private bool IsItemEnabledSafe(MenuCommandItem item) =>
+        item.IsEnabled && (IsItemEnabled?.Invoke(item.Id) ?? true);
 
     private View BuildLeafRow(MenuCommandItem item, int indent)
     {
@@ -217,13 +254,14 @@ public partial class MenuBarControl : ContentView
         // is reliable (MAUI Button's VSM press is unreliable on this MAUI build). The row's
         // check + icon + label + shortcut are hosted inside SfButton.Content as a DataTemplate —
         // the factory builds a NEW grid per expansion, as MAUI templates require.
+        var enabled = IsItemEnabledSafe(item);
         var row = new Syncfusion.Maui.Buttons.SfButton
         {
             Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
-            Content = new DataTemplate(() => BuildRowLayout(item, indent)),
+            Content = new DataTemplate(() => BuildRowLayout(item, indent, enabled)),
             IsCheckable = item.IsCheckable,
             IsChecked = item.IsCheckable && IsCheckedSafe(item.Id),
-            IsEnabled = item.IsEnabled,
+            IsEnabled = enabled,
             CommandParameter = item.Id,
             Command = new Command<string?>(id => MenuCommand?.Execute(id)),
         };
@@ -231,7 +269,7 @@ public partial class MenuBarControl : ContentView
     }
 
     /// <summary>Check mark + icon + label + shortcut layout hosted inside the row's SfButton.Content.</summary>
-    private Grid BuildRowLayout(MenuCommandItem item, int indent)
+    private Grid BuildRowLayout(MenuCommandItem item, int indent, bool enabled)
     {
         var grid = new Grid
         {
@@ -262,7 +300,7 @@ public partial class MenuBarControl : ContentView
             Text = MenuIconFor(item),
             FontFamily = "MaterialIcons",
             FontSize = 14,
-            TextColor = TextSecondary,
+            TextColor = enabled ? TextSecondary : DisabledText,
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
         };
@@ -270,7 +308,7 @@ public partial class MenuBarControl : ContentView
         {
             Text = item.TextKey,
             FontSize = 13,
-            TextColor = item.IsEnabled ? Services.ResourceLookup.ResourceColor("TextPrimary") : TextSecondary,
+            TextColor = enabled ? Services.ResourceLookup.ResourceColor("TextPrimary") : DisabledText,
             Margin = new Thickness(8, 0, 0, 0),
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
@@ -296,11 +334,27 @@ public partial class MenuBarControl : ContentView
         return grid;
     }
 
-    private View BuildSubmenuHeaderRow(MenuCommandItem item, int indent)
+    private View BuildSubmenuHeaderRow(MenuCommandItem item, int indent, Action refill)
+    {
+        return new Syncfusion.Maui.Buttons.SfButton
+        {
+            Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+            // A DataTemplate must build a NEW layout per call (a captured instance can only
+            // have one parent), so the header is created inside the factory.
+            Content = new DataTemplate(() => BuildSubmenuHeaderLayout(item, indent)),
+            Command = new Command(() =>
+            {
+                item.IsExpanded = !item.IsExpanded;
+                // Defer: the tapped button is removed from the stack while refilling.
+                Dispatcher.Dispatch(refill);
+            }),
+        };
+    }
+
+    private Grid BuildSubmenuHeaderLayout(MenuCommandItem item, int indent)
     {
         var grid = new Grid
         {
-            Style = (Style)Application.Current!.Resources["MenuFlyoutHeaderStyle"],
             Padding = new Thickness(8 + (indent * 16), 0, 8, 0),
             ColumnDefinitions = new ColumnDefinitionCollection(new[]
             {
@@ -308,6 +362,7 @@ public partial class MenuBarControl : ContentView
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 new ColumnDefinition { Width = GridLength.Auto },
             }),
+            ColumnSpacing = 8,
         };
         var icon = new Label
         {
@@ -321,25 +376,23 @@ public partial class MenuBarControl : ContentView
         var label = new Label
         {
             Text = item.TextKey,
-            FontSize = 11,
+            FontSize = 12,
             FontAttributes = FontAttributes.Bold,
-            CharacterSpacing = 0.5,
             TextColor = TextSecondary,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
         };
         var chevron = new Label
         {
-            // Material expand-more / expand-less caret.
+            // expand-more when open, expand-less when collapsed (design: chevron-down while open).
             Text = item.IsExpanded
                 ? Constants.MaterialIcons.DropdownCaret
                 : Constants.MaterialIcons.CollapseCaret,
             FontFamily = "MaterialIcons",
-            FontSize = 14,
+            FontSize = 16,
             TextColor = TextSecondary,
             VerticalTextAlignment = TextAlignment.Center,
             VerticalOptions = LayoutOptions.Center,
-            Margin = new Thickness(0, 0, 2, 0),
         };
         grid.Children.Add(icon);
         grid.Children.Add(label);
@@ -347,17 +400,7 @@ public partial class MenuBarControl : ContentView
         Grid.SetColumn(icon, 0);
         Grid.SetColumn(label, 1);
         Grid.SetColumn(chevron, 2);
-
-        return new Syncfusion.Maui.Buttons.SfButton
-        {
-            Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
-            Content = new DataTemplate(() => grid),
-            Command = new Command(() =>
-            {
-                item.IsExpanded = !item.IsExpanded;
-                Rebuild();
-            }),
-        };
+        return grid;
     }
 
     private static double GetFlyoutMinWidth(string rootId) => FlyoutMinWidths.TryGetValue(rootId, out var width)
