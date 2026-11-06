@@ -27,22 +27,22 @@ This sample is for users and teams who want a practical home asset manager with 
 
 ## Controls Used
 
-- SfTabView — organizes dashboard sections and inventory workflows
-- SfListView — displays household items and related lists
-- SfButton — triggers scan, save, and action commands
-- SfCardView — presents dashboard KPIs and recommendation cards
-- SfCircularProgressBar — shows health or completion indicators
-- SfLinearProgressBar — displays progress and status states
-- SfGauge — visualizes summary metrics and asset health trends
-- SfPicker — supports structured selection where needed
+- SfTabView - organizes dashboard sections and inventory workflows
+- SfListView - displays household items and related lists
+- SfButton - triggers scan, save, and action commands
+- SfCardView - presents dashboard KPIs and recommendation cards
+- SfCircularProgressBar - shows health or completion indicators
+- SfLinearProgressBar - displays progress and status states
+- SfGauge - visualizes summary metrics and asset health trends
+- SfPicker - supports structured selection where needed
 
 ## Architecture
 
-- View / Page — XAML pages for dashboard, inventory, scan, warranty, and sidebar navigation
-- ViewModel — manages page state, commands, and AI-driven summaries
-- AI service — provides mock recommendations and classification responses
-- Models — represent inventory items, recommendations, warranty data, and dashboard summaries
-- Supporting UI components — Syncfusion charts, gauges, progress bars, lists, and tabs
+- View / Page - XAML pages for dashboard, inventory, scan, warranty, and sidebar navigation
+- ViewModel - manages page state, commands, and AI-driven summaries
+- AI service - provides mock recommendations and classification responses
+- Models - represent inventory items, recommendations, warranty data, and dashboard summaries
+- Supporting UI components - Syncfusion charts, gauges, progress bars, lists, and tabs
 
 ## Prerequisites
 
@@ -88,11 +88,11 @@ If you target another platform, adjust the `-f` value to match the supported fra
 
 ## Project Structure
 
-- Views/ — UI pages and layouts
-- ViewModels/ — presentation logic
-- Models/ — data structures
-- Services/ — AI and helper services
-- Resources/ — styles, images, and assets
+- Views/ - UI pages and layouts
+- ViewModels/ - presentation logic
+- Models/ - data structures
+- Services/ - AI and helper services
+- Resources/ - styles, images, and assets
 
 ## Troubleshooting
 
