@@ -25,8 +25,13 @@
         </Border.StrokeShape>
         <Grid x:Name="DiagramGrid"
               RowDefinitions="*">
-            <diagram:SfDiagram x:Name="Diagram"
-                               BackgroundColor="{DynamicResource CanvasBackground}">
+            <!-- BackgroundColor is deliberately TRANSPARENT (set in the SfDiagram ctor
+                 default override below): SfDiagram serializes BackgroundColor into the
+                 EJ2 init payload exactly once (DiagramManager.BuildInitConfigJson),
+                 and 'transparent' keeps the EJ2 canvas see-through so the MAUI host
+                 (DiagramGrid) behind the WebView shows through as the drawing-area
+                 background and can be repainted at runtime. -->
+            <diagram:SfDiagram x:Name="Diagram">
                 <diagram:SfDiagram.Behaviors>
                     <behaviors:DiagramSurfaceBehavior x:Name="SurfaceBehavior" />
                 </diagram:SfDiagram.Behaviors>

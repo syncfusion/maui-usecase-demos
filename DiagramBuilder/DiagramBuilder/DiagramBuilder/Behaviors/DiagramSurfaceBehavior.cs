@@ -251,6 +251,10 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
     /// collections (the MAUI layer exposes no dedicated delete method); the control
     /// raises CollectionChanged for the dispatch table's dirty-tracking. Selection
     /// ids come from the cached SelectionChanged payload.
+    ///
+    /// Connectors whose SourceID/TargetID reference a deleted node are removed as
+    /// well: their associated UI (the line + its endpoints/decorators) must not
+    /// survive the node it attaches to.
     /// </summary>
     public Task DeleteSelectionAsync()
     {
@@ -264,7 +268,13 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
         var connectorIds = new HashSet<string>(_selectedConnectorIds);
 
         var nodes = _diagram.Nodes.OfType<Node>().Where(n => nodeIds.Contains(n.Id)).ToList();
-        var connectors = _diagram.Connectors.OfType<Connector>().Where(c => connectorIds.Contains(c.Id)).ToList();
+
+        // Selected connectors + any connector tied to a deleted node.
+        var connectors = _diagram.Connectors.OfType<Connector>()
+            .Where(c => connectorIds.Contains(c.Id)
+                || (c.SourceID is { } src && nodeIds.Contains(src))
+                || (c.TargetID is { } tgt && nodeIds.Contains(tgt)))
+            .ToList();
 
         foreach (var connector in connectors)
         {

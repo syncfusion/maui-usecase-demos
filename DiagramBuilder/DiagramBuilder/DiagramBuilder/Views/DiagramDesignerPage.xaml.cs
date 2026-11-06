@@ -68,6 +68,10 @@ public partial class DiagramDesignerPage : ContentPage
         // Page settings (format, orientation, canvas background) are applied to
         // the live diagram whenever they change.
         _pageSettings.Changed += OnPageSettingsChanged;
+        // Apply the seeded settings once so the canvas matches the service
+        // (format/orientation feed the export/print options; the background
+        // paints the host views behind the transparent EJ2 canvas).
+        Workspace.ApplyPageSettings(_pageSettings.BackgroundColorKey, _pageSettings.Format, _pageSettings.IsPortrait);
 
         // Mirror the shared Stencil VM palette groups into the native SymbolPalette
         // (inside the workspace control). Syncfusion's JS bridge caches the Palettes
@@ -92,7 +96,11 @@ public partial class DiagramDesignerPage : ContentPage
         viewModel.CopyRequested = () => Workspace.Behavior.CopyAsync();
         viewModel.PasteRequested = () => Workspace.Behavior.PasteAsync();
         viewModel.DeleteRequested = () => Workspace.Behavior.DeleteSelectionAsync();
-        viewModel.PrintRequested = () => Workspace.Behavior.PrintAsync();
+        // Print carries the current page settings (format/orientation) into
+        // DiagramExportOptions — the only API the MAUI Diagram exposes for them.
+        viewModel.PrintRequested = () => Workspace.PrintAsync();
+        // The export dialog's run mirrors the same real export.
+        viewModel.Export.RealExportRequested = () => Workspace.ExportAsync();
         viewModel.Zoom.FitToPageRequested = new Command(() => _ = Workspace.Behavior.FitToPageAsync());
 
         _zoomSubscription = OnZoomPropertyChanged;

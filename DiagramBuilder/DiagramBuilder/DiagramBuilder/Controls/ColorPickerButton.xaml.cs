@@ -117,16 +117,9 @@ public partial class ColorPickerButton : ContentView
 
     private static void SetPickerColor(SfColorPicker picker, Color color)
     {
-        var type = picker.GetType();
-        foreach (var propertyName in new[] { "SelectedColor", "Color", "CurrentColor" })
-        {
-            var property = type.GetProperty(propertyName);
-            if (property?.CanWrite == true && property.PropertyType == typeof(Color))
-            {
-                property.SetValue(picker, color);
-                return;
-            }
-        }
+        // SfColorPicker exposes a public writable SelectedColor (verified in the
+        // Syncfusion.Maui.Inputs API surface) — no reflection needed.
+        picker.SelectedColor = color;
     }
 
     private static string FindNearestKey(Color color)
