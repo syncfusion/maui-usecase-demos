@@ -223,31 +223,24 @@ public partial class ToolbarControl : ContentView
             LeftGroupsBar.Children.Add(BuildDivider());
         }
 
-        // Group 6: Arrange / lock / clipboard actions (any selection)
-        if (HasAnySelection && byGroup.Any(g => g.Key == 6))
-        {
-            LeftGroupsBar.Children.Add(BuildArrangeDropdown());
-            LeftGroupsBar.Children.Add(BuildDivider());
-        }
     }
 
     /// <summary>
-    /// Center group: Fill / Stroke colour swatches + Delete. Only rendered when a
-    /// shape is selected (mirrors the property panel, which likewise shows shape
-    /// properties only for a selection), and centered via the toolbar's starred
-    /// middle column so it stays visually centered at any toolbar width.
-    /// Fill/Stroke need a single selected node (they paint the node's shape
-    /// style); Delete appears for any selection (nodes or connectors).
+    /// Center group: Fill / Stroke colour swatches, z-order, lock, and delete.
+    /// Only rendered when a selection exists (with colour swatches still limited
+    /// to a single node selection). This keeps the active shape actions centered
+    /// while placing the ordering and lock controls next to the colour picker.
     /// </summary>
     private void BuildCenterToolbar(List<DiagramToolbarItem> allItems)
     {
         var byGroup = allItems.GroupBy(i => i.Group).OrderBy(g => g.Key).ToList();
-        if (!byGroup.Any(g => g.Key == 5))
+        if (!byGroup.Any(g => g.Key is 5 or 6))
         {
             return;
         }
 
-        var group5Items = byGroup.First(g => g.Key == 5).ToList();
+        var group5Items = byGroup.FirstOrDefault(g => g.Key == 5)?.ToList() ?? [];
+        var group6Items = byGroup.FirstOrDefault(g => g.Key == 6)?.ToList() ?? [];
 
         if (HasSingleSelection)
         {
@@ -266,6 +259,16 @@ public partial class ToolbarControl : ContentView
 
         if (HasAnySelection)
         {
+            if (group6Items.Any(i => i.Id == AppConstants.CmdBringToFront || i.Id == AppConstants.CmdSendToBack))
+            {
+                CenterGroupsBar.Children.Add(BuildArrangeDropdown());
+            }
+
+            foreach (var item in group6Items.Where(i => i.Id == AppConstants.ToolLock))
+            {
+                CenterGroupsBar.Children.Add(BuildIconButton(item));
+            }
+
             foreach (var item in group5Items.Where(i => i.Id == AppConstants.CmdDelete))
             {
                 CenterGroupsBar.Children.Add(BuildIconButton(item));
