@@ -408,19 +408,15 @@ public partial class DiagramWorkspaceControl : ContentView
                 "inst.tool=16;inst.drawingObject={type:'Bezier'};inst.dataBind&&inst.dataBind();",
             AppConstants.ToolLock =>
                 "var nodes=(inst.selectedItems&&inst.selectedItems.nodes)||[];var connectors=(inst.selectedItems&&inst.selectedItems.connectors)||[];" +
-                "var anyUnlocked=false;var allLocked=nodes.length+connectors.length>0;" +
                 "function resolve(item){return item&&item.id&&inst.nameTable&&inst.nameTable[item.id]?inst.nameTable[item.id]:item;}" +
-                "function isLockedNode(n){return !!n.__dbLocked;}" +
-                "function isLockedConnector(c){return !!c.__dbLocked;}" +
-                "for(var i=0;i<nodes.length;i++){var n=resolve(nodes[i]);if(!isLockedNode(n)){anyUnlocked=true;}else{allLocked=allLocked&&true;}}" +
-                "for(var j=0;j<connectors.length;j++){var c=resolve(connectors[j]);if(!isLockedConnector(c)){anyUnlocked=true;}else{allLocked=allLocked&&true;}}" +
-                "var shouldLock=anyUnlocked||!allLocked;" +
-                "var NODE_DEFAULT=5240814;var NODE_LOCK_MASK=2|4|8|64|1044480|16777216;" +
-                "var CONN_DEFAULT=2043454;var CONN_LOCK_MASK=2|4|8|16|32|64|16384;" +
-                "function applyNodeLock(n,locked){if(!n){return;}if(locked){if(n.__dbLocked!==true){n.__dbPrevConstraints=n.constraints==null?NODE_DEFAULT:n.constraints;}n.constraints=(n.__dbPrevConstraints==null?NODE_DEFAULT:n.__dbPrevConstraints)&~NODE_LOCK_MASK;n.__dbLocked=true;}else if(n.__dbLocked){n.constraints=n.__dbPrevConstraints==null?NODE_DEFAULT:n.__dbPrevConstraints;n.__dbLocked=false;}}" +
-                "function applyConnectorLock(c,locked){if(!c){return;}if(locked){if(c.__dbLocked!==true){c.__dbPrevConstraints=c.constraints==null?CONN_DEFAULT:c.constraints;}c.constraints=(c.__dbPrevConstraints==null?CONN_DEFAULT:c.__dbPrevConstraints)&~CONN_LOCK_MASK;c.__dbLocked=true;}else if(c.__dbLocked){c.constraints=c.__dbPrevConstraints==null?CONN_DEFAULT:c.__dbPrevConstraints;c.__dbLocked=false;}}" +
-                "for(var k=0;k<nodes.length;k++){applyNodeLock(resolve(nodes[k]),shouldLock);}" +
-                "for(var m=0;m<connectors.length;m++){applyConnectorLock(resolve(connectors[m]),shouldLock);}" +
+                "function toggleNodeLock(node){if(!node){return;}if(node.__dbLocked!==true){node.__dbPrevConstraints=node.constraints;node.__dbPrevStyleOpacity=node.style&&node.style.opacity;}" +
+                "var current=node.__dbPrevConstraints==null?5240814:node.__dbPrevConstraints;" +
+                "if(node.__dbLocked===true){node.constraints=node.__dbPrevConstraints==null?5240814:node.__dbPrevConstraints;if(node.style){node.style.opacity=node.__dbPrevStyleOpacity==null?1:node.__dbPrevStyleOpacity;}node.__dbLocked=false;}else{node.constraints=current&~8;if(node.style){node.style.opacity=0.55;}node.__dbLocked=true;}}" +
+                "function toggleConnectorLock(connector){if(!connector){return;}if(connector.__dbLocked!==true){connector.__dbPrevConstraints=connector.constraints;connector.__dbPrevStyleOpacity=connector.style&&connector.style.opacity;}" +
+                "var current=connector.__dbPrevConstraints==null?2043454:connector.__dbPrevConstraints;" +
+                "if(connector.__dbLocked===true){connector.constraints=connector.__dbPrevConstraints==null?2043454:connector.__dbPrevConstraints;if(connector.style){connector.style.opacity=connector.__dbPrevStyleOpacity==null?1:connector.__dbPrevStyleOpacity;}connector.__dbLocked=false;}else{connector.constraints=current&~8;if(connector.style){connector.style.opacity=0.55;}connector.__dbLocked=true;}}" +
+                "for(var i=0;i<nodes.length;i++){toggleNodeLock(resolve(nodes[i]));}" +
+                "for(var j=0;j<connectors.length;j++){toggleConnectorLock(resolve(connectors[j]));}" +
                 "inst.dataBind&&inst.dataBind();",
             _ => null,
         };

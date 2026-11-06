@@ -82,10 +82,11 @@ public partial class DiagramDesignerPage : ContentPage
         ((INotifyCollectionChanged)paletteGroups).CollectionChanged +=
             (_, _) => Workspace.ShapesPalette.Palettes = paletteGroups;
 
-        // Wire panel-header chevron to the show/hide relay command (property panel has no chevron).
+        // The property panel gets an explicit collapse button in the trailing slot
+        // so the header uses a clearer close/collapse affordance than the default
+        // chevron, while the stencil keeps its own chevron header.
         PropertyPanel.Header.ShowChevron = false;
-        // The stencil panel still has a collapsible chevron.
-        // (PropertyPanel does not need one per the design.)
+        PropertyPanel.Header.Trailing = BuildPropertyPanelTrailingButton();
 
         // Wire surface request relays (VM → control, one-way; the VM stays
         // control-agnostic — each delegate only awaits a behavior method).
@@ -187,6 +188,19 @@ public partial class DiagramDesignerPage : ContentPage
     private async void OnCreateDialogRequested(object? sender, EventArgs e)
     {
         await Shell.Current.Navigation.PushModalAsync(_createDiagramPage);
+    }
+
+    private View BuildPropertyPanelTrailingButton()
+    {
+        var button = new Button
+        {
+            Text = Constants.MaterialIcons.ChevronRight,
+            FontFamily = "MaterialIcons",
+            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            AutomationId = "property_panel_close",
+        };
+        button.Clicked += (_, _) => _viewModel.TogglePropertiesCommand.Execute(null);
+        return button;
     }
 
     private async void OnAppearing(object? sender, EventArgs e)

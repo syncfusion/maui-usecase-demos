@@ -171,18 +171,18 @@
 
     <!-- ============ Named styles (referenced via ResourceKeys) ============ -->
 
-    <!-- 32x32 transparent icon button for the toolbar; hover #EFEFEF, pressed #E0E0E0, disabled 40% opacity. -->
+    <!-- 34x34 transparent icon button for the toolbar; hover #EFEFEF, pressed #E0E0E0, disabled 40% opacity. -->
     <Style x:Key="ToolbarIconButtonStyle" TargetType="Button">
-        <Setter Property="WidthRequest" Value="32" />
-        <Setter Property="HeightRequest" Value="32" />
+        <Setter Property="WidthRequest" Value="34" />
+        <Setter Property="HeightRequest" Value="34" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="2,0" />
-        <Setter Property="MinimumHeightRequest" Value="32" />
-        <Setter Property="MinimumWidthRequest" Value="32" />
+        <Setter Property="Margin" Value="1,0" />
+        <Setter Property="MinimumHeightRequest" Value="34" />
+        <Setter Property="MinimumWidthRequest" Value="34" />
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
-        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
@@ -216,11 +216,11 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="StrokeThickness" Value="0" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="6,0,4,0" />
-        <Setter Property="Margin" Value="2,0" />
-        <Setter Property="HeightRequest" Value="32" />
-        <Setter Property="MinimumHeightRequest" Value="32" />
-        <Setter Property="MinimumWidthRequest" Value="44" />
+        <Setter Property="Padding" Value="8,0,6,0" />
+        <Setter Property="Margin" Value="1,0" />
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="MinimumHeightRequest" Value="34" />
+        <Setter Property="MinimumWidthRequest" Value="48" />
         <Setter Property="EnableRippleEffect" Value="True" />
     </Style>
 
@@ -256,6 +256,7 @@
     <Style x:Key="ToolbarPrimaryActionStyle" TargetType="Button" BasedOn="{StaticResource ToolbarIconButtonStyle}">
         <Setter Property="BackgroundColor" Value="{DynamicResource SelectionBlue}" />
         <Setter Property="TextColor" Value="White" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">

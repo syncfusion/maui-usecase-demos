@@ -295,7 +295,7 @@ public partial class ToolbarControl : ContentView
 
     private HorizontalStackLayout BuildGroup(IGrouping<int, DiagramToolbarItem> group)
     {
-        var layout = new HorizontalStackLayout { Spacing = 0 };
+        var layout = new HorizontalStackLayout { Spacing = 4 };
         foreach (var item in group.OrderBy(x => x.Id))
         {
             layout.Children.Add(BuildIconButton(item));
@@ -581,9 +581,8 @@ public partial class ToolbarControl : ContentView
 
         // The icon and the caret are two separate labels in a horizontal stack
         // rather than one concatenated string: the shared icon-button style is
-        // a fixed 32 px wide, so a single "icon + caret" string overflowed the
-        // button and was clipped down to a couple of caret glyphs. The stack is
-        // sized to its own content, so both glyphs stay visible.
+        // intentionally compact, so a single "icon + caret" string would clip.
+        // The stack is sized to its own content, so both glyphs stay visible.
         var button = new SfButton
         {
             Style = (Style)Application.Current!.Resources["ToolbarDropdownButtonStyle"],
@@ -591,7 +590,7 @@ public partial class ToolbarControl : ContentView
             // SfButton.Content is a DataTemplate (same pattern as the menu rows).
             Content = new DataTemplate(() => new HorizontalStackLayout
             {
-                Spacing = 0,
+                Spacing = 4,
                 VerticalOptions = LayoutOptions.Center,
                 Children =
                 {
@@ -599,7 +598,7 @@ public partial class ToolbarControl : ContentView
                     {
                         Text = Constants.MaterialIcons.TextFor(id),
                         FontFamily = "MaterialIcons",
-                        FontSize = 16,
+                        FontSize = 14,
                         TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                         VerticalTextAlignment = TextAlignment.Center,
                     },
@@ -607,7 +606,7 @@ public partial class ToolbarControl : ContentView
                     {
                         Text = Constants.MaterialIcons.DropdownCaret,
                         FontFamily = "MaterialIcons",
-                        FontSize = 16,
+                        FontSize = 14,
                         TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                         VerticalTextAlignment = TextAlignment.Center,
                     },
@@ -653,7 +652,7 @@ public partial class ToolbarControl : ContentView
                         {
                             Text = string.IsNullOrEmpty(item.IconKey) ? string.Empty : Constants.MaterialIcons.TextFor(item.IconKey),
                             FontFamily = string.IsNullOrEmpty(item.IconKey) ? string.Empty : "MaterialIcons",
-                            FontSize = 16,
+                            FontSize = 14,
                             TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                             VerticalTextAlignment = TextAlignment.Center,
                             IsVisible = !string.IsNullOrEmpty(item.IconKey),
@@ -714,7 +713,7 @@ public partial class ToolbarControl : ContentView
                     new Label
                     {
                         Text = Math.Round(CurrentZoom * 100).ToString("0") + "%",
-                        FontSize = 13,
+                        FontSize = 14,
                         TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                         VerticalTextAlignment = TextAlignment.Center,
                     },
@@ -722,7 +721,7 @@ public partial class ToolbarControl : ContentView
                     {
                         Text = Constants.MaterialIcons.DropdownCaret,
                         FontFamily = "MaterialIcons",
-                        FontSize = 16,
+                        FontSize = 14,
                         TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                         VerticalTextAlignment = TextAlignment.Center,
                     },
@@ -774,7 +773,7 @@ public partial class ToolbarControl : ContentView
                             {
                                 Text = isSelected ? Constants.MaterialIcons.CheckGlyph : string.Empty,
                                 FontFamily = "MaterialIcons",
-                                FontSize = 16,
+                                FontSize = 14,
                                 TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                                 VerticalTextAlignment = TextAlignment.Center,
                                 WidthRequest = 18,
