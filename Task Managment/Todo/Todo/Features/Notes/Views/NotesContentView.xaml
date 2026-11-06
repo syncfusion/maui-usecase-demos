@@ -93,7 +93,7 @@
                                       WidthRequest="40"
                                       HeightRequest="40"
                                       Padding="0"
-                                      Rotation="90" Margin="5,0,0,0"
+                                      Rotation="90" Margin="{OnIdiom Desktop='5,0,0,0'}"
                                       CornerRadius="20"
                                       Background="Transparent"
                                       TextColor="{Binding HeaderForegroundColor}"
@@ -173,11 +173,23 @@
                                    IsVisible="{Binding HasActiveNotes}"
                                    ItemSpacing="0" ItemSize="80" 
                                    BackgroundColor="Transparent"
-                                   SelectionMode="SingleDeselect"
+                                   SelectionMode="{OnIdiom Phone=None, Default=SingleDeselect}"
                                    ItemDragging="OnItemDragging">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Note">
-                            <Border Margin="16,6"
+                            <Grid Margin="{OnIdiom Phone='16,6', Default='0'}">
+                                <Border InputTransparent="True"
+                                        IsVisible="{OnIdiom Phone=True, Default=False}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#26000000"
+                                                Radius="3"
+                                                Offset="0,1"
+                                                Opacity="1" />
+                                    </Border.Shadow>
+                                </Border>
+                                <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
                                     Padding="14,10"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                     StrokeThickness="0"
@@ -280,7 +292,7 @@
                                                     BackgroundColor="{StaticResource ChipBackgroundColor}">
                                                     <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                                         <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}" FontSize="10" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" /></HorizontalStackLayout>
-                                            </Border>
+                                                </Border>
                                             <Border IsVisible="{Binding HasRepeat}"
                                                     Padding="8,4"
                                                     Stroke="{StaticResource ChipStrokeColor}"
@@ -343,7 +355,7 @@
                                                                       PointerExited="OnPointerExited" />
                                         </Border.GestureRecognizers>
                                         <buttons:SfButton Text="&#8943;"
-                                                          FontSize="22" Margin="5,0,0,0"
+                                                          FontSize="22" Margin="{OnIdiom Desktop='5,0,0,0'}"
                                                           Rotation="90" 
                                                           Background="Transparent"
                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
@@ -358,6 +370,7 @@
                                     </Border>
                                 </Grid>
                             </Border>
+                            </Grid>
                         </DataTemplate>
                     </syncfusion:SfListView.ItemTemplate>
                 </syncfusion:SfListView>
@@ -382,10 +395,23 @@
                         <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}"
                                                ItemSpacing="0" ItemSize="85"
                                                BackgroundColor="Transparent"
-                                               SelectionMode="SingleDeselect">
+                                               SelectionMode="{OnIdiom Phone=None, Default=SingleDeselect}">
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
-                                    <Border Margin="16,6" Padding="14,10"
+                                    <Grid Margin="{OnIdiom Phone='16,6', Default='0'}">
+                                        <Border InputTransparent="True"
+                                                IsVisible="{OnIdiom Phone=True, Default=False}"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 10">
+                                            <Border.Shadow>
+                                                <Shadow Brush="#26000000"
+                                                        Radius="3"
+                                                        Offset="0,1"
+                                                        Opacity="1" />
+                                            </Border.Shadow>
+                                        </Border>
+                                        <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
+                                            Padding="14,10"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                             StrokeThickness="0" StrokeShape="RoundRectangle 10"
                                             Shadow="{StaticResource Elevation1}">
@@ -441,8 +467,8 @@
                                                                    TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                                                                    VerticalTextAlignment="Center" />
                                                         </HorizontalStackLayout>
-                                                    </Border>
-                                                    <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="0" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
+                                                        </Border>
+                                                        <Border IsVisible="{Binding HasRepeat}" Padding="7,3" Stroke="#E1DDED" StrokeThickness="0" StrokeShape="RoundRectangle 12" BackgroundColor="#FAF9FC">
                                                         <HorizontalStackLayout Spacing="4"><Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" WidthRequest="12" HeightRequest="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /><Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" /></HorizontalStackLayout>
                                                     </Border>
                                                     <Border IsVisible="{Binding HasReminder}"
@@ -483,7 +509,8 @@
                                                               Clicked="OnNoteMenuClicked"
                                                               SemanticProperties.Description="More note options" />
                                         </Grid>
-                                    </Border>
+                                        </Border>
+                                    </Grid>
                                 </DataTemplate>
                             </syncfusion:SfListView.ItemTemplate>
                         </syncfusion:SfListView>

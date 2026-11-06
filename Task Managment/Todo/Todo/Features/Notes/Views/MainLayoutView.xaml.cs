@@ -12,27 +12,20 @@ namespace Todo.Features.Notes.Views;
 /// </summary>
 public partial class MainLayoutView : ContentView
 {
-    // Module-08 task 8-1: expanded sidebar matches the wide layout in
-    // mynotes.png. Phone layout starts collapsed (matches collapsed.png);
-    // the hamburger button in the header toggles between the two.
     private const double ExpandedSidebarWidth = 220;
 
     private readonly NotesListViewModel _viewModel;
+    private readonly bool _isPhone;
     private View? _defaultContent;
 
     public MainLayoutView(NotesListViewModel viewModel)
     {
         InitializeComponent();
         _viewModel = viewModel;
+        _isPhone = DeviceIdiomMatches(DeviceIdiom.Phone);
         BindingContext = viewModel;
 
-        // Module-08 task 8-1: on Phone idiom the XAML sets the sidebar
-        // column to 0 (matches collapsed.png). For non-Phone idioms we
-        // honor the ViewModel flag so a user who collapsed the sidebar
-        // on a tablet sees the same state on the next appearance.
-        var startCollapsed = DeviceIdiomMatches(DeviceIdiom.Phone) || viewModel.IsSidebarCollapsed;
-        viewModel.IsSidebarCollapsed = startCollapsed;
-        UpdateSidebarColumn(startCollapsed);
+        UpdateSidebarColumn(viewModel.IsSidebarCollapsed);
         viewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 
@@ -63,9 +56,24 @@ public partial class MainLayoutView : ContentView
 
     private void UpdateSidebarColumn(bool isCollapsed)
     {
-        // Collapse the sidebar column completely so the main content
-        // area occupies the full available width.
-        RootGrid.ColumnDefinitions[0].Width = isCollapsed ? new GridLength(0) : new GridLength(ExpandedSidebarWidth);
+        if (_isPhone)
+        {
+            RootGrid.ColumnDefinitions[0].Width = isCollapsed
+                ? new GridLength(0)
+                : new GridLength(1, GridUnitType.Star);
+            RootGrid.ColumnDefinitions[1].Width = isCollapsed
+                ? new GridLength(1, GridUnitType.Star)
+                : new GridLength(0);
+            MainContent.IsVisible = isCollapsed;
+        }
+        else
+        {
+            RootGrid.ColumnDefinitions[0].Width = isCollapsed
+                ? new GridLength(0)
+                : new GridLength(ExpandedSidebarWidth);
+            MainContent.IsVisible = true;
+        }
+
         Sidebar.IsVisible = !isCollapsed;
     }
 

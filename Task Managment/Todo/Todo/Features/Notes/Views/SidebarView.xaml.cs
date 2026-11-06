@@ -15,6 +15,17 @@ public partial class SidebarView : ContentView
     public SidebarView()
     {
         InitializeComponent();
+
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+        {
+            CreateListButton.Shadow = new Shadow
+            {
+                Brush = new SolidColorBrush(Color.FromArgb("#33000000")),
+                Radius = 6,
+                Offset = new Point(0, 3),
+                Opacity = 0.16f
+            };
+        }
     }
 
     private static void OnPointerEntered(object? sender, PointerEventArgs e)
@@ -41,6 +52,9 @@ public partial class SidebarView : ContentView
         if (BindingContext is not NotesListViewModel vm) return;
         if (e.AddedItems?.FirstOrDefault() is not NotesListCategory category) return;
 
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            vm.IsSidebarCollapsed = true;
+
         CustomListsView.SelectedItem = null;
         if (vm.SelectedCategory == category && string.IsNullOrEmpty(vm.SelectedListId))
         {
@@ -59,6 +73,9 @@ public partial class SidebarView : ContentView
     {
         if (BindingContext is not NotesListViewModel vm) return;
         if (e.AddedItems?.FirstOrDefault() is not NoteList list) return;
+
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            vm.IsSidebarCollapsed = true;
 
         SidebarCategoriesView.SelectedItem = null;
         if (string.Equals(vm.SelectedListId, list.Id, StringComparison.Ordinal))

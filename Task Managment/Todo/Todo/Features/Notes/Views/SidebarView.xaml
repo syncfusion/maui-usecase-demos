@@ -84,14 +84,20 @@
                        IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists}" />
 
             <Grid Grid.Row="1">
-                <VerticalStackLayout Margin="16" Spacing="8"
+                <VerticalStackLayout Margin="16"
+                                     Spacing="{OnIdiom Phone=12, Default=8}"
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists, Converter={StaticResource InvertedBoolConverter}}">
-                    <Image Source="notesicon.png" WidthRequest="40" HeightRequest="40"
+                    <Image Source="notesicon.png"
+                           WidthRequest="{OnIdiom Phone=48, Default=40}"
+                           HeightRequest="{OnIdiom Phone=48, Default=40}"
                            Aspect="AspectFit" HorizontalOptions="Center" />
                     <Label Text="No list was found. Please create a to-do list."
                            Style="{StaticResource EmptyStateMessageStyle}"
+                           FontSize="{OnIdiom Phone=16, Default={StaticResource FontSizeBody}}"
+                           WidthRequest="{OnIdiom Phone=260, Default=-1}"
+                           MaxLines="2"
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
@@ -153,8 +159,13 @@
             </Grid>
         </Grid>
 
-        <buttons:SfButton Grid.Row="3" Text="&#65291;" FontSize="26" WidthRequest="52"
-                          HeightRequest="52" CornerRadius="26" Padding="0" Margin="16,12,10,0"
+        <buttons:SfButton x:Name="CreateListButton"
+                          Grid.Row="3" Text="&#65291;" FontSize="26"
+                          WidthRequest="{OnIdiom Phone=56, Default=52}"
+                          HeightRequest="{OnIdiom Phone=56, Default=52}"
+                          CornerRadius="{OnIdiom Phone=28, Default=26}"
+                          Padding="0"
+                          Margin="{OnIdiom Phone='16,12,16,0', Default='16,12,10,0'}"
                           HorizontalOptions="End"
                           BackgroundColor="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}"
                           TextColor="White"
