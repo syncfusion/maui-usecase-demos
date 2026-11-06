@@ -274,9 +274,18 @@ public partial class DiagramDesignerViewModel : ObservableObject
             case AppConstants.CmdCopy: await RunSurfaceRequestAsync(CopyRequested, commandId); break;
             case AppConstants.CmdPaste: await RunSurfaceRequestAsync(PasteRequested, commandId); break;
             case AppConstants.CmdDelete: await RunSurfaceRequestAsync(DeleteRequested, commandId); break;
+            // Select All / Duplicate run on the live EJ2 diagram (selectAll, copy+paste).
             case AppConstants.CmdDuplicate:
             case AppConstants.CmdSelectAll:
-                Status = string.Format(AppStrings.StatusCommandExecuted, commandId);
+                if (ArrangeRequested is null)
+                {
+                    Status = string.Format(AppStrings.StatusCommandExecuted, commandId);
+                }
+                else
+                {
+                    await ArrangeRequested(commandId);
+                }
+
                 break;
 
             // VIEW

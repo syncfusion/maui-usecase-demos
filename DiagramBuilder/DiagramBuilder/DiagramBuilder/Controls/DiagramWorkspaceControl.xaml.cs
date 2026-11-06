@@ -446,6 +446,9 @@ public partial class DiagramWorkspaceControl : ContentView
             AppConstants.CmdSameWidth => "inst.sameSize('Width');",
             AppConstants.CmdSameHeight => "inst.sameSize('Height');",
             AppConstants.CmdSameWidthAndHeight => "inst.sameSize('Size');",
+            AppConstants.CmdSelectAll => "inst.selectAll();",
+            // Duplicate = copy + paste: EJ2 pastes the copy offset from the original.
+            AppConstants.CmdDuplicate => "if(inst.selectedItems.nodes.length+inst.selectedItems.connectors.length>0){inst.copy();inst.paste();}",
             AppConstants.CmdGroup => "inst.group();",
             AppConstants.CmdUngroup => "inst.unGroup();",
             _ => null,
@@ -453,6 +456,33 @@ public partial class DiagramWorkspaceControl : ContentView
 
         return script is null ? Task.CompletedTask : ExecuteDiagramScriptAsync(script);
     }
+
+    /// <summary>
+    /// Pushes the View-menu grid options into the live EJ2 diagram. SnapConstraints:
+    /// ShowLines (3) draws the grid, SnapToLines (12) snaps dragged/resized shapes to it.
+    /// The MAUI host page only injects UndoRedo / PrintAndExport / ContextMenu, so the
+    /// Snapping module is injected here on demand — without it the flag alone is ignored.
+    /// </summary>
+    public Task ApplyGridSettingsAsync(bool showGrid, bool snapToGrid)
+    {
+        var constraints = (showGrid ? 3 : 0) | (snapToGrid ? 12 : 0);
+        var script =
+            (snapToGrid
+                ? "try{if(!inst.snappingModule&&ej.diagrams.Snapping){ej.diagrams.Diagram.Inject(ej.diagrams.Snapping);" +
+                  "inst.moduleLoader.inject(inst.requiredModules(),inst.injectedModules);}}catch(e){}"
+                : string.Empty) +
+            "inst.snapSettings.constraints=" + constraints + ";inst.dataBind&&inst.dataBind();";
+        return ExecuteDiagramScriptAsync(script);
+    }
+
+    /// <summary>
+    /// Shows or hides the shape palette. The palette is rendered by the diagram's own web
+    /// page (#symbolpalette), so MAUI visibility bindings cannot reach it.
+    /// </summary>
+    public Task ApplyStencilVisibilityAsync(bool visible) =>
+        ExecuteDiagramScriptAsync(
+            "var p=document.getElementById('symbolpalette');if(p){p.style.display='" + (visible ? "block" : "none") + "';}" +
+            "window.dispatchEvent(new Event('resize'));");
 
     public Task BringToFrontAsync() => ExecuteDiagramScriptAsync("inst.bringToFront&&inst.bringToFront();");
 
