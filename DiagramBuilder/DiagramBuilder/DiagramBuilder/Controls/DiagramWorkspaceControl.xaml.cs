@@ -407,10 +407,20 @@ public partial class DiagramWorkspaceControl : ContentView
             AppConstants.ToolConnectorBezier =>
                 "inst.tool=16;inst.drawingObject={type:'Bezier'};inst.dataBind&&inst.dataBind();",
             AppConstants.ToolLock =>
-                "var locked=false;var nodes=(inst.selectedItems&&inst.selectedItems.nodes)||[];var connectors=(inst.selectedItems&&inst.selectedItems.connectors)||[];for(var i=0;i<nodes.length;i++){var n=nodes[i];locked=locked||!!(n.lockDelete||n.lockSelect||n.lockRotate||n.lockAspect||n.lockTextEdit||n.lockMoveX||n.lockMoveY);}" +
-                "for(var j=0;j<connectors.length;j++){var c=connectors[j];locked=locked||!!(c.lockDelete||c.lockSelect||c.lockBegin||c.lockEnd||c.lockTextEdit||c.lockVtxEdit||c.lockMoveX||c.lockMoveY);}" +
-                "for(var k=0;k<nodes.length;k++){var n2=nodes[k];n2.lockDelete=!locked;n2.lockSelect=!locked;n2.lockRotate=!locked;n2.lockAspect=!locked;n2.lockTextEdit=!locked;n2.lockHeight=!locked;n2.lockWidth=!locked;n2.lockMoveX=!locked;n2.lockMoveY=!locked;}" +
-                "for(var m=0;m<connectors.length;m++){var c2=connectors[m];c2.lockDelete=!locked;c2.lockSelect=!locked;c2.lockBegin=!locked;c2.lockEnd=!locked;c2.lockTextEdit=!locked;c2.lockVtxEdit=!locked;c2.lockMoveX=!locked;c2.lockMoveY=!locked;}" +
+                "var nodes=(inst.selectedItems&&inst.selectedItems.nodes)||[];var connectors=(inst.selectedItems&&inst.selectedItems.connectors)||[];" +
+                "var anyUnlocked=false;var allLocked=nodes.length+connectors.length>0;" +
+                "function resolve(item){return item&&item.id&&inst.nameTable&&inst.nameTable[item.id]?inst.nameTable[item.id]:item;}" +
+                "function isLockedNode(n){return !!n.__dbLocked;}" +
+                "function isLockedConnector(c){return !!c.__dbLocked;}" +
+                "for(var i=0;i<nodes.length;i++){var n=resolve(nodes[i]);if(!isLockedNode(n)){anyUnlocked=true;}else{allLocked=allLocked&&true;}}" +
+                "for(var j=0;j<connectors.length;j++){var c=resolve(connectors[j]);if(!isLockedConnector(c)){anyUnlocked=true;}else{allLocked=allLocked&&true;}}" +
+                "var shouldLock=anyUnlocked||!allLocked;" +
+                "var NODE_DEFAULT=5240814;var NODE_LOCK_MASK=2|4|8|64|1044480|16777216;" +
+                "var CONN_DEFAULT=2043454;var CONN_LOCK_MASK=2|4|8|16|32|64|16384;" +
+                "function applyNodeLock(n,locked){if(!n){return;}if(locked){if(n.__dbLocked!==true){n.__dbPrevConstraints=n.constraints==null?NODE_DEFAULT:n.constraints;}n.constraints=(n.__dbPrevConstraints==null?NODE_DEFAULT:n.__dbPrevConstraints)&~NODE_LOCK_MASK;n.__dbLocked=true;}else if(n.__dbLocked){n.constraints=n.__dbPrevConstraints==null?NODE_DEFAULT:n.__dbPrevConstraints;n.__dbLocked=false;}}" +
+                "function applyConnectorLock(c,locked){if(!c){return;}if(locked){if(c.__dbLocked!==true){c.__dbPrevConstraints=c.constraints==null?CONN_DEFAULT:c.constraints;}c.constraints=(c.__dbPrevConstraints==null?CONN_DEFAULT:c.__dbPrevConstraints)&~CONN_LOCK_MASK;c.__dbLocked=true;}else if(c.__dbLocked){c.constraints=c.__dbPrevConstraints==null?CONN_DEFAULT:c.__dbPrevConstraints;c.__dbLocked=false;}}" +
+                "for(var k=0;k<nodes.length;k++){applyNodeLock(resolve(nodes[k]),shouldLock);}" +
+                "for(var m=0;m<connectors.length;m++){applyConnectorLock(resolve(connectors[m]),shouldLock);}" +
                 "inst.dataBind&&inst.dataBind();",
             _ => null,
         };
