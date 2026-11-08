@@ -327,7 +327,9 @@ public sealed class TaskSchedulingFlyout : ContentView
                 ColumnDefinitions = hasIcon
                     ? new ColumnDefinitionCollection { new(22), new(GridLength.Star) }
                     : new ColumnDefinitionCollection { new(GridLength.Star) },
-                ColumnSpacing = 4
+                ColumnSpacing = 4,
+                Padding = new Thickness(12, 0),
+                InputTransparent = true
             };
             if (hasIcon)
             {
@@ -356,7 +358,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             grid.Children.Add(textLabel);
             if (hasIcon)
                 textLabel.SetValue(Grid.ColumnProperty, 1);
-            return PointerHoverSurface.Wrap(grid, 8, new Thickness(12, 0));
+            return grid;
         });
         return button;
     }

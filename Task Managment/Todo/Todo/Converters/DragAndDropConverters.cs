@@ -60,8 +60,10 @@ public sealed class DragStateColorConverter : IMultiValueConverter
         var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
         if (parts.Length == 4)
         {
+            if (!isDragged) return Colors.Transparent;
+
             var offset = isDark ? 2 : 0;
-            return isDragged ? Color.FromArgb(parts[offset + 1]) : Color.FromArgb(parts[offset]);
+            return Color.FromArgb(parts[offset + 1]);
         }
 
         if (parts.Length != 2) return Colors.Transparent;

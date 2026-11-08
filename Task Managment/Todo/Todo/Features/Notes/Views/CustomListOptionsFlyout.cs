@@ -124,7 +124,9 @@ public sealed class CustomListOptionsFlyout : ContentView
             var grid = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
-                ColumnSpacing = 4
+                ColumnSpacing = 4,
+                Padding = new Thickness(10, 0),
+                InputTransparent = true
             };
             var icon = new Label
             {
@@ -148,7 +150,7 @@ public sealed class CustomListOptionsFlyout : ContentView
             label.SetBinding(Label.TextColorProperty, new Binding(nameof(SfButton.TextColor), source: button));
             label.SetValue(Grid.ColumnProperty, 1);
             grid.Children.Add(label);
-            return PointerHoverSurface.Wrap(grid, 8, new Thickness(10, 0));
+            return grid;
         });
 
         SemanticProperties.SetDescription(button, text);

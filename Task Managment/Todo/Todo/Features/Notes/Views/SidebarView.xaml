@@ -20,6 +20,7 @@
                                 SelectionMode="Single" SelectionBackground="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}"
                                 SelectedItem="{Binding SelectedSidebarCategory, Mode=OneWay, Converter={StaticResource ObjectToCategoryConverter}}"
                                 BackgroundColor="Transparent"
+                                Loaded="OnSidebarCategoriesLoaded"
                                 SelectionChanged="OnSidebarSelectionChanged">
             <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="common:NotesListCategory">

@@ -11,6 +11,7 @@ public partial class SidebarView : ContentView
     // resource dictionary on every DragOver event.
     private static readonly Color DropTargetFill = Color.FromArgb("#EEEAFB");
     private static readonly Color DropTargetStroke = Color.FromArgb("#5C4EAE");
+    private bool _initialPhoneSelectionCleared;
 
     public SidebarView()
     {
@@ -38,6 +39,15 @@ public partial class SidebarView : ContentView
     {
         if (sender is Border border)
             PointerHoverSurface.Reset(border);
+    }
+
+    private void OnSidebarCategoriesLoaded(object? sender, EventArgs e)
+    {
+        if (_initialPhoneSelectionCleared || DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
+            return;
+
+        _initialPhoneSelectionCleared = true;
+        SidebarCategoriesView.SelectedItem = null;
     }
 
     /// <summary>

@@ -172,15 +172,15 @@
                     <syncfusion:SfListView Grid.Row="0" ItemsSource="{Binding ActiveNotes}"
                                    IsVisible="{Binding HasActiveNotes}"
                                    ItemSpacing="0" ItemSize="80" 
-                                   BackgroundColor="Transparent"
+                                   Background="Transparent"
                                    SelectionMode="{OnIdiom Phone=None, Default=SingleDeselect}"
                                    ItemDragging="OnItemDragging">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Note">
-                            <Grid Margin="{OnIdiom Phone='16,6', Default='0'}">
+                            <Grid Margin="{OnIdiom Phone='16,6', Default='0'}" >
                                 <Border InputTransparent="True"
                                         IsVisible="{OnIdiom Phone=True, Default=False}"
-                                        StrokeThickness="0"
+                                        StrokeThickness="0" 
                                         StrokeShape="RoundRectangle 10">
                                     <Border.Shadow>
                                         <Shadow Brush="#26000000"
@@ -190,7 +190,7 @@
                                     </Border.Shadow>
                                 </Border>
                                 <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
-                                    Padding="14,10"
+                                    Padding="14,10" 
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
@@ -236,19 +236,8 @@
                                 </VisualStateManager.VisualStateGroups>
 
                                 <Grid ColumnDefinitions="40,*,40,40"
-                                      ColumnSpacing="8"
+                                      ColumnSpacing="8" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                                       VerticalOptions="Start">
-                                    <BoxView Grid.ColumnSpan="4"
-                                             InputTransparent="True">
-                                        <BoxView.Color>
-                                            <MultiBinding Converter="{StaticResource DragStateColorConverter}"
-                                                          ConverterParameter="#00000000|#EEEAFB|#00000000|#383442">
-                                                <Binding Path="Id" />
-                                                <Binding Source="{x:Reference NotesContentRoot}"
-                                                         Path="BindingContext.DraggingNoteId" />
-                                            </MultiBinding>
-                                        </BoxView.Color>
-                                    </BoxView>
 
                                     <!--
                                         Complete / checkbox. IsChecked is
@@ -523,7 +512,7 @@
             <Border Grid.Row="2"
                     Margin="16,12,16,16"
                     Padding="8"
-                    BackgroundColor="White"
+                    Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
                 <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" RowSpacing="8" VerticalOptions="Center">
