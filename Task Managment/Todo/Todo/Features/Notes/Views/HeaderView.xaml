@@ -53,7 +53,7 @@
                           CornerRadius="20"
                           Background="Transparent"
                           IsVisible="False"
-                          Command="{Binding ToggleSidebarCommand}"
+                          Clicked="OnMobileNavigationClicked"
                           SemanticProperties.Description="Back to navigation">
             <buttons:SfButton.Content>
                 <DataTemplate x:DataType="vm:NotesListViewModel">

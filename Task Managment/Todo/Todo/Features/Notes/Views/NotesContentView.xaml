@@ -305,7 +305,7 @@
 
                                     <!-- Star (Important) -->
                                     <Border Grid.Column="2"
-                                            WidthRequest="40"
+                                            WidthRequest="40" Margin="{OnIdiom Desktop=0, Phone='0,0,0,10', Default=0}"
                                             HeightRequest="40"
                                             BackgroundColor="Transparent"
                                             StrokeThickness="0"
@@ -332,7 +332,7 @@
                                     </Border>
 
                                     <!-- More menu (three-dot) -->
-                                    <Border Grid.Column="3"
+                                    <Border Grid.Column="3" Margin="{OnIdiom Desktop=0, Phone='0,0,0,10', Default=0}"
                                             WidthRequest="40"
                                             HeightRequest="40"
                                             BackgroundColor="Transparent"

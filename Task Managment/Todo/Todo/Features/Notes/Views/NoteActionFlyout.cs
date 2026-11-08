@@ -21,6 +21,7 @@ public sealed class NoteActionFlyout : ContentView
     private Border? _surface;
     private Border? _destinationsSurface;
     private Grid? _selectAllRow;
+    private View? _selectAllSurface;
     private CheckBox? _selectAllCheckBox;
     private BoxView? _selectAllSeparator;
     private SfButton? _completionButton;
@@ -32,6 +33,7 @@ public sealed class NoteActionFlyout : ContentView
     private bool _closeAnimationRunning;
     private bool _allowPopupClose;
     private bool _isUpdatingSelectAll;
+    private bool? _isCompactDeletedMenu;
     private bool _closingFlyoutsTogether;
     private Point _mainPopupPosition;
     private bool _hasMainPopupPosition;
@@ -191,23 +193,17 @@ public sealed class NoteActionFlyout : ContentView
             })
         });
         _selectAllRow.Children.Add(selectAllLabel);
-        _actionsLayout.Children.Add(PointerHoverSurface.Wrap(_selectAllRow, 8, Thickness.Zero));
+        _selectAllSurface = PointerHoverSurface.Wrap(_selectAllRow, 8, Thickness.Zero);
 
         _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
         _selectAllSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#494650"));
-        _actionsLayout.Children.Add(_selectAllSeparator);
 
         _completionButton = CreateButton("Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion), iconGlyph: "\ue876");
-        _actionsLayout.Children.Add(_completionButton);
         _editButton = CreateButton("Edit note", () => RaiseAction(NoteActionKind.Edit), iconGlyph: "\ue150");
-        _actionsLayout.Children.Add(_editButton);
         _moveButton = CreateButton("Move notes to", ShowDestinations, iconGlyph: "\ue5c4");
-        _actionsLayout.Children.Add(_moveButton);
         _restoreButton = CreateButton("Restore note", () => RaiseAction(NoteActionKind.Restore), iconGlyph: "\ue5d5");
-        _actionsLayout.Children.Add(_restoreButton);
         _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
         _deleteSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#FFFFFF"));
-        _actionsLayout.Children.Add(_deleteSeparator);
         _deleteButton = CreateButton("Delete task", () =>
         {
             if (_selectedNote?.DeletedAt is not null)
@@ -215,7 +211,6 @@ public sealed class NoteActionFlyout : ContentView
             else
                 RaiseAction(NoteActionKind.Delete);
         }, destructive: true, iconGlyph: "\ue92e", iconColor: "#B3261E");
-        _actionsLayout.Children.Add(_deleteButton);
 
         var stage = new Grid();
         stage.Margin = new Thickness(0,10);
@@ -359,8 +354,10 @@ public sealed class NoteActionFlyout : ContentView
     private void UpdateMenu()
     {
         if (_selectedNote is null || _selectAllRow is null || _selectAllCheckBox is null || _selectAllSeparator is null
-            || _completionButton is null || _editButton is null || _moveButton is null || _restoreButton is null || _deleteButton is null || _deleteSeparator is null) return;
+            || _selectAllSurface is null || _completionButton is null || _editButton is null || _moveButton is null
+            || _restoreButton is null || _deleteButton is null || _deleteSeparator is null || _actionsLayout is null) return;
         var isDeleted = _selectedNote.DeletedAt is not null;
+        UpdateActionLayout(isDeleted);
         var canSelectAll = !isDeleted && _visibleNotes.Count > 0;
         _selectAllRow.IsVisible = canSelectAll;
         _selectAllSeparator.IsVisible = canSelectAll;
@@ -371,6 +368,33 @@ public sealed class NoteActionFlyout : ContentView
         _restoreButton.IsVisible = isDeleted;
         _deleteSeparator.IsVisible = isDeleted;
         _deleteButton.Text = isDeleted ? "Delete permanently" : "Delete task";
+    }
+
+    private void UpdateActionLayout(bool isDeleted)
+    {
+        var useCompactLayout = isDeleted
+            && (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Idiom == DeviceIdiom.Phone);
+        if (_isCompactDeletedMenu == useCompactLayout || _actionsLayout is null)
+            return;
+
+        _isCompactDeletedMenu = useCompactLayout;
+        _actionsLayout.Children.Clear();
+        if (useCompactLayout)
+        {
+            _actionsLayout.Children.Add(_restoreButton!);
+            _actionsLayout.Children.Add(_deleteSeparator!);
+            _actionsLayout.Children.Add(_deleteButton!);
+            return;
+        }
+
+        _actionsLayout.Children.Add(_selectAllSurface!);
+        _actionsLayout.Children.Add(_selectAllSeparator!);
+        _actionsLayout.Children.Add(_completionButton!);
+        _actionsLayout.Children.Add(_editButton!);
+        _actionsLayout.Children.Add(_moveButton!);
+        _actionsLayout.Children.Add(_restoreButton!);
+        _actionsLayout.Children.Add(_deleteSeparator!);
+        _actionsLayout.Children.Add(_deleteButton!);
     }
 
     private void OnSelectAllCheckedChanged(object? sender, Microsoft.Maui.Controls.CheckedChangedEventArgs e)
@@ -423,7 +447,10 @@ public sealed class NoteActionFlyout : ContentView
     private void UpdatePopupSize()
     {
         double contentHeight;
-        if (_selectedNote?.DeletedAt is not null)
+        var isDeleted = _selectedNote?.DeletedAt is not null;
+        var useContentSizedPopup = isDeleted
+            && (DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Idiom == DeviceIdiom.Phone);
+        if (isDeleted)
         {
             // Restore button, separator, and delete button.
             contentHeight = 40 + 1 + 40 + 10;
@@ -434,11 +461,12 @@ public sealed class NoteActionFlyout : ContentView
             contentHeight = 40 + 1 + (4 * 40) + (5 * 5);
         }
 
-        var popupHeight = contentHeight + 16 + 20;
-        _popup.HeightRequest = popupHeight;
+        _popup.AutoSizeMode = useContentSizedPopup ? PopupAutoSizeMode.Height : PopupAutoSizeMode.None;
+        var heightRequest = useContentSizedPopup ? -1 : contentHeight + 16 + 20;
+        _popup.HeightRequest = heightRequest;
 
         if (_surface is not null)
-            _surface.HeightRequest = popupHeight;
+            _surface.HeightRequest = heightRequest;
     }
 
     private void RaiseAction(NoteActionKind action, string? targetKey = null)

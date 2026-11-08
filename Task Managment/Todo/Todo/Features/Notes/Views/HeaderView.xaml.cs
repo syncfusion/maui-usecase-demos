@@ -61,6 +61,21 @@ public partial class HeaderView : ContentView
         SearchEntry.Focus();
     }
 
+    private void OnMobileNavigationClicked(object? sender, EventArgs e)
+    {
+        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone
+            || BindingContext is not NotesListViewModel vm)
+            return;
+
+        if (vm.IsSearchActive)
+            vm.CloseSearchCommand.Execute(null);
+
+        SearchEntry.Unfocus();
+        SearchPill.IsVisible = false;
+        UpdateMobileHeader();
+        vm.ToggleSidebarCommand.Execute(null);
+    }
+
     private void OnSearchEntryUnfocused(object? sender, FocusEventArgs e)
     {
         if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
@@ -76,6 +91,14 @@ public partial class HeaderView : ContentView
         if (e.PropertyName is nameof(NotesListViewModel.IsSidebarCollapsed)
             or nameof(NotesListViewModel.HeaderTitle))
         {
+            UpdateMobileHeader();
+        }
+        else if (e.PropertyName == nameof(NotesListViewModel.IsSearchActive)
+                 && DeviceInfo.Current.Idiom == DeviceIdiom.Phone
+                 && _viewModel?.IsSearchActive == false)
+        {
+            SearchEntry.Unfocus();
+            SearchPill.IsVisible = false;
             UpdateMobileHeader();
         }
     }

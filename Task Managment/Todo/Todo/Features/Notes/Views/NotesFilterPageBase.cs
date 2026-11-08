@@ -33,6 +33,9 @@ public abstract class NotesFilterPageBase : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone && _viewModel.IsSearchActive)
+            _viewModel.CloseSearchCommand.Execute(null);
+
         _viewModel.NavigationRequested -= OnNavigationRequested;
         _viewModel.NavigationRequested += OnNavigationRequested;
 
@@ -57,11 +60,14 @@ public abstract class NotesFilterPageBase : ContentPage
             _hasAppeared = true;
             _viewModel.SelectedCategory = _category;
         }
+
+        _layout.Activate();
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+        _layout?.Deactivate();
         _viewModel.NavigationRequested -= OnNavigationRequested;
     }
 

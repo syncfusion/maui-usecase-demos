@@ -26,7 +26,25 @@ public partial class MainLayoutView : ContentView
         BindingContext = viewModel;
 
         UpdateSidebarColumn(viewModel.IsSidebarCollapsed);
-        viewModel.PropertyChanged += OnViewModelPropertyChanged;
+        if (!_isPhone)
+            viewModel.PropertyChanged += OnViewModelPropertyChanged;
+    }
+
+    public void Activate()
+    {
+        if (!_isPhone)
+            return;
+
+        _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+        UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
+        UpdateMainContent();
+    }
+
+    public void Deactivate()
+    {
+        if (_isPhone)
+            _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
     /// <summary>
