@@ -126,18 +126,25 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
-                                     <Image Grid.Column="0" Source="notesicon.png" WidthRequest="20"
-                                         HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center" />
-                                    <HorizontalStackLayout Grid.Column="1" Spacing="4"
-                                                           VerticalOptions="Center"
-                                                           IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}">
-                                        <Label Text="{Binding Name}"
-                                               Style="{StaticResource SidebarItemLabelStyle}"
-                                               LineBreakMode="TailTruncation" />
-                                        <Label Text="{Binding NoteCountText}"
-                                               Style="{StaticResource SidebarItemLabelStyle}"
-                                               IsVisible="{Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}" />
-                                    </HorizontalStackLayout>
+                                    <Grid Grid.Column="0" Grid.ColumnSpan="2"
+                                          ColumnDefinitions="Auto,*" ColumnSpacing="8"
+                                          VerticalOptions="Fill">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnCustomListRowTapped" />
+                                        </Grid.GestureRecognizers>
+                                        <Image Grid.Column="0" Source="notesicon.png" WidthRequest="20"
+                                               HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center" />
+                                        <HorizontalStackLayout Grid.Column="1" Spacing="4"
+                                                               VerticalOptions="Center"
+                                                               IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}">
+                                            <Label Text="{Binding Name}"
+                                                   Style="{StaticResource SidebarItemLabelStyle}"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding NoteCountText}"
+                                                   Style="{StaticResource SidebarItemLabelStyle}"
+                                                   IsVisible="{Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}" />
+                                        </HorizontalStackLayout>
+                                    </Grid>
                                     <Border Grid.Column="2" WidthRequest="32" HeightRequest="32"
                                             BackgroundColor="Transparent" StrokeThickness="0"
                                             StrokeShape="RoundRectangle 16">

@@ -551,6 +551,8 @@ public partial class NotesListViewModel : ViewModelBase
         SelectedListId = listId;
         SelectedCustomList = ResolveCustomList(listId);
         SelectedSidebarCategory = null;
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            IsSidebarCollapsed = true;
     }
 
     // ---------------------------------------------------------------

@@ -91,8 +91,25 @@ public partial class SidebarView : ContentView
         if (string.Equals(vm.SelectedListId, list.Id, StringComparison.Ordinal))
         {
             vm.CloseSearchCommand.Execute(null);
-            return;
         }
+        else
+        {
+            vm.NavigateToListCommand.Execute(list.Id);
+        }
+
+        // The current list stays active while the sidebar is hidden.
+        // Clear the control selection so tapping the same list after
+        // reopening navigation raises SelectionChanged again.
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            CustomListsView.SelectedItem = null;
+    }
+
+    private void OnCustomListRowTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is not View { BindingContext: NoteList list }
+            || BindingContext is not NotesListViewModel vm)
+            return;
+
         vm.NavigateToListCommand.Execute(list.Id);
     }
 
