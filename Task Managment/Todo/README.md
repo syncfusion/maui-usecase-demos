@@ -1,6 +1,6 @@
 # Todo
 
-Short description: A .NET MAUI task management sample that demonstrates note creation, filtering, editing, and organization with Syncfusion controls.
+A .NET MAUI task management sample that demonstrates note creation, filtering, editing, and organization with Syncfusion controls.
 
 ## Overview
 
