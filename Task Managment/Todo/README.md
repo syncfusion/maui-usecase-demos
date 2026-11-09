@@ -110,7 +110,7 @@ dotnet build Todo/Todo.csproj -f net10.0-android
 If you target another platform, use the corresponding framework supported by the project.
 
 ## Output
-
+<img width="800" height="425" alt="Todo_windows" src="https://github.com/user-attachments/assets/4342e2b9-d618-4b0d-9a3a-8938449c01aa" />
 
 
 ## Project Structure
