@@ -8,11 +8,13 @@ public sealed class SearchHighlightMultiValueConverter : IMultiValueConverter
     {
         var title = values is { Length: > 0 } ? values[0] as string ?? string.Empty : string.Empty;
         var query = values is { Length: > 1 } ? values[1] as string ?? string.Empty : string.Empty;
+        var completed = values is { Length: > 2 } && values[2] is true;
+        var completionDecoration = completed ? TextDecorations.Strikethrough : TextDecorations.None;
         var formattedText = new FormattedString();
 
         if (string.IsNullOrEmpty(query))
         {
-            formattedText.Spans.Add(new Span { Text = title });
+            formattedText.Spans.Add(new Span { Text = title, TextDecorations = completionDecoration });
             return formattedText;
         }
 
@@ -26,19 +28,23 @@ public sealed class SearchHighlightMultiValueConverter : IMultiValueConverter
             var matchIndex = title.IndexOf(query, position, StringComparison.OrdinalIgnoreCase);
             if (matchIndex < 0)
             {
-                formattedText.Spans.Add(new Span { Text = title[position..] });
+                formattedText.Spans.Add(new Span { Text = title[position..], TextDecorations = completionDecoration });
                 break;
             }
 
             if (matchIndex > position)
-                formattedText.Spans.Add(new Span { Text = title[position..matchIndex] });
+                formattedText.Spans.Add(new Span
+                {
+                    Text = title[position..matchIndex],
+                    TextDecorations = completionDecoration
+                });
 
             formattedText.Spans.Add(new Span
             {
                 Text = title.Substring(matchIndex, query.Length),
                 TextColor = highlightColor,
                 FontAttributes = FontAttributes.Bold,
-                TextDecorations = TextDecorations.Underline
+                TextDecorations = completionDecoration | TextDecorations.Underline
             });
             position = matchIndex + query.Length;
         }

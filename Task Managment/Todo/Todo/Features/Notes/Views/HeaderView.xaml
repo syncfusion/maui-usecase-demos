@@ -7,13 +7,21 @@
              x:Class="Todo.Features.Notes.Views.HeaderView"
              x:DataType="vm:NotesListViewModel">
 
-    <Grid HeightRequest="{OnIdiom Phone=56, Default={StaticResource HeaderHeight}}"
-          Padding="{OnIdiom Phone='8,0,8,0', Default='8,0,16,0'}"
+    <Grid x:Name="HeaderGrid"
+          HeightRequest="{OnIdiom Phone=56, Default={StaticResource HeaderHeight}}"
+          Padding="{OnIdiom Phone='5,0,10,0', Default='8,0,16,0'}"
           ColumnDefinitions="{OnIdiom Phone='Auto,*,Auto,Auto', Default='Auto,*,Auto'}"
-          BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
+          BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=White, Dark=#1C1B1F}, Default={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}}">
         <Grid.Shadow>
-            <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="0.10" />
+            <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="{OnIdiom Phone=0, Default=0.10}" />
         </Grid.Shadow>
+
+        <Image x:Name="MobileHeaderBackground"
+               Grid.ColumnSpan="{OnIdiom Phone=4, Default=3}"
+               Source="{Binding BackgroundImage}"
+               Aspect="AspectFill"
+               IsVisible="False"
+               InputTransparent="True" />
 
         <HorizontalStackLayout x:Name="DesktopHeaderContent"
                                Grid.Column="0"
@@ -38,7 +46,7 @@
                 </buttons:SfButton.Content>
             </buttons:SfButton>
             <Label x:Name="HeaderTitle"
-                   Text="To Do List"
+                   Text="To-do List"
                    FontSize="17"
                    FontAttributes="Bold"
                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
@@ -54,43 +62,23 @@
                           Background="Transparent"
                           IsVisible="False"
                           Clicked="OnMobileNavigationClicked"
-                          SemanticProperties.Description="Back to navigation">
-            <buttons:SfButton.Content>
-                <DataTemplate x:DataType="vm:NotesListViewModel">
-                    <Label Text="&#xe5c4;"
-                           WidthRequest="24"
-                           HeightRequest="24"
-                           FontFamily="MaterialIconRegular"
-                           FontSize="22"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}">
-                    </Label>
-                </DataTemplate>
-            </buttons:SfButton.Content>
-        </buttons:SfButton>
+                          Text="&#xe5c4;"
+                          FontFamily="MaterialIconRegular"
+                          FontSize="22"
+                          TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                          SemanticProperties.Description="Back to navigation" />
 
         <Label x:Name="MobileAppTitle"
                Grid.Column="0"
                Grid.ColumnSpan="2"
-               Text="To Do List"
+               Text="To-do List"
                FontSize="17"
                FontAttributes="Bold"
-               Margin="0"
+               Margin="{OnIdiom Phone='20,0,-2,0', Default=0}"
                HorizontalOptions="Start"
                VerticalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+               TextColor="{OnIdiom Phone={Binding HeaderForegroundColor}, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}"
                IsVisible="{OnIdiom Phone=True, Default=False}" />
-        <Label x:Name="MobilePageTitle"
-               Grid.Column="1"
-               Grid.ColumnSpan="2"
-               FontSize="17"
-               FontAttributes="Bold"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-               IsVisible="{OnIdiom Phone=False, Default=False}" />
-
         <buttons:SfButton x:Name="MobileSearchButton"
                           Grid.Column="2"
                           WidthRequest="40"
@@ -99,11 +87,27 @@
                           Background="Transparent"
                           Text="&#xe8b6;"
                           FontFamily="MaterialIconRegular"
-                          FontSize="24"
-                          TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                          FontSize="22"
+                          TextColor="{OnIdiom Phone={Binding HeaderForegroundColor}, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}"
                           IsVisible="{OnIdiom Phone=True, Default=False}"
                           Clicked="OnMobileSearchClicked"
                           SemanticProperties.Description="Search notes" />
+
+        <buttons:SfButton x:Name="MobileMoreOptionsButton"
+                          Grid.Column="{OnIdiom Phone=3, Default=0}"
+                          WidthRequest="40"
+                          HeightRequest="40"
+                          Padding="0"
+                          CornerRadius="20"
+                          Background="Transparent"
+                          Text="&#8943;"
+                          FontFamily="MaterialIconRegular"
+                          FontSize="22"
+                          Rotation="90"
+                          TextColor="{OnIdiom Phone={Binding HeaderForegroundColor}, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}"
+                          IsVisible="False"
+                          Clicked="OnMobileMoreOptionsClicked"
+                          SemanticProperties.Description="More list options" />
 
         <!-- Search pill -->
         <Border x:Name="SearchPill"
@@ -160,9 +164,12 @@
             </syncfusionCore:SfTextInputLayout>
         </Border>
 
-        <Border Grid.Column="{OnIdiom Phone=3, Default=2}"
+        <Border x:Name="ProfileImageContainer"
+                Grid.Column="{OnIdiom Phone=3, Default=2}"
+                IsVisible="{OnIdiom Phone=False, Default=True}"
                 WidthRequest="34"
                 HeightRequest="34"
+                Margin="{OnIdiom Phone='10,0,0,0', Default=0}"
                 Padding="0"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 17"
@@ -188,6 +195,7 @@
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
         </Border>
+
     </Grid>
 
 </ContentView>

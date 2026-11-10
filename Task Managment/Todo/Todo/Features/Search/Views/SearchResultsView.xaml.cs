@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls.Shapes;
 using Todo.Common;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.ViewModels;
@@ -12,9 +13,38 @@ namespace Todo.Features.Search.Views;
 /// </summary>
 public partial class SearchResultsView : ContentView
 {
+    public static readonly BindableProperty ListBackgroundColorProperty =
+        BindableProperty.Create(nameof(ListBackgroundColor), typeof(Color), typeof(SearchResultsView), Colors.White);
+
+    public static readonly BindableProperty ListBackgroundImageProperty =
+        BindableProperty.Create(
+            nameof(ListBackgroundImage),
+            typeof(string),
+            typeof(SearchResultsView),
+            null,
+            propertyChanged: static (bindable, _, _) =>
+                ((SearchResultsView)bindable).OnPropertyChanged(nameof(HasListBackgroundImage)));
+
+    public Color ListBackgroundColor
+    {
+        get => (Color)GetValue(ListBackgroundColorProperty);
+        set => SetValue(ListBackgroundColorProperty, value);
+    }
+
+    public string? ListBackgroundImage
+    {
+        get => (string?)GetValue(ListBackgroundImageProperty);
+        set => SetValue(ListBackgroundImageProperty, value);
+    }
+
+    public bool HasListBackgroundImage => !string.IsNullOrWhiteSpace(ListBackgroundImage);
+
     public SearchResultsView()
     {
         InitializeComponent();
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            SearchSurface.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(0) };
+
         ActionFlyout.ActionRequested += OnNoteActionRequested;
     }
 

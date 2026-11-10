@@ -10,8 +10,8 @@
              x:Class="Todo.Features.Search.Views.SearchResultsView"
              x:Name="SearchRoot"
              x:DataType="vm:SearchResultsViewModel"
-             Padding="16"
-             BackgroundColor="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}">
+             Padding="{OnIdiom Phone=0, Default=16}"
+             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
 
     <ContentView.Resources>
         <ResourceDictionary>
@@ -19,14 +19,23 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Border BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+    <Border x:Name="SearchSurface"
+            BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 14">
         <Grid RowDefinitions="Auto,*,Auto"
-              BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}">
+              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}">
+
+            <Image Grid.RowSpan="3"
+                   Source="{Binding Source={x:Reference SearchRoot}, Path=ListBackgroundImage}"
+                   IsVisible="False"
+                   Aspect="AspectFill"
+                   HorizontalOptions="Fill"
+                   VerticalOptions="Fill"
+                   InputTransparent="True" />
 
             <VerticalStackLayout Grid.Row="0"
-                                 Padding="24,20,24,12"
+                                 Padding="{OnIdiom Phone='16,16,16,12', Default='24,20,24,12'}"
                                  Spacing="6">
                 <Label Text="Search Results"
                        FontSize="24"
@@ -44,7 +53,7 @@
             </VerticalStackLayout>
 
             <Grid Grid.Row="1"
-                  Padding="8,4,8,12">
+                  Padding="{OnIdiom Phone='0,4,0,12', Default='8,4,8,12'}">
                 <VerticalStackLayout IsVisible="{Binding IsQueryEmpty}"
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
@@ -122,36 +131,36 @@
                                             <CheckBox Grid.Column="0"
                                                       IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
-                                                      Color="{StaticResource PrimaryColor}"
+                                                      Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={StaticResource PrimaryColor}}"
                                                       VerticalOptions="Center" />
 
                                             <VerticalStackLayout Grid.Column="1"
                                                                  Spacing="2"
                                                                  VerticalOptions="Center">
                                                 <Label Style="{StaticResource NoteTitleStyle}"
-                                                       MaxLines="1"
-                                                       TextDecorations="{Binding IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}">
+                                                       MaxLines="1">
                                                     <Label.FormattedText>
                                                         <MultiBinding Converter="{StaticResource SearchHighlightMultiValueConverter}">
                                                             <Binding Path="Title" />
                                                             <Binding Source="{x:Reference SearchRoot}" Path="BindingContext.Query" />
+                                                            <Binding Path="IsCompleted" />
                                                         </MultiBinding>
                                                     </Label.FormattedText>
                                                 </Label>
                                                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="14" TextColor="#0D7D12" WidthRequest="14" HeightRequest="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                                        <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
+                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=14}" TextColor="#0D7D12" WidthRequest="{OnIdiom Phone=18, Default=14}" HeightRequest="{OnIdiom Phone=18, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
-                                                        <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="14" TextColor="#2667A3" WidthRequest="14" HeightRequest="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                                        <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" />
+                                                        <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=14}" TextColor="#2667A3" WidthRequest="{OnIdiom Phone=18, Default=14}" HeightRequest="{OnIdiom Phone=18, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="14" TextColor="#7D5294" WidthRequest="14" HeightRequest="14" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                                        <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" />
+                                                        <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=14}" TextColor="#7D5294" WidthRequest="{OnIdiom Phone=18, Default=14}" HeightRequest="{OnIdiom Phone=18, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                 </HorizontalStackLayout>
                                             </VerticalStackLayout>
@@ -193,7 +202,7 @@
                                                                               PointerExited="OnPointerExited" />
                                                 </Border.GestureRecognizers>
                                                 <buttons:SfButton Text="&#8943;"
-                                                                  FontSize="22"
+                                                                  FontSize="{OnIdiom Phone=20, Default=22}"
                                                                   Rotation="90"
                                                                   Background="Transparent"
                                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"

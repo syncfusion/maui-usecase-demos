@@ -169,7 +169,7 @@ public sealed class ListOptionsFlyout : ContentView
             + SurfaceBorderAllowance;
 
         if (CanEditSelectedList)
-            height += MenuItemHeight + MenuItemHeight + 12;
+            height += MenuItemHeight + MenuItemHeight + 14;
 
         return height;
     }
@@ -180,16 +180,21 @@ public sealed class ListOptionsFlyout : ContentView
             return;
 
         _menuActions.Children.Clear();
-        _menuActions.Margin = new Thickness(10, MenuTopMargin, 10, 0);
+        var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        _menuActions.Margin = isPhone
+            ? new Thickness(0, MenuTopMargin, 0, 0)
+            : new Thickness(10, MenuTopMargin, 10, 0);
         if (CanEditSelectedList)
         {   
             var renameButton = CreateMenuButton("Rename list", RenameList, iconGlyph: "\uf88c");
-            renameButton.Margin = new Thickness(10, 0, 10, 0);
+            if (!isPhone)
+                renameButton.Margin = new Thickness(10, 0, 10, 0);
             _menuActions.Children.Add(renameButton);
         }
 
         _sortButton = CreateMenuButton("Sort by", ShowSortMenu, iconGlyph: "\uea18", iconRotation: 90);
-        _sortButton.Margin = new Thickness(10, 0, 0, 0); 
+        if (!isPhone)
+            _sortButton.Margin = new Thickness(10, 0, 0, 0);
         var sortRow = new Grid { HeightRequest = 42 };
         sortRow.Children.Add(_sortButton);
         sortRow.Children.Add(new Label
@@ -225,14 +230,20 @@ public sealed class ListOptionsFlyout : ContentView
         });
         if (CanEditSelectedList)
         {
-            _menuActions.Children.Add(new BoxView
+            var separator = new BoxView
             {
                 HeightRequest = 1,
-                Margin = new Thickness(12, 3),
-                Color = Color.FromArgb("#E6E2E8")
-            });
+                Margin = new Thickness(12, 4),
+                Color = Color.FromArgb("#E9E5EE")
+            };
+            separator.SetAppThemeColor(
+                BoxView.ColorProperty,
+                Color.FromArgb("#E9E5EE"),
+                Color.FromArgb("#494650"));
+            _menuActions.Children.Add(separator);
             var deleteButton = CreateMenuButton("Delete list", DeleteList, destructive: true, iconGlyph: "\ue92e", iconColor: "#B3261E");
-            deleteButton.Margin = new Thickness(10, 0, 10, 0);
+            if (!isPhone)
+                deleteButton.Margin = new Thickness(10, 0, 10, 0);
             _menuActions.Children.Add(deleteButton);
         }
         RebuildThemePicker();
@@ -244,7 +255,9 @@ public sealed class ListOptionsFlyout : ContentView
         var actions = new VerticalStackLayout
         {
             Spacing = 0,
-            Margin = new Thickness(10, MenuTopMargin, 10, 10),
+            Margin = DeviceInfo.Current.Idiom == DeviceIdiom.Phone
+                ? new Thickness(0, MenuTopMargin, 0, 10)
+                : new Thickness(10, MenuTopMargin, 10, 10),
         };
         var currentSort = _selectedList?.SortOrder ?? NoteListSortOrder.Custom;
         actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important), currentSort == NoteListSortOrder.Important, iconGlyph: "\ue83a"));
@@ -451,20 +464,34 @@ public sealed class ListOptionsFlyout : ContentView
             {
                 var grid = new Grid
                 {
-                    ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
+                    ColumnDefinitions = new ColumnDefinitionCollection
+                    {
+                        new(DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 32 : 22),
+                        new(GridLength.Star)
+                    },
                     ColumnSpacing = 4,
-                    Padding = new Thickness(14, 0),
+                    Padding = DeviceInfo.Current.Idiom == DeviceIdiom.Phone
+                        ? new Thickness(12, 0)
+                        : new Thickness(14, 0),
                     InputTransparent = true
                 };
+                var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
                 var iconLabel = new Label
                 {
                     Text = iconGlyph,
                     FontFamily = "MaterialIconRegular",
                     FontSize = 18,
                     Rotation = iconRotation,
-                    Margin = new Thickness(0, 0, 5, 0),
+                    Margin = isPhone
+                        ? Thickness.Zero
+                        : new Thickness(0, 0, 5, 0),
                     VerticalTextAlignment = TextAlignment.Center
                 };
+                if (isPhone)
+                {
+                    iconLabel.WidthRequest = 32;
+                    iconLabel.HorizontalTextAlignment = TextAlignment.Center;
+                }
                 iconLabel.SetAppThemeColor(Label.TextColorProperty,
                     Color.FromArgb(iconColor ?? "#49454F"),
                     Color.FromArgb(iconColor ?? "#CAC4D0"));

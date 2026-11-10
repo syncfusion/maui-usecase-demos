@@ -1,4 +1,5 @@
 using Syncfusion.Maui.ListView;
+using Microsoft.Maui.Controls.Shapes;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.ViewModels;
 
@@ -9,6 +10,9 @@ public partial class NotesContentView : ContentView
     public NotesContentView()
     {
         InitializeComponent();
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            NotesContentSurface.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(0) };
+
         ActionFlyout.ActionRequested += OnNoteActionRequested;
     }
 

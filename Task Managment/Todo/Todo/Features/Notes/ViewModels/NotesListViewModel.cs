@@ -714,6 +714,7 @@ public partial class NotesListViewModel : ViewModelBase
     public bool HasDraftDueDate => DraftDueDate.HasValue;
     public bool HasDraftReminder => DraftReminderDate.HasValue;
     public bool HasDraftRepeat => DraftRepeatFrequency != NoteRepeatFrequency.Never;
+    public bool HasDraftMetadata => HasDraftDueDate || HasDraftReminder || HasDraftRepeat;
 
     public string DraftDueDateText => DraftDueDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
     public string DraftReminderDateText => DraftReminderDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
@@ -730,6 +731,7 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(HasDraftDueDate));
         OnPropertyChanged(nameof(HasDraftReminder));
         OnPropertyChanged(nameof(HasDraftRepeat));
+        OnPropertyChanged(nameof(HasDraftMetadata));
         OnPropertyChanged(nameof(DraftDueDateText));
         OnPropertyChanged(nameof(DraftReminderDateText));
         OnPropertyChanged(nameof(DraftRepeatText));

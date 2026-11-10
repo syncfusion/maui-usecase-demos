@@ -11,7 +11,7 @@
              x:Class="Todo.Features.Notes.Views.SidebarView"
              x:Name="SidebarRoot"
              x:DataType="vm:NotesListViewModel"
-             BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
+             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=White, Dark=#1C1B1F}, Default={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}}">
 
     <Grid RowDefinitions="192,Auto,*,Auto" Padding="0,12,0,16">
         <syncfusion:SfListView x:Name="SidebarCategoriesView" Grid.Row="0"
@@ -76,14 +76,11 @@
 
         <BoxView Grid.Row="1"
                  HeightRequest="1"
-                 Margin="16,0"
+                 Margin="{OnIdiom Phone=0, Default='16,0'}"
                  VerticalOptions="Center"
                  Color="{AppThemeBinding Light={StaticResource DividerColor}, Dark={StaticResource DividerDarkColor}}" />
 
         <Grid Grid.Row="2" RowDefinitions="Auto,*">
-            <Label Grid.Row="0" Text="Lists" Style="{StaticResource SidebarSectionHeaderStyle}"
-                       IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.HasCustomLists}" />
-
             <Grid Grid.Row="1">
                 <VerticalStackLayout Margin="16"
                                      Spacing="{OnIdiom Phone=12, Default=8}"

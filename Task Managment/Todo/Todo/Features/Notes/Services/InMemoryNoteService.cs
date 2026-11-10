@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text.Json;
 using Todo.Common;
 using Todo.Features.CustomLists.Models;
 using Todo.Features.Notes.Models;
@@ -6,17 +7,22 @@ using Todo.Features.Notes.Models;
 namespace Todo.Features.Notes.Services;
 
 /// <summary>
-/// Singleton in-memory implementation of <see cref="INoteService"/>.
-/// Backed by a single <see cref="ObservableCollection{T}"/> so all
-/// subscribed UI automatically reflects changes.
+/// Singleton implementation of <see cref="INoteService"/> backed by a
+/// shared <see cref="ObservableCollection{T}"/> and persisted snapshots
+/// in application preferences.
 /// </summary>
 public sealed class InMemoryNoteService : INoteService
 {
+    private const string PersistedNotesKey = "TodoNotes";
     private readonly ObservableCollection<Note> _notes;
 
     public InMemoryNoteService()
     {
-        _notes = new ObservableCollection<Note>(SampleData.SeedNotes().Select(Clone));
+        var storedNotes = Preferences.Default.Get(PersistedNotesKey, string.Empty);
+        var notes = string.IsNullOrEmpty(storedNotes)
+            ? SampleData.SeedNotes().Select(Clone).ToList()
+            : JsonSerializer.Deserialize<List<Note>>(storedNotes) ?? [];
+        _notes = new ObservableCollection<Note>(notes);
         RemoveExpiredDeletedNotes();
         Notes = new ReadOnlyObservableCollection<Note>(_notes);
     }
@@ -57,6 +63,7 @@ public sealed class InMemoryNoteService : INoteService
             UpdatedAt = now
         };
         _notes.Insert(0, note);
+        PersistNotes();
         return Task.FromResult(note);
     }
 
@@ -65,6 +72,7 @@ public sealed class InMemoryNoteService : INoteService
         RemoveExpiredDeletedNotes();
         if (note.DeletedAt is not null) return Task.CompletedTask;
         note.UpdatedAt = DateTime.Now;
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -77,6 +85,7 @@ public sealed class InMemoryNoteService : INoteService
 
         existing.DeletedAt = DateTime.Now;
         existing.UpdatedAt = DateTime.Now;
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -89,6 +98,7 @@ public sealed class InMemoryNoteService : INoteService
 
         existing.DeletedAt = null;
         existing.UpdatedAt = DateTime.Now;
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -97,7 +107,10 @@ public sealed class InMemoryNoteService : INoteService
         RemoveExpiredDeletedNotes();
         var existing = _notes.FirstOrDefault(n => n.Id == id);
         if (existing is not null && existing.DeletedAt is not null)
+        {
             _notes.Remove(existing);
+            PersistNotes();
+        }
         return Task.CompletedTask;
     }
 
@@ -110,6 +123,7 @@ public sealed class InMemoryNoteService : INoteService
 
         existing.IsCompleted = !existing.IsCompleted;
         existing.UpdatedAt = DateTime.Now;
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -122,6 +136,7 @@ public sealed class InMemoryNoteService : INoteService
 
         existing.IsImportant = !existing.IsImportant;
         existing.UpdatedAt = DateTime.Now;
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -187,6 +202,7 @@ public sealed class InMemoryNoteService : INoteService
             ordered[i].DisplayOrder = i;
             ordered[i].UpdatedAt = DateTime.Now;
         }
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -210,6 +226,7 @@ public sealed class InMemoryNoteService : INoteService
             var nextOrder = sameScope.Count == 0 ? 0 : sameScope.Max(n => n.DisplayOrder) + 1;
             existing.DisplayOrder = nextOrder;
         }
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -227,6 +244,7 @@ public sealed class InMemoryNoteService : INoteService
             existing.ListId = null;
         existing.DeletedAt = category == NotesListCategory.Bin ? DateTime.Now : null;
         existing.UpdatedAt = DateTime.Now;
+        PersistNotes();
         return Task.CompletedTask;
     }
 
@@ -236,5 +254,11 @@ public sealed class InMemoryNoteService : INoteService
         var expired = _notes.Where(note => note.DeletedAt is not null && note.DeletedAt < cutoff).ToList();
         foreach (var note in expired)
             _notes.Remove(note);
+
+        if (expired.Count > 0)
+            PersistNotes();
     }
+
+    private void PersistNotes()
+        => Preferences.Default.Set(PersistedNotesKey, JsonSerializer.Serialize(_notes));
 }

@@ -40,7 +40,7 @@ public sealed class CustomListOptionsFlyout : ContentView
             ShowOverlayAlways = false,
             OverlayMode = PopupOverlayMode.Transparent,
             StaysOpen = false,
-            WidthRequest = 190,
+            WidthRequest = DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 220 : 190,
             HeightRequest = MenuItemHeight * 2 + 24,
             AutoSizeMode = PopupAutoSizeMode.None,
             AnimationMode = PopupAnimationMode.None,
@@ -61,7 +61,9 @@ public sealed class CustomListOptionsFlyout : ContentView
         var actions = new VerticalStackLayout
         {
             Spacing = 0,
-            Margin = new Thickness(10, 10)
+            Margin = DeviceInfo.Current.Idiom == DeviceIdiom.Phone
+                ? new Thickness(0, 10)
+                : new Thickness(10, 10)
         };
         actions.Children.Add(CreateActionButton(
             "Rename list",
@@ -76,7 +78,7 @@ public sealed class CustomListOptionsFlyout : ContentView
 
         var surface = new Border
         {
-            WidthRequest = 190,
+            WidthRequest = DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 220 : 190,
             HeightRequest = MenuItemHeight * 2 + 20,
             Padding = new Thickness(1),
             StrokeThickness = 1,
@@ -123,11 +125,18 @@ public sealed class CustomListOptionsFlyout : ContentView
         {
             var grid = new Grid
             {
-                ColumnDefinitions = new ColumnDefinitionCollection { new(22), new(GridLength.Star) },
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new(DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 32 : 22),
+                    new(GridLength.Star)
+                },
                 ColumnSpacing = 4,
-                Padding = new Thickness(10, 0),
+                Padding = DeviceInfo.Current.Idiom == DeviceIdiom.Phone
+                    ? new Thickness(12, 0)
+                    : new Thickness(10, 0),
                 InputTransparent = true
             };
+            var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
             var icon = new Label
             {
                 Text = iconGlyph,
@@ -135,6 +144,11 @@ public sealed class CustomListOptionsFlyout : ContentView
                 FontSize = 18,
                 VerticalTextAlignment = TextAlignment.Center
             };
+            if (isPhone)
+            {
+                icon.WidthRequest = 32;
+                icon.HorizontalTextAlignment = TextAlignment.Center;
+            }
             icon.SetAppThemeColor(
                 Label.TextColorProperty,
                 destructive ? Color.FromArgb("#B3261E") : Color.FromArgb("#49454F"),

@@ -157,13 +157,23 @@ public sealed class NoteActionFlyout : ContentView
 
     private View CreateMenuSurface()
     {
-        _actionsLayout = new VerticalStackLayout { Spacing = 5 , Margin = new Thickness(5, 0, 0, 0) };
+        var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        _actionsLayout = new VerticalStackLayout
+        {
+            Spacing = 5,
+            Margin = isPhone ? Thickness.Zero : new Thickness(5, 0, 0, 0)
+        };
 
         _selectAllRow = new Grid
         {
             HeightRequest = 40,
-            ColumnDefinitions = new ColumnDefinitionCollection { new(32), new(GridLength.Star) },
-            ColumnSpacing = 4
+            ColumnDefinitions = new ColumnDefinitionCollection
+            {
+                new(32),
+                new(GridLength.Star)
+            },
+            ColumnSpacing = 4,
+            Padding = isPhone ? new Thickness(12, 0) : Thickness.Zero
         };
         _selectAllCheckBox = new CheckBox
         {
@@ -172,7 +182,10 @@ public sealed class NoteActionFlyout : ContentView
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center
         };
-        _selectAllCheckBox.SetAppThemeColor(CheckBox.ColorProperty, Color.FromArgb("#6750A4"), Color.FromArgb("#D0BCFF"));
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            _selectAllCheckBox.SetAppThemeColor(CheckBox.ColorProperty, Color.FromArgb("#49454F"), Color.FromArgb("#CAC4D0"));
+        else
+            _selectAllCheckBox.SetAppThemeColor(CheckBox.ColorProperty, Color.FromArgb("#6750A4"), Color.FromArgb("#D0BCFF"));
         SemanticProperties.SetDescription(_selectAllCheckBox, "Select all visible notes");
         _selectAllCheckBox.CheckedChanged += OnSelectAllCheckedChanged;
         _selectAllRow.Children.Add(_selectAllCheckBox);
@@ -195,15 +208,15 @@ public sealed class NoteActionFlyout : ContentView
         _selectAllRow.Children.Add(selectAllLabel);
         _selectAllSurface = PointerHoverSurface.Wrap(_selectAllRow, 8, Thickness.Zero);
 
-        _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
-        _selectAllSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#494650"));
+        _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        _selectAllSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
 
         _completionButton = CreateButton("Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion), iconGlyph: "\ue876");
         _editButton = CreateButton("Edit note", () => RaiseAction(NoteActionKind.Edit), iconGlyph: "\ue150");
         _moveButton = CreateButton("Move notes to", ShowDestinations, iconGlyph: "\ue5c4");
         _restoreButton = CreateButton("Restore note", () => RaiseAction(NoteActionKind.Restore), iconGlyph: "\ue5d5");
-        _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
-        _deleteSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#FFFFFF"));
+        _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        _deleteSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
         _deleteButton = CreateButton("Delete task", () =>
         {
             if (_selectedNote?.DeletedAt is not null)
@@ -236,7 +249,12 @@ public sealed class NoteActionFlyout : ContentView
 
     private View CreateDestinationsSurface()
     {
-        _destinationsLayout = new VerticalStackLayout { Spacing = 0, Margin = new Thickness(5, 10) };
+        var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        _destinationsLayout = new VerticalStackLayout
+        {
+            Spacing = 0,
+            Margin = isPhone ? new Thickness(0, 10, 5, 10) : new Thickness(5, 10)
+        };
         _destinationsSurface = new Border
         {
             WidthRequest = 220,
@@ -282,10 +300,16 @@ public sealed class NoteActionFlyout : ContentView
         button.Content = new DataTemplate(() =>
         {
             var hasIcon = !string.IsNullOrEmpty(iconGlyph);
+            var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+            var reserveIconColumn = hasIcon;
             var grid = new Grid
             {
-                ColumnDefinitions = hasIcon
-                    ? new ColumnDefinitionCollection { new(22), new(GridLength.Star) }
+                ColumnDefinitions = reserveIconColumn
+                    ? new ColumnDefinitionCollection
+                    {
+                        new(isPhone ? 32 : 22),
+                        new(GridLength.Star)
+                    }
                     : new ColumnDefinitionCollection { new(GridLength.Star) },
                 ColumnSpacing = 4,
                 Padding = new Thickness(12, 0),
@@ -298,9 +322,16 @@ public sealed class NoteActionFlyout : ContentView
                     Text = iconGlyph,
                     FontFamily = "MaterialIconRegular",
                     FontSize = 18,
-                    Margin = new Thickness(0, 0, 5, 0),
+                    Margin = isPhone
+                        ? Thickness.Zero
+                        : new Thickness(0, 0, 5, 0),
                     VerticalTextAlignment = TextAlignment.Center
                 };
+                if (isPhone)
+                {
+                    iconLabel.WidthRequest = 32;
+                    iconLabel.HorizontalTextAlignment = TextAlignment.Center;
+                }
                 iconLabel.SetAppThemeColor(Label.TextColorProperty,
                     destructive ? Color.FromArgb("#B3261E") : Color.FromArgb("#1C1B1F"),
                     destructive ? Color.FromArgb("#FFB4AB") : Color.FromArgb("#E6E1E5"));
@@ -316,7 +347,7 @@ public sealed class NoteActionFlyout : ContentView
             textLabel.SetBinding(Label.TextColorProperty,
                 new Binding(nameof(SfButton.TextColor), source: button));
             grid.Children.Add(textLabel);
-            if (hasIcon)
+            if (reserveIconColumn)
                 textLabel.SetValue(Grid.ColumnProperty, 1);
             return grid;
         });
@@ -341,8 +372,8 @@ public sealed class NoteActionFlyout : ContentView
         if (_destinationsLayout is null) return;
         _destinationsLayout.Children.Clear();
         _destinationsLayout.Children.Add(CreateButton("Move notes to", HideDestinations, iconGlyph: "\ue5c4", iconColor: "#49454F"));
-        var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(0) };
-        separator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#ECE8F1"), Color.FromArgb("#494650"));
+        var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        separator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
         _destinationsLayout.Children.Add(separator);
         foreach (var destination in _destinations)
             _destinationsLayout.Children.Add(CreateButton(destination.Name, () => RaiseAction(NoteActionKind.Move, destination.Key)));
@@ -433,7 +464,7 @@ public sealed class NoteActionFlyout : ContentView
     }
 
     private double GetDestinationsPopupHeight()
-        => ((_destinations.Count + 1) * 40) + 1 + 16 + 20;
+        => ((_destinations.Count + 1) * 40) + 9 + 16 + 20;
 
     private void HideDestinations()
     {
@@ -453,12 +484,12 @@ public sealed class NoteActionFlyout : ContentView
         if (isDeleted)
         {
             // Restore button, separator, and delete button.
-            contentHeight = 40 + 1 + 40 + 10;
+            contentHeight = 40 + 9 + 40 + 10;
         }
         else
         {
             // Select-all row, separator, and the four note actions.
-            contentHeight = 40 + 1 + (4 * 40) + (5 * 5);
+            contentHeight = 40 + 9 + (4 * 40) + (5 * 5);
         }
 
         _popup.AutoSizeMode = useContentSizedPopup ? PopupAutoSizeMode.Height : PopupAutoSizeMode.None;

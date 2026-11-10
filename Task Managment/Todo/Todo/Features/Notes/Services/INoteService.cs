@@ -44,7 +44,7 @@ public interface INoteService
     Task RestoreAsync(string id);
 
     /// <summary>
-    /// Removes the note from the in-memory store entirely.
+    /// Removes the note from the store entirely.
     /// </summary>
     Task DeletePermanentlyAsync(string id);
 

@@ -62,18 +62,30 @@ public partial class MainLayoutView : ContentView
         if (e.PropertyName == nameof(NotesListViewModel.IsSidebarCollapsed))
             UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
         else if (e.PropertyName == nameof(NotesListViewModel.IsSearchActive))
+        {
+            UpdateHeaderDivider();
             UpdateMainContent();
+        }
     }
 
     private void UpdateMainContent()
     {
-        MainContent.Content = _viewModel.IsSearchActive
-            ? new SearchResultsView { BindingContext = _viewModel.SearchViewModel }
-            : _defaultContent;
+        if (!_viewModel.IsSearchActive)
+        {
+            MainContent.Content = _defaultContent;
+            return;
+        }
+
+        MainContent.Content = new SearchResultsView
+        {
+            BindingContext = _viewModel.SearchViewModel
+        };
     }
 
     private void UpdateSidebarColumn(bool isCollapsed)
     {
+        UpdateHeaderDivider();
+
         if (_isPhone)
         {
             RootGrid.ColumnDefinitions[0].Width = isCollapsed
@@ -93,6 +105,13 @@ public partial class MainLayoutView : ContentView
         }
 
         Sidebar.IsVisible = !isCollapsed;
+    }
+
+    private void UpdateHeaderDivider()
+    {
+        HeaderDivider.IsVisible = !_isPhone
+            || !_viewModel.IsSidebarCollapsed
+            || _viewModel.IsSearchActive;
     }
 
     private static bool DeviceIdiomMatches(DeviceIdiom idiom) =>

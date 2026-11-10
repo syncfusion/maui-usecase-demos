@@ -10,12 +10,12 @@
              Shell.PresentationMode="ModalNotAnimated"
              BackgroundColor="#80000000">
 
-    <Grid Padding="32"
+    <Grid Padding="{OnIdiom Phone=16, Default=32}"
           VerticalOptions="Center"
           HorizontalOptions="Center">
 
         <Border MaximumWidthRequest="420"
-                WidthRequest="{OnIdiom Phone=300, Default=360}"
+                WidthRequest="{OnIdiom Phone=280, Default=360}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="1"

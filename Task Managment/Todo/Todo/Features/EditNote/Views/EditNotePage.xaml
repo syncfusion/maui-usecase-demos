@@ -11,19 +11,24 @@
              Shell.PresentationMode="ModalNotAnimated"
              BackgroundColor="#80000000">
 
-    <Grid Padding="24" VerticalOptions="Center" HorizontalOptions="Center">
-        <Border WidthRequest="330"
-                MaximumHeightRequest="560"
+    <Grid Padding="{OnIdiom Phone=0, Default=24}"
+          VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
+          HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}">
+        <Border WidthRequest="{OnIdiom Phone=320, Default=330}"
+                MaximumHeightRequest="{OnIdiom Phone=600, Default=560}"
+                Margin="{OnIdiom Phone=0, Default=0}"
+                HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                VerticalOptions="Center"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 24"
-                Padding="18,16,18,0">
+                StrokeThickness="{OnIdiom Phone=1, Default=0}"
+                StrokeShape="RoundRectangle 27"
+                Padding="{OnIdiom Phone='14,12,14,0', Default='18,16,18,0'}">
             <Border.Shadow>
                 <Shadow Brush="#4D000000" Radius="6" Offset="0,2" Opacity="1" />
             </Border.Shadow>
 
-            <Grid RowDefinitions="Auto,1,*,1,Auto">
+            <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
                 <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
                     <Label Text="{Binding DialogTitle}"
                            FontFamily="{StaticResource FontFamilySemibold}"
@@ -64,7 +69,7 @@
                         <Grid ColumnDefinitions="34,*,40" ColumnSpacing="8" HeightRequest="50" VerticalOptions="Center">
                             <CheckBox Grid.Column="0"
                                       IsChecked="{Binding Target.IsCompleted, Mode=TwoWay}"
-                                      Color="{StaticResource PrimaryColor}"
+                                      Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={StaticResource PrimaryColor}}"
                                       VerticalOptions="Center"
                                       HorizontalOptions="Center" />
                             <syncfusionCore:SfTextInputLayout Grid.Column="1"
@@ -148,7 +153,8 @@
                                     </Grid>
                                 </Grid>
                             </Border>
-                            <Border IsVisible="{Binding IsDueDatePickerVisible}"
+                            <Border x:Name="DueDateInlineEditor"
+                                    IsVisible="{Binding IsDueDatePickerVisible}"
                                     Padding="12"
                                     Margin="42,0,0,0"
                                     StrokeThickness="0"
@@ -174,8 +180,8 @@
                                 </VerticalStackLayout>
                             </Border>
                             <BoxView HeightRequest="1"
-                                     Margin="42,0,0,0"
-                                     BackgroundColor="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}" />
+                                     Margin="42,4,0,4"
+                                     BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
 
                             <Border Padding="0"
                                     StrokeThickness="0"
@@ -234,8 +240,8 @@
                                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2B2B2B}"
                                     TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
                             <BoxView HeightRequest="1"
-                                     Margin="42,0,0,0"
-                                     BackgroundColor="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}" />
+                                     Margin="42,4,0,4"
+                                     BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
 
                             <Border Padding="0"
                                     StrokeThickness="0"
@@ -286,9 +292,10 @@
                                 </Grid>
                             </Border>
                             <BoxView HeightRequest="1"
-                                     Margin="42,0,0,0"
-                                     BackgroundColor="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}" />
-                            <Border IsVisible="{Binding IsReminderPickerVisible}"
+                                     Margin="42,4,0,4"
+                                     BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
+                            <Border x:Name="ReminderInlineEditor"
+                                    IsVisible="{Binding IsReminderPickerVisible}"
                                     Padding="12"
                                     Margin="28,0,0,0"
                                     StrokeThickness="0"
@@ -316,7 +323,7 @@
                                     </Grid>
                                 </VerticalStackLayout>
                             </Border>
-                            <BoxView HeightRequest="45" Background="Transparent"
+                            <BoxView HeightRequest="{OnIdiom Phone=0, Default=45}" Background="Transparent"
                                      IsVisible="{Binding IsMetadataPickerClosed}" />
                         </VerticalStackLayout>
                     </VerticalStackLayout>
@@ -324,8 +331,8 @@
 
                 <BoxView Grid.Row="3"
                          HeightRequest="1"
-                         Color="{AppThemeBinding Light=#CAC4D0, Dark=#49454F}"
-                         Margin="-18,0,-18,0" />
+                         Color="{AppThemeBinding Light=#E9E5EE, Dark=#494650}"
+                         Margin="{OnIdiom Phone='-14,4,-14,4', Default='-18,4,-18,4'}" />
 
                 <Grid Grid.Row="4" HeightRequest="56" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" VerticalOptions="Center">
                     
@@ -369,5 +376,88 @@
                 </Grid>
             </Grid>
         </Border>
+
+        <Grid x:Name="DueDatePopup"
+              IsVisible="False"
+              ZIndex="10"
+              BackgroundColor="#66000000"
+              Padding="8"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill">
+            <Border WidthRequest="280"
+                    Padding="12"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
+                    Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 27">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Due date"
+                           FontFamily="{StaticResource FontFamilySemibold}"
+                           FontSize="18"
+                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                    <picker:SfDateTimePicker SelectedDate="{Binding DraftDueDateSelection, Mode=TwoWay}"
+                                             DateFormat="MMM_dd_yyyy"
+                                             HeightRequest="220"
+                                             Background="Transparent" />
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                        <buttons:SfButton Grid.Column="1"
+                                          Text="Cancel"
+                                          Background="Transparent"
+                                          TextColor="#6750A4"
+                                          Command="{Binding CancelDueDateCommand}" />
+                        <buttons:SfButton Grid.Column="2"
+                                          Text="Save"
+                                          Background="Transparent"
+                                          TextColor="#6750A4"
+                                          Command="{Binding SaveDueDateCommand}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <Grid x:Name="ReminderPopup"
+              IsVisible="False"
+              ZIndex="10"
+              BackgroundColor="#66000000"
+              Padding="8"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill">
+            <Border WidthRequest="280"
+                    Padding="12"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
+                    Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 27">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Reminder"
+                           FontFamily="{StaticResource FontFamilySemibold}"
+                           FontSize="18"
+                           TextColor="{AppThemeBinding Light={StaticResource PopupTextPrimaryColor}, Dark={StaticResource PopupTextPrimaryDarkColor}}" />
+                    <picker:SfDateTimePicker SelectedDate="{Binding DraftReminderDateSelection, Mode=TwoWay}"
+                                             DateFormat="MMM_dd_yyyy"
+                                             HeightRequest="220"
+                                             Background="Transparent" />
+                    <TimePicker Time="{Binding DraftReminderTimeSelection, Mode=TwoWay}"
+                                BackgroundColor="Transparent"
+                                TextColor="{AppThemeBinding Light=#1C1B1F, Dark=#E6E1E5}" />
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                        <buttons:SfButton Grid.Column="1"
+                                          Text="Cancel"
+                                          Background="Transparent"
+                                          TextColor="#6750A4"
+                                          Command="{Binding CancelReminderCommand}" />
+                        <buttons:SfButton Grid.Column="2"
+                                          Text="Save"
+                                          Background="Transparent"
+                                          TextColor="#6750A4"
+                                          Command="{Binding SaveReminderCommand}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

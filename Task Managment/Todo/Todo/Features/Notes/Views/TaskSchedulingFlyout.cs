@@ -99,9 +99,9 @@ public sealed class TaskSchedulingFlyout : ContentView
             RowDefinitions = new RowDefinitionCollection
             {
                 new(GridLength.Auto),
-                new(1),
+                new(GridLength.Auto),
                 new(250),
-                new(1),
+                new(GridLength.Auto),
                 new(GridLength.Auto)
             },
             Padding = new Thickness(0,10,0,10),
@@ -118,7 +118,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         var divider = new BoxView
         {
             HeightRequest = 1,
-            Margin = new Thickness(0),
+            Margin = new Thickness(0, 4),
             HorizontalOptions = LayoutOptions.Fill
         };
         divider.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
@@ -130,7 +130,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         var pickerDivider = new BoxView
         {
             HeightRequest = 1,
-            Margin = new Thickness(0),
+            Margin = new Thickness(0, 4),
             HorizontalOptions = LayoutOptions.Fill
         };
         pickerDivider.SetAppThemeColor(
@@ -180,7 +180,9 @@ public sealed class TaskSchedulingFlyout : ContentView
                 () => { _viewModel?.SetDraftRepeatFrequency(option); _repeatPopup.Dismiss(); }));
         }
 
-        content.Children.Add(new BoxView { HeightRequest = 1, Color = Color.FromArgb("#CAC4D0"), Margin = new Thickness(4, 4) });
+        var repeatDivider = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        repeatDivider.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
+        content.Children.Add(repeatDivider);
         var customButton = CreateMenuButton("Custom", _viewModel?.DraftRepeatFrequency == NoteRepeatFrequency.Custom,
             () => { _repeatPopup.Dismiss(); if (_repeatAnchor is not null) _customPopup.ShowRelativeToView(_repeatAnchor, PopupRelativePosition.AlignTopRight); },
             iconGlyph: "\ue24f");

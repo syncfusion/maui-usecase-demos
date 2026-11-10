@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Syncfusion.Maui.Buttons;
 using Todo.Features.Notes.ViewModels;
 
 namespace Todo.Features.Notes.Views;
@@ -6,10 +7,25 @@ namespace Todo.Features.Notes.Views;
 public partial class HeaderView : ContentView
 {
     private NotesListViewModel? _viewModel;
+    private ListOptionsFlyout? _mobileListOptionsFlyout;
 
     public HeaderView()
     {
         InitializeComponent();
+
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+        {
+            _mobileListOptionsFlyout = new ListOptionsFlyout
+            {
+                WidthRequest = 0,
+                HeightRequest = 0,
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start,
+                ZIndex = 1001
+            };
+            Grid.SetColumnSpan(_mobileListOptionsFlyout, HeaderGrid.ColumnDefinitions.Count);
+            HeaderGrid.Children.Add(_mobileListOptionsFlyout);
+        }
     }
 
     protected override void OnBindingContextChanged()
@@ -49,15 +65,12 @@ public partial class HeaderView : ContentView
 
     private void OnMobileSearchClicked(object? sender, EventArgs e)
     {
+        SearchPill.WidthRequest = -1;
+        SearchPill.IsVisible = true;
         if (BindingContext is NotesListViewModel vm)
             vm.IsSidebarCollapsed = true;
 
-        HeaderTitle.IsVisible = false;
-        MobileAppTitle.IsVisible = false;
-        MobilePageTitle.IsVisible = false;
-        MobileSearchButton.IsVisible = false;
-        SearchPill.WidthRequest = -1;
-        SearchPill.IsVisible = true;
+        UpdateMobileHeader();
         SearchEntry.Focus();
     }
 
@@ -76,6 +89,20 @@ public partial class HeaderView : ContentView
         vm.ToggleSidebarCommand.Execute(null);
     }
 
+    private void OnMobileMoreOptionsClicked(object? sender, EventArgs e)
+    {
+        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone
+            || sender is not View anchor
+            || BindingContext is not NotesListViewModel vm
+            || _mobileListOptionsFlyout is null)
+            return;
+
+        if (vm.SelectedCustomList is { } selectedList)
+            _mobileListOptionsFlyout.ShowFor(anchor, selectedList, vm);
+        else
+            _mobileListOptionsFlyout.ShowFor(anchor, vm.SelectedCategory, vm);
+    }
+
     private void OnSearchEntryUnfocused(object? sender, FocusEventArgs e)
     {
         if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
@@ -88,17 +115,27 @@ public partial class HeaderView : ContentView
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(NotesListViewModel.IsSidebarCollapsed)
-            or nameof(NotesListViewModel.HeaderTitle))
+        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
+            return;
+
+        if (e.PropertyName == nameof(NotesListViewModel.IsSearchActive))
         {
+            if (_viewModel?.IsSearchActive == false)
+            {
+                SearchEntry.Unfocus();
+                SearchPill.IsVisible = false;
+            }
+
             UpdateMobileHeader();
         }
-        else if (e.PropertyName == nameof(NotesListViewModel.IsSearchActive)
-                 && DeviceInfo.Current.Idiom == DeviceIdiom.Phone
-                 && _viewModel?.IsSearchActive == false)
+        else if (e.PropertyName is nameof(NotesListViewModel.IsSidebarCollapsed)
+                 or nameof(NotesListViewModel.HeaderTitle)
+                 or nameof(NotesListViewModel.SelectedCategory)
+                 or nameof(NotesListViewModel.SelectedListId)
+                 or nameof(NotesListViewModel.HasBackgroundImage)
+                 or nameof(NotesListViewModel.BackgroundImage)
+                 or nameof(NotesListViewModel.ListBackgroundColor))
         {
-            SearchEntry.Unfocus();
-            SearchPill.IsVisible = false;
             UpdateMobileHeader();
         }
     }
@@ -110,15 +147,36 @@ public partial class HeaderView : ContentView
         DesktopNavigationButton.IsVisible = DeviceInfo.Current.Platform == DevicePlatform.WinUI;
         MobileNavigationButton.IsVisible = false;
         MobileSearchButton.IsVisible = isPhone;
+        MobileMoreOptionsButton.IsVisible = false;
 
         if (!isPhone)
             return;
 
         var showingContent = _viewModel?.IsSidebarCollapsed == true;
+        var showingSearchResults = _viewModel?.IsSearchActive == true;
+        var showingSearchInput = SearchPill.IsVisible;
+        var showingListHeader = showingContent && !showingSearchResults && !showingSearchInput;
         MobileAppTitle.IsVisible = !showingContent;
-        MobilePageTitle.IsVisible = showingContent;
-        MobilePageTitle.Text = _viewModel?.HeaderTitle ?? string.Empty;
         MobileNavigationButton.IsVisible = showingContent;
-        MobileSearchButton.IsVisible = !showingContent;
+        MobileSearchButton.IsVisible = !showingContent && !showingSearchInput;
+        MobileMoreOptionsButton.IsVisible = showingListHeader;
+        ProfileImageContainer.IsVisible = !showingContent && !showingSearchInput;
+
+        if (showingListHeader && _viewModel is not null)
+        {
+            HeaderGrid.BackgroundColor = _viewModel.ListBackgroundColor;
+            MobileHeaderBackground.IsVisible = _viewModel.HasBackgroundImage;
+            MobileNavigationButton.TextColor = _viewModel.HeaderForegroundColor;
+            MobileMoreOptionsButton.TextColor = _viewModel.HeaderForegroundColor;
+        }
+        else
+        {
+            HeaderGrid.SetAppThemeColor(Grid.BackgroundColorProperty, Colors.White, Color.FromArgb("#1C1B1F"));
+            MobileHeaderBackground.IsVisible = false;
+            MobileAppTitle.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
+            MobileSearchButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
+            MobileNavigationButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
+            MobileMoreOptionsButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
+        }
     }
 }

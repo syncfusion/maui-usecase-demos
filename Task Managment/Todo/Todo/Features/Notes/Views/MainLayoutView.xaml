@@ -10,13 +10,14 @@
           Margin="{OnIdiom Phone=0, Default='0,10,0,0'}"
           RowDefinitions="{OnIdiom Phone='56,*', Default='60,*'}"
           ColumnDefinitions="{OnIdiom Phone='0,*', Default='220,*'}"
-          Background="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}">
+          Background="{OnIdiom Phone={AppThemeBinding Light=White, Dark={StaticResource BackgroundDarkColor}}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
 
         <!-- Shared application header (spans both columns) -->
         <views:HeaderView Grid.Row="0"
                           Grid.ColumnSpan="2" />
 
-        <BoxView Grid.Row="0"
+        <BoxView x:Name="HeaderDivider"
+                 Grid.Row="0"
                  Grid.ColumnSpan="2"
                  HeightRequest="1"
                  VerticalOptions="End"
