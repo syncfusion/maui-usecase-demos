@@ -6,6 +6,7 @@ public partial class TokensPage : ContentView
 {
     private readonly QueueSessionViewModel _viewModel;
     private readonly Action<QueueToken> _openToken;
+    private bool? _isMobileLayout;
 
     public TokensPage(
         TokenManagementViewModel viewModel,
@@ -75,6 +76,14 @@ public partial class TokensPage : ContentView
 
         var wide = Width >= 1100;
         var mobile = Width < 768;
+        if (_isMobileLayout != mobile)
+        {
+            _isMobileLayout = mobile;
+            BindableLayout.SetItemsSource(
+                MobileTokenList,
+                mobile ? _viewModel.VisibleTokenRows : null);
+        }
+
         MetricGrid.ColumnDefinitions = wide
             ? new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star), new(GridLength.Star), new(GridLength.Star) }
             : !mobile

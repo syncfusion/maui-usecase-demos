@@ -134,7 +134,8 @@
                         StrokeThickness="0">
                     <VerticalStackLayout Spacing="16">
                         <Border x:Name="MobileSearchBorder"
-                                Padding="8,2"
+                                Padding="8,0"
+                                HeightRequest="48"
                                 BackgroundColor="White"
                                 Stroke="#DCE7F5"
                                 StrokeThickness="1"
@@ -166,7 +167,7 @@
                                                           Background="Transparent"
                                                           TextColor="#0F172A"
                                                           PlaceholderColor="#94A3B8"
-                                                          HeightRequest="36"
+                                                          HeightRequest="44"
                                                           MinimumHeightRequest="0"
                                                           VerticalOptions="Center"
                                                           VerticalTextAlignment="Center" />
@@ -569,8 +570,7 @@
                         <Grid x:Name="MobileTokenContent" IsVisible="False">
                             <VerticalStackLayout x:Name="MobileTokenList"
                                                  IsVisible="{Binding HasVisibleTokens}"
-                                                 Spacing="18"
-                                                 BindableLayout.ItemsSource="{Binding VisibleTokenRows}">
+                                                 Spacing="18">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="models:QueueTokenListItem">
                                     <Border Padding="18,16"

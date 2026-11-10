@@ -12,7 +12,8 @@
               Margin="28,22,28,0"
               ColumnDefinitions="Auto,*"
               ColumnSpacing="12">
-            <Border Padding="4"
+            <Border x:Name="SectionTabsHost"
+                    Padding="4"
                     BackgroundColor="White"
                     Stroke="#E2E8F0"
                     StrokeThickness="1"

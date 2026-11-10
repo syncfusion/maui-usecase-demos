@@ -20,7 +20,7 @@ public partial class MobileBottomSheetHost : ContentView
         IsVisible = true;
         var sheetLayout = new Grid
         {
-            RowDefinitions = new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Star) }
+            RowDefinitions = new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) }
         };
         sheetLayout.Add(new Border
         {
@@ -47,7 +47,6 @@ public partial class MobileBottomSheetHost : ContentView
             Stroke = Slate200,
             StrokeThickness = 1,
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(24) },
-            MinimumHeightRequest = availableHeight > 0 ? Math.Min(620, availableHeight * 0.58) : -1,
             MaximumHeightRequest = availableHeight > 0 ? availableHeight : -1,
             VerticalOptions = LayoutOptions.End,
             Content = sheetLayout

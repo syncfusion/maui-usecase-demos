@@ -226,7 +226,7 @@ public partial class CountersPage : ContentView
         CompleteButton.Text = compact ? "Complete\nService" : "Complete service";
         CompleteButton.FontSize = 14;
         CompleteButton.MinimumHeightRequest = compact ? 76 : 50;
-        CompleteButton.BackgroundColor = compact ? Color.FromArgb("#00796F") : Color.FromArgb("#94A3B8");
+        CompleteButton.BackgroundColor = Color.FromArgb("#153F9A");
         CompleteButton.ImageSource = new FontImageSource
         {
             Glyph = compact ? "check_circle" : "verified_user",
@@ -281,8 +281,6 @@ public partial class CountersPage : ContentView
         CompleteButton.TextColor = Colors.White;
         CompleteButton.BackgroundColor = _completeServiceSucceeded
             ? Color.FromArgb("#16A34A")
-            : Width < 768
-                ? Color.FromArgb("#00796F")
-                : Color.FromArgb("#94A3B8");
+            : Color.FromArgb("#153F9A");
     }
 }

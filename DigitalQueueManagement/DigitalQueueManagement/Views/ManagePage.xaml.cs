@@ -11,6 +11,8 @@ public partial class ManagePage : ContentView
     private readonly Action<Func<QueueToken?>> _runTokenAction;
     private readonly Action<Func<bool>> _runBooleanAction;
     private readonly Action<string> _openTransfer;
+    private ScrollView? _tokensScrollHost;
+    private ScrollView? _countersScrollHost;
 
     public ManagePage(
         ManagePageViewModel viewModel,
@@ -31,24 +33,34 @@ public partial class ManagePage : ContentView
         _openTransfer = openTransfer;
 
         SectionTabs.ItemsSource = new[] { "Tokens", "Counters" };
-        RenderSection();
+        SetActiveSection();
         SizeChanged += OnSizeChanged;
     }
 
-    private void RenderSection()
+    public void SetActiveSection()
     {
-        View pageContent = _viewModel.ActiveTab switch
+        var scrollHost = _viewModel.ActiveTab switch
         {
-            "Counters" => new CountersPage(
-                new CounterOperationsViewModel(_viewModel),
-                _manageCounters,
-                _openToken,
-                _runTokenAction,
-                _runBooleanAction,
-                _openTransfer),
-            _ => new TokensPage(new TokenManagementViewModel(_viewModel), _openToken)
+            "Counters" => _countersScrollHost ??= new ScrollView
+            {
+                Content = new CountersPage(
+                    new CounterOperationsViewModel(_viewModel),
+                    _manageCounters,
+                    _openToken,
+                    _runTokenAction,
+                    _runBooleanAction,
+                    _openTransfer)
+            },
+            _ => _tokensScrollHost ??= new ScrollView
+            {
+                Content = new TokensPage(new TokenManagementViewModel(_viewModel), _openToken)
+            }
         };
-        PageContentHost.Content = new ScrollView { Content = pageContent };
+
+        if (!ReferenceEquals(PageContentHost.Content, scrollHost))
+        {
+            PageContentHost.Content = scrollHost;
+        }
     }
 
     public void ScrollToCounter(string counterName)
@@ -71,6 +83,23 @@ public partial class ManagePage : ContentView
         {
             return;
         }
+
+        var mobile = Width < 768;
+        NavigationRow.ColumnDefinitions = mobile
+            ? new ColumnDefinitionCollection
+            {
+                new(GridLength.Star),
+                new(GridLength.Auto),
+                new(GridLength.Star)
+            }
+            : new ColumnDefinitionCollection
+            {
+                new(GridLength.Auto),
+                new(GridLength.Star)
+            };
+        Grid.SetColumn(SectionTabsHost, mobile ? 1 : 0);
+        Grid.SetColumn(OperationalStatus, mobile ? 2 : 1);
+        SectionTabsHost.HorizontalOptions = mobile ? LayoutOptions.Center : LayoutOptions.Start;
 
         var horizontalPadding = Width >= 1100 ? 64 : 44;
         SectionTabs.WidthRequest = Math.Min(340, Math.Max(100, Width - horizontalPadding));

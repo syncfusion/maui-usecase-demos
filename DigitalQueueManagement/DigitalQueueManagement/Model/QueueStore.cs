@@ -59,8 +59,13 @@ public sealed class QueueStore
         };
 
         _tokens[index] = updated;
+        if (existing.Status == TokenStatus.Waiting && existing.CounterName != counterName)
+        {
+            PromoteNextWaitingTokenIfIdle(counterName);
+        }
+
         OnChanged();
-        return updated;
+        return _tokens[index];
     }
 
     public bool DeleteToken(string tokenId)
@@ -201,6 +206,12 @@ public sealed class QueueStore
         return serving;
     }
 
+    private QueueToken? PromoteNextWaitingTokenIfIdle(string counterName) =>
+        _tokens.Any(token =>
+            token.CounterName == counterName && token.Status == TokenStatus.Serving)
+            ? null
+            : PromoteNextWaitingToken(counterName);
+
     public bool CompleteCurrent(string counterName) =>
         ChangeCurrentStatus(counterName, TokenStatus.Serving, TokenStatus.Completed, "Done");
 
@@ -212,7 +223,7 @@ public sealed class QueueStore
         EnsureOnlineCounter(counterName);
         var skipped = _tokens.FirstOrDefault(token =>
             token.CounterName == counterName && token.Status == TokenStatus.Skipped);
-        if (skipped is null || !RecallToken(skipped.Id))
+        if (skipped is null || !RestoreSkippedToken(skipped.Id))
         {
             return false;
         }
@@ -220,13 +231,25 @@ public sealed class QueueStore
         if (!_tokens.Any(token =>
                 token.CounterName == counterName && token.Status == TokenStatus.Serving))
         {
-            CallNext(counterName);
+            PromoteNextWaitingToken(counterName);
         }
 
+        OnChanged();
         return true;
     }
 
     public bool RecallToken(string tokenId)
+    {
+        if (!RestoreSkippedToken(tokenId))
+        {
+            return false;
+        }
+
+        OnChanged();
+        return true;
+    }
+
+    private bool RestoreSkippedToken(string tokenId)
     {
         var index = _tokens.FindIndex(token =>
             token.Id == tokenId && token.Status == TokenStatus.Skipped);
@@ -247,7 +270,6 @@ public sealed class QueueStore
         }
 
         _tokens.Insert(firstWaitingIndex, skipped with { Status = TokenStatus.Waiting, Wait = "4 mins" });
-        OnChanged();
         return true;
     }
 
@@ -275,9 +297,10 @@ public sealed class QueueStore
             Wait = WaitFor(destination.Name)
         };
         _tokens.Add(moved);
+        PromoteNextWaitingTokenIfIdle(destination.Name);
         PromoteNextWaitingToken(source.CounterName);
         OnChanged();
-        return moved;
+        return _tokens.First(token => token.Id == moved.Id);
     }
 
     public void Reset()
@@ -386,7 +409,11 @@ public sealed class QueueStore
 
             var position = waitingPositions.GetValueOrDefault(token.CounterName) + 1;
             waitingPositions[token.CounterName] = position;
-            _tokens[index] = token with { Wait = $"{position * 4} mins" };
+            var wait = $"{position * 4} mins";
+            if (token.Wait != wait)
+            {
+                _tokens[index] = token with { Wait = wait };
+            }
         }
 
         Changed?.Invoke(this, EventArgs.Empty);

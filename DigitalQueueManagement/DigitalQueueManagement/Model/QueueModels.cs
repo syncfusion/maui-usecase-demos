@@ -77,7 +77,27 @@ public sealed record QueueCounterSummary(
     };
 
     public string TokenAndStatusText => $"{TokenId} · {TokenStatus}";
+
+    public int CompletedTokenCount { get; init; }
+
+    public int ServingTokenCount { get; init; }
+
+    public int WaitingTokenCount { get; init; }
+
+    public int TrackedTokenCount => CompletedTokenCount + ServingTokenCount + WaitingTokenCount;
+
+    public IReadOnlyList<QueueCounterActivitySegment> ActivitySegments =>
+    [
+        new("Completed", CompletedTokenCount, Color.FromArgb("#214A9A")),
+        new("Serving", ServingTokenCount, Color.FromArgb("#0C897B")),
+        new("Waiting", WaitingTokenCount, Color.FromArgb("#F59E0B"))
+    ];
+
+    public string ActivitySummary =>
+        $"{CompletedTokenCount} completed · {ServingTokenCount} serving · {WaitingTokenCount} waiting";
 }
+
+public sealed record QueueCounterActivitySegment(string Category, double Weight, Color FillColor);
 
 public sealed record QueueAnalyticsPoint(
     string Category,

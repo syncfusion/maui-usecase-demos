@@ -25,6 +25,7 @@ public partial class MainPage : ContentPage
     private readonly QueueSessionViewModel _viewModel = new(new QueueStore());
     private readonly AppShellViewModel _shellViewModel;
     private IReadOnlyList<SfSegmentItem> _headerTabItems = Array.Empty<SfSegmentItem>();
+    private OverviewPage? _overviewPage;
     private ManagePage? _managePage;
     private bool? _lastWideLayout;
     private bool? _lastMobileLayout;
@@ -101,11 +102,18 @@ public partial class MainPage : ContentPage
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(QueueSessionViewModel.ActiveHeaderTab) or nameof(QueueSessionViewModel.ActiveTab))
+        if (e.PropertyName == nameof(QueueSessionViewModel.ActiveHeaderTab))
         {
             UpdateHeaderTabIcons();
             UpdateShellPresentation();
             RenderPage();
+            return;
+        }
+
+        if (e.PropertyName == nameof(QueueSessionViewModel.ActiveTab))
+        {
+            UpdateShellPresentation();
+            _managePage?.SetActiveSection();
         }
     }
 
@@ -115,7 +123,7 @@ public partial class MainPage : ContentPage
     {
         if (Width > 0)
         {
-            var contentWidth = Math.Min(Width, 1440);
+            var contentWidth = Math.Min(Width, 1560);
             var isMobile = Width < 768;
             DesktopHeader.IsVisible = !isMobile;
             MobileHeader.IsVisible = isMobile;
@@ -142,8 +150,10 @@ public partial class MainPage : ContentPage
         {
             MobileHeaderTitle.Text = _viewModel.ActiveHeaderTab == "Overview"
                 ? "Queue Overview"
-                : "Queue Management";
-            MobileHeaderDate.IsVisible = _viewModel.ActiveHeaderTab == "Overview";
+                : _viewModel.ActiveTab == "Counters"
+                    ? "Counter Operations"
+                    : "Token Directory";
+            MobileHeaderDate.IsVisible = true;
         }
 
         if (MobileOverviewButton is not null)
@@ -184,22 +194,27 @@ public partial class MainPage : ContentPage
 
     private void RenderPage()
     {
+        View page;
         if (_viewModel.ActiveHeaderTab == "Overview")
         {
-            _managePage = null;
-            PageHost.Content = new OverviewPage(
+            page = _overviewPage ??= new OverviewPage(
                 new QueueOverviewViewModel(_viewModel));
-            return;
+        }
+        else
+        {
+            page = _managePage ??= new ManagePage(
+                new ManagePageViewModel(_viewModel),
+                ShowTokenDetails,
+                ShowCounterManagement,
+                action => RunCounterAction(action),
+                action => RunCounterAction(action),
+                ShowTokenPickerForTransfer);
         }
 
-        _managePage = new ManagePage(
-            new ManagePageViewModel(_viewModel),
-            ShowTokenDetails,
-            ShowCounterManagement,
-            action => RunCounterAction(action),
-            action => RunCounterAction(action),
-            ShowTokenPickerForTransfer);
-        PageHost.Content = _managePage;
+        if (!ReferenceEquals(PageHost.Content, page))
+        {
+            PageHost.Content = page;
+        }
     }
 
     private View BuildManagePage()
@@ -928,7 +943,6 @@ public partial class MainPage : ContentPage
             }
 
             HideModal();
-            RenderPage();
         }, Cobalt, Colors.White, Colors.Transparent);
         var actions = new VerticalStackLayout { Spacing = 8 };
         confirm.FontSize = Width < 768 ? 14 : confirm.FontSize;
@@ -1325,7 +1339,6 @@ public partial class MainPage : ContentPage
     private void ShowCounterOperations(QueueCounter counter)
     {
         _viewModel.SelectCounter(counter.Name);
-        RenderPage();
         var token = _viewModel.CurrentTokenFor(counter.Name);
         var header = new Grid
         {
@@ -1509,7 +1522,11 @@ public partial class MainPage : ContentPage
         try
         {
             var result = action();
-            RefreshCounterSurface();
+            if (result is not null)
+            {
+                RefreshCounterSurface();
+            }
+
             if (result is null)
             {
                 _ = DisplayAlertAsync("No token in queue", "There is no waiting token available for this counter.", "OK");
@@ -1530,7 +1547,11 @@ public partial class MainPage : ContentPage
         try
         {
             var changed = action();
-            RefreshCounterSurface();
+            if (changed)
+            {
+                RefreshCounterSurface();
+            }
+
             if (!changed)
             {
                 _ = DisplayAlertAsync("No active token", "This action is not available for the selected counter.", "OK");
@@ -1552,10 +1573,6 @@ public partial class MainPage : ContentPage
             && _viewModel.SelectedCounter is { } counter)
         {
             ShowCounterOperations(counter);
-        }
-        else
-        {
-            RenderPage();
         }
     }
 

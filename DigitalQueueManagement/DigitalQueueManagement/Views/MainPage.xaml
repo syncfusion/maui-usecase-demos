@@ -16,7 +16,7 @@
               BackgroundColor="White">
             <Grid x:Name="HeaderLayout"
                   ColumnDefinitions="Auto,*,Auto"
-                  MaximumWidthRequest="1440"
+                  MaximumWidthRequest="1560"
                   HorizontalOptions="Center"
                   Padding="28,0">
                 <Grid Grid.Column="0"
@@ -55,7 +55,8 @@
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Grid>
-                <Border Grid.Column="1"
+                <Border Grid.Column="0"
+                        Grid.ColumnSpan="3"
                         Padding="4"
                         BackgroundColor="#F8FAFC"
                         Stroke="#E2E8F0"
@@ -180,7 +181,7 @@
         <ContentView Grid.Row="1"
                      x:Name="PageHost"
                      HorizontalOptions="Center"
-                     MaximumWidthRequest="1440" />
+                     MaximumWidthRequest="1560" />
         <Grid x:Name="MobileBottomNavigation"
               Grid.Row="2"
               IsVisible="False"

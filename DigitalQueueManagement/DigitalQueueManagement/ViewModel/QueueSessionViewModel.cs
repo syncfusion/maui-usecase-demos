@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DigitalQueueManagement.Model;
 
@@ -11,16 +12,7 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public ObservableCollection<QueueAnalyticsPoint> ServiceAnalytics { get; } = [];
 
-    public ObservableCollection<QueueAnalyticsPoint> FulfillmentAnalytics { get; } = [];
-
-    public ObservableCollection<QueueAnalyticsPoint> CounterAnalytics { get; } = [];
-
-    public IReadOnlyList<QueueAnalyticsPoint> AverageWaitAnalytics { get; } =
-    [
-        new("Enquiry", 7.5, "#183E91"),
-        new("Payment", 4.2, "#159B85"),
-        new("Support", 11, "#D18A16")
-    ];
+    public ObservableCollection<QueueAnalyticsPoint> AverageWaitAnalytics { get; } = [];
 
     public QueueSessionViewModel(QueueStore store)
     {
@@ -31,7 +23,7 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public ObservableCollection<QueueToken> Tokens { get; } = [];
 
-    public ObservableCollection<QueueToken> VisibleTokens { get; } = [];
+    public IReadOnlyList<QueueToken> VisibleTokens { get; private set; } = Array.Empty<QueueToken>();
 
     public ObservableCollection<QueueTokenListItem> VisibleTokenRows { get; } = [];
 
@@ -62,14 +54,13 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public int CompletedTokenCount => Tokens.Count(token => token.Status == TokenStatus.Completed);
 
-    public int PendingTokenCount => TotalTokenCount - CompletedTokenCount;
-
     public string CompletedTokenPercentageText => GetTokenPercentageText(CompletedTokenCount);
-
-    public string PendingTokenPercentageText => GetTokenPercentageText(PendingTokenCount);
 
     public string CompletedTokensPerCounterText =>
         $"{(Counters.Count == 0 ? 0 : CompletedTokenCount / (double)Counters.Count):0.#} tokens/counter";
+
+    public string CounterActivitySummary =>
+        $"{CompletedTokenCount} completed · {ServingTokenCount} serving · {WaitingTokenCount} waiting across {Counters.Count} counters";
 
     public int SkippedTokenCount => Tokens.Count(token => token.Status == TokenStatus.Skipped);
 
@@ -92,9 +83,18 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public string OnlineCounterSummary => $"{OnlineCounterCount} of {Counters.Count} active";
 
-    public string EstimatedWaitText => $"~{WaitingTokenCount * 4}m";
+    public string EstimatedWaitText => $"~{AverageWaitMinutes:0.#}m";
 
-    public string AverageWaitText => $"{WaitingTokenCount * 4}m";
+    public string AverageWaitText => $"{AverageWaitMinutes:0.#}m";
+
+    public double AverageWaitMinutes
+    {
+        get
+        {
+            var waitingTokens = Tokens.Where(token => token.Status == TokenStatus.Waiting).ToArray();
+            return waitingTokens.Length == 0 ? 0 : waitingTokens.Average(GetWaitMinutes);
+        }
+    }
 
     public string VisibleTokenCountText => $"{VisibleTokens.Count} of {TotalTokenCount} showing";
 
@@ -121,6 +121,10 @@ public partial class QueueSessionViewModel : ObservableObject
     public bool HasCounters => Counters.Count > 0;
 
     public bool HasNoCounters => !HasCounters;
+
+    public double CounterPerformanceCardHeight => Math.Max(420, 196 + CounterSummaries.Count * 94);
+
+    public double CounterStatusCardHeight => Math.Max(430, 110 + CounterSummaries.Count * 108);
 
     public string SelectedCounterDisplayName => SelectedCounter?.Name ?? "No counter selected";
 
@@ -180,7 +184,6 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public bool CanCallNextFor(string counterName) =>
         Counters.Any(counter => counter.Name == counterName && counter.IsOnline)
-        && _completedTokenByCounter.ContainsKey(counterName)
         && !Tokens.Any(token =>
             token.CounterName == counterName && token.Status == TokenStatus.Serving)
         && WaitingTokenCountFor(counterName) > 0;
@@ -343,7 +346,8 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public void SelectCounter(string counterName)
     {
-        if (Counters.Any(counter => counter.Name == counterName))
+        if (ActiveCounterName != counterName
+            && Counters.Any(counter => counter.Name == counterName))
         {
             ActiveCounterName = counterName;
             NotifySelectedCounterChanged();
@@ -370,8 +374,7 @@ public partial class QueueSessionViewModel : ObservableObject
             token.CounterName == counterName && token.Status == TokenStatus.Waiting);
     }
 
-    public bool IsCounterActive(QueueCounter counter) =>
-        GetCounterAvailabilityText(counter) != "Offline";
+    public bool IsCounterActive(QueueCounter counter) => counter.IsOnline;
 
     public string GetCounterAvailabilityText(QueueCounter counter)
     {
@@ -389,7 +392,7 @@ public partial class QueueSessionViewModel : ObservableObject
         return Tokens.Any(token =>
             token.CounterName == counter.Name && token.Status == TokenStatus.Waiting)
             ? "Waiting"
-            : "Offline";
+            : "Online";
     }
 
     public QueueToken UpdateToken(string tokenId, string service, TokenPriority priority, string counterName) =>
@@ -420,7 +423,7 @@ public partial class QueueSessionViewModel : ObservableObject
         if (token is not null)
         {
             _completedTokenByCounter.Remove(counterName);
-            NotifySelectedCounterChanged();
+            NotifySelectedCounterChanged(refreshStatusTokens: false);
         }
 
         return token;
@@ -439,7 +442,7 @@ public partial class QueueSessionViewModel : ObservableObject
             }
 
             _completedTokenByCounter[counterName] = servingToken.Id;
-            NotifySelectedCounterChanged();
+            NotifySelectedCounterChanged(refreshStatusTokens: false);
         }
 
         return completed;
@@ -451,7 +454,7 @@ public partial class QueueSessionViewModel : ObservableObject
         if (skipped)
         {
             _completedTokenByCounter.Remove(counterName);
-            NotifySelectedCounterChanged();
+            NotifySelectedCounterChanged(refreshStatusTokens: false);
         }
 
         return skipped;
@@ -463,7 +466,7 @@ public partial class QueueSessionViewModel : ObservableObject
         if (recalled)
         {
             _completedTokenByCounter.Remove(counterName);
-            NotifySelectedCounterChanged();
+            NotifySelectedCounterChanged(refreshStatusTokens: false);
         }
 
         return recalled;
@@ -494,6 +497,8 @@ public partial class QueueSessionViewModel : ObservableObject
     private void OnStoreChanged(object? sender, EventArgs e)
     {
         RefreshCollections();
+        var refreshCounterSummaries = false;
+        var refreshStatusTokens = false;
         foreach (var (counterName, tokenId) in _completedTokenByCounter.ToArray())
         {
             if (!Tokens.Any(token =>
@@ -502,15 +507,18 @@ public partial class QueueSessionViewModel : ObservableObject
                     && token.Status == TokenStatus.Completed))
             {
                 _completedTokenByCounter.Remove(counterName);
+                refreshCounterSummaries = true;
             }
         }
 
         if (!Counters.Any(counter => counter.Name == ActiveCounterName))
         {
             ActiveCounterName = Counters.FirstOrDefault()?.Name ?? string.Empty;
+            refreshCounterSummaries = true;
+            refreshStatusTokens = true;
         }
 
-        NotifySelectedCounterChanged();
+        NotifySelectedCounterChanged(refreshCounterSummaries, refreshStatusTokens);
         OnPropertyChanged(nameof(ActiveHeaderTitle));
         OnPropertyChanged(nameof(NowServingTokenId));
         OnPropertyChanged(nameof(NowServingCounterName));
@@ -518,10 +526,9 @@ public partial class QueueSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(WaitingTokenCount));
         OnPropertyChanged(nameof(ServingTokenCount));
         OnPropertyChanged(nameof(CompletedTokenCount));
-        OnPropertyChanged(nameof(PendingTokenCount));
         OnPropertyChanged(nameof(CompletedTokenPercentageText));
-        OnPropertyChanged(nameof(PendingTokenPercentageText));
         OnPropertyChanged(nameof(CompletedTokensPerCounterText));
+        OnPropertyChanged(nameof(CounterActivitySummary));
         OnPropertyChanged(nameof(SkippedTokenCount));
         OnPropertyChanged(nameof(PriorityWaitingCount));
         OnPropertyChanged(nameof(NormalWaitingCount));
@@ -532,14 +539,25 @@ public partial class QueueSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(OnlineCounterSummary));
         OnPropertyChanged(nameof(EstimatedWaitText));
         OnPropertyChanged(nameof(AverageWaitText));
+        OnPropertyChanged(nameof(AverageWaitMinutes));
         OnPropertyChanged(nameof(HasCounters));
         OnPropertyChanged(nameof(HasNoCounters));
     }
 
-    private void NotifySelectedCounterChanged()
+    private void NotifySelectedCounterChanged(
+        bool refreshCounterSummaries = true,
+        bool refreshStatusTokens = true)
     {
-        RefreshCounterSummaries();
-        RefreshStatusTokens();
+        if (refreshCounterSummaries)
+        {
+            RefreshCounterSummaries();
+        }
+
+        if (refreshStatusTokens)
+        {
+            RefreshStatusTokens();
+        }
+
         OnPropertyChanged(nameof(SelectedCounter));
         OnPropertyChanged(nameof(SelectedCounterToken));
         OnPropertyChanged(nameof(SelectedCounterDisplayName));
@@ -598,25 +616,41 @@ public partial class QueueSessionViewModel : ObservableObject
                 GetTokenPercentageText(count));
         }));
 
-        Replace(FulfillmentAnalytics,
-        [
-            new QueueAnalyticsPoint("Completed", CompletedTokenCount, "#159B85"),
-            new QueueAnalyticsPoint("Not completed", PendingTokenCount, "#93B4E2")
-        ]);
+        var waitColors = new[] { "#183E91", "#159B85", "#7589D4" };
+        Replace(AverageWaitAnalytics, QueueServices.All.Select((service, index) =>
+        {
+            var waitingTokens = Tokens
+                .Where(token => token.Service == service && token.Status == TokenStatus.Waiting)
+                .ToArray();
+            var averageWait = waitingTokens.Length == 0
+                ? 0
+                : waitingTokens.Average(GetWaitMinutes);
+            return new QueueAnalyticsPoint(
+                service,
+                averageWait,
+                waitColors[index % waitColors.Length],
+                $"{waitingTokens.Length} waiting");
+        }));
 
-        var counterColors = new[] { "#183E91", "#159B85", "#7589D4" };
-        Replace(CounterAnalytics, Counters.Select((counter, index) =>
-            new QueueAnalyticsPoint(
-                counter.Name,
-                Tokens.Count(token =>
-                    token.CounterName == counter.Name && token.Status == TokenStatus.Completed),
-                counterColors[index % counterColors.Length])));
     }
 
     private string GetTokenPercentageText(int count) =>
         TotalTokenCount == 0
             ? "0%"
             : $"{(int)Math.Round(count * 100d / TotalTokenCount)}%";
+
+    private static double GetWaitMinutes(QueueToken token)
+    {
+        var separator = token.Wait.IndexOf(' ');
+        return separator > 0
+            && double.TryParse(
+                token.Wait.AsSpan(0, separator),
+                NumberStyles.Number,
+                CultureInfo.InvariantCulture,
+                out var minutes)
+                ? minutes
+                : 0;
+    }
 
     private void RefreshStatusTokens()
     {
@@ -648,39 +682,96 @@ public partial class QueueSessionViewModel : ObservableObject
             ? Tokens.Count(token => token.CounterName == counter.Name && token.Status == status)
             : 0;
 
-    private void RefreshCounterSummaries() =>
+    private void RefreshCounterSummaries()
+    {
         Replace(CounterSummaries, Counters.Select(counter =>
         {
-            var token = CurrentTokenFor(counter.Name);
+            var token = Tokens.FirstOrDefault(item =>
+                item.CounterName == counter.Name && item.Status == TokenStatus.Serving)
+                ?? CurrentTokenFor(counter.Name);
             return new QueueCounterSummary(
                 counter.Name,
                 counter.Service,
                 token?.Id ?? "Available",
                 token?.Status.ToString() ?? "Ready",
                 IsCounterActive(counter),
-                counter.Name == ActiveCounterName);
+                counter.Name == ActiveCounterName)
+            {
+                CompletedTokenCount = Tokens.Count(item =>
+                    item.CounterName == counter.Name && item.Status == TokenStatus.Completed),
+                ServingTokenCount = Tokens.Count(item =>
+                    item.CounterName == counter.Name && item.Status == TokenStatus.Serving),
+                WaitingTokenCount = WaitingTokenCountFor(counter.Name)
+            };
         }));
+        OnPropertyChanged(nameof(CounterPerformanceCardHeight));
+        OnPropertyChanged(nameof(CounterStatusCardHeight));
+    }
 
     private void RefreshVisibleTokens()
     {
-        var filtered = Tokens.Where(token =>
+        var statusFilter = StatusFilter;
+        var filteredStatus = statusFilter switch
         {
-            var statusMatches = StatusFilter == "All Tokens" || token.Status.ToString() == StatusFilter;
-            var searchMatches = string.IsNullOrWhiteSpace(SearchText)
+            "Waiting" => TokenStatus.Waiting,
+            "Serving" => TokenStatus.Serving,
+            "Skipped" => TokenStatus.Skipped,
+            "Completed" => TokenStatus.Completed,
+            _ => (TokenStatus?)null
+        };
+        var showAllStatuses = statusFilter == "All Tokens";
+        var searchText = string.IsNullOrWhiteSpace(SearchText) ? null : SearchText.Trim();
+        var visibleTokens = new List<QueueToken>();
+        var visibleRows = new List<QueueTokenListItem>();
+        var waitingPosition = 0;
+
+        foreach (var token in Tokens)
+        {
+            if (token.Status == TokenStatus.Waiting)
+            {
+                waitingPosition++;
+            }
+
+            var statusMatches = showAllStatuses || token.Status == filteredStatus;
+            var searchMatches = searchText is null
                 || $"{token.Id} {token.Service} {token.CounterName}"
-                    .Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase);
-            return statusMatches && searchMatches;
-        });
-        Replace(VisibleTokens, filtered);
-        var waitingPositions = Tokens
-            .Where(token => token.Status == TokenStatus.Waiting)
-            .Select((token, index) => (token.Id, Position: index + 1))
-            .ToDictionary(item => item.Id, item => item.Position);
-        Replace(VisibleTokenRows, VisibleTokens.Select(token =>
-            new QueueTokenListItem(token, GetQueuePositionText(token, waitingPositions))));
+                    .Contains(searchText, StringComparison.OrdinalIgnoreCase);
+            if (!statusMatches || !searchMatches)
+            {
+                continue;
+            }
+
+            visibleTokens.Add(token);
+            visibleRows.Add(new QueueTokenListItem(token, GetQueuePositionText(token, waitingPosition)));
+        }
+
+        VisibleTokens = visibleTokens;
+        Replace(VisibleTokenRows, visibleRows);
+        OnPropertyChanged(nameof(VisibleTokens));
         OnPropertyChanged(nameof(VisibleTokenCountText));
         OnPropertyChanged(nameof(HasVisibleTokens));
         OnPropertyChanged(nameof(HasNoVisibleTokens));
+    }
+
+    private static string GetQueuePositionText(QueueToken token, int waitingPosition)
+    {
+        if (token.Status == TokenStatus.Serving)
+        {
+            return "At Desk";
+        }
+
+        if (token.Status != TokenStatus.Waiting)
+        {
+            return token.Status.ToString();
+        }
+
+        return waitingPosition switch
+        {
+            1 => "Next in line",
+            2 => "2nd in line",
+            3 => "3rd in line",
+            _ => $"{waitingPosition}th in line"
+        };
     }
 
     private static string GetQueuePositionText(
@@ -709,9 +800,16 @@ public partial class QueueSessionViewModel : ObservableObject
 
     private void RefreshUpcomingTokens()
     {
-        var upcoming = Tokens
-            .Where(token => token.Status == TokenStatus.Waiting)
-            .Where(token => UpcomingFilter == "All" || token.Priority.ToString() == UpcomingFilter)
+        var upcoming = Counters
+            .SelectMany((counter, counterIndex) => Tokens
+                .Where(token =>
+                    token.CounterName == counter.Name
+                    && token.Status == TokenStatus.Waiting
+                    && (UpcomingFilter == "All" || token.Priority.ToString() == UpcomingFilter))
+                .Select((token, position) => (Token: token, Position: position, CounterIndex: counterIndex)))
+            .OrderBy(item => item.Position)
+            .ThenBy(item => item.CounterIndex)
+            .Select(item => item.Token)
             .Take(5);
         Replace(UpcomingTokens, upcoming);
         OnPropertyChanged(nameof(HasUpcomingTokens));
@@ -720,10 +818,24 @@ public partial class QueueSessionViewModel : ObservableObject
 
     private static void Replace<T>(ObservableCollection<T> target, IEnumerable<T> items)
     {
-        target.Clear();
-        foreach (var item in items)
+        var updatedItems = items as IReadOnlyList<T> ?? items.ToArray();
+        var sharedCount = Math.Min(target.Count, updatedItems.Count);
+        for (var index = 0; index < sharedCount; index++)
         {
-            target.Add(item);
+            if (!EqualityComparer<T>.Default.Equals(target[index], updatedItems[index]))
+            {
+                target[index] = updatedItems[index];
+            }
+        }
+
+        for (var index = target.Count - 1; index >= updatedItems.Count; index--)
+        {
+            target.RemoveAt(index);
+        }
+
+        for (var index = sharedCount; index < updatedItems.Count; index++)
+        {
+            target.Add(updatedItems[index]);
         }
     }
 
