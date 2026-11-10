@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ============================================================
+         Visitor Pass theme palette.
+         Single source of truth for every colour/brush used in the app.
+         ============================================================ -->
+
+    <!-- 1. Brand / accents -->
+    <Color x:Key="Primary">#0050CB</Color>
+    <Color x:Key="PrimaryDark">#003D9C</Color>
+    <Color x:Key="PrimaryLight">#DCE9FF</Color>
+    <!-- Dark-mode values (kept here so AppThemeBinding can swap them) -->
+    <Color x:Key="PrimaryDarkTheme">#7C77FF</Color>
+    <Color x:Key="PrimaryDarkHoverTheme">#6653FF</Color>
+    <Color x:Key="PrimaryLightTheme">#1E1B4B</Color>
+
+    <!-- 2. Surfaces (light values; dark mode is provided by the
+         AppThemeBinding brushes below). -->
+    <Color x:Key="Surface">#FFFFFF</Color>
+    <Color x:Key="SurfaceAlt">#F0F4FF</Color>
+    <Color x:Key="Border">#E5E9F2</Color>
+    <Color x:Key="SurfaceDark">#161B2C</Color>
+    <Color x:Key="SurfaceAltDark">#0F1322</Color>
+    <Color x:Key="BorderDark">#2A3045</Color>
+
+    <!-- 3. Text (light values; dark mode via AppThemeBinding brushes). -->
+    <Color x:Key="TextPrimary">#17243A</Color>
+    <Color x:Key="TextSecondary">#3A4658</Color>
+    <Color x:Key="TextMuted">#7A8599</Color>
+    <Color x:Key="TextPrimaryDark">#F1F4FB</Color>
+    <Color x:Key="TextSecondaryDark">#A4ADC2</Color>
+    <Color x:Key="TextMutedDark">#6E7894</Color>
+
+    <!-- 4. Status palette -->
+    <Color x:Key="StatusExpected">#3B82F6</Color>
+    <Color x:Key="StatusExpectedBg">#DBEAFE</Color>
+    <Color x:Key="StatusCheckedIn">#10B981</Color>
+    <Color x:Key="StatusCheckedInBg">#D1FAE5</Color>
+    <Color x:Key="StatusCheckedOut">#6B7280</Color>
+    <Color x:Key="StatusCheckedOutBg">#E5E7EB</Color>
+    <Color x:Key="StatusCancelled">#EF4444</Color>
+    <Color x:Key="StatusCancelledBg">#FEE2E2</Color>
+    <Color x:Key="StatusOverdue">#F59E0B</Color>
+    <Color x:Key="StatusOverdueBg">#FEF3C7</Color>
+
+    <!-- 5. Surfaces brushes (AppThemeBinding wrapper so the
+         brushes auto-flip between light and dark mode without
+         code). -->
+    <SolidColorBrush x:Key="SurfaceBrush">
+        <SolidColorBrush.Color>
+            <AppThemeBinding Light="#FFFFFF" Dark="#161B2C" />
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="SurfaceAltBrush">
+        <SolidColorBrush.Color>
+            <AppThemeBinding Light="#F6F8FD" Dark="#0F1322" />
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="BorderBrush">
+        <SolidColorBrush.Color>
+            <AppThemeBinding Light="#E5E9F2" Dark="#2A3045" />
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+
+    <!-- Text brushes (AppThemeBinding). -->
+    <SolidColorBrush x:Key="TextPrimaryBrush">
+        <SolidColorBrush.Color>
+            <AppThemeBinding Light="#17243A" Dark="#F1F4FB" />
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="TextSecondaryBrush">
+        <SolidColorBrush.Color>
+            <AppThemeBinding Light="#3A4658" Dark="#A4ADC2" />
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="TextMutedBrush">
+        <SolidColorBrush.Color>
+            <AppThemeBinding Light="#6B7589" Dark="#6E7894" />
+        </SolidColorBrush.Color>
+    </SolidColorBrush>
+
+    <!-- 6. White token (kept for the rare label style that needs an
+         explicit white). -->
+    <Color x:Key="White">White</Color>
+
+    <!-- 7. Dashboard chart colors (consumed by the donut + column
+         legend pills on the Dashboard). -->
+    <Color x:Key="ChartExpected">#3B82F6</Color>
+    <Color x:Key="ChartCheckedIn">#10B981</Color>
+    <Color x:Key="ChartCheckedOut">#6B7280</Color>
+    <Color x:Key="ChartCancelled">#dc2626</Color>
+    <Color x:Key="ChartOverdue">#F59E0B</Color>
+
+    <SolidColorBrush x:Key="ChartExpectedBrush" Color="{StaticResource ChartExpected}" />
+    <SolidColorBrush x:Key="ChartCheckedInBrush" Color="{StaticResource ChartCheckedIn}" />
+    <SolidColorBrush x:Key="ChartCheckedOutBrush" Color="{StaticResource ChartCheckedOut}" />
+    <SolidColorBrush x:Key="ChartCancelledBrush" Color="{StaticResource ChartCancelled}" />
+    <SolidColorBrush x:Key="ChartOverdueBrush" Color="{StaticResource ChartOverdue}" />
+
+</ResourceDictionary>

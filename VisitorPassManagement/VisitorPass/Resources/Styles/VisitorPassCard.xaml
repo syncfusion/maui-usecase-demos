@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ============================================================
+         Reusable card / panel / badge styles for Visitor Pass.
+         Each style is a thin wrapper that combines palette tokens
+         from Colors.xaml with geometric properties (radius, stroke,
+         padding, shadow). Pages consume them by
+         `Style="{StaticResource …}"`.
+
+         Per HARNESS §6 rule 6 every colour used here resolves to a
+         StaticResource; nothing is hard-coded.
+
+         VP-104 — Global tokens (shadow + radius scale) so every
+         card / pill / button uses one consistent elevation system.
+         ============================================================ -->
+
+    <!-- =========================================================
+         0. Shared tokens (shadow / radius scale)
+         ========================================================= -->
+    <Style x:Key="ShadowSm" TargetType="BoxView">
+        <Setter Property="Color" Value="#1A17243A" />
+        <Setter Property="Opacity" Value="0.06" />
+    </Style>
+
+    <Style x:Key="ShadowMd" TargetType="BoxView">
+        <Setter Property="Color" Value="#1A17243A" />
+        <Setter Property="Opacity" Value="0.10" />
+    </Style>
+
+    <!-- =========================================================
+         1. KPI card (Dashboard Section 1)
+            Pill-shaped card with status colour stripe + count.
+            VP-104 — added subtle shadow + 14px radius.
+         ========================================================= -->
+    <Style x:Key="KpiCard" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="18" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="20,17,20,17" />
+        <Setter Property="VerticalOptions" Value="Fill" />
+    </Style>
+
+    <!-- =========================================================
+         2. Panel card (Donut + Column chart containers, Visit
+            Summary, Today grid wrapper).
+            VP-104 — added 16px radius + light shadow.
+         ========================================================= -->
+    <Style x:Key="PanelCard" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="20" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="20" />
+    </Style>
+
+    <!-- =========================================================
+         3. Chart-panel card (used for donut + column chart frames
+            inside the Dashboard). Same shape as PanelCard but with
+            explicit fixed-height padding.
+         ========================================================= -->
+    <Style x:Key="ChartPanelCard" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="20" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="20" />
+    </Style>
+
+    <Style x:Key="StatusLegendPill" TargetType="Border">
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="11" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="9,6" />
+    </Style>
+
+    <!-- =========================================================
+         4. Section title (large eyebrow + caption).
+         ========================================================= -->
+    <Style x:Key="SectionTitle" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="CharacterSpacing" Value="0.2" />
+    </Style>
+
+    <!-- =========================================================
+         5. Section eyebrow (small uppercase caption).
+         ========================================================= -->
+    <Style x:Key="SectionEyebrow" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="CharacterSpacing" Value="1.4" />
+        <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+    </Style>
+
+    <!-- =========================================================
+         6. KPI value (large count number).
+         ========================================================= -->
+    <Style x:Key="KpiValue" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="LineBreakMode" Value="NoWrap" />
+    </Style>
+
+    <!-- =========================================================
+         7. Status badge pill (small filled pill with text).
+         ========================================================= -->
+    <Style x:Key="StatusBadgePill" TargetType="Border">
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="11" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="10,4,10,4" />
+    </Style>
+
+    <!-- =========================================================
+         8. Filter chip (used by DirectoryPage status row).
+            VP-104 — selected state now swaps BackgroundColor via
+            DataTrigger (file-scope names referenced in code).
+         ========================================================= -->
+    <Style x:Key="FilterChip" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="14" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="12,6,12,6" />
+    </Style>
+
+    <Style x:Key="FilterChipLabel" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+    </Style>
+
+    <!-- =========================================================
+         9. Register Visitor pill (top-right of TopNavBar on
+            desktop / tablet).
+         ========================================================= -->
+    <Style x:Key="RegisterVisitorPill" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="18" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="14,9,14,9" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <!-- =========================================================
+         10. FAB (floating action button used on phone).
+         ========================================================= -->
+    <Style x:Key="Fab" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="26" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="14,14,14,14" />
+    </Style>
+
+    <!-- =========================================================
+         11. Action buttons (Check In / Check Out / Cancel) on
+             VisitorDetailsPage. VP-104 — same height + radius
+             scale across all actions.
+         ========================================================= -->
+    <Style x:Key="ActionPrimaryButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="14,10,14,10" />
+    </Style>
+
+    <Style x:Key="ActionSecondaryButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BorderColor" Value="{StaticResource Border}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="Padding" Value="14,10,14,10" />
+    </Style>
+
+    <Style x:Key="ActionDangerButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource StatusCancelledBg}" />
+        <Setter Property="TextColor" Value="{StaticResource StatusCancelled}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="14,10,14,10" />
+    </Style>
+
+    <!-- =========================================================
+         12. Sidebar brand tile (used by SideNavigation).
+         ========================================================= -->
+    <Style x:Key="SidebarBrandTile" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="8" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="WidthRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="32" />
+    </Style>
+
+    <!-- =========================================================
+         13. Sidebar nav tile inner icon background.
+         ========================================================= -->
+    <Style x:Key="SidebarNavIconTile" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="5" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="WidthRequest" Value="22" />
+        <Setter Property="HeightRequest" Value="22" />
+    </Style>
+
+    <!-- =========================================================
+         14. Sidebar footer pill ("MAUI Runtime v4.2.0").
+         ========================================================= -->
+    <Style x:Key="SidebarFooterPill" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="8" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="10,6,10,6" />
+    </Style>
+
+    <!-- =========================================================
+         15. Material glyph label — common font + size + colour for
+             any Label that renders a Material icon (sidebar /
+             top nav / dashboard KPI eyebrow).
+         ========================================================= -->
+    <Style x:Key="MaterialIconSm" TargetType="Label">
+        <Setter Property="FontFamily" Value="MauiMaterialAssets" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="MaterialIconMd" TargetType="Label">
+        <Setter Property="FontFamily" Value="MauiMaterialAssets" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="MaterialIconLg" TargetType="Label">
+        <Setter Property="FontFamily" Value="MauiMaterialAssets" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <!-- =========================================================
+         16. Digital Pass (VisitorDetailsPage) — VP-110.
+             Ghost header actions, telemetry metric tiles, info
+             chips, and the operational control action tiles.
+         ========================================================= -->
+
+    <!-- 16a. Ghost header action button (Print / Share / Security Log). -->
+    <Style x:Key="GhostActionButton" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="10" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="12,9,12,9" />
+    </Style>
+
+    <!-- 16b. Telemetry metric tile (Visit Summary grid). -->
+    <Style x:Key="TelemetryTile" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="12" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="12,10,12,10" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!-- 16c. Info chip (Escort Status / Wi-Fi Token / Parking Bay). -->
+    <Style x:Key="InfoChip" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="12" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="12,9,12,9" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!-- 16d. Action tile — secondary (Check In / Completed). -->
+    <Style x:Key="ActionTileSecondary" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="12" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="14,12,14,12" />
+    </Style>
+
+    <!-- 16e. Action tile — primary (Record Departure / Check Out). -->
+    <Style x:Key="ActionTilePrimary" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="12" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="16,13,16,13" />
+    </Style>
+
+    <!-- 16f. Action tile — danger (Cancel Visit / Revoke Badge). -->
+    <Style x:Key="ActionTileDanger" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource StatusCancelledBg}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="12" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="14,12,14,12" />
+    </Style>
+
+    <!-- 16g. Action tile — link (Notify Host / Re-issue Credentials / Incident). -->
+    <Style x:Key="ActionTileLink" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="2,2,2,2" />
+    </Style>
+
+</ResourceDictionary>
