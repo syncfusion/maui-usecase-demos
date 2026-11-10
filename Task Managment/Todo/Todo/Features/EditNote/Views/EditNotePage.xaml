@@ -11,14 +11,15 @@
              Shell.PresentationMode="ModalNotAnimated"
              BackgroundColor="#80000000">
 
-    <Grid Padding="24" VerticalOptions="Center" HorizontalOptions="Center">
-        <Border WidthRequest="330"
+    <Grid Padding="{OnIdiom Phone='16,18', Default='24'}" VerticalOptions="Center" HorizontalOptions="Center">
+        <Border WidthRequest="{OnIdiom Phone=0, Default=330}"
+                MaximumWidthRequest="{OnIdiom Phone=360, Default=330}"
                 MaximumHeightRequest="560"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 24"
-                Padding="18,16,18,0">
+                Padding="{OnIdiom Phone='16,14,16,0', Default='18,16,18,0'}">
             <Border.Shadow>
                 <Shadow Brush="#4D000000" Radius="6" Offset="0,2" Opacity="1" />
             </Border.Shadow>
@@ -27,7 +28,7 @@
                 <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
                     <Label Text="{Binding DialogTitle}"
                            FontFamily="{StaticResource FontFamilySemibold}"
-                           FontSize="18"
+                           FontSize="{OnIdiom Phone=16, Default=18}"
                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                            VerticalOptions="Center" />
                     <Border Grid.Column="1"
@@ -64,7 +65,7 @@
                         <Grid ColumnDefinitions="34,*,40" ColumnSpacing="8" HeightRequest="50" VerticalOptions="Center">
                             <CheckBox Grid.Column="0"
                                       IsChecked="{Binding Target.IsCompleted, Mode=TwoWay}"
-                                      Color="{StaticResource PrimaryColor}"
+                                      Color="{AppThemeBinding Light=#49454F, Dark=#CAC4D0}"
                                       VerticalOptions="Center"
                                       HorizontalOptions="Center" />
                             <syncfusionCore:SfTextInputLayout Grid.Column="1"

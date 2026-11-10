@@ -47,20 +47,6 @@ public partial class HeaderView : ContentView
             vm.OpenSearchCommand.Execute(null);
     }
 
-    private void OnMobileSearchClicked(object? sender, EventArgs e)
-    {
-        if (BindingContext is NotesListViewModel vm)
-            vm.IsSidebarCollapsed = true;
-
-        HeaderTitle.IsVisible = false;
-        MobileAppTitle.IsVisible = false;
-        MobilePageTitle.IsVisible = false;
-        MobileSearchButton.IsVisible = false;
-        SearchPill.WidthRequest = -1;
-        SearchPill.IsVisible = true;
-        SearchEntry.Focus();
-    }
-
     private void OnMobileNavigationClicked(object? sender, EventArgs e)
     {
         if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone
@@ -70,10 +56,25 @@ public partial class HeaderView : ContentView
         if (vm.IsSearchActive)
             vm.CloseSearchCommand.Execute(null);
 
-        SearchEntry.Unfocus();
-        SearchPill.IsVisible = false;
-        UpdateMobileHeader();
         vm.ToggleSidebarCommand.Execute(null);
+    }
+
+    private void OnMobileMoreClicked(object? sender, EventArgs e)
+    {
+        if (sender is not View anchor || BindingContext is not NotesListViewModel vm)
+            return;
+
+        if (!string.IsNullOrEmpty(vm.SelectedListId))
+        {
+            var list = vm.CustomLists.FirstOrDefault(item => item.Id == vm.SelectedListId);
+            if (list is not null)
+            {
+                ListOptionsFlyout.ShowFor(anchor, list, vm);
+                return;
+            }
+        }
+
+        ListOptionsFlyout.ShowFor(anchor, vm.SelectedCategory, vm);
     }
 
     private void OnSearchEntryUnfocused(object? sender, FocusEventArgs e)
@@ -82,8 +83,6 @@ public partial class HeaderView : ContentView
             return;
 
         SearchPill.IsVisible = false;
-        MobileSearchButton.IsVisible = true;
-        UpdateMobileHeader();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -93,32 +92,14 @@ public partial class HeaderView : ContentView
         {
             UpdateMobileHeader();
         }
-        else if (e.PropertyName == nameof(NotesListViewModel.IsSearchActive)
-                 && DeviceInfo.Current.Idiom == DeviceIdiom.Phone
-                 && _viewModel?.IsSearchActive == false)
-        {
-            SearchEntry.Unfocus();
-            SearchPill.IsVisible = false;
-            UpdateMobileHeader();
-        }
     }
 
     private void UpdateMobileHeader()
     {
         var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
         DesktopHeaderContent.IsVisible = !isPhone;
-        DesktopNavigationButton.IsVisible = DeviceInfo.Current.Platform == DevicePlatform.WinUI;
-        MobileNavigationButton.IsVisible = false;
-        MobileSearchButton.IsVisible = isPhone;
-
-        if (!isPhone)
-            return;
-
-        var showingContent = _viewModel?.IsSidebarCollapsed == true;
-        MobileAppTitle.IsVisible = !showingContent;
-        MobilePageTitle.IsVisible = showingContent;
-        MobilePageTitle.Text = _viewModel?.HeaderTitle ?? string.Empty;
-        MobileNavigationButton.IsVisible = showingContent;
-        MobileSearchButton.IsVisible = !showingContent;
+        MobileNavigationButton.IsVisible = isPhone;
+        MobileMoreButton.IsVisible = isPhone;
+        SearchPill.IsVisible = false;
     }
 }

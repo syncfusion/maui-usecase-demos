@@ -122,7 +122,7 @@
                                             <CheckBox Grid.Column="0"
                                                       IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
-                                                      Color="{StaticResource PrimaryColor}"
+                                                      Color="{AppThemeBinding Light=#49454F, Dark=#CAC4D0}"
                                                       VerticalOptions="Center" />
 
                                             <VerticalStackLayout Grid.Column="1"

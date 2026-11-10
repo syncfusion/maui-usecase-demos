@@ -250,7 +250,7 @@
                                               IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                               CheckedChanged="OnCheckChanged"
                                               IsEnabled="{Binding IsActive}"
-                                              Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}"
+                                              Color="{AppThemeBinding Light=#49454F, Dark=#CAC4D0}"
                                               VerticalOptions="Start"
                                               HorizontalOptions="Center"
                                               WidthRequest="32"
@@ -305,7 +305,7 @@
 
                                     <!-- Star (Important) -->
                                     <Border Grid.Column="2"
-                                            WidthRequest="40" Margin="{OnIdiom Desktop=0, Phone='0,0,0,10', Default=0}"
+                                            WidthRequest="40"
                                             HeightRequest="40"
                                             BackgroundColor="Transparent"
                                             StrokeThickness="0"
@@ -332,13 +332,14 @@
                                     </Border>
 
                                     <!-- More menu (three-dot) -->
-                                    <Border Grid.Column="3" Margin="{OnIdiom Desktop=0, Phone='0,0,0,10', Default=0}"
+                                    <Border Grid.Column="3"
                                             WidthRequest="40"
                                             HeightRequest="40"
                                             BackgroundColor="Transparent"
                                             StrokeThickness="0"
                                             StrokeShape="RoundRectangle 20"
-                                            VerticalOptions="Center">
+                                            VerticalOptions="Center"
+                                            IsVisible="{OnIdiom Phone=False, Default=True}">
                                         <Border.GestureRecognizers>
                                             <PointerGestureRecognizer PointerEntered="OnPointerEntered"
                                                                       PointerExited="OnPointerExited" />

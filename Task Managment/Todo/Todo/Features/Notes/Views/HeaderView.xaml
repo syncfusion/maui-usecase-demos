@@ -8,8 +8,8 @@
              x:DataType="vm:NotesListViewModel">
 
     <Grid HeightRequest="{OnIdiom Phone=56, Default={StaticResource HeaderHeight}}"
-          Padding="{OnIdiom Phone='8,0,8,0', Default='8,0,16,0'}"
-          ColumnDefinitions="{OnIdiom Phone='Auto,*,Auto,Auto', Default='Auto,*,Auto'}"
+          Padding="{OnIdiom Phone='12,0', Default='8,0,16,0'}"
+          ColumnDefinitions="{OnIdiom Phone='Auto,*,Auto', Default='Auto,*,Auto'}"
           BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
         <Grid.Shadow>
             <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="0.10" />
@@ -20,17 +20,16 @@
                                Spacing="4"
                                VerticalOptions="Center"
                                IsVisible="{OnIdiom Phone=False, Default=True}">
-            <!-- Hamburger menu: collapses / expands the sidebar.
-                 Module-08 task 8-2: 48x48 touch target per the spec. -->
-            <buttons:SfButton
-                    x:Name="DesktopNavigationButton"
-                    WidthRequest="{OnIdiom Phone=40, Default=18}"
-                    HeightRequest="{OnIdiom Phone=40, Default=18}"
-                    Margin="{OnIdiom Phone='0,0,8,0', Default='10,0'}"
-                    CornerRadius="{OnIdiom Phone=20, Default=0}"
-                    Padding="0" ImageSource="humburger.png" Background="Transparent"    
-                    Command="{Binding ToggleSidebarCommand}"
-                    SemanticProperties.Description="Toggle navigation menu">
+            <buttons:SfButton x:Name="DesktopNavigationButton"
+                              WidthRequest="{OnIdiom Phone=40, Default=18}"
+                              HeightRequest="{OnIdiom Phone=40, Default=18}"
+                              Margin="{OnIdiom Phone='0,0,8,0', Default='10,0'}"
+                              CornerRadius="{OnIdiom Phone=20, Default=0}"
+                              Padding="0"
+                              ImageSource="humburger.png"
+                              Background="Transparent"
+                              Command="{Binding ToggleSidebarCommand}"
+                              SemanticProperties.Description="Toggle navigation menu">
                 <buttons:SfButton.Content>
                     <DataTemplate>
                         <Label Text="&#xe3c7;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular"/>
@@ -64,48 +63,39 @@
                            FontSize="22"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}">
-                    </Label>
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
                 </DataTemplate>
             </buttons:SfButton.Content>
         </buttons:SfButton>
 
-        <Label x:Name="MobileAppTitle"
-               Grid.Column="0"
-               Grid.ColumnSpan="2"
-               Text="To Do List"
-               FontSize="17"
-               FontAttributes="Bold"
-               Margin="0"
-               HorizontalOptions="Start"
-               VerticalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-               IsVisible="{OnIdiom Phone=True, Default=False}" />
-        <Label x:Name="MobilePageTitle"
-               Grid.Column="1"
-               Grid.ColumnSpan="2"
-               FontSize="17"
-               FontAttributes="Bold"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-               IsVisible="{OnIdiom Phone=False, Default=False}" />
+        <BoxView x:Name="MobileTitleSpacer"
+                 Grid.Column="1"
+                 IsVisible="False"
+                 Color="Transparent" />
 
-        <buttons:SfButton x:Name="MobileSearchButton"
+        <buttons:SfButton x:Name="MobileMoreButton"
                           Grid.Column="2"
                           WidthRequest="40"
                           HeightRequest="40"
                           Padding="0"
                           Background="Transparent"
-                          Text="&#xe8b6;"
-                          FontFamily="MaterialIconRegular"
-                          FontSize="24"
-                          TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-                          IsVisible="{OnIdiom Phone=True, Default=False}"
-                          Clicked="OnMobileSearchClicked"
-                          SemanticProperties.Description="Search notes" />
+                          IsVisible="False"
+                          Clicked="OnMobileMoreClicked"
+                          SemanticProperties.Description="More options">
+            <buttons:SfButton.Content>
+                <DataTemplate x:DataType="vm:NotesListViewModel">
+                    <Label Text="&#8943;"
+                           WidthRequest="24"
+                           HeightRequest="24"
+                           FontFamily="MaterialIconRegular"
+                           FontSize="22"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
+                </DataTemplate>
+            </buttons:SfButton.Content>
+        </buttons:SfButton>
 
-        <!-- Search pill -->
         <Border x:Name="SearchPill"
                 Grid.Column="1"
                 WidthRequest="{OnIdiom Phone=0, Default=460}"
@@ -160,13 +150,14 @@
             </syncfusionCore:SfTextInputLayout>
         </Border>
 
-        <Border Grid.Column="{OnIdiom Phone=3, Default=2}"
+        <Border Grid.Column="2"
                 WidthRequest="34"
                 HeightRequest="34"
                 Padding="0"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 17"
-                VerticalOptions="Center">
+                VerticalOptions="Center"
+                IsVisible="{OnIdiom Phone=False, Default=True}">
             <Border.GestureRecognizers>
                 <PointerGestureRecognizer PointerEntered="OnProfilePointerEntered"
                                           PointerExited="OnProfilePointerExited" />
@@ -175,7 +166,6 @@
             <Image Source="profile.png"
                    Aspect="AspectFill"
                    SemanticProperties.Description="Open theme settings" />
-
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal" />
