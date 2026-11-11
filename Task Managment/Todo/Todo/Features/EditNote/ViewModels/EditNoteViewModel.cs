@@ -218,8 +218,9 @@ public partial class EditNoteViewModel : ViewModelBase
     [RelayCommand]
     private void OpenReminderPicker()
     {
-        DraftReminderDateSelection = HasReminder ? ReminderDateSelection : DateTime.Today;
         DraftReminderTimeSelection = HasReminder ? ReminderTimeSelection : new TimeSpan(9, 0, 0);
+        var date = HasReminder ? ReminderDateSelection.Date : DateTime.Today;
+        DraftReminderDateSelection = date.Add(DraftReminderTimeSelection);
         IsDueDatePickerVisible = false;
         IsReminderPickerVisible = true;
     }

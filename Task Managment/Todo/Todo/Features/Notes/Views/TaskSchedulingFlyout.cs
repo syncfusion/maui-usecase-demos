@@ -18,7 +18,7 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     public TaskSchedulingFlyout()
     {
-        _datePopup = CreatePopup(240, 350, CreateDateSurface);
+        _datePopup = CreatePopup(240, 280, CreateDateSurface);
         _repeatPopup = CreatePopup(210, 332, CreateRepeatSurface);
         _customPopup = CreatePopup(300, 224, CreateCustomSurface);
         foreach (var popup in new[] { _datePopup, _repeatPopup, _customPopup })
@@ -71,15 +71,39 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     private View CreateDateSurface()
     {
+        var headerTextStyle = new PickerTextStyle { FontSize = 15 };
+        headerTextStyle.SetAppThemeColor(
+            PickerTextStyle.TextColorProperty,
+            Colors.Black,
+            Colors.White);
+        var selectedHeaderTextStyle = new PickerTextStyle { FontSize = 15 };
+        selectedHeaderTextStyle.SetAppThemeColor(
+            PickerTextStyle.TextColorProperty,
+            Colors.Black,
+            Colors.White);
+
         var picker = new SfDateTimePicker
         {
             SelectedDate = _selectedDateTime,
-            HeightRequest = 250,
+            HeightRequest = 220,
             Background = Brush.Transparent,
-            DateFormat = PickerDateFormat.MMM_dd_yyyy
+            DateFormat = PickerDateFormat.MMM_dd_yyyy,
+            HeaderView = new DateTimePickerHeaderView
+            {
+                Background = Brush.Transparent,
+                TextStyle = headerTextStyle,
+                SelectionTextStyle = selectedHeaderTextStyle
+            },
+            ColumnHeaderView = new DateTimePickerColumnHeaderView
+            {
+                Height = 0,
+                DayHeaderText = string.Empty,
+                MonthHeaderText = string.Empty,
+                YearHeaderText = string.Empty
+            }
         };
 
-        var cancelButton = CreateTextActionButton("Cancel", () => _datePopup.Dismiss());
+        var cancelButton = CreateActionButton("Cancel", () => _datePopup.Dismiss());
         var saveButton = CreateActionButton("Save", () =>
         {
             if (_viewModel is null)
@@ -98,39 +122,20 @@ public sealed class TaskSchedulingFlyout : ContentView
         {
             RowDefinitions = new RowDefinitionCollection
             {
-                new(GridLength.Auto),
-                new(GridLength.Auto),
-                new(250),
+                new(220),
                 new(GridLength.Auto),
                 new(GridLength.Auto)
             },
-            Padding = new Thickness(0,10,0,10),
+            Padding = new Thickness(0, 0, 0, 7),
             RowSpacing = 0
         };
 
-        var header = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
-            Margin = new Thickness(10)
-        };
-
-        content.Children.Add(header);
-        var divider = new BoxView
-        {
-            HeightRequest = 1,
-            Margin = new Thickness(0, 4),
-            HorizontalOptions = LayoutOptions.Fill
-        };
-        divider.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
-        content.Children.Add(divider);
-        Grid.SetRow(divider, 1);
         content.Children.Add(picker);
-        Grid.SetRow(picker, 2);
+        Grid.SetRow(picker, 0);
 
         var pickerDivider = new BoxView
         {
             HeightRequest = 1,
-            Margin = new Thickness(0, 4),
             HorizontalOptions = LayoutOptions.Fill
         };
         pickerDivider.SetAppThemeColor(
@@ -138,27 +143,29 @@ public sealed class TaskSchedulingFlyout : ContentView
             Color.FromArgb("#E9E5EE"),
             Color.FromArgb("#494650"));
         content.Children.Add(pickerDivider);
-        Grid.SetRow(pickerDivider, 3);
+        Grid.SetRow(pickerDivider, 1);
 
         var buttons = new Grid
         {
             ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto), new(GridLength.Auto) },
             ColumnSpacing = 8,
-            HeightRequest = 44, 
-            Margin = new Thickness(0, 15, 10, 0)
+            HeightRequest = 44,
+            Margin = new Thickness(0, 8, 10, 0)
         };
         buttons.Children.Add(cancelButton);
         buttons.Children.Add(saveButton);
         Grid.SetColumn(cancelButton, 1);
         Grid.SetColumn(saveButton, 2);
         content.Children.Add(buttons);
-        Grid.SetRow(buttons, 4);
+        Grid.SetRow(buttons, 2);
 
-        return CreateBorder(240, 350, content);
+        return CreateBorder(240, 280, content);
     }
 
     private View CreateRepeatSurface()
     {
+        var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
         var content = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(8) };
         var repeatTitle = new Label
         {
@@ -167,7 +174,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             FontAttributes = FontAttributes.Bold,
             TextColor = Color.FromArgb("#29272F"),
             HeightRequest = 44,
-            Padding = new Thickness(12, 0),
+            Padding = isDesktop ? new Thickness(44, 0, 12, 0) : new Thickness(12, 0),
             VerticalTextAlignment = TextAlignment.Center
         };
         repeatTitle.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#1C1B1F"), Color.FromArgb("#E6E1E5"));
@@ -324,12 +331,14 @@ public sealed class TaskSchedulingFlyout : ContentView
         button.Content = new DataTemplate(() =>
         {
             var hasIcon = !string.IsNullOrEmpty(iconGlyph);
+            var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+            var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
             var grid = new Grid
             {
                 ColumnDefinitions = hasIcon
-                    ? new ColumnDefinitionCollection { new(22), new(GridLength.Star) }
+                    ? new ColumnDefinitionCollection { new(isDesktop ? 24 : 22), new(GridLength.Star) }
                     : new ColumnDefinitionCollection { new(GridLength.Star) },
-                ColumnSpacing = 4,
+                ColumnSpacing = isDesktop ? 8 : 4,
                 Padding = new Thickness(12, 0),
                 InputTransparent = true
             };
@@ -340,7 +349,7 @@ public sealed class TaskSchedulingFlyout : ContentView
                     Text = iconGlyph,
                     FontFamily = "MaterialIconRegular",
                     FontSize = 18,
-                    Margin = new Thickness(0, 0, 5, 0),
+                    Margin = isDesktop ? Thickness.Zero : new Thickness(0, 0, 5, 0),
                     VerticalTextAlignment = TextAlignment.Center
                 };
                 iconLabel.SetAppThemeColor(Label.TextColorProperty,

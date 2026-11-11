@@ -158,10 +158,11 @@ public sealed class NoteActionFlyout : ContentView
     private View CreateMenuSurface()
     {
         var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
         _actionsLayout = new VerticalStackLayout
         {
             Spacing = 5,
-            Margin = isPhone ? Thickness.Zero : new Thickness(5, 0, 0, 0)
+            Margin = isPhone || isDesktop ? Thickness.Zero : new Thickness(5, 0, 0, 0)
         };
 
         _selectAllRow = new Grid
@@ -169,7 +170,7 @@ public sealed class NoteActionFlyout : ContentView
             HeightRequest = 40,
             ColumnDefinitions = new ColumnDefinitionCollection
             {
-                new(32),
+                new(isDesktop ? 40 : 32),
                 new(GridLength.Star)
             },
             ColumnSpacing = 4,
@@ -183,6 +184,8 @@ public sealed class NoteActionFlyout : ContentView
             VerticalOptions = LayoutOptions.Center
         };
         if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            _selectAllCheckBox.SetAppThemeColor(CheckBox.ColorProperty, Color.FromArgb("#49454F"), Color.FromArgb("#CAC4D0"));
+        else if (DeviceInfo.Current.Idiom == DeviceIdiom.Desktop)
             _selectAllCheckBox.SetAppThemeColor(CheckBox.ColorProperty, Color.FromArgb("#49454F"), Color.FromArgb("#CAC4D0"));
         else
             _selectAllCheckBox.SetAppThemeColor(CheckBox.ColorProperty, Color.FromArgb("#6750A4"), Color.FromArgb("#D0BCFF"));
@@ -250,10 +253,13 @@ public sealed class NoteActionFlyout : ContentView
     private View CreateDestinationsSurface()
     {
         var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
         _destinationsLayout = new VerticalStackLayout
         {
             Spacing = 0,
-            Margin = isPhone ? new Thickness(0, 10, 5, 10) : new Thickness(5, 10)
+            Margin = isPhone
+                ? new Thickness(0, 10, 5, 10)
+                : isDesktop ? Thickness.Zero : new Thickness(5, 10)
         };
         _destinationsSurface = new Border
         {
@@ -280,7 +286,13 @@ public sealed class NoteActionFlyout : ContentView
         Opacity = 1
     };
 
-    private static SfButton CreateButton(string text, Action action, bool destructive = false, string? iconGlyph = null, string? iconColor = null)
+    private static SfButton CreateButton(
+        string text,
+        Action action,
+        bool destructive = false,
+        string? iconGlyph = null,
+        string? iconColor = null,
+        bool reserveIconColumn = false)
     {
         var button = new SfButton
         {
@@ -301,17 +313,18 @@ public sealed class NoteActionFlyout : ContentView
         {
             var hasIcon = !string.IsNullOrEmpty(iconGlyph);
             var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
-            var reserveIconColumn = hasIcon;
+            var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
+            reserveIconColumn |= hasIcon;
             var grid = new Grid
             {
                 ColumnDefinitions = reserveIconColumn
                     ? new ColumnDefinitionCollection
                     {
-                        new(isPhone ? 32 : 22),
+                        new(isPhone ? 32 : isDesktop ? 24 : 22),
                         new(GridLength.Star)
                     }
                     : new ColumnDefinitionCollection { new(GridLength.Star) },
-                ColumnSpacing = 4,
+                ColumnSpacing = isDesktop ? 8 : 4,
                 Padding = new Thickness(12, 0),
                 InputTransparent = true
             };
@@ -324,7 +337,7 @@ public sealed class NoteActionFlyout : ContentView
                     FontSize = 18,
                     Margin = isPhone
                         ? Thickness.Zero
-                        : new Thickness(0, 0, 5, 0),
+                        : isDesktop ? Thickness.Zero : new Thickness(0, 0, 5, 0),
                     VerticalTextAlignment = TextAlignment.Center
                 };
                 if (isPhone)
@@ -371,12 +384,21 @@ public sealed class NoteActionFlyout : ContentView
     {
         if (_destinationsLayout is null) return;
         _destinationsLayout.Children.Clear();
-        _destinationsLayout.Children.Add(CreateButton("Move notes to", HideDestinations, iconGlyph: "\ue5c4", iconColor: "#49454F"));
+        var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
+        _destinationsLayout.Children.Add(CreateButton(
+            isDesktop ? "Move To" : "Move notes to",
+            HideDestinations,
+            iconGlyph: "\ue5c4",
+            iconColor: "#49454F"));
         var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
         separator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
         _destinationsLayout.Children.Add(separator);
         foreach (var destination in _destinations)
-            _destinationsLayout.Children.Add(CreateButton(destination.Name, () => RaiseAction(NoteActionKind.Move, destination.Key)));
+            _destinationsLayout.Children.Add(CreateButton(
+                destination.Name,
+                () => RaiseAction(NoteActionKind.Move, destination.Key),
+                reserveIconColumn: isDesktop));
 
         if (_destinationsSurface is not null)
             _destinationsSurface.HeightRequest = GetDestinationsPopupHeight();

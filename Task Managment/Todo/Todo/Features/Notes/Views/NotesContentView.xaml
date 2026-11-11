@@ -103,7 +103,7 @@
                                       WidthRequest="40"
                                       HeightRequest="40"
                                       Padding="0"
-                                      Rotation="90" Margin="{OnIdiom Desktop='5,0,0,0'}"
+                                      Rotation="90"
                                       CornerRadius="20"
                                       Background="Transparent"
                                       TextColor="{Binding HeaderForegroundColor}"
@@ -260,12 +260,12 @@
                                               IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                               CheckedChanged="OnCheckChanged"
                                               IsEnabled="{Binding IsActive}"
-                                              Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}}"
+                                              Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Desktop={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryLightColor}}}"
                                               VerticalOptions="Start"
                                               HorizontalOptions="Center"
                                               WidthRequest="32"
                                               HeightRequest="32"
-                                              Margin="0,-10,0,0"
+                                              Margin="{OnIdiom Phone='0,-10,0,0', Desktop='0,-4,0,0', Default='0,-10,0,0'}"
                                               BackgroundColor="Transparent" />
 
                                     <!-- Title + metadata -->
@@ -284,7 +284,7 @@
                                                                VerticalOptions="Center"
                                                                Margin="0,1,0,0">
                                             <Border IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}"
-                                                        Padding="{OnIdiom Phone=0, Default='8,4'}"
+                                                        Padding="{OnIdiom Phone=0, Default='0,4'}"
                                                     Stroke="{StaticResource ChipStrokeColor}"
                                                     StrokeThickness="0"
                                                     StrokeShape="RoundRectangle 12"
@@ -295,7 +295,7 @@
                                                         </HorizontalStackLayout>
                                                     </Border>
                                                 <Border IsVisible="{Binding HasRepeat}"
-                                                        Padding="{OnIdiom Phone=0, Default='8,4'}"
+                                                        Padding="{OnIdiom Phone=0, Default='0,4'}"
                                                         Stroke="{StaticResource ChipStrokeColor}"
                                                         StrokeThickness="0"
                                                         StrokeShape="RoundRectangle 12"
@@ -306,7 +306,7 @@
                                                         </HorizontalStackLayout>
                                                 </Border>
                                                 <Border IsVisible="{Binding HasReminder}"
-                                                        Padding="{OnIdiom Phone=0, Default='8,4'}"
+                                                        Padding="{OnIdiom Phone=0, Default='0,4'}"
                                                         Stroke="{StaticResource ChipStrokeColor}"
                                                         StrokeThickness="0"
                                                         StrokeShape="RoundRectangle 12"
@@ -360,7 +360,7 @@
                                                                       PointerExited="OnPointerExited" />
                                         </Border.GestureRecognizers>
                                         <buttons:SfButton Text="&#8943;"
-                                                          FontSize="{OnIdiom Phone=20, Default=22}" Margin="{OnIdiom Desktop='5,0,0,0'}"
+                                                          FontSize="{OnIdiom Phone=20, Default=22}"
                                                           Rotation="90" 
                                                           Background="Transparent"
                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
@@ -424,7 +424,7 @@
                                             <TapGestureRecognizer Buttons="Secondary"
                                                                   Tapped="OnNoteSecondaryTapped" />
                                         </Border.GestureRecognizers>
-                                        <Grid ColumnDefinitions="44,*,40,40"
+                                        <Grid ColumnDefinitions="{OnIdiom Desktop='40,*,40,40', Default='44,*,40,40'}"
                                               ColumnSpacing="8"
                                               VerticalOptions="Start">
                                             <CheckBox Grid.Column="0"
@@ -436,6 +436,7 @@
                                                       WidthRequest="32"
                                                       HeightRequest="32"
                                                       Margin="0,-4,0,0"
+                                                      Loaded="OnTaskCheckBoxLoaded"
                                                       BackgroundColor="Transparent" />
                                             <VerticalStackLayout Grid.Column="1"
                                                                  Spacing="2"
@@ -541,7 +542,7 @@
                     Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
-                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" RowSpacing="{OnIdiom Phone=0, Default=8}" VerticalOptions="Center">
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" RowSpacing="{OnIdiom Phone=0, Desktop=0, Default=8}" VerticalOptions="Center">
                     <ScrollView Grid.Row="0"
                                 Orientation="Horizontal"
                                 HeightRequest="22"
@@ -592,7 +593,7 @@
                                 AlignItems="Start"
                                 JustifyContent="Start"
                                 IsVisible="{OnIdiom Phone=False, Default=True}">
-                        <Border Margin="0,0,8,8"
+                        <Border Margin="{OnIdiom Desktop='0,0,8,0', Default='0,0,8,8'}"
                                 IsVisible="{Binding HasDraftDueDate}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
@@ -605,7 +606,7 @@
                                 <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
                             </HorizontalStackLayout>
                         </Border>
-                        <Border Margin="0,0,8,8"
+                        <Border Margin="{OnIdiom Desktop='0,0,8,0', Default='0,0,8,8'}"
                                 IsVisible="{Binding HasDraftRepeat}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
@@ -618,7 +619,7 @@
                                 <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
                             </HorizontalStackLayout>
                         </Border>
-                        <Border Margin="0,0,8,8"
+                        <Border Margin="{OnIdiom Desktop='0,0,8,0', Default='0,0,8,8'}"
                                 IsVisible="{Binding HasDraftReminder}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
@@ -654,8 +655,8 @@
                             <Grid ColumnDefinitions="36,36,36,36"
                                   VerticalOptions="Center"
                                   HorizontalOptions="Fill"
-                                  WidthRequest="150"
-                                  Margin="{OnIdiom Phone=0, Default='0,8,0,0'}">
+                                  WidthRequest="{OnIdiom Phone=150, Desktop=144, Default=150}"
+                                  Margin="{OnIdiom Phone=0, Desktop=0, Default='0,8,0,0'}">
                                 <Border Grid.Column="0" WidthRequest="36" HeightRequest="36"
                                         BackgroundColor="Transparent" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 18">
@@ -737,7 +738,7 @@
                                     </VisualStateManager.VisualStateGroups>
                                     </buttons:SfButton>
                                 </Border>
-                                <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="0,0,0,5"
+                                <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="{OnIdiom Phone='0,0,0,5', Desktop=0, Default='0,0,0,5'}"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
                                                   TextColor="White"
                                                   SemanticProperties.Description="Save note">

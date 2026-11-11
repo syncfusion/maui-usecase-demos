@@ -9,6 +9,8 @@ public partial class HeaderView : ContentView
     private NotesListViewModel? _viewModel;
     private ListOptionsFlyout? _mobileListOptionsFlyout;
 
+    public event EventHandler? DesktopNavigationRequested;
+
     public HeaderView()
     {
         InitializeComponent();
@@ -72,6 +74,12 @@ public partial class HeaderView : ContentView
 
         UpdateMobileHeader();
         SearchEntry.Focus();
+    }
+
+    private void OnDesktopNavigationClicked(object? sender, EventArgs e)
+    {
+        if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
+            DesktopNavigationRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnMobileNavigationClicked(object? sender, EventArgs e)

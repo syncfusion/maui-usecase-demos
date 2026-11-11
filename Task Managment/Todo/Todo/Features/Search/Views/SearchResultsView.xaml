@@ -124,20 +124,21 @@
                                                                           PointerExited="OnResultPointerExited" />
                                             </Border.GestureRecognizers>
 
-                                            <Grid ColumnDefinitions="44,*,40,40"
+                                            <Grid ColumnDefinitions="{OnIdiom Desktop='40,*,40,40', Default='44,*,40,40'}"
                                                   ColumnSpacing="8"
                                                   VerticalOptions="Center">
 
                                             <CheckBox Grid.Column="0"
                                                       IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
-                                                      Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={StaticResource PrimaryColor}}"
+                                                      Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Desktop={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={StaticResource PrimaryColor}}"
                                                       VerticalOptions="Center" />
 
                                             <VerticalStackLayout Grid.Column="1"
-                                                                 Spacing="2"
+                                                                 Spacing="{OnIdiom Phone=2, Desktop=4, Default=2}"
                                                                  VerticalOptions="Center">
                                                 <Label Style="{StaticResource NoteTitleStyle}"
+                                                       HeightRequest="{OnIdiom Desktop=24, Default=-1}"
                                                        MaxLines="1">
                                                     <Label.FormattedText>
                                                         <MultiBinding Converter="{StaticResource SearchHighlightMultiValueConverter}">
@@ -147,19 +148,19 @@
                                                         </MultiBinding>
                                                     </Label.FormattedText>
                                                 </Label>
-                                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                                <HorizontalStackLayout Spacing="{OnIdiom Phone=10, Desktop=8, Default=10}" VerticalOptions="Center">
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=14}" TextColor="#0D7D12" WidthRequest="{OnIdiom Phone=18, Default=14}" HeightRequest="{OnIdiom Phone=18, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#0D7D12" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
-                                                        <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=14}" TextColor="#2667A3" WidthRequest="{OnIdiom Phone=18, Default=14}" HeightRequest="{OnIdiom Phone=18, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#2667A3" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=14}" TextColor="#7D5294" WidthRequest="{OnIdiom Phone=18, Default=14}" HeightRequest="{OnIdiom Phone=18, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#7D5294" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                 </HorizontalStackLayout>

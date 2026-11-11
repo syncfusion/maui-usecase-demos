@@ -16,6 +16,15 @@ public partial class NotesContentView : ContentView
         ActionFlyout.ActionRequested += OnNoteActionRequested;
     }
 
+    private static void OnTaskCheckBoxLoaded(object? sender, EventArgs e)
+    {
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Desktop && sender is CheckBox checkBox)
+            checkBox.SetAppThemeColor(
+                CheckBox.ColorProperty,
+                Color.FromArgb("#49454F"),
+                Color.FromArgb("#CAC4D0"));
+    }
+
     private static void OnPointerEntered(object? sender, PointerEventArgs e)
     {
         if (sender is Border border)

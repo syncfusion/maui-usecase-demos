@@ -16,6 +16,7 @@ public partial class MainLayoutView : ContentView
 
     private readonly NotesListViewModel _viewModel;
     private readonly bool _isPhone;
+    private readonly bool _isDesktop;
     private View? _defaultContent;
 
     public MainLayoutView(NotesListViewModel viewModel)
@@ -23,15 +24,26 @@ public partial class MainLayoutView : ContentView
         InitializeComponent();
         _viewModel = viewModel;
         _isPhone = DeviceIdiomMatches(DeviceIdiom.Phone);
+        _isDesktop = DeviceIdiomMatches(DeviceIdiom.Desktop);
         BindingContext = viewModel;
+        Header.DesktopNavigationRequested += OnDesktopNavigationRequested;
 
         UpdateSidebarColumn(viewModel.IsSidebarCollapsed);
-        if (!_isPhone)
+        if (!_isPhone && !_isDesktop)
             viewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     public void Activate()
     {
+        if (_isDesktop)
+        {
+            _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
+            UpdateMainContent();
+            return;
+        }
+
         if (!_isPhone)
             return;
 
@@ -43,7 +55,7 @@ public partial class MainLayoutView : ContentView
 
     public void Deactivate()
     {
-        if (_isPhone)
+        if (_isPhone || _isDesktop)
             _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
@@ -66,6 +78,15 @@ public partial class MainLayoutView : ContentView
             UpdateHeaderDivider();
             UpdateMainContent();
         }
+    }
+
+    private void OnDesktopNavigationRequested(object? sender, EventArgs e)
+    {
+        if (_isPhone)
+            return;
+
+        _viewModel.ToggleSidebarCommand.Execute(null);
+        UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
     }
 
     private void UpdateMainContent()
@@ -109,9 +130,11 @@ public partial class MainLayoutView : ContentView
 
     private void UpdateHeaderDivider()
     {
-        HeaderDivider.IsVisible = !_isPhone
-            || !_viewModel.IsSidebarCollapsed
-            || _viewModel.IsSearchActive;
+        HeaderDivider.IsVisible = _isDesktop
+            ? false
+            : !_isPhone
+              || !_viewModel.IsSidebarCollapsed
+              || _viewModel.IsSearchActive;
     }
 
     private static bool DeviceIdiomMatches(DeviceIdiom idiom) =>

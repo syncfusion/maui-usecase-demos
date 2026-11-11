@@ -76,7 +76,7 @@
 
         <BoxView Grid.Row="1"
                  HeightRequest="1"
-                 Margin="{OnIdiom Phone=0, Default='16,0'}"
+                 Margin="{OnIdiom Phone=0, Desktop=0, Default='16,0'}"
                  VerticalOptions="Center"
                  Color="{AppThemeBinding Light={StaticResource DividerColor}, Dark={StaticResource DividerDarkColor}}" />
 
@@ -124,7 +124,7 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
                                     <Grid Grid.Column="0" Grid.ColumnSpan="2"
-                                          ColumnDefinitions="Auto,*" ColumnSpacing="8"
+                                          ColumnDefinitions="Auto,*" ColumnSpacing="{OnIdiom Phone=8, Desktop=14, Default=8}"
                                           VerticalOptions="Fill">
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="OnCustomListRowTapped" />

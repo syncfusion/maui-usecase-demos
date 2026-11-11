@@ -166,7 +166,7 @@ public sealed class ListOptionsFlyout : ContentView
             + ThemePickerHeight
             + SectionHeight
             + ImageGalleryHeight
-            + SurfaceBorderAllowance;
+            + GetSurfaceBorderAllowance();
 
         if (CanEditSelectedList)
             height += MenuItemHeight + MenuItemHeight + 14;
@@ -181,19 +181,22 @@ public sealed class ListOptionsFlyout : ContentView
 
         _menuActions.Children.Clear();
         var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+        var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
         _menuActions.Margin = isPhone
             ? new Thickness(0, MenuTopMargin, 0, 0)
-            : new Thickness(10, MenuTopMargin, 10, 0);
+            : isDesktop
+                ? new Thickness(0, MenuTopMargin, 0, 0)
+                : new Thickness(10, MenuTopMargin, 10, 0);
         if (CanEditSelectedList)
         {   
             var renameButton = CreateMenuButton("Rename list", RenameList, iconGlyph: "\uf88c");
-            if (!isPhone)
+            if (!isPhone && !isDesktop)
                 renameButton.Margin = new Thickness(10, 0, 10, 0);
             _menuActions.Children.Add(renameButton);
         }
 
         _sortButton = CreateMenuButton("Sort by", ShowSortMenu, iconGlyph: "\uea18", iconRotation: 90);
-        if (!isPhone)
+        if (!isPhone && !isDesktop)
             _sortButton.Margin = new Thickness(10, 0, 0, 0);
         var sortRow = new Grid { HeightRequest = 42 };
         sortRow.Children.Add(_sortButton);
@@ -257,14 +260,16 @@ public sealed class ListOptionsFlyout : ContentView
             Spacing = 0,
             Margin = DeviceInfo.Current.Idiom == DeviceIdiom.Phone
                 ? new Thickness(0, MenuTopMargin, 0, 10)
-                : new Thickness(10, MenuTopMargin, 10, 10),
+                : DeviceInfo.Current.Idiom == DeviceIdiom.Desktop
+                    ? new Thickness(0, MenuTopMargin, 0, 10)
+                    : new Thickness(10, MenuTopMargin, 10, 10),
         };
         var currentSort = _selectedList?.SortOrder ?? NoteListSortOrder.Custom;
         actions.Children.Add(CreateMenuButton("Importance", () => ApplySort(NoteListSortOrder.Important), currentSort == NoteListSortOrder.Important, iconGlyph: "\ue83a"));
         actions.Children.Add(CreateMenuButton("Reminder", () => ApplySort(NoteListSortOrder.Reminder), currentSort == NoteListSortOrder.Reminder, iconGlyph: "\ue7f5"));
         actions.Children.Add(CreateMenuButton("Due date", () => ApplySort(NoteListSortOrder.DueDate), currentSort == NoteListSortOrder.DueDate, iconGlyph: "\ue24f"));
         actions.Children.Add(CreateMenuButton("Alphabetically", () => ApplySort(NoteListSortOrder.Alphabetical), currentSort == NoteListSortOrder.Alphabetical, iconGlyph: "\ue241"));
-        var sortHeight = MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance + 20;
+        var sortHeight = GetSortSurfaceHeight();
         _sortSurface = CreateSurface(180, sortHeight, actions);
         return _sortSurface;
     }
@@ -275,7 +280,9 @@ public sealed class ListOptionsFlyout : ContentView
         {
             WidthRequest = width,
             HeightRequest = height,
-            Padding = new Thickness(1),
+            Padding = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop
+                ? new Thickness(8)
+                : new Thickness(1),
             StrokeThickness = 1,
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(27) },
             Content = new ScrollView
@@ -462,20 +469,21 @@ public sealed class ListOptionsFlyout : ContentView
         {
             button.Content = new DataTemplate(() =>
             {
+                var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
+                var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
                 var grid = new Grid
                 {
                     ColumnDefinitions = new ColumnDefinitionCollection
                     {
-                        new(DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 32 : 22),
+                        new(isPhone ? 32 : isDesktop ? 24 : 22),
                         new(GridLength.Star)
                     },
-                    ColumnSpacing = 4,
-                    Padding = DeviceInfo.Current.Idiom == DeviceIdiom.Phone
+                    ColumnSpacing = isDesktop ? 8 : 4,
+                    Padding = isPhone
                         ? new Thickness(12, 0)
-                        : new Thickness(14, 0),
+                        : isDesktop ? new Thickness(12, 0) : new Thickness(14, 0),
                     InputTransparent = true
                 };
-                var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
                 var iconLabel = new Label
                 {
                     Text = iconGlyph,
@@ -484,7 +492,7 @@ public sealed class ListOptionsFlyout : ContentView
                     Rotation = iconRotation,
                     Margin = isPhone
                         ? Thickness.Zero
-                        : new Thickness(0, 0, 5, 0),
+                        : isDesktop ? Thickness.Zero : new Thickness(0, 0, 5, 0),
                     VerticalTextAlignment = TextAlignment.Center
                 };
                 if (isPhone)
@@ -545,12 +553,22 @@ public sealed class ListOptionsFlyout : ContentView
         {
             _isSortOpen = true;
             _popup.StaysOpen = true;
-            var sortHeight = MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance;
+            var sortHeight = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop
+                ? GetSortSurfaceHeight()
+                : MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance;
             _sortPopup.HeightRequest = sortHeight;
             _sortPopup.ContentTemplate = new DataTemplate(CreateSortSurface);
             _sortPopup.ShowRelativeToView(_sortButton, PopupRelativePosition.AlignToRightOf);
         }
     }
+
+    private static double GetSurfaceBorderAllowance()
+        => DeviceInfo.Current.Idiom == DeviceIdiom.Desktop ? 18 : SurfaceBorderAllowance;
+
+    private static double GetSortSurfaceHeight()
+        => DeviceInfo.Current.Idiom == DeviceIdiom.Desktop
+            ? (MenuItemHeight * 4) + (MenuTopMargin * 2) + 18
+            : MenuTopMargin + (MenuItemHeight * 4) + SurfaceBorderAllowance + 20;
 
     private void ApplySort(NoteListSortOrder sortOrder)
     {

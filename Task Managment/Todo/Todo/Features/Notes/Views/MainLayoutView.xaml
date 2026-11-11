@@ -13,7 +13,8 @@
           Background="{OnIdiom Phone={AppThemeBinding Light=White, Dark={StaticResource BackgroundDarkColor}}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
 
         <!-- Shared application header (spans both columns) -->
-        <views:HeaderView Grid.Row="0"
+        <views:HeaderView x:Name="Header"
+                          Grid.Row="0"
                           Grid.ColumnSpan="2" />
 
         <BoxView x:Name="HeaderDivider"

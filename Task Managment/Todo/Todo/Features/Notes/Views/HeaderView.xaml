@@ -11,9 +11,9 @@
           HeightRequest="{OnIdiom Phone=56, Default={StaticResource HeaderHeight}}"
           Padding="{OnIdiom Phone='5,0,10,0', Default='8,0,16,0'}"
           ColumnDefinitions="{OnIdiom Phone='Auto,*,Auto,Auto', Default='Auto,*,Auto'}"
-          BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=White, Dark=#1C1B1F}, Default={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}}">
+          BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=White, Dark=#1C1B1F}, Desktop=Transparent, Default={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}}">
         <Grid.Shadow>
-            <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="{OnIdiom Phone=0, Default=0.10}" />
+            <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="{OnIdiom Phone=0, Desktop=0, Default=0.10}" />
         </Grid.Shadow>
 
         <Image x:Name="MobileHeaderBackground"
@@ -32,12 +32,12 @@
                  Module-08 task 8-2: 48x48 touch target per the spec. -->
             <buttons:SfButton
                     x:Name="DesktopNavigationButton"
-                    WidthRequest="{OnIdiom Phone=40, Default=18}"
-                    HeightRequest="{OnIdiom Phone=40, Default=18}"
-                    Margin="{OnIdiom Phone='0,0,8,0', Default='10,0'}"
-                    CornerRadius="{OnIdiom Phone=20, Default=0}"
+                    WidthRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
+                    HeightRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
+                    Margin="{OnIdiom Phone='0,0,8,0', Desktop='0,0,8,0', Default='10,0'}"
+                    CornerRadius="{OnIdiom Phone=20, Desktop=20, Default=0}"
                     Padding="0" ImageSource="humburger.png" Background="Transparent"    
-                    Command="{Binding ToggleSidebarCommand}"
+                    Clicked="OnDesktopNavigationClicked"
                     SemanticProperties.Description="Toggle navigation menu">
                 <buttons:SfButton.Content>
                     <DataTemplate>

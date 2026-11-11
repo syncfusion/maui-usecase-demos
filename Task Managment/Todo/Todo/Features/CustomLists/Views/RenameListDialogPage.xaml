@@ -35,8 +35,9 @@
                        FontAttributes="Bold"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
 
-                <Grid ColumnDefinitions="*" ColumnSpacing="12">
-                    <syncfusionCore:SfTextInputLayout Grid.Column="1"
+                <Grid ColumnDefinitions="*"
+                      ColumnSpacing="12">
+                    <syncfusionCore:SfTextInputLayout Grid.Column="{OnIdiom Desktop=0, Default=1}"
                                                       Hint="List name"
                                                       ContainerType="Outlined"
                                                       ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
@@ -75,7 +76,7 @@
                       ColumnSpacing="12"
                       HorizontalOptions="End"
                       Margin="0,8,0,0">
-                    <buttons:SfButton Grid.Column="2"
+                    <buttons:SfButton Grid.Column="{OnIdiom Desktop=1, Default=2}"
                             Text="{Binding PrimaryButtonText}"
                             Background="Transparent"
                             TextColor="#6750A4"
