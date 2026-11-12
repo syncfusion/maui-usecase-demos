@@ -1,8 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Text.Json;
 using DiagramBuilder.Constants;
 using DiagramBuilder.Models;
 using DiagramBuilder.Services;
+using Microsoft.Maui.ApplicationModel;
 
 namespace DiagramBuilder.ViewModels;
 
@@ -14,6 +16,7 @@ namespace DiagramBuilder.ViewModels;
 public partial class DiagramDesignerViewModel : ObservableObject
 {
     private readonly IDiagramService _diagramService;
+    private readonly IDiagramFileService _fileService;
     private readonly ITemplateService _templateService;
     private readonly IDialogService _dialogService;
 
@@ -25,22 +28,32 @@ public partial class DiagramDesignerViewModel : ObservableObject
     public ZoomViewModel Zoom { get; }
     public ArrangeViewModel Arrange { get; }
     public ExportViewModel Export { get; }
+    public PrintSettingsViewModel PrintSettings { get; }
 
     [ObservableProperty]
     private string documentTitle = AppStrings.UntitledDocument;
+
+    private string _saveAsFileName = AppStrings.UntitledDocument;
+
+    public string SaveAsFileName
+    {
+        get => _saveAsFileName;
+        set => SetProperty(ref _saveAsFileName, value);
+    }
 
     [ObservableProperty]
     private string status = AppStrings.StatusReady;
 
     public DiagramDesignerViewModel(
         IDiagramService diagramService,
+        IDiagramFileService fileService,
         ITemplateService templateService,
         IDialogService dialogService,
         ISelectionService selectionService,
-        IPropertyService propertyService,
-        IExportService exportService)
+        IPropertyService propertyService)
     {
         _diagramService = diagramService;
+        _fileService = fileService;
         _templateService = templateService;
         _dialogService = dialogService;
         _diagramService.StatusChanged += (_, message) => Status = message;
@@ -51,7 +64,8 @@ public partial class DiagramDesignerViewModel : ObservableObject
         MenuBar = new MenuBarViewModel(this);
         Toolbar = new ToolbarViewModel(this);
         Arrange = new ArrangeViewModel(this);
-        Export = new ExportViewModel(exportService, () => DocumentTitle);
+        Export = new ExportViewModel(fileService, dialogService, () => DocumentTitle);
+        PrintSettings = new PrintSettingsViewModel(dialogService);
 
         Selection = selectionService;
         _selectionService = selectionService;
@@ -138,43 +152,99 @@ public partial class DiagramDesignerViewModel : ObservableObject
     [RelayCommand]
     private async Task OpenDocumentAsync()
     {
-        var recents = await _diagramService.GetRecentDocumentsAsync();
-        var message = recents.Count > 0
-            ? string.Join(Environment.NewLine, recents)
-            : AppStrings.OpenNotAvailableMessage;
-        await _dialogService.ShowAlertAsync(AppStrings.OpenNotAvailableTitle, message);
+        try
+        {
+            var document = await _fileService.PickDiagramAsync();
+            if (document is not null)
+            {
+                await _diagramService.LoadDocumentAsync(document);
+                _selectionService.Clear();
+                SyncTitle();
+            }
+        }
+        catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or FeatureNotSupportedException)
+        {
+            await _dialogService.ShowAlertAsync(AppStrings.FileOpenFailedTitle, exception.Message);
+        }
     }
 
     [RelayCommand]
     private async Task SaveDocumentAsync()
     {
-        await _diagramService.SaveAsync();
-        SyncTitle();
+        await SaveSnapshotAsync(AppStrings.UntitledDocument, saveAs: false);
     }
 
     [RelayCommand]
-    private async Task SaveAsDocumentAsync()
+    private void SaveAsDocument()
     {
-        var newTitle = DocumentTitle + " (2)";
-        await _diagramService.SaveAsAsync(newTitle);
-        SyncTitle();
+        SaveAsFileName = DocumentTitle;
+        SaveAsDialogRequested?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
-    private async Task PrintDocumentAsync()
+    private async Task ConfirmSaveAsAsync()
     {
-        if (PrintRequested is null)
+        if (string.IsNullOrWhiteSpace(SaveAsFileName))
         {
-            // Degrade to an explicit status message per Task 9 acceptance.
-            Status = string.Format(AppStrings.StatusCommandExecuted, AppConstants.CmdPrint);
+            await _dialogService.ShowAlertAsync(AppStrings.FileSaveFailedTitle, AppStrings.FileNameInvalidMessage);
             return;
         }
 
-        await PrintRequested();
-        Status = AppStrings.StatusPrinted;
+        if (await SaveSnapshotAsync(SaveAsFileName, saveAs: true))
+        {
+            SaveAsCompleted?.Invoke(this, EventArgs.Empty);
+        }
     }
 
-    /// <summary>Raised when the export dialog should be shown (host page pushes it modally).</summary>
+    [RelayCommand]
+    private void CancelSaveAs() => SaveAsCancelled?.Invoke(this, EventArgs.Empty);
+
+    private async Task<bool> SaveSnapshotAsync(string fileName, bool saveAs)
+    {
+        var source = _diagramService.CurrentDocument;
+        var snapshot = DiagramSnapshotRequested?.Invoke() ?? source;
+        if (snapshot is null)
+        {
+            await _dialogService.ShowAlertAsync(AppStrings.FileSaveFailedTitle, AppStrings.SaveDialogFailedMessage);
+            return false;
+        }
+
+        try
+        {
+            var path = await _fileService.SaveDiagramAsync(snapshot, fileName);
+            var title = Path.GetFileNameWithoutExtension(path);
+            if (saveAs)
+            {
+                await _diagramService.SaveAsAsync(snapshot, title);
+            }
+            else
+            {
+                await _diagramService.SaveAsync(snapshot, title);
+            }
+
+            SetDocumentTitle(title);
+            SaveAsFileName = title;
+            Status = string.Format(AppStrings.FileSavedPathFormat, path);
+            return true;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException)
+        {
+            await _dialogService.ShowAlertAsync(AppStrings.FileSaveFailedTitle, exception.Message);
+            return false;
+        }
+    }
+
+    [RelayCommand]
+    private void PrintDocument() => PrintDialogRequested?.Invoke(this, EventArgs.Empty);
+
+    public event EventHandler? SaveAsDialogRequested;
+    public event EventHandler? SaveAsCompleted;
+    public event EventHandler? SaveAsCancelled;
+    public event EventHandler? PrintDialogRequested;
+
+    public Func<DiagramDocument?>? DiagramSnapshotRequested { get; set; }
+
+    /// <summary>Raised when the export dialog should be shown.</summary>
     public event EventHandler? ExportDialogRequested;
 
     // ---------- Surface request relays (set by the host page; VM stays control-agnostic) ----------
@@ -200,9 +270,6 @@ public partial class DiagramDesignerViewModel : ObservableObject
 
     /// <summary>Deletes the selection on the live diagram, or null when unbound.</summary>
     public Func<Task>? DeleteRequested { get; set; }
-
-    /// <summary>Prints the live diagram, or null when unbound.</summary>
-    public Func<Task>? PrintRequested { get; set; }
 
     /// <summary>Changes the live diagram's tool mode or starts a drawing interaction.</summary>
     public Func<string, Task>? ToolRequested { get; set; }
@@ -261,9 +328,9 @@ public partial class DiagramDesignerViewModel : ObservableObject
             case AppConstants.CmdNew: NewDocumentCommand.Execute(null); break;
             case AppConstants.CmdOpen: await OpenDocumentCommand.ExecuteAsync(null); break;
             case AppConstants.CmdSave: await SaveDocumentCommand.ExecuteAsync(null); break;
-            case AppConstants.CmdSaveAs: await SaveAsDocumentCommand.ExecuteAsync(null); break;
+            case AppConstants.CmdSaveAs: SaveAsDocumentCommand.Execute(null); break;
             case AppConstants.CmdExport: ShowExportDialogCommand.Execute(null); break;
-            case AppConstants.CmdPrint: await PrintDocumentCommand.ExecuteAsync(null); break;
+            case AppConstants.CmdPrint: PrintDocumentCommand.Execute(null); break;
 
             // EDIT: control-supported operations route to the behavior relays
             // (architecture.md §12). Duplicate and Select All have no SfDiagram

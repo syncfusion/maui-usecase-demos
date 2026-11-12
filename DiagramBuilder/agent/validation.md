@@ -19,7 +19,7 @@ Run after each task (relevant subset) and fully after Task 10.
 - [ ] Event subscriptions are symmetric: transient pages/subscribing controls unsubscribe on removal; singleton-VM subscriptions do not accumulate across page instances; navigate-away/back cycles re-establish wiring (`OnAppearing`/`OnDisappearing` pairs).
 
 ## 3. SOLID & services
-- [ ] All services behind interfaces (`IDiagramService`, `ITemplateService`, `IExportService`, `IPropertyService`, `ISelectionService`, `IDialogService`) with mock implementations registered in DI.
+- [ ] All services behind interfaces (`IDiagramService`, `IDiagramFileService`, `ITemplateService`, `IPropertyService`, `ISelectionService`, `IDialogService`) registered in DI.
 - [ ] Services contain no UI code; `DiagramModelAdapter` references only Syncfusion model types (never the `SfDiagram` control).
 - [ ] Each service has a single responsibility; no cross-service concrete dependencies.
 - [ ] `IPropertyService` tracks every canvas element (template-loaded and palette-dropped) and reads properties for both nodes and connectors.
@@ -51,7 +51,9 @@ Run after each task (relevant subset) and fully after Task 10.
 - [ ] Property panel: six sections with all fields wired; edits update the canvas live (incl. opacity sliders — type-compatible values); works for nodes and connectors; empty state shown without selection; edits set dirty flag.
 - [ ] Keyboard: Ctrl+C/X/V/Z/Y, Delete, Ctrl+A all route to the dispatch table and act on the canvas (Windows platform hook; menu/toolbar parity on other platforms).
 - [ ] Zoom: In/Out/Fit + 50/100/150/200 % chips all drive the actual canvas zoom; indicator updates.
-- [ ] Export dialog: PNG/JPEG/PDF/SVG + region + filename; selected states visible; Export action runs and closes; PNG/JPEG/SVG produce a real data URI when ready; PDF mock status.
+- [ ] Open filters for JSON and rejects invalid diagram documents; Save writes `Untitled Diagram.json` without an app prompt; Save As prompts for a name and persists the live diagram.
+- [ ] Export dialog: PNG/JPEG/PDF/SVG + region + filename; selected options are applied to the live diagram and valid output files are written; popup closes after success and reports errors.
+- [ ] Print dialog: region, paper size/custom dimensions, orientation, and scale-to-fit map to `DiagramExportOptions` and are passed to `SfDiagram.Print`.
 - [ ] Arrange: z-order/align/distribute/match-size either compute on the selection or emit explicit mock status; never silently no-op.
 - [ ] Every command executes without crash (mock status where unsupported); unknown command ids degrade to status, never throw.
 

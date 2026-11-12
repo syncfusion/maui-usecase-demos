@@ -310,13 +310,14 @@ public partial class DiagramSurfaceBehavior : Behavior<View>
     public async Task<bool> CanUndoAsync() => _diagram is not null && await _diagram.CanUndoAsync();
 
     /// <summary>Prints the diagram (Windows-best per architecture.md; status elsewhere).</summary>
-    public async Task PrintAsync()
+    public async Task PrintAsync(DiagramExportOptions? options = null)
     {
-        if (_diagram is not null)
+        if (_diagram is null || !IsReady)
         {
-            // Print takes an optional DiagramExportOptions parameter (default).
-            await _diagram.Print(null);
+            throw new InvalidOperationException("The diagram is not ready to print.");
         }
+
+        await _diagram.Print(options);
     }
 
     public async Task<bool> CanRedoAsync() => _diagram is not null && await _diagram.CanRedoAsync();

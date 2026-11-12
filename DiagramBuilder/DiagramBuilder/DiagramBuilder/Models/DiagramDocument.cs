@@ -13,9 +13,9 @@ public class DiagramDocument
 
     public DiagramCategory Category { get; set; }
 
-    public ObservableCollection<ShapeItem> Items { get; } = [];
+    public ObservableCollection<ShapeItem> Items { get; set; } = [];
 
-    public ObservableCollection<ConnectorItem> Connectors { get; } = [];
+    public ObservableCollection<ConnectorItem> Connectors { get; set; } = [];
 
     public bool IsDirty { get; set; }
 

@@ -265,16 +265,3 @@ public static class ToolbarCatalog
         IsChecked = isChecked,
     };
 }
-
-/// <summary>
-/// Mock recent-document list for FILE ▸ Open (in-memory only, no backend).
-/// </summary>
-public static class RecentDocumentCatalog
-{
-    public static IReadOnlyList<string> All { get; } =
-    [
-        AppStrings.TemplateCreditCardProcessing,
-        AppStrings.TemplateProductPlanning,
-        AppStrings.TemplateCompanyHierarchy,
-    ];
-}

@@ -30,9 +30,6 @@ public static class AppConstants
     public const double ZoomMinimum = 0.25;
     public const double ZoomMaximum = 4.0;
 
-    // Export
-    public const string DefaultExportFileName = "diagram";
-
     // Template asset paths
     public const string TemplatePathFlowCreditCard = "Templates/flow-credit-card-processing.json";
     public const string TemplatePathMindMapProductPlanning = "Templates/mindmap-product-planning.json";

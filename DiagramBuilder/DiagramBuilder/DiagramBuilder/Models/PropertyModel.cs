@@ -95,7 +95,7 @@ public enum PropertyEditorKind
     /// <summary>Drop-down of fixed options (SfComboBox).</summary>
     Combo,
 
-    /// <summary>Swatch that opens a colour picker popup.</summary>
+    /// <summary>Inline colour picker.</summary>
     Color,
 
     /// <summary>Continuous value track (SfSlider).</summary>
@@ -104,7 +104,7 @@ public enum PropertyEditorKind
     /// <summary>Mutually exclusive options rendered as a segmented bar.</summary>
     Segmented,
 
-    /// <summary>On/off switch (SfSwitch).</summary>
+    /// <summary>Compact on/off switch (SfSwitch).</summary>
     Toggle,
 
     /// <summary>Radio-style option row (mutually exclusive picks).</summary>

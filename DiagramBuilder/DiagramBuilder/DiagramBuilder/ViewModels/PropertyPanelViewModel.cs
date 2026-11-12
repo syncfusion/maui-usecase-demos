@@ -62,7 +62,7 @@ public partial class PropertyPanelViewModel : ObservableObject
 
     private static readonly IReadOnlyList<string> PageSectionTitles =
     [
-        AppStrings.PropertyPageBackground,
+        string.Empty,
     ];
 
     private static readonly IReadOnlyList<PropertyGroup> ShapeSectionGroups =

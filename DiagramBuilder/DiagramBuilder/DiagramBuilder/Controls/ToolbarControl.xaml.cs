@@ -3,9 +3,7 @@ using System.Windows.Input;
 using DiagramBuilder.Constants;
 using DiagramBuilder.Models;
 using DiagramBuilder.Services;
-using Microsoft.Maui.Controls.Shapes;
 using Syncfusion.Maui.Buttons;
-using Syncfusion.Maui.Inputs;
 using Syncfusion.Maui.Popup;
 using DiagramToolbarItem = DiagramBuilder.Models.ToolbarItem;
 
@@ -333,171 +331,60 @@ public partial class ToolbarControl : ContentView
 
     private View BuildFillColorSwatch()
     {
-        var swatch = new Border
+        var selectedId = SelectedElementId;
+        var colorValue = ReadSelectedColor("Fill", selectedId) ?? _fillColorKey;
+        _fillColorKey = colorValue;
+        var picker = new ColorPickerButton
         {
-            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = 2 },
-            WidthRequest = 20,
-            HeightRequest = 20,
-            BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White),
-            VerticalOptions = LayoutOptions.Center,
+            ColorValue = colorValue,
             Margin = new Thickness(7, 0),
             AutomationId = "toolbar_fill_color",
         };
 
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) => ShowFillColorPicker(swatch);
-        swatch.GestureRecognizers.Add(tap);
-        return swatch;
+        picker.ColorChanged += (_, value) =>
+        {
+            _fillColorKey = value;
+            if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
+            {
+                _propertyService.Apply(selectedId, new PropertyModel
+                {
+                    Key = "FillColor",
+                    Value = value,
+                    Group = PropertyGroup.Fill,
+                });
+            }
+        };
+
+        return picker;
     }
 
     private View BuildStrokeColorSwatch()
     {
-        var swatch = new Border
+        var selectedId = SelectedElementId;
+        var colorValue = ReadSelectedColor("Border", selectedId) ?? _strokeColorKey;
+        _strokeColorKey = colorValue;
+        var picker = new ColorPickerButton
         {
-            Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = 2 },
-            WidthRequest = 20,
-            HeightRequest = 20,
-            BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White),
-            VerticalOptions = LayoutOptions.Center,
+            ColorValue = colorValue,
             Margin = new Thickness(7, 0),
             AutomationId = "toolbar_stroke_color",
         };
 
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) => ShowStrokeColorPicker(swatch);
-        swatch.GestureRecognizers.Add(tap);
-        return swatch;
-    }
-
-    private void ShowFillColorPicker(Border swatch)
-    {
-        var selectedId = SelectedElementId;
-        var picker = new SfColorPicker
+        picker.ColorChanged += (_, value) =>
         {
-            ColorMode = ColorPickerMode.Spectrum,
-            ShowAlphaSlider = true,
-            ShowInputArea = true,
-        };
-
-        // Track the user's live pick (SelectedColor alone is unreliable: the
-        // picker only updates it on certain interactions and the Accept read
-        // can be null/stale). This mirrors ColorPickerButton's working flow.
-        var pendingColor = Colors.White;
-
-        // Seed the picker (and the swatch) from the selected shape's current fill
-        // so the dialog reflects reality rather than the toolbar's last pick.
-        var currentFill = ReadSelectedColor("Fill", selectedId);
-        if (currentFill is not null)
-        {
-            _fillColorKey = currentFill;
-            var current = Services.ResourceLookup.Color(currentFill, Colors.White);
-            pendingColor = current;
-            swatch.BackgroundColor = current;
-            SeedPicker(picker, current);
-        }
-
-        picker.ColorChanged += (_, args) => pendingColor = args.NewColor ?? pendingColor;
-
-        SfPopup? popup = null;
-        popup = new SfPopup
-        {
-            ContentTemplate = new DataTemplate(() => picker),
-            ShowHeader = false,
-            ShowFooter = true,
-            ShowCloseButton = false,
-            AppearanceMode = PopupButtonAppearanceMode.TwoButton,
-            AcceptButtonText = "Apply",
-            DeclineButtonText = "Cancel",
-            AcceptCommand = new Command(() =>
+            _strokeColorKey = value;
+            if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
             {
-                _fillColorKey = FindNearestKey(pendingColor);
-                swatch.BackgroundColor = Services.ResourceLookup.Color(_fillColorKey, Colors.White);
-
-                // Apply the color to the element that was selected when the picker
-                // was opened; popup focus changes should not invalidate the target.
-                if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
+                _propertyService.Apply(selectedId, new PropertyModel
                 {
-                    var property = new PropertyModel
-                    {
-                        Key = "FillColor",
-                        Value = _fillColorKey,
-                        Group = PropertyGroup.Fill,
-                    };
-                    _propertyService.Apply(selectedId, property);
-                }
-
-                popup!.IsOpen = false;
-            }),
-            DeclineCommand = new Command(() => popup!.IsOpen = false),
+                    Key = "BorderColor",
+                    Value = value,
+                    Group = PropertyGroup.Border,
+                });
+            }
         };
 
-        PopupXamlRootHelper.AttachIfAvailable(popup, swatch);
-        popup.ShowRelativeToView(swatch, PopupRelativePosition.AlignBottomLeft);
-    }
-
-    private void ShowStrokeColorPicker(Border swatch)
-    {
-        var selectedId = SelectedElementId;
-        var picker = new SfColorPicker
-        {
-            ColorMode = ColorPickerMode.Spectrum,
-            ShowAlphaSlider = true,
-            ShowInputArea = true,
-        };
-
-        var pendingColor = Colors.Black;
-
-        var currentStroke = ReadSelectedColor("Border", selectedId);
-        if (currentStroke is not null)
-        {
-            _strokeColorKey = currentStroke;
-            var current = Services.ResourceLookup.Color(currentStroke, Colors.Black);
-            pendingColor = current;
-            swatch.BackgroundColor = current;
-            SeedPicker(picker, current);
-        }
-
-        picker.ColorChanged += (_, args) => pendingColor = args.NewColor ?? pendingColor;
-
-        SfPopup? popup = null;
-        popup = new SfPopup
-        {
-            ContentTemplate = new DataTemplate(() => picker),
-            ShowHeader = false,
-            ShowFooter = true,
-            ShowCloseButton = false,
-            AppearanceMode = PopupButtonAppearanceMode.TwoButton,
-            AcceptButtonText = "Apply",
-            DeclineButtonText = "Cancel",
-            AcceptCommand = new Command(() =>
-            {
-                _strokeColorKey = FindNearestKey(pendingColor);
-                swatch.BackgroundColor = Services.ResourceLookup.Color(_strokeColorKey, Colors.White);
-
-                // Apply the color to the element that was selected when the picker
-                // was opened; popup focus changes should not invalidate the target.
-                if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
-                {
-                    var property = new PropertyModel
-                    {
-                        Key = "BorderColor",
-                        Value = _strokeColorKey,
-                        Group = PropertyGroup.Border,
-                    };
-                    _propertyService.Apply(selectedId, property);
-                }
-
-                popup!.IsOpen = false;
-            }),
-            DeclineCommand = new Command(() => popup!.IsOpen = false),
-        };
-
-        PopupXamlRootHelper.AttachIfAvailable(popup, swatch);
-        popup.ShowRelativeToView(swatch, PopupRelativePosition.AlignBottomLeft);
+        return picker;
     }
 
     /// <summary>
@@ -514,12 +401,6 @@ public partial class ToolbarControl : ContentView
 
         return _propertyService.Read(selectedId)
             .FirstOrDefault(p => p.Key == panelKey)?.Value as string;
-    }
-
-    /// <summary>Applies a colour to an SfColorPicker via its SelectedColor property.</summary>
-    private static void SeedPicker(SfColorPicker picker, Color color)
-    {
-        picker.SelectedColor = color;
     }
 
     private View BuildShapesFlyout()
@@ -573,7 +454,7 @@ public partial class ToolbarControl : ContentView
                 Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
                 StrokeThickness = 1,
                 PopupBackground = Services.ResourceLookup.ResourceColor("CanvasBackground"),
-                CornerRadius = new CornerRadius(8),
+                CornerRadius = new CornerRadius(4),
             },
         };
         popup.ContentTemplate = new DataTemplate(() => BuildFlyoutContent(items, popup));
@@ -693,7 +574,7 @@ public partial class ToolbarControl : ContentView
                 Stroke = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
                 StrokeThickness = 1,
                 PopupBackground = Services.ResourceLookup.ResourceColor("CanvasBackground"),
-                CornerRadius = new CornerRadius(8),
+                CornerRadius = new CornerRadius(4),
             },
         };
         popup.ContentTemplate = new DataTemplate(() => BuildZoomContent(popup));
@@ -797,21 +678,4 @@ public partial class ToolbarControl : ContentView
         return stack;
     }
 
-    private static string FindNearestKey(Color color)
-    {
-        var palette = Services.ResourceLookup.PaletteSnapshot();
-        var (bestKey, bestDistance) = (string.Empty, double.MaxValue);
-        foreach (var (key, candidate) in palette)
-        {
-            var d = Math.Abs(color.Red - candidate.Red)
-                  + Math.Abs(color.Green - candidate.Green)
-                  + Math.Abs(color.Blue - candidate.Blue);
-            if (d < bestDistance)
-            {
-                bestDistance = d;
-                bestKey = key;
-            }
-        }
-        return bestKey;
-    }
 }

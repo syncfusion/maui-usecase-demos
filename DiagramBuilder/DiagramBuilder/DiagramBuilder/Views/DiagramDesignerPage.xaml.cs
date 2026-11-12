@@ -4,6 +4,7 @@ using DiagramBuilder.Controls;
 using DiagramBuilder.Services;
 using DiagramBuilder.ViewModels;
 using Syncfusion.Maui.Diagram;
+using Syncfusion.Maui.Popup;
 
 namespace DiagramBuilder.Views;
 
@@ -15,7 +16,11 @@ public partial class DiagramDesignerPage : ContentPage
     private readonly IPageSettingsService _pageSettings;
     private readonly CreateDiagramPage _createDiagramPage;
     private readonly Views.Dialogs.ExportDialog _exportDialog;
-    private readonly ContentPage _exportDialogHost;
+    private readonly Views.Dialogs.SaveDialog _saveDialog;
+    private readonly Views.Dialogs.PrintDialog _printDialog;
+    private readonly SfPopup _exportPopup;
+    private readonly SfPopup _savePopup;
+    private readonly SfPopup _printPopup;
     private readonly System.ComponentModel.PropertyChangedEventHandler _zoomSubscription;
     private bool _dialogShown;
 
@@ -25,7 +30,9 @@ public partial class DiagramDesignerPage : ContentPage
         IPropertyService propertyService,
         IPageSettingsService pageSettings,
         CreateDiagramPage createDiagramPage,
-        Views.Dialogs.ExportDialog exportDialog)
+        Views.Dialogs.ExportDialog exportDialog,
+        Views.Dialogs.SaveDialog saveDialog,
+        Views.Dialogs.PrintDialog printDialog)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -35,12 +42,16 @@ public partial class DiagramDesignerPage : ContentPage
         _pageSettings = pageSettings;
         _createDiagramPage = createDiagramPage;
         _exportDialog = exportDialog;
+        _saveDialog = saveDialog;
+        _printDialog = printDialog;
         _exportDialog.BindingContext = viewModel.Export;
-        _exportDialogHost = new ContentPage
-        {
-            Title = Constants.AppStrings.ExportDialogTitle,
-            Content = _exportDialog
-        };
+        _saveDialog.BindingContext = viewModel;
+        _printDialog.BindingContext = viewModel.PrintSettings;
+        _exportPopup = CreateDialogPopup(_exportDialog);
+        _savePopup = CreateDialogPopup(_saveDialog);
+        _printPopup = CreateDialogPopup(_printDialog);
+        viewModel.Export.ExportDiagramAsync = ExportDiagramAsync;
+        viewModel.PrintSettings.PrintAsync = PrintDiagramAsync;
 
         MenuBar.IsChecked = viewModel.MenuBar.IsChecked;
         MenuBar.IsItemEnabled = viewModel.MenuBar.IsEnabled;
@@ -103,10 +114,16 @@ public partial class DiagramDesignerPage : ContentPage
         viewModel.BringForwardRequested = () => Workspace.BringForwardAsync();
         viewModel.SendBackwardRequested = () => Workspace.SendBackwardAsync();
         viewModel.ArrangeRequested = Workspace.ArrangeAsync;
-        // Print/export use the control's defaults: the MAUI Diagram exposes page
-        // settings only on DiagramExportOptions, and there is no live page
-        // model backing them, so no unsupported overrides are passed.
-        viewModel.PrintRequested = () => Workspace.Behavior.PrintAsync();
+        viewModel.DiagramSnapshotRequested = () =>
+        {
+            var current = _diagramService.CurrentDocument ?? new Models.DiagramDocument
+            {
+                Id = "doc-" + Guid.NewGuid().ToString("N"),
+                Title = viewModel.DocumentTitle,
+                Category = Models.DiagramCategory.FlowChart,
+            };
+            return Workspace.CreateDocumentSnapshot(current);
+        };
         viewModel.Zoom.FitToPageRequested = new Command(() => _ = Workspace.Behavior.FitToPageAsync());
 
         // View / Window menu state → live diagram. Grid and snap are EJ2 snapSettings;
@@ -136,7 +153,11 @@ public partial class DiagramDesignerPage : ContentPage
 
     private void WireWorkspace(DiagramWorkspaceControl workspace)
     {
-        workspace.ReadyCommand = new Command(() => _viewModel.SetStatus(Constants.AppStrings.StatusReady));
+        workspace.ReadyCommand = new Command(() =>
+        {
+            _viewModel.SetStatus(Constants.AppStrings.StatusReady);
+            _ = workspace.ApplyStencilSearchStyleAsync();
+        });
         workspace.SelectionChangedCommand = new Command(payload =>
         {
             if (payload is DiagramBuilder.Behaviors.DiagramSurfaceBehavior.SelectionPayload sp)
@@ -195,8 +216,9 @@ public partial class DiagramDesignerPage : ContentPage
     /// <summary>Document loaded by service → push to live SfDiagram (template load).</summary>
     private void OnDocumentLoaded(object? sender, Models.DiagramDocument document)
     {
-        // Flow Chart and Organization Chart templates start with the grid hidden.
-        _viewModel.Zoom.ShowGrid = document.Category is not (Models.DiagramCategory.FlowChart or Models.DiagramCategory.OrganizationChart);
+        // Grid visibility is not stored in the document, so use the default for
+        // each newly loaded diagram rather than deriving it from its category.
+        _viewModel.Zoom.ShowGrid = true;
         Workspace.LoadTemplate(document);
         _ = Workspace.ApplyGridSettingsAsync(_viewModel.Zoom.ShowGrid, _viewModel.Zoom.SnapToGrid);
         _ = Workspace.ApplyStencilVisibilityAsync(_viewModel.ShowStencil);
@@ -204,9 +226,121 @@ public partial class DiagramDesignerPage : ContentPage
         _viewModel.SetStatus(string.Format(Constants.AppStrings.StatusOpenedFormat, document.Title));
     }
 
-    private async void OnExportDialogRequested(object? sender, EventArgs e)
+    private void OnExportDialogRequested(object? sender, EventArgs e)
     {
-        await Shell.Current.Navigation.PushModalAsync(_exportDialogHost);
+        _viewModel.Export.Reset();
+        DiagramBuilder.Controls.PopupXamlRootHelper.AttachIfAvailable(_exportPopup, this);
+        _exportPopup.Show();
+    }
+
+    private void OnExportCompleted(object? sender, EventArgs e) =>
+        _exportPopup.IsOpen = false;
+
+    private void OnExportCancelled(object? sender, EventArgs e) =>
+        _exportPopup.IsOpen = false;
+
+    private void OnPrintCompleted(object? sender, EventArgs e)
+    {
+        _viewModel.SetStatus(Constants.AppStrings.StatusPrinted);
+        _printPopup.IsOpen = false;
+    }
+
+    private void OnPrintCancelled(object? sender, EventArgs e) =>
+        _printPopup.IsOpen = false;
+
+    private void OnSaveAsCompleted(object? sender, EventArgs e) =>
+        _savePopup.IsOpen = false;
+
+    private void OnSaveAsCancelled(object? sender, EventArgs e) =>
+        _savePopup.IsOpen = false;
+
+    private async Task<Models.ExportArtifact> ExportDiagramAsync(Models.ExportFormat format, string region, string fileName)
+    {
+        var exportFormat = format switch
+        {
+            Models.ExportFormat.Jpeg => DiagramExportFormat.Jpg,
+            Models.ExportFormat.Svg => DiagramExportFormat.Svg,
+            Models.ExportFormat.Pdf => DiagramExportFormat.Jpg,
+            _ => DiagramExportFormat.Png,
+        };
+        var options = new DiagramExportOptions
+        {
+            FileName = fileName,
+            Format = exportFormat,
+            Region = region == Constants.AppStrings.ExportRegionPageSettings
+                ? DiagramExportRegion.PageSettings
+                : DiagramExportRegion.Content,
+        };
+        var result = await Workspace.DiagramControl.ExportDiagram(options);
+        if (string.IsNullOrWhiteSpace(result))
+        {
+            throw new InvalidOperationException(Constants.AppStrings.ExportOutputUnavailableMessage);
+        }
+
+        if (format == Models.ExportFormat.Svg)
+        {
+            return new Models.ExportArtifact("svg", System.Text.Encoding.UTF8.GetBytes(result));
+        }
+
+        var comma = result.IndexOf(',');
+        if (comma < 0)
+        {
+            throw new InvalidDataException(Constants.AppStrings.ExportOutputUnavailableMessage);
+        }
+
+        var image = Convert.FromBase64String(result[(comma + 1)..]);
+        return format switch
+        {
+            Models.ExportFormat.Pdf => new Models.ExportArtifact("pdf", PdfExportWriter.FromJpeg(image)),
+            Models.ExportFormat.Jpeg => new Models.ExportArtifact("jpg", image),
+            _ => new Models.ExportArtifact("png", image),
+        };
+    }
+
+    private Task PrintDiagramAsync(Models.PrintOptions settings)
+    {
+        var options = new DiagramExportOptions
+        {
+            Region = settings.Region == Constants.AppStrings.ExportRegionPageSettings
+                ? DiagramExportRegion.PageSettings
+                : DiagramExportRegion.Content,
+            PageWidth = settings.PageWidth,
+            PageHeight = settings.PageHeight,
+            PageOrientation = settings.Orientation == Constants.AppStrings.PrintLandscape
+                ? DiagramPageOrientation.Landscape
+                : DiagramPageOrientation.Portrait,
+            MultiplePage = !settings.ScaleToFit,
+        };
+
+        return Workspace.Behavior.PrintAsync(options);
+    }
+
+    private static SfPopup CreateDialogPopup(View content) => new()
+    {
+        ContentTemplate = new DataTemplate(() => content),
+        ShowHeader = false,
+        ShowFooter = false,
+        ShowCloseButton = false,
+        AutoSizeMode = Syncfusion.Maui.Popup.PopupAutoSizeMode.Both,
+        AutoSizeTarget = Syncfusion.Maui.Popup.PopupAutoSizeTarget.Content,
+        PopupStyle = new Syncfusion.Maui.Popup.PopupStyle
+        {
+            CornerRadius = new CornerRadius(4),
+            PopupBackground = new SolidColorBrush(Colors.Transparent),
+            HasShadow = false,
+        },
+    };
+
+    private void OnSaveAsDialogRequested(object? sender, EventArgs e)
+    {
+        DiagramBuilder.Controls.PopupXamlRootHelper.AttachIfAvailable(_savePopup, this);
+        _savePopup.Show();
+    }
+
+    private void OnPrintDialogRequested(object? sender, EventArgs e)
+    {
+        DiagramBuilder.Controls.PopupXamlRootHelper.AttachIfAvailable(_printPopup, this);
+        _printPopup.Show();
     }
 
     private async void OnCreateDialogRequested(object? sender, EventArgs e)
@@ -243,6 +377,22 @@ public partial class DiagramDesignerPage : ContentPage
 
         _viewModel.ExportDialogRequested -= OnExportDialogRequested;
         _viewModel.ExportDialogRequested += OnExportDialogRequested;
+        _viewModel.SaveAsDialogRequested -= OnSaveAsDialogRequested;
+        _viewModel.SaveAsDialogRequested += OnSaveAsDialogRequested;
+        _viewModel.PrintDialogRequested -= OnPrintDialogRequested;
+        _viewModel.PrintDialogRequested += OnPrintDialogRequested;
+        _viewModel.Export.ExportCompleted -= OnExportCompleted;
+        _viewModel.Export.ExportCompleted += OnExportCompleted;
+        _viewModel.Export.CancelRequested -= OnExportCancelled;
+        _viewModel.Export.CancelRequested += OnExportCancelled;
+        _viewModel.PrintSettings.PrintCompleted -= OnPrintCompleted;
+        _viewModel.PrintSettings.PrintCompleted += OnPrintCompleted;
+        _viewModel.PrintSettings.CancelRequested -= OnPrintCancelled;
+        _viewModel.PrintSettings.CancelRequested += OnPrintCancelled;
+        _viewModel.SaveAsCompleted -= OnSaveAsCompleted;
+        _viewModel.SaveAsCompleted += OnSaveAsCompleted;
+        _viewModel.SaveAsCancelled -= OnSaveAsCancelled;
+        _viewModel.SaveAsCancelled += OnSaveAsCancelled;
 
         _viewModel.CreateDialogRequested -= OnCreateDialogRequested;
         _viewModel.CreateDialogRequested += OnCreateDialogRequested;
@@ -268,5 +418,15 @@ public partial class DiagramDesignerPage : ContentPage
         // TemplateLoaded is likewise constructor-scoped (see the ctor) — a template
         // load must reach PropertyService.Track even while the modal is up.
         _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
+        _viewModel.ExportDialogRequested -= OnExportDialogRequested;
+        _viewModel.SaveAsDialogRequested -= OnSaveAsDialogRequested;
+        _viewModel.PrintDialogRequested -= OnPrintDialogRequested;
+        _viewModel.CreateDialogRequested -= OnCreateDialogRequested;
+        _viewModel.Export.ExportCompleted -= OnExportCompleted;
+        _viewModel.Export.CancelRequested -= OnExportCancelled;
+        _viewModel.PrintSettings.PrintCompleted -= OnPrintCompleted;
+        _viewModel.PrintSettings.CancelRequested -= OnPrintCancelled;
+        _viewModel.SaveAsCompleted -= OnSaveAsCompleted;
+        _viewModel.SaveAsCancelled -= OnSaveAsCancelled;
     }
 }

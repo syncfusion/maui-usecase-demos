@@ -4,7 +4,7 @@ using DiagramBuilder.Models;
 namespace DiagramBuilder.Services;
 
 /// <summary>
-/// Mock in-memory <see cref="IDiagramService"/> implementation.
+/// In-memory <see cref="IDiagramService"/> implementation.
 /// </summary>
 public class DiagramService : IDiagramService
 {
@@ -78,33 +78,32 @@ public class DiagramService : IDiagramService
         }
     }
 
-    public Task SaveAsync()
+    public Task LoadDocumentAsync(DiagramDocument document)
     {
-        if (CurrentDocument is null)
-        {
-            return Task.CompletedTask;
-        }
-
-        CurrentDocument.IsDirty = false;
-        RaiseStatus(string.Format(AppStrings.StatusSavedFormat, CurrentDocument.Title));
+        ArgumentNullException.ThrowIfNull(document);
+        CurrentDocument = document;
+        DocumentLoaded?.Invoke(this, document);
+        RaiseStatus(string.Format(AppStrings.StatusOpenedFormat, document.Title));
         return Task.CompletedTask;
     }
 
-    public Task SaveAsAsync(string title)
+    public Task SaveAsync(DiagramDocument snapshot, string fileName)
     {
-        if (CurrentDocument is null)
-        {
-            return Task.CompletedTask;
-        }
+        snapshot.Title = fileName;
+        snapshot.IsDirty = false;
+        CurrentDocument = snapshot;
+        RaiseStatus(string.Format(AppStrings.StatusSavedFormat, fileName));
+        return Task.CompletedTask;
+    }
 
-        CurrentDocument.Title = title;
-        CurrentDocument.IsDirty = false;
+    public Task SaveAsAsync(DiagramDocument snapshot, string title)
+    {
+        snapshot.Title = title;
+        snapshot.IsDirty = false;
+        CurrentDocument = snapshot;
         RaiseStatus(string.Format(AppStrings.StatusSavedFormat, title));
         return Task.CompletedTask;
     }
-
-    public Task<IReadOnlyList<string>> GetRecentDocumentsAsync() =>
-        Task.FromResult(RecentDocumentCatalog.All);
 
     public void SetDirty()
     {

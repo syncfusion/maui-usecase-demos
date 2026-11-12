@@ -20,12 +20,11 @@
 - Stencil library with search, collapsible categories, and native palette drag-and-drop.
 - Property inspector: Dimensions, Insert, Background, Fill, Border, Text.
 - Arrange operations: z-order, align, distribute, match size, group/ungroup.
-- Export UI (PNG / JPEG / PDF / SVG) backed by mock services.
+- File workflows: JSON open/save/save-as, diagram export (PNG/JPEG/PDF/SVG), and configurable print.
 - Light theme, desktop-first (Windows primary, MacCatalyst secondary), collapsible panels.
 
 ### Out of scope
 - Backend, database, web services, authentication, AI services.
-- Real filesystem persistence ("Save"/"Open" operate on the in-memory mock document store).
 - Cloud / telemetry features.
 
 ## 3. User Journeys
@@ -51,7 +50,10 @@ Z-order (send to back/front, backward/forward), align (6 axes), distribute (H/V)
 Zoom in/out/fit, preset zoom chips (50/100/150/200 %), Show Grid and Snap To Grid toggles, panel show/hide toggles (WINDOW menu).
 
 ### J5 — Exporting
-FILE ▸ Export → Export dialog: format (PNG/JPEG/PDF/SVG), region (Content/Page), file name → mock export returns a success status; PNG/JPEG/SVG additionally demo a real `ExportDiagram` data URI.
+FILE ▸ Export → Export popup: format (PNG/JPEG/PDF/SVG), region (Content/Page), file name → the live diagram is exported and the result is written to the device's Downloads location (app storage on sandboxed platforms).
+
+### J6 — File operations
+FILE ▸ Open browses for JSON diagram files; Save writes `Untitled Diagram.json` without an in-app prompt; Save As opens a name-entry popup. Print opens a settings popup for region, paper size, orientation, and scale-to-fit before calling the Syncfusion Diagram print API.
 
 ## 4. Functional Requirements
 
@@ -67,8 +69,10 @@ FILE ▸ Export → Export dialog: format (PNG/JPEG/PDF/SVG), region (Content/Pa
 | FR-8 | Property panel visible only for a selected object; six sections per spec; empty state when nothing selected. Property editing must work for a single **node or connector** selection. |
 | FR-9 | Keyboard shortcuts: Ctrl+C, Ctrl+X, Ctrl+V, Delete, Ctrl+Z, Ctrl+Y, Ctrl+A. |
 | FR-10 | Zoom presets 50/100/150/200 % plus incremental zoom and Fit To Screen. All zoom entry points (menu, toolbar, chips, keyboard) must drive the **actual canvas zoom** and update the zoom indicator. |
-| FR-11 | Export dialog with PNG/JPEG/PDF/SVG; mock service returns status; PDF is mock-only. |
+| FR-11 | Export dialog with PNG/JPEG/PDF/SVG; export the live diagram and persist a correctly named file. |
 | FR-12 | Panels collapsible via Window menu and header chevrons. |
+| FR-13 | Open imports validated local JSON files; Save writes `Untitled Diagram.json` directly; Save As prompts for a name. |
+| FR-14 | Print displays region, paper size, orientation, and scale-to-fit settings and applies them through `DiagramExportOptions`. |
 
 ### FR notes (from implementation experience)
 - FR-4/FR-9: any command the SfDiagram control supports natively (undo, redo, delete,
@@ -85,7 +89,7 @@ FILE ▸ Export → Export dialog: format (PNG/JPEG/PDF/SVG), region (Content/Pa
 ## 5. Non-functional Requirements
 
 - **Architecture**: strict MVVM, `CommunityToolkit.Mvvm` only (`[ObservableProperty]`, `[RelayCommand]`), no ViewModel > 500 lines, no business logic in code-behind (code-behind only relays control events → commands).
-- **SOLID**: all behavior behind interfaces (`IDiagramService`, `ITemplateService`, `IExportService`, `IPropertyService`, `ISelectionService`, `IDialogService`) with mock implementations registered in DI.
+- **SOLID**: all behavior behind interfaces (`IDiagramService`, `IDiagramFileService`, `ITemplateService`, `IPropertyService`, `ISelectionService`, `IDialogService`) registered in DI.
 - **No hardcoded strings**: every user-visible string from `AppConstants`/`AppStrings`; colors only via `ResourceDictionary` keys referenced with `DynamicResource`. Hex color values may appear **only** in `Resources/Styles/Colors.xaml` (a C# color lookup helper must resolve keys from the merged resource dictionary, not re-declare hex values).
 - **Centralized constants**: `AppConstants` (dimensions, zoom levels, routes, limits), `AppStrings` (every user-visible string), `ResourceKeys` (color/style key names). Constants declared here must actually be consumed — no orphaned keys.
 - **Reusable controls**: MenuBar, Toolbar, StencilPanel, Workspace, PropertyPanel, ColorPickerButton, PanelHeader, ZoomIndicator — property/command-driven; DataTemplates (StencilItemTemplate, PropertyEditorTemplates, TemplateCardTemplate) drive all list surfaces instead of imperative code-behind UI construction.
@@ -95,7 +99,7 @@ FILE ▸ Export → Export dialog: format (PNG/JPEG/PDF/SVG), region (Content/Pa
 
 ## 6. Menu Specification
 
-- **FILE**: New, Open (mock recents), Save, Save As, — , Export, Print.
+- **FILE**: New, Open (JSON file picker), Save, Save As, — , Export, Print.
 - **EDIT**: Undo, Redo, — , Cut, Copy, Paste, Delete, Duplicate, — , Select All.
 - **VIEW**: Zoom In, Zoom Out, Fit To Screen, — , Show Grid ✓, Snap To Grid ✓.
 - **ARRANGE**: Send To Back, Bring To Front, Send Backward, Bring Forward, — ,
@@ -129,8 +133,8 @@ No backend. All data originates from three sources:
    - `flow-credit-card-processing.json`: 11-node payment flow (Start → Enter Card → Validate decision → declined path → Process Payment → Store → Receipt → End), orthogonal connectors, labeled branches, explicit node ids.
    - `mindmap-product-planning.json`: central "Product Planning" ellipse + 5 branches (Research, Design, Development, Marketing, Launch), each 2–3 children, balanced positions, branch accent colors.
    - `orgchart-company-hierarchy.json`: CEO → 3 directors → managers/teams; rounded rectangles; manager nodes PrimaryColor fill; `OrganizationalChart`/TopToBottom layout hint.
-2. **In-code sample catalogs**: `StencilCatalog` (stencil groups with display names + search tags), `MenuCatalog`/`ToolbarCatalog` (command models built from constants), `RecentDocumentCatalog` (mock Open list, in-memory only).
-3. **In-memory document store** (`DiagramService`): current `DiagramDocument`, dirty flag; Save/Save As update the in-memory record and raise status messages.
+2. **In-code sample catalogs**: `StencilCatalog` (stencil groups with display names + search tags), `MenuCatalog`/`ToolbarCatalog` (command models built from constants).
+3. **Document storage** (`DiagramService` + `DiagramFileService`): current `DiagramDocument`, dirty flag, JSON import/save, and export file writing. If a JSON save name already exists, create a numbered copy (`name 1.json`, `name 2.json`) instead of overwriting it.
 
 Blank templates emit a single starter node "Double-click to rename" plus the category default connector tool.
 

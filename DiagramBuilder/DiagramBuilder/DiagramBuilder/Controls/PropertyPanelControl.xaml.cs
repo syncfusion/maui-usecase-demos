@@ -5,7 +5,6 @@ using DiagramBuilder.ViewModels;
 using Syncfusion.Maui.Buttons;
 using Syncfusion.Maui.Expander;
 using Syncfusion.Maui.Inputs;
-using Syncfusion.Maui.Popup;
 
 namespace DiagramBuilder.Controls;
 
@@ -82,7 +81,10 @@ public partial class PropertyPanelControl : ContentView
                 }
             }
 
-            SectionsStack.Add(BuildSection(section, vm.SectionTitles[i], rows));
+            var title = vm.SectionTitles[i];
+            SectionsStack.Add(string.IsNullOrEmpty(title)
+                ? rows
+                : BuildSection(section, title, rows));
         }
 
         _built = true;
@@ -162,6 +164,15 @@ public partial class PropertyPanelControl : ContentView
                 AutomationId = "property_caption_" + model.Key.ToLowerInvariant(),
             });
         }
+        else if (model.Editor == PropertyEditorKind.Color)
+        {
+            stack.Add(new Label
+            {
+                Text = model.LabelKey,
+                Style = (Style)Application.Current!.Resources["PropertyCaptionStyle"],
+                AutomationId = "property_caption_" + model.Key.ToLowerInvariant(),
+            });
+        }
 
         stack.Add(BuildEditor(model, vm));
         return stack;
@@ -219,7 +230,8 @@ public partial class PropertyPanelControl : ContentView
             // editor already carries an inline prefix (X, Y, W, H) keep that
             // prefix instead of repeating the full label as a caption.
             var hasInlinePrefix = !string.IsNullOrEmpty(group[i].PrefixKey);
-            var caption = group[i].CaptionKey ?? (hasInlinePrefix ? null : group[i].LabelKey);
+            var caption = group[i].CaptionKey
+                ?? (hasInlinePrefix ? null : group[i].LabelKey);
             if (!string.IsNullOrEmpty(caption))
             {
                 cell.Add(new Label
@@ -268,7 +280,11 @@ public partial class PropertyPanelControl : ContentView
             _ => BuildTextEditor(model, vm),
         };
 
-        editor.AutomationId = "property_" + model.Key.ToLowerInvariant();
+        if (string.IsNullOrEmpty(editor.AutomationId))
+        {
+            editor.AutomationId = "property_" + model.Key.ToLowerInvariant();
+        }
+
         return editor;
     }
 
@@ -295,9 +311,16 @@ public partial class PropertyPanelControl : ContentView
             CustomFormat = model.IsInteger ? "#,0" : "#,0.##",
             ShowBorder = true,
             ShowClearButton = false,
+            UpDownPlacementMode = NumericEntryUpDownPlacementMode.Inline,
+            UpDownButtonAlignment = UpDownButtonAlignment.Right,
+            SmallChange = model.IsInteger ? 1 : 0.1,
+            LargeChange = model.IsInteger ? 10 : 1,
+            UpDownButtonColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             FontSize = 13,
-            HeightRequest = 30,
+            HeightRequest = 42,
             HorizontalTextAlignment = TextAlignment.Start,
+            VerticalTextAlignment = TextAlignment.Center,
+            AutomationId = "property_value_" + model.Key.ToLowerInvariant(),
         };
 
         if (model.Value is IConvertible convertible)
@@ -344,8 +367,9 @@ public partial class PropertyPanelControl : ContentView
             ItemsSource = model.Options.ToList(),
             FontSize = 13,
             ShowBorder = true,
-            HeightRequest = 30,
+            HeightRequest = 42,
             HorizontalTextAlignment = TextAlignment.Start,
+            VerticalTextAlignment = TextAlignment.Center,
             // The combo renders a clear (✕) button by default, which crowds the
             // narrow panel and suggests the value can be emptied — these pickers
             // always have a valid selection, so the button is hidden.
@@ -554,31 +578,17 @@ public partial class PropertyPanelControl : ContentView
                 ThumbBackground = Colors.White,
                 // The default switch is far too large for a 320 px inspector;
                 // these are compact inline toggles.
-                TrackWidthRequest = 34,
-                TrackHeightRequest = 18,
-                ThumbWidthRequest = 14,
-                ThumbHeightRequest = 14,
+                TrackWidthRequest = 24,
+                TrackHeightRequest = 14,
+                ThumbWidthRequest = 10,
+                ThumbHeightRequest = 10,
             },
+            HorizontalOptions = LayoutOptions.Start,
+            VerticalOptions = LayoutOptions.Center,
         };
         toggle.StateChanged += (_, args) => Commit(vm, model, args.NewValue);
-
-        // The design labels each toggle (Bold / Italic); without a caption the
-        // switch is unidentifiable.
-        return new HorizontalStackLayout
-        {
-            Spacing = 6,
-            Children =
-            {
-                toggle,
-                new Label
-                {
-                    Text = model.LabelKey,
-                    FontSize = 12,
-                    TextColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
-                    VerticalOptions = LayoutOptions.Center,
-                },
-            },
-        };
+        SemanticProperties.SetDescription(toggle, model.LabelKey);
+        return toggle;
     }
 
     /// <summary>Pushes an edited value into the model and applies it to the live element.</summary>

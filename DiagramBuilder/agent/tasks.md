@@ -95,23 +95,21 @@ DI registrations, theme ResourceDictionaries, centralized constants, and Shell r
 
 ---
 
-## Task 3 — Service interfaces & mock implementations
+## Task 3 — Service interfaces & implementations
 
-**Objective** — Implement the application service layer: interfaces plus fully working
-mock implementations (in-memory, no backend).
+**Objective** — Implement the application service layer: in-memory diagram state, JSON file
+operations, and template loading.
 
 **Implementation requirements**
-1. `IDiagramService`/`DiagramService`: holds the current `DiagramDocument`; methods
-   `CreateDocumentAsync(DiagramTemplate)`, `SaveAsync()`, `SaveAsAsync(title)`,
-   `GetRecentDocumentsAsync()` (mock list), `SetDirty()`, `CurrentDocument` property,
-   status `event EventHandler<string> StatusChanged`.
+1. `IDiagramService`/`DiagramService`: holds the current `DiagramDocument`; create/load/save
+   methods, dirty tracking, `CurrentDocument` property, and status events.
 2. `ITemplateService`/`TemplateService`: `PreloadAsync()` loads the three JSON template files
    from `Resources/Raw/Templates` via `FileSystem.OpenAppPackageFileAsync`; builds the six
    `DiagramTemplate`s (3 blank + 3 predefined); **C# fallback seed** built in code used when
    JSON parsing fails so the UI is never empty; `GetAllAsync()`, `GetByIdAsync(id)`.
-3. `IExportService`/`MockExportService`: `ExportAsync(ExportFormat, region, fileName)` —
-   simulates processing (small delay), returns a result record (success, file name, data-URI
-   or null for PDF).
+3. `IDiagramFileService`/`DiagramFileService`: JSON-only file picking and validated imports;
+   save diagram JSON and generated exports to the platform's Downloads location (app storage
+   on sandboxed platforms).
 4. `IPropertyService`/`PropertyService`: bridge between selection and live diagram models —
    `Apply(elementId, PropertyModel)` writes to the tracked Syncfusion `Node`/`Connector`
    objects via `DiagramModelAdapter`; `Read(elementId)` snapshot for the panel (a **node
@@ -128,8 +126,8 @@ mock implementations (in-memory, no backend).
    node shapes (Polygon via `Sides`, Decision→Diamond, Terminator→rounded, etc.) per
    architecture.md §7.3; also maps `StencilGroup`s to `SymbolPalette` palettes (connectors
    group included or explicitly omitted — never an empty palette).
-8. `StencilCatalog`, `MenuCatalog`, `ToolbarCatalog`, `RecentDocumentCatalog` static
-   in-code catalogs (mock data) built from constants only.
+8. `StencilCatalog`, `MenuCatalog`, and `ToolbarCatalog` static in-code catalogs built from
+   constants only.
 
 **Impacted files** — `Services/*.cs`, plus `Services/Catalogs.cs` (or per-catalog files).
 
@@ -219,8 +217,8 @@ validate id references programmatically; confirm files are packaged (build outpu
 9. `ArrangeViewModel`: align/distribute/match-size/z-order/group commands routed to the
    dispatch table (compute on selected nodes where feasible; mock status where the control
    has no native API).
-10. `ExportViewModel`: format selection, region, file name, `ExportCommand` →
-    `IExportService`; result state for the dialog; dialog close/reset semantics.
+10. `ExportViewModel`: format selection, region, file name, `ExportCommand` → live diagram
+    export callback and `IDiagramFileService`; close on success and report failures.
 11. Every command `[RelayCommand]` (with `CanExecute` where state-dependent); every bound
     field `[ObservableProperty]`; constructor injection only.
 
@@ -365,8 +363,8 @@ it, mock status elsewhere).
 
 **Implementation requirements**
 1. Wire dispatch table in `DiagramDesignerViewModel`: FILE (New→create dialog with
-   unsaved-changes confirm, Open→mock recents, Save/SaveAs→document store, Export→dialog,
-   Print→`Print` w/ status), EDIT (Undo/Redo→`Undo/Redo` relays + CanUndo/CanRedo state;
+   unsaved-changes confirm, Open→JSON file picker, Save/SaveAs→JSON persistence, Export→dialog,
+   Print→`Print` with configurable settings), EDIT (Undo/Redo→`Undo/Redo` relays + CanUndo/CanRedo state;
    Delete→real removal; Cut/Copy/Paste→control clipboard APIs; Duplicate/Select All→real
    where supported, mock status otherwise), VIEW (zoom commands drive the canvas, grid/snap
    toggles drive the diagram), ARRANGE (z-order/align/distribute/match-size/group —
@@ -413,7 +411,7 @@ node is property-editable.
    full layouts); adjust spacing/colors where deviating — key checkpoints: menu root
    typography, cascading ARRANGE submenu, 48 px flyout glyph tiles, active zoom chip, dot
    grid, property panel section detail, thumbnail wireframes, category selected state.
-4. Confirm sample data on every screen (templates, stencil, mock recents, status bar).
+4. Confirm sample data on every screen (templates, stencil, status bar).
 5. Record final completion status in the task notes of this file.
 
 **Impacted files** — Any file failing the audit; `agent/tasks.md` (status notes).

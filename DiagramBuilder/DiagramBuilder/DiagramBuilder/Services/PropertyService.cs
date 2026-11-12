@@ -183,13 +183,13 @@ public class PropertyService : IPropertyService
             // (no gradient model), so one colour picker covers it. A separate
             // BACKGROUND section is not offered for shapes: it would duplicate
             // the same ShapeStyle.Fill value.
-            result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "Fill", LabelKey = AppStrings.PropertyFillColor, Value = ColorKeyFor(style?.Fill), Editor = PropertyEditorKind.Color, IsFullWidth = true });
+            result.Add(new PropertyModel { Group = PropertyGroup.Fill, Key = "Fill", LabelKey = AppStrings.PropertyFillColor, Value = ColorValueFor(style?.Fill), Editor = PropertyEditorKind.Color, IsFullWidth = true });
 
             // BORDER — the design puts the style / colour / thickness editors on
             // one row, each under its own caption.
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 3 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorKeyFor(style?.StrokeColor), Editor = PropertyEditorKind.Color, PairIndex = 1, PairCount = 3 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 2, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorValueFor(style?.StrokeColor), Editor = PropertyEditorKind.Color });
 
             // OPACITY — ShapeStyle.Opacity is the only opacity the control exposes and it
             // applies to the whole element (fill + stroke together), so a single row is shown.
@@ -207,7 +207,7 @@ public class PropertyService : IPropertyService
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "VerticalAlignment", LabelKey = AppStrings.PropertyVerticalAlign, Value = VerticalKeyFor(annotation?.VerticalAlignment), Editor = PropertyEditorKind.Combo, Options = VerticalAlignOptions, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 0, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 1, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color), Editor = PropertyEditorKind.Color, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorValueFor(textStyle?.Color), Editor = PropertyEditorKind.Color });
         }
         else if (element is Connector connector)
         {
@@ -216,9 +216,9 @@ public class PropertyService : IPropertyService
             // label's text properties.
             var style = connector.Style as ShapeStyle;
 
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 3 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorKeyFor(style?.StrokeColor), Editor = PropertyEditorKind.Color, PairIndex = 1, PairCount = 3 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 2, PairCount = 3 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderStyle", LabelKey = AppStrings.PropertyLineStyle, CaptionKey = AppStrings.PropertyBorderCaption, Value = BorderStyleFor(style?.StrokeDashArray), Editor = PropertyEditorKind.Combo, Options = BorderStyleOptions, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "BorderThickness", LabelKey = AppStrings.PropertyThickness, CaptionKey = AppStrings.PropertyThicknessCaption, Value = style?.StrokeWidth ?? 1.0, Min = 0, Max = 64, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Border", LabelKey = AppStrings.PropertyBorderColor, CaptionKey = AppStrings.PropertyColorCaption, Value = ColorValueFor(style?.StrokeColor), Editor = PropertyEditorKind.Color });
             result.Add(new PropertyModel { Group = PropertyGroup.Border, Key = "Opacity", LabelKey = AppStrings.PropertyOpacity, Value = (style?.Opacity ?? 1.0) * 100.0, Min = 0, Max = 100, Editor = PropertyEditorKind.Slider, Scale = 0.01 });
 
             var annotation = connector.Annotations.OfType<PathAnnotation>().FirstOrDefault();
@@ -228,7 +228,7 @@ public class PropertyService : IPropertyService
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "FontSize", LabelKey = AppStrings.PropertyFontSize, Value = textStyle?.FontSize ?? 12.0, Min = 6, Max = 96, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextBold", LabelKey = AppStrings.PropertyBold, Value = textStyle?.Bold ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 0, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextItalic", LabelKey = AppStrings.PropertyItalic, Value = textStyle?.Italic ?? false, Editor = PropertyEditorKind.Toggle, PairIndex = 1, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorKeyFor(textStyle?.Color), Editor = PropertyEditorKind.Color, PairIndex = 0, PairCount = 2 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Text, Key = "TextColor", LabelKey = AppStrings.PropertyTextColor, Value = ColorValueFor(textStyle?.Color), Editor = PropertyEditorKind.Color });
         }
 
         return result;
@@ -320,30 +320,8 @@ public class PropertyService : IPropertyService
         AppStrings.PropertyAlignBottom,
     ];
 
-    private static string? ColorKeyFor(Color? color)
-    {
-        if (color is null)
-        {
-            return null;
-        }
-
-        // Map the live color back to the nearest theme key so the picker shows it.
-        var palette = ResourceLookup.PaletteSnapshot();
-        var (bestKey, bestDistance) = (string.Empty, double.MaxValue);
-        foreach (var (key, candidate) in palette)
-        {
-            var d = Math.Abs(color.Red - candidate.Red)
-                  + Math.Abs(color.Green - candidate.Green)
-                  + Math.Abs(color.Blue - candidate.Blue);
-            if (d < bestDistance)
-            {
-                bestDistance = d;
-                bestKey = key;
-            }
-        }
-
-        return bestKey;
-    }
+    private static string? ColorValueFor(Color? color) =>
+        color is null ? null : ResourceLookup.ToArgbHex(color);
 
     private static string BorderStyleFor(string? dashArray)
     {

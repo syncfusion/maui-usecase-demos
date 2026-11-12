@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             xmlns:constants="clr-namespace:DiagramBuilder.Constants"
+             xmlns:vm="clr-namespace:DiagramBuilder.ViewModels"
+             x:Class="DiagramBuilder.Views.Dialogs.SaveDialog"
+             x:DataType="vm:DiagramDesignerViewModel">
+    <Border Stroke="{DynamicResource PanelBorderBrush}"
+            StrokeThickness="1"
+            Padding="24"
+            WidthRequest="460"
+            Background="{DynamicResource CanvasBackground}">
+        <Border.StrokeShape>
+            <shapes:RoundRectangle CornerRadius="4" />
+        </Border.StrokeShape>
+        <VerticalStackLayout Spacing="14">
+            <Label Text="{x:Static constants:AppStrings.SaveDialogTitle}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource TextPrimary}" />
+            <Label Text="{x:Static constants:AppStrings.SaveFileNameLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <Entry Text="{Binding SaveAsFileName, Mode=TwoWay}"
+                   Placeholder="{x:Static constants:AppStrings.SaveFileNamePlaceholder}"
+                   Style="{StaticResource PropertyEntryStyle}"
+                   AutomationId="save_as_file_name" />
+            <HorizontalStackLayout Spacing="8" Margin="0,12,0,0">
+                <Button Text="{x:Static constants:AppStrings.SaveAction}"
+                        Command="{Binding ConfirmSaveAsCommand}"
+                        AutomationId="save_as_confirm" />
+                <Button Text="{x:Static constants:AppStrings.SaveCancel}"
+                        Command="{Binding CancelSaveAsCommand}"
+                        AutomationId="save_as_cancel" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

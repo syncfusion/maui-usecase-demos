@@ -6,20 +6,18 @@ using DiagramBuilder.Services;
 
 namespace DiagramBuilder.ViewModels;
 
-/// <summary>
-/// Export dialog state: format/region/file name selection, mock export execution
-/// via <see cref="IExportService"/>, result state for the dialog.
-/// </summary>
 public partial class ExportViewModel : ObservableObject
 {
-    private readonly IExportService _exportService;
+    private readonly IDiagramFileService _fileService;
+    private readonly IDialogService _dialogService;
     private readonly Func<string> _documentTitle;
 
-    public ExportViewModel(IExportService exportService, Func<string> documentTitle)
+    public ExportViewModel(IDiagramFileService fileService, IDialogService dialogService, Func<string> documentTitle)
     {
-        _exportService = exportService;
+        _fileService = fileService;
+        _dialogService = dialogService;
         _documentTitle = documentTitle;
-        FileName = AppConstants.DefaultExportFileName;
+        FileName = documentTitle();
     }
 
     [ObservableProperty]
@@ -34,13 +32,6 @@ public partial class ExportViewModel : ObservableObject
     [ObservableProperty]
     private bool isExporting;
 
-    [ObservableProperty]
-    private bool hasResult;
-
-    [ObservableProperty]
-    private string resultText = string.Empty;
-
-    /// <summary>Format options (from constants).</summary>
     public IReadOnlyList<string> FormatLabels { get; } =
     [
         AppStrings.ExportFormatPng,
@@ -49,47 +40,54 @@ public partial class ExportViewModel : ObservableObject
         AppStrings.ExportFormatSvg,
     ];
 
-    /// <summary>Region options (from constants).</summary>
+    public string SelectedFormatLabel
+    {
+        get => FormatLabelFor(SelectedFormat);
+        set => SelectedFormat = ParseFormat(value);
+    }
+
     public IReadOnlyList<string> RegionLabels { get; } =
     [
         AppStrings.ExportRegionContent,
         AppStrings.ExportRegionPageSettings,
     ];
 
-    public ExportFormat[] Formats { get; } = Enum.GetValues<ExportFormat>();
+    public Func<ExportFormat, string, string, Task<ExportArtifact>>? ExportDiagramAsync { get; set; }
 
-    /// <summary>Selects an export format (parameter is the enum name, from a bound CommandParameter).</summary>
-    [RelayCommand]
-    private void SelectFormat(string? formatName)
-    {
-        if (Enum.TryParse<ExportFormat>(formatName, ignoreCase: true, out var parsed))
-        {
-            SelectedFormat = parsed;
-        }
-    }
+    public event EventHandler? ExportCompleted;
 
-    /// <summary>Selects the export region label (Content / PageSettings).</summary>
-    [RelayCommand]
-    private void SelectRegion(string? region)
-    {
-        if (!string.IsNullOrEmpty(region) && RegionLabels.Contains(region))
-        {
-            Region = region;
-        }
-    }
+    public event EventHandler? CancelRequested;
 
     [RelayCommand]
     private async Task ExportAsync()
     {
+        if (IsExporting)
+        {
+            return;
+        }
+
         IsExporting = true;
-        HasResult = false;
         try
         {
-            var result = await _exportService.ExportAsync(SelectedFormat, Region, FileName);
-            ResultText = result.Success
-                ? string.Format(AppStrings.ExportSuccessFormat, result.FileName)
-                : AppStrings.ExportMockNotice;
-            HasResult = true;
+            if (ExportDiagramAsync is null)
+            {
+                await _dialogService.ShowAlertAsync(AppStrings.ExportFailedTitle, AppStrings.ExportOutputUnavailableMessage);
+                return;
+            }
+
+            if (!RegionLabels.Contains(Region))
+            {
+                throw new ArgumentException(AppStrings.ExportRegionLabel);
+            }
+
+            var artifact = await ExportDiagramAsync(SelectedFormat, Region, FileName);
+            var path = await _fileService.SaveExportAsync(FileName, artifact.Extension, artifact.Content);
+            await _dialogService.ShowAlertAsync(AppStrings.ExportDialogTitle, string.Format(AppStrings.ExportSavedPathFormat, path));
+            ExportCompleted?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException or ArgumentException or InvalidOperationException or FormatException)
+        {
+            await _dialogService.ShowAlertAsync(AppStrings.ExportFailedTitle, exception.Message);
         }
         finally
         {
@@ -98,12 +96,33 @@ public partial class ExportViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Reset()
+    private void Cancel() => CancelRequested?.Invoke(this, EventArgs.Empty);
+
+    public void Reset()
     {
         SelectedFormat = ExportFormat.Png;
         Region = AppStrings.ExportRegionContent;
-        FileName = AppConstants.DefaultExportFileName;
-        HasResult = false;
-        ResultText = string.Empty;
+        FileName = _documentTitle();
     }
+
+    private static ExportFormat ParseFormat(string label) => label switch
+    {
+        AppStrings.ExportFormatPng => ExportFormat.Png,
+        AppStrings.ExportFormatJpeg => ExportFormat.Jpeg,
+        AppStrings.ExportFormatPdf => ExportFormat.Pdf,
+        AppStrings.ExportFormatSvg => ExportFormat.Svg,
+        _ => throw new ArgumentException(AppStrings.ExportFormatInvalidMessage, nameof(label)),
+    };
+
+    private static string FormatLabelFor(ExportFormat format) => format switch
+    {
+        ExportFormat.Png => AppStrings.ExportFormatPng,
+        ExportFormat.Jpeg => AppStrings.ExportFormatJpeg,
+        ExportFormat.Pdf => AppStrings.ExportFormatPdf,
+        ExportFormat.Svg => AppStrings.ExportFormatSvg,
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, AppStrings.ExportFormatInvalidMessage),
+    };
+
+    partial void OnSelectedFormatChanged(ExportFormat value) =>
+        OnPropertyChanged(nameof(SelectedFormatLabel));
 }

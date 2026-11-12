@@ -3,7 +3,7 @@ using DiagramBuilder.Constants;
 namespace DiagramBuilder.Services;
 
 /// <summary>
-/// Resolves theme resource keys to <see cref="Color"/> values for Syncfusion diagram styles.
+/// Resolves theme resource keys and ARGB hex values to <see cref="Color"/> values for Syncfusion diagram styles.
 /// Falls back to <see cref="Colors.White"/>/transparent when a key is unknown, so a bad key
 /// never crashes the designer.
 /// </summary>
@@ -28,15 +28,31 @@ public static class ResourceLookup
     };
 
     /// <summary>
-    /// Returns the <see cref="Color"/> for a theme key, or <paramref name="fallback"/>
-    /// when the key is empty or unknown.
+    /// Returns the <see cref="Color"/> for a theme key or ARGB hex value, or
+    /// <paramref name="fallback"/> when the value is empty or unknown.
     /// </summary>
     public static Color Color(string? key, Color? fallback = null)
     {
         fallback ??= Colors.Transparent;
-        return string.IsNullOrEmpty(key) || !Palette.TryGetValue(key, out var color)
-            ? fallback
-            : color;
+        if (string.IsNullOrEmpty(key))
+        {
+            return fallback;
+        }
+
+        if (Palette.TryGetValue(key, out var color))
+        {
+            return color;
+        }
+
+        return TryParseHexColor(key, out color) ? color : fallback;
+    }
+
+    /// <summary>Returns a color in ARGB hex form, preserving alpha.</summary>
+    public static string ToArgbHex(Color color)
+    {
+        static int ToByte(float value) => (int)Math.Round(Math.Clamp(value, 0f, 1f) * 255f);
+
+        return $"#{ToByte(color.Alpha):X2}{ToByte(color.Red):X2}{ToByte(color.Green):X2}{ToByte(color.Blue):X2}";
     }
 
     /// <summary>Read-only snapshot of every (key, color) the lookup knows about.</summary>
@@ -93,5 +109,25 @@ public static class ResourceLookup
         }
 
         return false;
+    }
+
+    private static bool TryParseHexColor(string value, out Color color)
+    {
+        color = Colors.Transparent;
+        if ((value.Length != 7 && value.Length != 9) || value[0] != '#')
+        {
+            return false;
+        }
+
+        for (var index = 1; index < value.Length; index++)
+        {
+            if (!Uri.IsHexDigit(value[index]))
+            {
+                return false;
+            }
+        }
+
+        color = Microsoft.Maui.Graphics.Color.FromArgb(value);
+        return true;
     }
 }

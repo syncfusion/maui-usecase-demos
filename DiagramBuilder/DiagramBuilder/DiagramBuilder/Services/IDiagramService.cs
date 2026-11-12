@@ -3,8 +3,8 @@ using DiagramBuilder.Models;
 namespace DiagramBuilder.Services;
 
 /// <summary>
-/// In-memory document store: holds the current <see cref="DiagramDocument"/>,
-/// supports save/save-as and a mock recent list.
+/// Document store: holds the current <see cref="DiagramDocument"/> and supports
+/// loading, save, and save-as operations.
 /// </summary>
 public interface IDiagramService
 {
@@ -14,16 +14,16 @@ public interface IDiagramService
     /// <summary>Raised with a status message (e.g. after save).</summary>
     event EventHandler<string>? StatusChanged;
 
-    /// <summary>Raised after <see cref="CreateDocumentAsync"/> completes so the designer can load it.</summary>
+    /// <summary>Raised after a document is created or opened so the designer can load it.</summary>
     event EventHandler<DiagramDocument>? DocumentLoaded;
 
     Task<DiagramDocument> CreateDocumentAsync(DiagramTemplate template);
 
-    Task SaveAsync();
+    Task LoadDocumentAsync(DiagramDocument document);
 
-    Task SaveAsAsync(string title);
+    Task SaveAsync(DiagramDocument snapshot, string fileName);
 
-    Task<IReadOnlyList<string>> GetRecentDocumentsAsync();
+    Task SaveAsAsync(DiagramDocument snapshot, string title);
 
     void SetDirty();
 }
@@ -40,23 +40,6 @@ public interface ITemplateService
     Task<IReadOnlyList<DiagramTemplate>> GetAllAsync();
 
     Task<DiagramTemplate?> GetByIdAsync(string id);
-}
-
-/// <summary>
-/// Export pipeline (mock): simulates processing and reports success.
-/// </summary>
-public interface IExportService
-{
-    Task<ExportResult> ExportAsync(ExportFormat format, string region, string fileName);
-}
-
-/// <summary>
-/// Result of a mock export operation.
-/// </summary>
-public record ExportResult(bool Success, string FileName, string? DataUri)
-{
-    /// <summary>True for formats whose data URI is not produced (PDF is mock-only).</summary>
-    public bool IsMockOnly => DataUri is null;
 }
 
 /// <summary>

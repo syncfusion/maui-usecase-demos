@@ -13,7 +13,7 @@
 │   PropertyPanel/Zoom/Arrange/Export child VMs)                 │
 ├───────────────────────────────────────────────────────────────┤
 │ Services (interfaces + mock implementations)                   │  application
-│   IDiagramService, ITemplateService, IExportService,           │
+│   IDiagramService, IDiagramFileService, ITemplateService,      │
 │   IPropertyService, ISelectionService, IDialogService,        │
 │   DiagramModelAdapter                                          │
 ├───────────────────────────────────────────────────────────────┤
@@ -43,7 +43,7 @@ models — never on views or controls. Controls depend only on models/converters
 ```csharp
 builder.Services.AddSingleton<IDiagramService, DiagramService>();      // in-memory document store
 builder.Services.AddSingleton<ITemplateService, TemplateService>();    // JSON template provider
-builder.Services.AddSingleton<IExportService, MockExportService>();    // export command surface
+builder.Services.AddSingleton<IDiagramFileService, DiagramFileService>(); // JSON and export files
 builder.Services.AddSingleton<IPropertyService, PropertyService>();    // selection → property bridge
 builder.Services.AddSingleton<ISelectionService, SelectionService>();
 builder.Services.AddSingleton<IDialogService, DialogService>();        // view-agnostic dialogs
@@ -123,7 +123,7 @@ Property edits set the document dirty flag.
 | MenuBarControl items (`MenuCommandItem`) | `MenuBarViewModel` → central dispatch table in `DiagramDesignerViewModel` |
 | Toolbar buttons (`ToolbarItem`) | `ToolbarViewModel` `[RelayCommand]`s → same dispatch table (no duplicated logic) |
 | Keyboard shortcuts (Ctrl+C/V/X/Z/Y/Delete/Ctrl+A) | `DiagramKeyboardBehavior` → same dispatch table |
-| Export dialog | `ExportViewModel` → `IExportService` (mock) |
+| Export dialog | `ExportViewModel` → live diagram export + `IDiagramFileService` |
 | Arrange operations | `ArrangeViewModel` → dispatch table (real where possible, mock status where the control lacks a native API) |
 
 All commands are `[RelayCommand]`; `CanExecute` derives from observable selection/undo state.
@@ -212,13 +212,17 @@ configured as symbols), `IsExpanded`.
   navigation mechanism (Shell route or `Navigation.PushModalAsync`) and keep the open/close
   paths symmetric so the flow round-trips.
 
-## 9. State & persistence (mock)
+## 9. State & persistence
 
 - `DiagramService` holds the current `DiagramDocument` in memory with a dirty flag
   (set on text edits, geometry changes, collection changes, property edits).
-- Save/Save As update the in-memory record and raise status messages.
-- Open shows a mock recent-document list (`RecentDocumentCatalog`).
-- `SfDiagram.SaveDiagram()` / `LoadDiagram(json)` used for the round-trip snapshot.
+- `DiagramWorkspaceControl.CreateDocumentSnapshot` maps the live Syncfusion nodes and
+  connectors back into the JSON document model before saving.
+- `DiagramFileService` filters Open to JSON, validates imported documents, and writes JSON
+  and generated export content to Downloads (app storage on sandboxed platforms).
+- Save writes `Untitled Diagram.json` directly; Save As uses the name-entry popup.
+- Export generates PNG/JPEG/SVG through `SfDiagram.ExportDiagram`; PDF wraps a real JPEG
+  diagram export. Print settings map to `DiagramExportOptions` passed to `SfDiagram.Print`.
 
 ## 10. Responsiveness
 
@@ -289,8 +293,8 @@ DiagramBuilder/
 | Canvas | `SfDiagram` (`Syncfusion.Maui.Diagram`) | Nodes/Connectors collections, events, FitToPage/Undo/Redo/Export/Print, AutoLayout for org chart |
 | Stencil | `SymbolPalette` (same package) | Direct **layout sibling** of SfDiagram in the same Grid; palettes built from stencil catalog; `EnableSearch` superseded by our own search box bound to `StencilViewModel.FilterText` |
 | Stencil panel chrome | `SfAccordion` / `SfExpander` (`Syncfusion.Maui.Expander`) | Collapsible categories, multiple expand mode |
-| Color pickers | `SfColorPicker` (`Syncfusion.Maui.Inputs`) | Fill/border/text/background swatch popups; spectrum mode |
-| Numeric fields | `SfNumericEntry` (`Syncfusion.Maui.Inputs`) | Position/size/rotation/thickness/opacity/font-size (never for boolean fields) |
+| Color pickers | `SfColorPicker` (`Syncfusion.Maui.Inputs`) | Inline palette selection for fill/border/text/background; no extra popup |
+| Numeric fields | `SfNumericEntry` (`Syncfusion.Maui.Inputs`) | Position/size/rotation/thickness/opacity/font-size with inline vertical increment/decrement buttons (never for boolean fields) |
 | Popups / flyouts | `SfPopup` (`Syncfusion.Maui.Toolkit`) | Menu flyouts, toolbar shape/connector menus, export dialog — transparent overlay for flyouts, shadowed white popup for dialogs |
 | Buttons | `SfButton` (`Syncfusion.Maui.Buttons`) | Primary actions, zoom chips |
 | Chips | `SfChip`/`SfChipGroup` (`Syncfusion.Maui.Buttons`) | Zoom level chips 50/100/150/200 % with active-state styling |

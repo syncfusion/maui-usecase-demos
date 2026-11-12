@@ -374,7 +374,7 @@
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="StrokeShape">
             <Setter.Value>
-                <shapes:RoundRectangle CornerRadius="8" />
+                <shapes:RoundRectangle CornerRadius="4" />
             </Setter.Value>
         </Setter>
         <Setter Property="Padding" Value="8" />

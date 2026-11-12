@@ -300,6 +300,30 @@ public partial class DiagramWorkspaceControl : ContentView
         }
     }
 
+    public Models.DiagramDocument CreateDocumentSnapshot(Models.DiagramDocument source)
+    {
+        var snapshot = new Models.DiagramDocument
+        {
+            Id = source.Id,
+            Title = source.Title,
+            Category = source.Category,
+            CreatedUtc = source.CreatedUtc,
+            IsDirty = source.IsDirty,
+        };
+
+        foreach (var node in Diagram.Nodes.OfType<Node>())
+        {
+            snapshot.Items.Add(DiagramModelAdapter.ToShapeItem(node));
+        }
+
+        foreach (var connector in Diagram.Connectors.OfType<Connector>())
+        {
+            snapshot.Connectors.Add(DiagramModelAdapter.ToConnectorItem(connector));
+        }
+
+        return snapshot;
+    }
+
     public event EventHandler<TemplateLoadPayload>? TemplateLoaded;
 
     /// <summary>
@@ -483,6 +507,19 @@ public partial class DiagramWorkspaceControl : ContentView
         ExecuteDiagramScriptAsync(
             "var p=document.getElementById('symbolpalette');if(p){p.style.display='" + (visible ? "block" : "none") + "';}" +
             "window.dispatchEvent(new Event('resize'));");
+
+    public Task ApplyStencilSearchStyleAsync() =>
+        ExecuteDiagramScriptAsync(
+            "var p=document.getElementById('symbolpalette');" +
+            "if(p){" +
+            "var apply=function(){" +
+            "var input=p.querySelector('input');if(!input){return false;}" +
+            "var wrapper=input.closest('.e-search,.e-input-group')||input.parentElement;" +
+            "if(wrapper){wrapper.style.setProperty('height','38px','important');wrapper.style.setProperty('min-height','38px','important');wrapper.style.setProperty('display','flex','important');wrapper.style.setProperty('align-items','center','important');wrapper.style.setProperty('border-radius','0','important');}" +
+            "input.style.setProperty('box-sizing','border-box','important');input.style.setProperty('height','38px','important');input.style.setProperty('min-height','38px','important');input.style.setProperty('width','100%','important');input.style.setProperty('margin','0','important');input.style.setProperty('padding','7px 10px','important');input.style.setProperty('line-height','20px','important');input.style.setProperty('text-indent','0','important');input.style.setProperty('text-align','left','important');input.style.setProperty('border-radius','0','important');" +
+            "return true;};" +
+            "if(!apply()){var observer=new MutationObserver(function(){if(apply()){observer.disconnect();}});observer.observe(p,{childList:true,subtree:true});window.setTimeout(function(){observer.disconnect();},5000);}" +
+            "}");
 
     public Task BringToFrontAsync() => ExecuteDiagramScriptAsync("inst.bringToFront&&inst.bringToFront();");
 

@@ -67,6 +67,65 @@ public static class DiagramModelAdapter
         return result;
     }
 
+    public static ShapeItem ToShapeItem(Node node)
+    {
+        var style = node.Style as ShapeStyle;
+        var annotation = node.Annotations.OfType<ShapeAnnotation>().FirstOrDefault();
+        var textStyle = annotation?.Style;
+
+        return new ShapeItem
+        {
+            Id = node.Id,
+            Text = annotation?.Content ?? string.Empty,
+            ShapeType = FromShape(node.Shape),
+            PositionX = node.OffsetX,
+            PositionY = node.OffsetY,
+            Width = node.Width,
+            Height = node.Height,
+            Rotation = node.RotationAngle,
+            FillColorKey = KeyForColor(style?.Fill),
+            FillOpacity = style?.Opacity ?? 1,
+            BorderColorKey = KeyForColor(style?.StrokeColor),
+            BorderThickness = style?.StrokeWidth ?? 0,
+            BorderStyle = style?.StrokeDashArray switch
+            {
+                "4 2" => "dashed",
+                "1 2" => "dotted",
+                _ => string.Empty,
+            },
+            FontFamily = textStyle?.FontFamily ?? string.Empty,
+            FontSize = textStyle?.FontSize ?? 0,
+            TextBold = textStyle?.Bold ?? false,
+            TextItalic = textStyle?.Italic ?? false,
+            TextUnderline = false,
+            TextColorKey = KeyForColor(textStyle?.Color),
+            HorizontalAlignment = annotation?.HorizontalAlignment.ToString() ?? string.Empty,
+            VerticalAlignment = annotation?.VerticalAlignment.ToString() ?? string.Empty,
+        };
+    }
+
+    public static ConnectorItem ToConnectorItem(Connector connector)
+    {
+        var annotation = connector.Annotations.OfType<PathAnnotation>().FirstOrDefault();
+        var style = connector.Style as ShapeStyle;
+        return new ConnectorItem
+        {
+            Id = connector.Id,
+            Text = annotation?.Content ?? string.Empty,
+            SourceId = connector.SourceID ?? string.Empty,
+            TargetId = connector.TargetID ?? string.Empty,
+            SourceX = connector.SourcePoint?.X ?? 0,
+            SourceY = connector.SourcePoint?.Y ?? 0,
+            TargetX = connector.TargetPoint?.X ?? 0,
+            TargetY = connector.TargetPoint?.Y ?? 0,
+            ConnectorKind = connector.Type == ConnectorSegmentType.Orthogonal
+                ? ConnectorKind.Orthogonal
+                : ConnectorKind.Straight,
+            StrokeColorKey = KeyForColor(style?.StrokeColor),
+            StrokeThickness = style?.StrokeWidth ?? 0,
+        };
+    }
+
     /// <summary>
     /// Maps a domain <see cref="ShapeType"/> to the Syncfusion <see cref="Shape"/> object:
     /// flow shapes via <see cref="FlowShape"/>, basic shapes via <see cref="BasicShape"/>
@@ -90,6 +149,60 @@ public static class DiagramModelAdapter
 
         _ => new BasicShape(NodeBasicShapes.Rectangle, 0),
     };
+
+    private static ShapeType FromShape(Shape? shape) => shape switch
+    {
+        FlowShape flow => flow.Shape switch
+        {
+            NodeFlowShapes.Process => ShapeType.Process,
+            NodeFlowShapes.Decision => ShapeType.Decision,
+            NodeFlowShapes.Terminator => ShapeType.Terminator,
+            NodeFlowShapes.Document => ShapeType.Document,
+            NodeFlowShapes.Preparation => ShapeType.DataPreparation,
+            _ => ShapeType.Process,
+        },
+        BasicShape basic => basic.Shape switch
+        {
+            NodeBasicShapes.Rectangle => ShapeType.Rectangle,
+            NodeBasicShapes.Ellipse => ShapeType.Circle,
+            NodeBasicShapes.Triangle => ShapeType.Triangle,
+            NodeBasicShapes.Hexagon => ShapeType.Hexagon,
+            NodeBasicShapes.Diamond => ShapeType.Diamond,
+            NodeBasicShapes.Pentagon => ShapeType.Pentagon,
+            NodeBasicShapes.Star => ShapeType.Star,
+            _ => ShapeType.Rectangle,
+        },
+        _ => ShapeType.Rectangle,
+    };
+
+    private static string KeyForColor(Color? color)
+    {
+        if (color is null)
+        {
+            return string.Empty;
+        }
+
+        var closestKey = string.Empty;
+        var closestDistance = double.MaxValue;
+        foreach (var (key, candidate) in ResourceLookup.PaletteSnapshot())
+        {
+            var distance = ColorDistance(color, candidate);
+            if (distance < closestDistance)
+            {
+                closestKey = key;
+                closestDistance = distance;
+            }
+        }
+
+        return closestKey;
+    }
+
+    private static double ColorDistance(Color? first, Color second) =>
+        first is null
+            ? double.MaxValue
+            : Math.Abs(first.Red - second.Red)
+                + Math.Abs(first.Green - second.Green)
+                + Math.Abs(first.Blue - second.Blue);
 
     private static void ApplyStyle(Node node, ShapeItem shape)
     {

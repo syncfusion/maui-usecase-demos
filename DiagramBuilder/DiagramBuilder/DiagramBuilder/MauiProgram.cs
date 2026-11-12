@@ -2,7 +2,11 @@ using DiagramBuilder.Services;
 using DiagramBuilder.ViewModels;
 using DiagramBuilder.Views;
 using Microsoft.Extensions.Logging;
+using Syncfusion.Licensing;
 using Syncfusion.Maui.Core.Hosting;
+#if MAUI_DEVFLOW
+using Microsoft.Maui.DevFlow.Agent;
+#endif
 
 namespace DiagramBuilder
 {
@@ -12,6 +16,9 @@ namespace DiagramBuilder
 
         public static MauiApp CreateMauiApp()
         {
+
+            SyncfusionLicenseProvider.RegisterLicense("Syncfusion_License_Key");
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -25,10 +32,14 @@ namespace DiagramBuilder
                     fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 });
 
+#if MAUI_DEVFLOW
+            builder.AddMauiDevFlowAgent();
+#endif
+
             // Services (mock implementations, in-memory, no backend)
             builder.Services.AddSingleton<IDiagramService, DiagramService>();
             builder.Services.AddSingleton<ITemplateService, TemplateService>();
-            builder.Services.AddSingleton<IExportService, MockExportService>();
+            builder.Services.AddSingleton<IDiagramFileService, DiagramFileService>();
             builder.Services.AddSingleton<ISelectionService, SelectionService>();
             builder.Services.AddSingleton<IPageSettingsService, PageSettingsService>();
             builder.Services.AddSingleton<IPropertyService, PropertyService>();
@@ -42,6 +53,8 @@ namespace DiagramBuilder
             builder.Services.AddTransient<CreateDiagramPage>();
             builder.Services.AddTransient<DiagramDesignerPage>();
             builder.Services.AddTransient<Views.Dialogs.ExportDialog>();
+            builder.Services.AddTransient<Views.Dialogs.SaveDialog>();
+            builder.Services.AddTransient<Views.Dialogs.PrintDialog>();
 
 #if DEBUG
             builder.Logging.AddDebug();
