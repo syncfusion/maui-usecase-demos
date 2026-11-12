@@ -19,20 +19,34 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
+    <ContentView.Triggers>
+        <DataTrigger TargetType="ContentView"
+                     Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                     Value="True">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </DataTrigger>
+    </ContentView.Triggers>
+
     <Border x:Name="SearchSurface"
             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 14">
+        <Border.Triggers>
+            <DataTrigger TargetType="Border"
+                         Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                         Value="True">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </DataTrigger>
+        </Border.Triggers>
         <Grid RowDefinitions="Auto,*,Auto"
               BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}">
-
-            <Image Grid.RowSpan="3"
-                   Source="{Binding Source={x:Reference SearchRoot}, Path=ListBackgroundImage}"
-                   IsVisible="False"
-                   Aspect="AspectFill"
-                   HorizontalOptions="Fill"
-                   VerticalOptions="Fill"
-                   InputTransparent="True" />
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid"
+                             Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                             Value="True">
+                    <Setter Property="BackgroundColor" Value="Transparent" />
+                </DataTrigger>
+            </Grid.Triggers>
 
             <VerticalStackLayout Grid.Row="0"
                                  Padding="{OnIdiom Phone='16,16,16,12', Default='24,20,24,12'}"
@@ -41,7 +55,16 @@
                        FontSize="24"
                        FontAttributes="Bold"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-                       SemanticProperties.HeadingLevel="Level1" />
+                       SemanticProperties.HeadingLevel="Level1">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                                     Value="True">
+                            <Setter Property="TextColor"
+                                    Value="{OnIdiom Phone=White, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
                 <Label Text="{Binding ResultsDescription}"
                        IsVisible="{Binding IsQueryEmpty, Converter={StaticResource InvertedBoolConverter}}"
                        FontSize="15"
@@ -105,7 +128,7 @@
                                             </Border.Shadow>
                                         </Border>
                                         <Border Padding="14,10"
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+                                                BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 10">
                                             <Border.Shadow>
@@ -158,7 +181,7 @@
                                                                        VerticalOptions="Center">
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
-                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#0D7D12" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="{OnIdiom Phone=#B3261E, Default=#0D7D12}" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                         <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                     <Label Text="&#8226;"

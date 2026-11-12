@@ -2,9 +2,8 @@ namespace Todo.Common;
 
 /// <summary>
 /// Default <see cref="INavigationService"/> implementation that
-/// delegates to the active MAUI window for modal navigation and action
-/// sheets. Modal pages use a <see cref="TaskCompletionSource{TResult}"/>
-/// so callers can <c>await</c> the dismissal result.
+/// delegates to the active MAUI window for modal navigation and
+/// native action sheets.
 /// </summary>
 public sealed class MauiNavigationService : INavigationService
 {

@@ -14,7 +14,8 @@
     <Grid Padding="{OnIdiom Phone=0, Default=24}"
           VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
           HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}">
-        <Border WidthRequest="{OnIdiom Phone=320, Default=330}"
+        <Border
+                WidthRequest="{OnIdiom Phone=320, Default=330}"
                 HeightRequest="{OnIdiom Desktop=560, Default=-1}"
                 MaximumHeightRequest="{OnIdiom Phone=600, Default=560}"
                 Margin="{OnIdiom Phone=0, Default=0}"
@@ -65,7 +66,8 @@
                          IsVisible="False"
                          Color="Transparent" />
 
-                <ScrollView Grid.Row="2" Margin="0" VerticalScrollBarVisibility="Never">
+                <ScrollView Grid.Row="2" Margin="0"
+                            VerticalScrollBarVisibility="Never">
                     <VerticalStackLayout Spacing="0">
                         <Grid ColumnDefinitions="34,*,40" ColumnSpacing="8" HeightRequest="50" VerticalOptions="Center">
                             <CheckBox Grid.Column="0"
@@ -372,7 +374,10 @@
                          Color="{AppThemeBinding Light=#E9E5EE, Dark=#494650}"
                          Margin="{OnIdiom Phone='-14,4,-14,4', Default='-18,4,-18,4'}" />
 
-                <Grid Grid.Row="4" HeightRequest="56" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                <Grid Grid.Row="4" HeightRequest="56"
+                      ColumnDefinitions="Auto,*,Auto,Auto"
+                      ColumnSpacing="8"
+                      VerticalOptions="Center">
                     
                     <Label Grid.Column="0"
                            Text="{Binding CreatedAgeText}"

@@ -12,6 +12,14 @@
           ColumnDefinitions="{OnIdiom Phone='0,*', Default='220,*'}"
           Background="{OnIdiom Phone={AppThemeBinding Light=White, Dark={StaticResource BackgroundDarkColor}}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
 
+        <Image x:Name="PageBackgroundImage"
+               Grid.RowSpan="2"
+               Grid.ColumnSpan="2"
+               Source="{Binding BackgroundImage}"
+               IsVisible="False"
+               Aspect="AspectFill"
+               InputTransparent="True" />
+
         <!-- Shared application header (spans both columns) -->
         <views:HeaderView x:Name="Header"
                           Grid.Row="0"

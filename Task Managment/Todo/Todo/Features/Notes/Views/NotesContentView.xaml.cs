@@ -1,5 +1,6 @@
 using Syncfusion.Maui.ListView;
 using Microsoft.Maui.Controls.Shapes;
+using System.ComponentModel;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.ViewModels;
 
@@ -14,6 +15,52 @@ public partial class NotesContentView : ContentView
             NotesContentSurface.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(0) };
 
         ActionFlyout.ActionRequested += OnNoteActionRequested;
+    }
+
+    protected override void OnBindingContextChanged()
+    {
+        if (BindingContext is NotesListViewModel previousViewModel)
+            previousViewModel.PropertyChanged -= OnNotesViewModelPropertyChanged;
+
+        base.OnBindingContextChanged();
+
+        if (BindingContext is NotesListViewModel viewModel)
+            viewModel.PropertyChanged += OnNotesViewModelPropertyChanged;
+    }
+
+    private void OnNotesViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(NotesListViewModel.IsAddNotePanelOpen)
+            && sender is NotesListViewModel { IsAddNotePanelOpen: false })
+        {
+            NewNoteEntry.Unfocus();
+            AddNotePanel.TranslationY = 0;
+        }
+    }
+
+    private async void OnAddNoteClicked(object? sender, EventArgs e)
+    {
+        if (BindingContext is not NotesListViewModel viewModel)
+            return;
+
+        AddNotePanel.TranslationY = 280;
+        viewModel.IsAddNotePanelOpen = true;
+        await AddNotePanel.TranslateToAsync(0, 0, 180, Easing.SinOut);
+        NewNoteEntry.Focus();
+    }
+
+    private async void OnCloseAddNoteBackdropTapped(object? sender, TappedEventArgs e)
+        => await CloseAddNotePanelAsync();
+
+    private async Task CloseAddNotePanelAsync()
+    {
+        if (BindingContext is not NotesListViewModel viewModel)
+            return;
+
+        NewNoteEntry.Unfocus();
+        await AddNotePanel.TranslateToAsync(0, 280, 160, Easing.SinIn);
+        viewModel.IsAddNotePanelOpen = false;
+        AddNotePanel.TranslationY = 0;
     }
 
     private static void OnTaskCheckBoxLoaded(object? sender, EventArgs e)

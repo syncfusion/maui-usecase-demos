@@ -16,13 +16,6 @@
             <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="{OnIdiom Phone=0, Desktop=0, Default=0.10}" />
         </Grid.Shadow>
 
-        <Image x:Name="MobileHeaderBackground"
-               Grid.ColumnSpan="{OnIdiom Phone=4, Default=3}"
-               Source="{Binding BackgroundImage}"
-               Aspect="AspectFill"
-               IsVisible="False"
-               InputTransparent="True" />
-
         <HorizontalStackLayout x:Name="DesktopHeaderContent"
                                Grid.Column="0"
                                Spacing="4"

@@ -37,13 +37,13 @@
     <Color x:Key="SurfaceColor">#FFFFFF</Color>
     <Color x:Key="SidebarBackgroundColor">#F5F5F5</Color>
     <Color x:Key="SidebarSelectionColor">#EEEAFB</Color>
-    <Color x:Key="DividerColor">#E0E0E0</Color>
+    <Color x:Key="DividerColor">#CAC4D0</Color>
     <Color x:Key="BorderColor">#E0E0E0</Color>
     <Color x:Key="BackgroundDarkColor">#121212</Color>
     <Color x:Key="SurfaceDarkColor">#1E1E1E</Color>
     <Color x:Key="SidebarBackgroundDarkColor">#18181B</Color>
     <Color x:Key="SidebarSelectionDarkColor">#5C4EAE</Color>
-    <Color x:Key="DividerDarkColor">#3F3F46</Color>
+    <Color x:Key="DividerDarkColor">#49454F</Color>
 
     <Color x:Key="BottomBarBackgroundColor">#FFFFFF</Color>
     <Color x:Key="InputPillBackgroundColor">#F5F5F5</Color>

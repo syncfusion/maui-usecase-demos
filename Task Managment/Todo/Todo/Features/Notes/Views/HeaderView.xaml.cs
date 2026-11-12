@@ -41,6 +41,7 @@ public partial class HeaderView : ContentView
         if (_viewModel is not null)
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
+        UpdateHeaderSurface();
         UpdateMobileHeader();
     }
 
@@ -123,6 +124,15 @@ public partial class HeaderView : ContentView
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName is nameof(NotesListViewModel.HasBackgroundImage)
+            or nameof(NotesListViewModel.BackgroundImage)
+            or nameof(NotesListViewModel.ListBackgroundColor))
+        {
+            UpdateHeaderSurface();
+            UpdateMobileHeader();
+            return;
+        }
+
         if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
             return;
 
@@ -139,12 +149,26 @@ public partial class HeaderView : ContentView
         else if (e.PropertyName is nameof(NotesListViewModel.IsSidebarCollapsed)
                  or nameof(NotesListViewModel.HeaderTitle)
                  or nameof(NotesListViewModel.SelectedCategory)
-                 or nameof(NotesListViewModel.SelectedListId)
-                 or nameof(NotesListViewModel.HasBackgroundImage)
-                 or nameof(NotesListViewModel.BackgroundImage)
-                 or nameof(NotesListViewModel.ListBackgroundColor))
-        {
+                 or nameof(NotesListViewModel.SelectedListId))
             UpdateMobileHeader();
+    }
+
+    private void UpdateHeaderSurface()
+    {
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            return;
+
+        if (_viewModel?.HasBackgroundImage == true
+            || DeviceInfo.Current.Idiom == DeviceIdiom.Desktop)
+        {
+            HeaderGrid.BackgroundColor = Colors.Transparent;
+        }
+        else
+        {
+            HeaderGrid.SetAppThemeColor(
+                Grid.BackgroundColorProperty,
+                Color.FromArgb("#FFFBFE"),
+                Color.FromArgb("#1C1B1F"));
         }
     }
 
@@ -172,19 +196,28 @@ public partial class HeaderView : ContentView
 
         if (showingListHeader && _viewModel is not null)
         {
-            HeaderGrid.BackgroundColor = _viewModel.ListBackgroundColor;
-            MobileHeaderBackground.IsVisible = _viewModel.HasBackgroundImage;
-            MobileNavigationButton.TextColor = _viewModel.HeaderForegroundColor;
-            MobileMoreOptionsButton.TextColor = _viewModel.HeaderForegroundColor;
+            HeaderGrid.BackgroundColor = _viewModel.HasBackgroundImage
+                ? Colors.Transparent
+                : _viewModel.ListBackgroundColor;
+            MobileNavigationButton.TextColor = _viewModel.MobileHeaderForegroundColor;
+            MobileMoreOptionsButton.TextColor = _viewModel.MobileHeaderForegroundColor;
         }
         else
         {
             HeaderGrid.SetAppThemeColor(Grid.BackgroundColorProperty, Colors.White, Color.FromArgb("#1C1B1F"));
-            MobileHeaderBackground.IsVisible = false;
             MobileAppTitle.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
             MobileSearchButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
             MobileNavigationButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
             MobileMoreOptionsButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
+        }
+
+        if (_viewModel?.HasBackgroundImage == true && showingContent)
+        {
+            HeaderGrid.BackgroundColor = Colors.Transparent;
+            MobileAppTitle.TextColor = Colors.White;
+            MobileSearchButton.TextColor = Colors.White;
+            MobileNavigationButton.TextColor = Colors.White;
+            MobileMoreOptionsButton.TextColor = Colors.White;
         }
     }
 }

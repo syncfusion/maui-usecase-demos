@@ -34,6 +34,13 @@ namespace Todo.Features.Notes.ViewModels;
 public partial class NotesListViewModel : ViewModelBase
 {
     private const string ListAppearanceKeyPrefix = "ListAppearance";
+    private const string RemovedDefaultBackgroundImagesKey = "removed-default-images";
+    private static readonly string[] DefaultBackgroundImageSources =
+    [
+        "background1.jpg",
+        "background2.jpg",
+        "background3.jpg"
+    ];
     private readonly INoteService _noteService;
     private readonly IListService _listService;
     private readonly INavigationService _navigation;
@@ -177,6 +184,9 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(HasBackgroundImage));
         OnPropertyChanged(nameof(ListBackgroundColor));
         OnPropertyChanged(nameof(HeaderForegroundColor));
+        OnPropertyChanged(nameof(MobileHeaderForegroundColor));
+        OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
+        OnPropertyChanged(nameof(CanShowMobileAddNoteButton));
     }
 
     partial void OnSelectedListIdChanged(string? value)
@@ -202,6 +212,9 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(HasBackgroundImage));
         OnPropertyChanged(nameof(ListBackgroundColor));
         OnPropertyChanged(nameof(HeaderForegroundColor));
+        OnPropertyChanged(nameof(MobileHeaderForegroundColor));
+        OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
+        OnPropertyChanged(nameof(CanShowMobileAddNoteButton));
     }
 
     private string? ResolveCustomListName(string listId)
@@ -240,6 +253,9 @@ public partial class NotesListViewModel : ViewModelBase
 
     public bool HasBackgroundImage => !string.IsNullOrWhiteSpace(BackgroundImage);
 
+    public Color ContentSurfaceBackgroundColor
+        => HasBackgroundImage ? Colors.Transparent : ListBackgroundColor;
+
     public Color HeaderForegroundColor
     {
         get
@@ -252,6 +268,9 @@ public partial class NotesListViewModel : ViewModelBase
             return luminance < 0.5 ? Colors.White : Color.FromArgb("#29272F");
         }
     }
+
+    public Color MobileHeaderForegroundColor
+        => HasBackgroundImage ? Colors.White : HeaderForegroundColor;
 
     public string GetBackgroundColorHex(Todo.Features.CustomLists.Models.NoteList? list, NotesListCategory category)
     {
@@ -291,6 +310,17 @@ public partial class NotesListViewModel : ViewModelBase
             }
         }
         return sources;
+    }
+
+    public IReadOnlyList<string> GetAvailableDefaultBackgroundImageSources(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category)
+    {
+        var removedSources = DeserializeImageSources(
+            Preferences.Default.Get(GetRemovedDefaultBackgroundImagesKey(list, category), "[]"));
+        return DefaultBackgroundImageSources
+            .Where(source => !removedSources.Contains(source, StringComparer.Ordinal))
+            .ToArray();
     }
 
     private static List<string> DeserializeImageSources(string json)
@@ -366,6 +396,17 @@ public partial class NotesListViewModel : ViewModelBase
         NotesListCategory category,
         string imageSource)
     {
+        if (DefaultBackgroundImageSources.Contains(imageSource, StringComparer.Ordinal))
+        {
+            var preferenceKey = GetRemovedDefaultBackgroundImagesKey(list, category);
+            var removedSources = DeserializeImageSources(Preferences.Default.Get(preferenceKey, "[]"));
+            if (!removedSources.Contains(imageSource, StringComparer.Ordinal))
+            {
+                removedSources.Add(imageSource);
+                Preferences.Default.Set(preferenceKey, JsonSerializer.Serialize(removedSources));
+            }
+        }
+
         if (list is not null)
         {
             list.CustomBackgroundImageSources.Remove(imageSource);
@@ -398,7 +439,18 @@ public partial class NotesListViewModel : ViewModelBase
         TryDeleteStoredBackgroundImage(imageSource);
         OnPropertyChanged(nameof(BackgroundImage));
         OnPropertyChanged(nameof(HasBackgroundImage));
+        OnPropertyChanged(nameof(ListBackgroundColor));
+        OnPropertyChanged(nameof(HeaderForegroundColor));
+        OnPropertyChanged(nameof(MobileHeaderForegroundColor));
+        OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
     }
+
+    private static string GetRemovedDefaultBackgroundImagesKey(
+        Todo.Features.CustomLists.Models.NoteList? list,
+        NotesListCategory category)
+        => list is null
+            ? $"{ListAppearanceKeyPrefix}.{category}.{RemovedDefaultBackgroundImagesKey}"
+            : $"{ListAppearanceKeyPrefix}.custom.{list.Id}.{RemovedDefaultBackgroundImagesKey}";
 
     private void TryDeleteStoredBackgroundImage(string imageSource)
     {
@@ -452,6 +504,8 @@ public partial class NotesListViewModel : ViewModelBase
             OnPropertyChanged(nameof(HasBackgroundImage));
             OnPropertyChanged(nameof(ListBackgroundColor));
             OnPropertyChanged(nameof(HeaderForegroundColor));
+            OnPropertyChanged(nameof(MobileHeaderForegroundColor));
+            OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
         }
     }
 
@@ -703,6 +757,9 @@ public partial class NotesListViewModel : ViewModelBase
     private string newNoteTitle = string.Empty;
 
     [ObservableProperty]
+    private bool isAddNotePanelOpen;
+
+    [ObservableProperty]
     private DateTime? draftDueDate;
 
     [ObservableProperty]
@@ -715,16 +772,28 @@ public partial class NotesListViewModel : ViewModelBase
     public bool HasDraftReminder => DraftReminderDate.HasValue;
     public bool HasDraftRepeat => DraftRepeatFrequency != NoteRepeatFrequency.Never;
     public bool HasDraftMetadata => HasDraftDueDate || HasDraftReminder || HasDraftRepeat;
+    public bool HasNewNoteTitle => !string.IsNullOrWhiteSpace(NewNoteTitle);
+    public bool CanShowMobileAddNoteButton
+        => (IsCustomListSelected || SelectedCategory != NotesListCategory.Bin) && !IsAddNotePanelOpen;
 
     public string DraftDueDateText => DraftDueDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
     public string DraftReminderDateText => DraftReminderDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
     public string DraftRepeatText => DraftRepeatFrequency == NoteRepeatFrequency.Never ? string.Empty : DraftRepeatFrequency.ToString();
+    public string DraftDueDateOptionText => DraftDueDate?.ToString("ddd dd MMM, HH:mm") ?? "Due date/time";
+    public string DraftReminderOptionText => DraftReminderDate?.ToString("ddd dd MMM, HH:mm") ?? "Reminder";
+    public string DraftRepeatOptionText => HasDraftRepeat ? DraftRepeatFrequency.ToString() : "Repeat";
 
-    partial void OnNewNoteTitleChanged(string value) => AddNoteCommand.NotifyCanExecuteChanged();
+    partial void OnNewNoteTitleChanged(string value)
+    {
+        OnPropertyChanged(nameof(HasNewNoteTitle));
+        AddNoteCommand.NotifyCanExecuteChanged();
+    }
 
     partial void OnDraftDueDateChanged(DateTime? value) => NotifyDraftScheduleChanged();
     partial void OnDraftReminderDateChanged(DateTime? value) => NotifyDraftScheduleChanged();
     partial void OnDraftRepeatFrequencyChanged(NoteRepeatFrequency value) => NotifyDraftScheduleChanged();
+    partial void OnIsAddNotePanelOpenChanged(bool value)
+        => OnPropertyChanged(nameof(CanShowMobileAddNoteButton));
 
     private void NotifyDraftScheduleChanged()
     {
@@ -735,6 +804,9 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(DraftDueDateText));
         OnPropertyChanged(nameof(DraftReminderDateText));
         OnPropertyChanged(nameof(DraftRepeatText));
+        OnPropertyChanged(nameof(DraftDueDateOptionText));
+        OnPropertyChanged(nameof(DraftReminderOptionText));
+        OnPropertyChanged(nameof(DraftRepeatOptionText));
     }
 
     [RelayCommand]
@@ -769,6 +841,7 @@ public partial class NotesListViewModel : ViewModelBase
         DraftDueDate = null;
         DraftReminderDate = null;
         DraftRepeatFrequency = NoteRepeatFrequency.Never;
+        IsAddNotePanelOpen = false;
     }
 
     private bool CanAddNote() => !string.IsNullOrWhiteSpace(NewNoteTitle);
@@ -1203,6 +1276,8 @@ public partial class NotesListViewModel : ViewModelBase
             OnPropertyChanged(nameof(HasBackgroundImage));
             OnPropertyChanged(nameof(ListBackgroundColor));
             OnPropertyChanged(nameof(HeaderForegroundColor));
+            OnPropertyChanged(nameof(MobileHeaderForegroundColor));
+            OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
             if (e.PropertyName == nameof(Todo.Features.CustomLists.Models.NoteList.SortOrder)
                 && SelectedListId == ((Todo.Features.CustomLists.Models.NoteList)sender!).Id)
                 ApplyFilter();

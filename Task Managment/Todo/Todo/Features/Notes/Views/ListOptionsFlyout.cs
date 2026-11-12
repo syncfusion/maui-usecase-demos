@@ -18,12 +18,6 @@ public sealed class ListOptionsFlyout : ContentView
     private const double ImageGalleryHeight = 66;
     private const double MenuTopMargin = 10;
     private const double SurfaceBorderAllowance = 4;
-    private static readonly string[] DefaultBackgroundImageSources =
-    [
-        "background1.jpg",
-        "background2.jpg",
-        "background3.jpg"
-    ];
 
     private readonly SfPopup _popup;
     private readonly SfPopup _sortPopup;
@@ -40,6 +34,9 @@ public sealed class ListOptionsFlyout : ContentView
     private bool _allowPopupClose;
     private bool _isOpen;
     private bool _isSortOpen;
+    private bool _isMobileSheet;
+    private bool _showingMobileThemeSheet;
+    private bool _showingMobilePhotoTab;
     private bool _closingFlyoutsTogether;
     private Point _mainPopupPosition;
     private bool _hasMainPopupPosition;
@@ -85,6 +82,8 @@ public sealed class ListOptionsFlyout : ContentView
         _sortPopup.Closing += (_, _) =>
         {
             _isSortOpen = false;
+            if (!_closingFlyoutsTogether)
+                _isMobileSheet = false;
             if (!_closingFlyoutsTogether && _isOpen)
             {
                 _popup.StaysOpen = false;
@@ -166,6 +165,9 @@ public sealed class ListOptionsFlyout : ContentView
 
     private double GetMainMenuHeight()
     {
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            return MenuTopMargin + (MenuItemHeight * (CanEditSelectedList ? 4 : 2)) + 20;
+
         var height = MenuTopMargin
             + MenuItemHeight
             + SectionHeight
@@ -202,41 +204,54 @@ public sealed class ListOptionsFlyout : ContentView
         }
 
         _sortButton = CreateMenuButton("Sort by", ShowSortMenu, iconGlyph: "\uea18", iconRotation: 90);
-        if (!isPhone && !isDesktop)
-            _sortButton.Margin = new Thickness(10, 0, 0, 0);
-        var sortRow = new Grid { HeightRequest = 42 };
-        sortRow.Children.Add(_sortButton);
-        sortRow.Children.Add(new Label
+        if (isPhone)
         {
-            Text = "›",
-            FontSize = 18,
-            Margin = new Thickness(0, 0, 16, 0),
-            HorizontalOptions = LayoutOptions.End,
-            VerticalOptions = LayoutOptions.Center,
-            TextColor = Color.FromArgb("#1C1B1F"),
-            InputTransparent = true
-        });
-        var sortArrow = (Label)sortRow.Children[1];
-        sortArrow.SetAppThemeColor(Label.TextColorProperty,
-            Color.FromArgb("#1C1B1F"),
-            Color.FromArgb("#E6E1E5"));
-        _menuActions.Children.Add(sortRow);
-        _menuActions.Children.Add(CreateSectionLabel("Theme colors"));
-        _themePicker = CreateThemePicker();
-        _menuActions.Children.Add(_themePicker);
-        _menuActions.Children.Add(CreateSectionLabel("Customised"));
-        _customImageGallery = new HorizontalStackLayout
+            _menuActions.Children.Add(_sortButton);
+            _menuActions.Children.Add(CreateMenuButton(
+                "Change Theme",
+                ShowMobileThemeSheet,
+                iconGlyph: "\ue40a"));
+            _themePicker = null;
+            _customImageGallery = null;
+        }
+        else
         {
-            Spacing = 8,
-            Padding = new Thickness(12, 0, 12, 8)
-        };
-        _menuActions.Children.Add(new ScrollView
-        {
-            Orientation = ScrollOrientation.Horizontal,
-            Content = _customImageGallery,
-            HeightRequest = 66,
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Never
-        });
+            if (!isDesktop)
+                _sortButton.Margin = new Thickness(10, 0, 0, 0);
+            var sortRow = new Grid { HeightRequest = MenuItemHeight };
+            sortRow.Children.Add(_sortButton);
+            sortRow.Children.Add(new Label
+            {
+                Text = "›",
+                FontSize = 18,
+                Margin = new Thickness(0, 0, 16, 0),
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center,
+                TextColor = Color.FromArgb("#1C1B1F"),
+                InputTransparent = true
+            });
+            var sortArrow = (Label)sortRow.Children[1];
+            sortArrow.SetAppThemeColor(Label.TextColorProperty,
+                Color.FromArgb("#1C1B1F"),
+                Color.FromArgb("#E6E1E5"));
+            _menuActions.Children.Add(sortRow);
+            _menuActions.Children.Add(CreateSectionLabel("Theme colors"));
+            _themePicker = CreateThemePicker();
+            _menuActions.Children.Add(_themePicker);
+            _menuActions.Children.Add(CreateSectionLabel("Customised"));
+            _customImageGallery = new HorizontalStackLayout
+            {
+                Spacing = 8,
+                Padding = new Thickness(12, 0, 12, 8)
+            };
+            _menuActions.Children.Add(new ScrollView
+            {
+                Orientation = ScrollOrientation.Horizontal,
+                Content = _customImageGallery,
+                HeightRequest = 66,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Never
+            });
+        }
         if (CanEditSelectedList)
         {
             var separator = new BoxView
@@ -255,8 +270,11 @@ public sealed class ListOptionsFlyout : ContentView
                 deleteButton.Margin = new Thickness(10, 0, 10, 0);
             _menuActions.Children.Add(deleteButton);
         }
-        RebuildThemePicker();
-        RebuildCustomImageGallery();
+        if (!isPhone)
+        {
+            RebuildThemePicker();
+            RebuildCustomImageGallery();
+        }
     }
 
     private View CreateSortSurface()
@@ -278,6 +296,331 @@ public sealed class ListOptionsFlyout : ContentView
         var sortHeight = GetSortSurfaceHeight();
         _sortSurface = CreateSurface(180, sortHeight, actions);
         return _sortSurface;
+    }
+
+    private View CreateMobileSortSurface()
+    {
+        var currentSort = _selectedList?.SortOrder ?? NoteListSortOrder.Custom;
+        var actions = new VerticalStackLayout { Spacing = 2 };
+        actions.Children.Add(CreateMobileSheetHeader("Sort by"));
+        actions.Children.Add(CreateMobileSortOption(
+            "Important",
+            "\ue83a",
+            currentSort == NoteListSortOrder.Important,
+            () => ApplySort(NoteListSortOrder.Important)));
+        actions.Children.Add(CreateMobileSortOption(
+            "Reminder",
+            "\ue7f5",
+            currentSort == NoteListSortOrder.Reminder,
+            () => ApplySort(NoteListSortOrder.Reminder)));
+        actions.Children.Add(CreateMobileSortOption(
+            "Due date",
+            "\ue24f",
+            currentSort == NoteListSortOrder.DueDate,
+            () => ApplySort(NoteListSortOrder.DueDate)));
+        actions.Children.Add(CreateMobileSortOption(
+            "Alphabetically",
+            "\ue241",
+            currentSort == NoteListSortOrder.Alphabetical,
+            () => ApplySort(NoteListSortOrder.Alphabetical)));
+        _sortSurface = CreateMobileSheetSurface(296, actions);
+        return _sortSurface;
+    }
+
+    private View CreateMobileThemeSurface()
+    {
+        var content = new VerticalStackLayout { Spacing = 8 };
+        content.Children.Add(CreateMobileSheetHeader("Change Theme"));
+        var tabs = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitionCollection
+            {
+                new(GridLength.Star),
+                new(GridLength.Star)
+            },
+            ColumnSpacing = 8
+        };
+        tabs.Children.Add(CreateMobileThemeTab("Color", showPhotoTab: false));
+        var photoTab = CreateMobileThemeTab("Photo", showPhotoTab: true);
+        photoTab.SetValue(Grid.ColumnProperty, 1);
+        tabs.Children.Add(photoTab);
+        content.Children.Add(tabs);
+
+        if (!_showingMobilePhotoTab)
+        {
+            var colors = new HorizontalStackLayout { Spacing = 10 };
+            foreach (var theme in NoteListThemePalette.Themes)
+            {
+                var isSelected = string.Equals(
+                    _viewModel?.GetBackgroundColorHex(_selectedList, _selectedCategory),
+                    theme.Hex,
+                    StringComparison.OrdinalIgnoreCase);
+                var color = Color.FromArgb(theme.Hex);
+                var swatch = new Border
+                {
+                    WidthRequest = 38,
+                    HeightRequest = 38,
+                    Padding = 1,
+                    BackgroundColor = color,
+                    Stroke = isSelected ? Color.FromArgb("#5C4EAE") : Color.FromArgb("#CAC4D0"),
+                    StrokeThickness = isSelected ? 3 : 1,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(19) },
+                    AutomationId = $"mobile-theme-{theme.Name.ToLowerInvariant()}"
+                };
+                SemanticProperties.SetDescription(swatch, $"{theme.Name} theme");
+                swatch.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(() => ApplyColorTheme(theme.Hex))
+                });
+                colors.Children.Add(swatch);
+            }
+
+            content.Children.Add(new ScrollView
+            {
+                Orientation = ScrollOrientation.Horizontal,
+                Content = colors,
+                HeightRequest = 44,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Never
+            });
+        }
+        else
+        {
+            var photos = new HorizontalStackLayout { Spacing = 10 };
+            var addPhotoLabel = new Label
+            {
+                Text = "+",
+                FontSize = 24,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+            addPhotoLabel.SetAppThemeColor(
+                Label.TextColorProperty,
+                Color.FromArgb("#514B56"),
+                Color.FromArgb("#E6E1E5"));
+            var addPhoto = new Border
+            {
+                WidthRequest = 38,
+                HeightRequest = 38,
+                StrokeThickness = 1,
+                Stroke = Color.FromArgb("#CAC4D0"),
+                BackgroundColor = Colors.Transparent,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(19) },
+                Content = addPhotoLabel
+            };
+            SemanticProperties.SetDescription(addPhoto, "Add a custom background photo");
+            addPhoto.GestureRecognizers.Add(new TapGestureRecognizer
+            {
+                Command = new Command(async () => await PickCustomBackgroundAsync())
+            });
+            photos.Children.Add(addPhoto);
+
+            var selectedImage = _viewModel?.GetBackgroundImageSource(_selectedList, _selectedCategory);
+            var imageSources = (_viewModel?.GetAvailableDefaultBackgroundImageSources(_selectedList, _selectedCategory) ?? [])
+                .Concat(_viewModel?.GetCustomBackgroundImageSources(_selectedList, _selectedCategory) ?? [])
+                .Distinct(StringComparer.Ordinal);
+            foreach (var source in imageSources)
+            {
+                var isSelected = string.Equals(selectedImage, source, StringComparison.Ordinal);
+                var imageGrid = new Grid();
+                imageGrid.Children.Add(new Image
+                {
+                    Source = source,
+                    WidthRequest = 36,
+                    HeightRequest = 36,
+                    Clip = new Microsoft.Maui.Controls.Shapes.EllipseGeometry
+                    {
+                        Center = new Point(18, 18),
+                        RadiusX = 18,
+                        RadiusY = 18
+                    },
+                    Aspect = Aspect.AspectFill,
+                    InputTransparent = true
+                });
+                var removeButton = new Border
+                {
+                    WidthRequest = 17,
+                    HeightRequest = 17,
+                    HorizontalOptions = LayoutOptions.End,
+                    VerticalOptions = LayoutOptions.Start,
+                    BackgroundColor = Color.FromArgb("#CC29272F"),
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(9) },
+                    Content = new Label
+                    {
+                        Text = "×",
+                        TextColor = Colors.White,
+                        FontSize = 12,
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        VerticalTextAlignment = TextAlignment.Center
+                    }
+                };
+                SemanticProperties.SetDescription(removeButton, "Remove background photo");
+                removeButton.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(() => RemoveImageBackground(source))
+                });
+                imageGrid.Children.Add(removeButton);
+
+                var photo = new Border
+                {
+                    WidthRequest = 38,
+                    HeightRequest = 38,
+                    Padding = 1,
+                    Stroke = isSelected ? Color.FromArgb("#5C4EAE") : Color.FromArgb("#CAC4D0"),
+                    StrokeThickness = isSelected ? 3 : 1,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(19) },
+                    Content = imageGrid
+                };
+                SemanticProperties.SetDescription(photo, "Apply background photo");
+                photo.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(() => ApplyImageBackground(source))
+                });
+                photos.Children.Add(photo);
+            }
+
+            content.Children.Add(new ScrollView
+            {
+                Orientation = ScrollOrientation.Horizontal,
+                Content = photos,
+                HeightRequest = 44,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Never
+            });
+        }
+
+        _sortSurface = CreateMobileSheetSurface(200, content);
+        return _sortSurface;
+    }
+
+    private View CreateMobileThemeTab(string title, bool showPhotoTab)
+    {
+        var isSelected = _showingMobilePhotoTab == showPhotoTab;
+        var button = new SfButton
+        {
+            Text = title,
+            HeightRequest = 40,
+            Padding = 0,
+            CornerRadius = 20,
+            FontSize = 14,
+            Background = isSelected
+                ? new SolidColorBrush(Color.FromArgb("#EADDFF"))
+                : Brush.Transparent,
+            Command = new Command(() =>
+            {
+                _showingMobilePhotoTab = showPhotoTab;
+                _sortPopup.ContentTemplate = new DataTemplate(CreateMobileThemeSurface);
+                _sortPopup.Refresh();
+            })
+        };
+        button.SetAppThemeColor(
+            SfButton.TextColorProperty,
+            Color.FromArgb("#1C1B1F"),
+            Color.FromArgb("#E6E1E5"));
+        SemanticProperties.SetDescription(button, $"{title} theme options");
+        return button;
+    }
+
+    private static View CreateMobileSheetHeader(string title)
+    {
+        var layout = new VerticalStackLayout { Spacing = 12, Margin = new Thickness(0, 0, 0, 4) };
+        layout.Children.Add(new Border
+        {
+            WidthRequest = 32,
+            HeightRequest = 4,
+            HorizontalOptions = LayoutOptions.Center,
+            BackgroundColor = Color.FromArgb("#CAC4D0"),
+            StrokeThickness = 0,
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(2) }
+        });
+        var titleLabel = new Label
+        {
+            Text = title,
+            FontSize = 20,
+            FontAttributes = FontAttributes.Bold,
+            Margin = new Thickness(0, 0, 0, 2)
+        };
+        titleLabel.SetAppThemeColor(
+            Label.TextColorProperty,
+            Color.FromArgb("#1C1B1F"),
+            Color.FromArgb("#E6E1E5"));
+        layout.Children.Add(titleLabel);
+        return layout;
+    }
+
+    private SfButton CreateMobileSortOption(string text, string iconGlyph, bool selected, Action action)
+    {
+        var button = CreateMenuButton(text, action, selected, iconGlyph: iconGlyph);
+        button.HeightRequest = 48;
+        button.FontSize = 16;
+        button.CornerRadius = 12;
+        button.Content = new DataTemplate(() =>
+        {
+            var row = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new(24),
+                    new(GridLength.Star)
+                },
+                ColumnSpacing = 0,
+                Padding = 0,
+                InputTransparent = true
+            };
+            var icon = new Label
+            {
+                Text = iconGlyph,
+                FontFamily = "MaterialIconRegular",
+                FontSize = 20,
+                HorizontalTextAlignment = TextAlignment.Start,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+            icon.SetAppThemeColor(
+                Label.TextColorProperty,
+                Color.FromArgb("#49454F"),
+                Color.FromArgb("#E6E1E5"));
+            row.Children.Add(icon);
+            var label = new Label
+            {
+                FontSize = button.FontSize,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+            label.SetBinding(Label.TextProperty, new Binding(nameof(SfButton.Text), source: button));
+            label.SetBinding(Label.TextColorProperty, new Binding(nameof(SfButton.TextColor), source: button));
+            label.SetValue(Grid.ColumnProperty, 1);
+            row.Children.Add(label);
+            return row;
+        });
+        if (selected)
+            button.Background = new SolidColorBrush(Color.FromArgb("#EADDFF"));
+        return button;
+    }
+
+    private static Border CreateMobileSheetSurface(double height, View content)
+    {
+        var surface = new Border
+        {
+            WidthRequest = Application.Current?.Windows.FirstOrDefault()?.Width ?? 360,
+            HeightRequest = height,
+            Padding = new Thickness(20, 14, 20, 20),
+            StrokeThickness = 0,
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
+            {
+                CornerRadius = new CornerRadius(24, 24, 0, 0)
+            },
+            Content = content
+        };
+        surface.SetAppTheme<Brush>(
+            VisualElement.BackgroundProperty,
+            Brush.White,
+            new SolidColorBrush(Color.FromArgb("#29272F")));
+        surface.Shadow = new Shadow
+        {
+            Brush = Color.FromArgb("#40000000"),
+            Radius = 14,
+            Offset = new Point(0, -4),
+            Opacity = 1
+        };
+        return surface;
     }
 
     private static Border CreateSurface(double width, double height, View content)
@@ -396,11 +739,10 @@ public sealed class ListOptionsFlyout : ContentView
         _customImageGallery.Children.Add(addButton);
 
         var customImageSources = _viewModel?.GetCustomBackgroundImageSources(_selectedList, _selectedCategory) ?? [];
-        foreach (var source in DefaultBackgroundImageSources
+        foreach (var source in (_viewModel?.GetAvailableDefaultBackgroundImageSources(_selectedList, _selectedCategory) ?? [])
                      .Concat(customImageSources)
                      .Distinct(StringComparer.Ordinal))
         {
-            var isDefaultImage = DefaultBackgroundImageSources.Contains(source, StringComparer.Ordinal);
             var isSelected = string.Equals(
                 _viewModel?.GetBackgroundImageSource(_selectedList, _selectedCategory),
                 source,
@@ -413,34 +755,31 @@ public sealed class ListOptionsFlyout : ContentView
                 InputTransparent = true
             });
 
-            if (!isDefaultImage)
+            var removeButton = new Border
             {
-                var removeButton = new Border
+                WidthRequest = 18,
+                HeightRequest = 18,
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Start,
+                Margin = new Thickness(0, -3, -3, 0),
+                StrokeThickness = 0,
+                BackgroundColor = Color.FromArgb("#CC29272F"),
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(9) },
+                Content = new Label
                 {
-                    WidthRequest = 18,
-                    HeightRequest = 18,
-                    HorizontalOptions = LayoutOptions.End,
-                    VerticalOptions = LayoutOptions.Start,
-                    Margin = new Thickness(0, -3, -3, 0),
-                    StrokeThickness = 0,
-                    BackgroundColor = Color.FromArgb("#CC29272F"),
-                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(9) },
-                    Content = new Label
-                    {
-                        Text = "×",
-                        TextColor = Colors.White,
-                        FontSize = 13,
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        VerticalTextAlignment = TextAlignment.Center
-                    }
-                };
-                SemanticProperties.SetDescription(removeButton, "Remove custom background image");
-                removeButton.GestureRecognizers.Add(new TapGestureRecognizer
-                {
-                    Command = new Command(() => RemoveImageBackground(source))
-                });
-                thumbnailGrid.Children.Add(removeButton);
-            }
+                    Text = "×",
+                    TextColor = Colors.White,
+                    FontSize = 13,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center
+                }
+            };
+            SemanticProperties.SetDescription(removeButton, "Remove background image");
+            removeButton.GestureRecognizers.Add(new TapGestureRecognizer
+            {
+                Command = new Command(() => RemoveImageBackground(source))
+            });
+            thumbnailGrid.Children.Add(removeButton);
 
             var thumbnail = new Border
             {
@@ -519,7 +858,7 @@ public sealed class ListOptionsFlyout : ContentView
                 grid.Children.Add(iconLabel);
                 var textLabel = new Label
                 {
-                    FontSize = 14,
+                    FontSize = button.FontSize,
                     VerticalTextAlignment = TextAlignment.Center
                 };
                 textLabel.SetBinding(Label.TextProperty,
@@ -564,6 +903,12 @@ public sealed class ListOptionsFlyout : ContentView
     {
         if (!_isSortOpen && _sortButton is not null && _viewModel is not null)
         {
+            if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            {
+                ShowMobileBottomSheet(showTheme: false);
+                return;
+            }
+
             _isSortOpen = true;
             _popup.StaysOpen = true;
             var sortHeight = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop
@@ -573,6 +918,50 @@ public sealed class ListOptionsFlyout : ContentView
             _sortPopup.ContentTemplate = new DataTemplate(CreateSortSurface);
             _sortPopup.ShowRelativeToView(_sortButton, PopupRelativePosition.AlignToRightOf);
         }
+    }
+
+    private void ShowMobileThemeSheet()
+    {
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone && _viewModel is not null)
+            ShowMobileBottomSheet(showTheme: true);
+    }
+
+    private void ShowMobileBottomSheet(bool showTheme)
+    {
+        var window = Window ?? Application.Current?.Windows.FirstOrDefault();
+        if (window is null || window.Width <= 0 || window.Height <= 0)
+            throw new InvalidOperationException("The mobile bottom sheet requires an active window with a measured size.");
+
+        _showingMobileThemeSheet = showTheme;
+        _isMobileSheet = true;
+        _isSortOpen = false;
+        _isOpen = false;
+        _popup.StaysOpen = false;
+        _allowPopupClose = true;
+        _popup.Dismiss();
+
+        var sheetHeight = showTheme ? 200 : 296;
+        _sortPopup.WidthRequest = window.Width;
+        _sortPopup.HeightRequest = sheetHeight;
+        _sortPopup.AnimationMode = PopupAnimationMode.SlideOnBottom;
+        _sortPopup.AnimationDuration = 240;
+        _sortPopup.ShowOverlayAlways = true;
+        _sortPopup.OverlayMode = PopupOverlayMode.Transparent;
+        _sortPopup.PopupStyle = new PopupStyle
+        {
+            OverlayColor = Color.FromArgb("#66000000"),
+            MessageBackground = Colors.Transparent,
+            HasShadow = false,
+            Stroke = Colors.Transparent,
+            StrokeThickness = 0,
+            CornerRadius = 0
+        };
+        _sortPopup.BackgroundColor = Colors.Transparent;
+        Func<View> contentFactory = showTheme ? CreateMobileThemeSurface : CreateMobileSortSurface;
+        if (showTheme)
+            _showingMobilePhotoTab = false;
+        _sortPopup.ContentTemplate = new DataTemplate(contentFactory);
+        _sortPopup.Show(0, Math.Max(0, window.Height - sheetHeight));
     }
 
     private static double GetSurfaceBorderAllowance()
@@ -614,6 +1003,11 @@ public sealed class ListOptionsFlyout : ContentView
 
         _viewModel.RemoveCustomBackgroundImage(_selectedList, _selectedCategory, source);
         RebuildCustomImageGallery();
+        if (_isMobileSheet && _showingMobileThemeSheet)
+        {
+            _sortPopup.ContentTemplate = new DataTemplate(CreateMobileThemeSurface);
+            _sortPopup.Refresh();
+        }
     }
 
     private async Task PickCustomBackgroundAsync()
@@ -658,6 +1052,7 @@ public sealed class ListOptionsFlyout : ContentView
     {
         _closingFlyoutsTogether = true;
         _popup.StaysOpen = false;
+        _isMobileSheet = false;
         _sortPopup.Dismiss();
         _popup.Dismiss();
         _closingFlyoutsTogether = false;
@@ -680,6 +1075,8 @@ public sealed class ListOptionsFlyout : ContentView
         if (_sortSurface is null)
             return;
         _isSortOpen = true;
+        if (_isMobileSheet)
+            return;
         _sortSurface.Opacity = 0;
         _sortSurface.Scale = 0.96;
         await Task.WhenAll(
@@ -696,9 +1093,17 @@ public sealed class ListOptionsFlyout : ContentView
 
     private void OnSortPopupPositionChanging(object? sender, PopupPositionChangingEventArgs e)
     {
+        var window = Window ?? Application.Current?.Windows.FirstOrDefault();
+        if (_isMobileSheet && window is { Width: > 0, Height: > 0 })
+        {
+            e.MoveTo = new Point(0, Math.Max(0, window.Height - _sortPopup.HeightRequest));
+            e.Handled = true;
+            return;
+        }
+
         ClampPopupPosition(e);
 
-        var window = Window;
+        window = Window;
         if (!_hasMainPopupPosition || window is null || window.Width <= 0 || window.Height <= 0)
             return;
 

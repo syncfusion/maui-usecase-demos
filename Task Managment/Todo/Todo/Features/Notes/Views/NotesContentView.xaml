@@ -24,18 +24,11 @@
     </ContentView.Resources>
 
     <Border x:Name="NotesContentSurface"
-            BackgroundColor="{Binding ListBackgroundColor}"
+            BackgroundColor="{Binding ContentSurfaceBackgroundColor}"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 14">
         <Grid RowDefinitions="Auto,*,Auto">
 
-            <Image Grid.RowSpan="3"
-                   Source="{Binding BackgroundImage}"
-                   IsVisible="{Binding HasBackgroundImage}"
-                   Aspect="AspectFill"
-                   HorizontalOptions="Fill"
-                   VerticalOptions="Fill"
-                   InputTransparent="True" />
             <!-- Page title bar inside the content area -->
             <Grid Grid.Row="0"
                   Padding="{OnIdiom Phone='16,10,16,6', Default='20,14'}"
@@ -83,7 +76,7 @@
                                FontSize="20"
                                FontAttributes="Bold"
                                LineBreakMode="TailTruncation"
-                               TextColor="{Binding HeaderForegroundColor}"
+                               TextColor="{OnIdiom Phone={Binding MobileHeaderForegroundColor}, Default={Binding HeaderForegroundColor}}"
                                VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Border>
@@ -202,7 +195,7 @@
                                 </Border>
                                 <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
                                     Padding="14,10" 
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+                                    BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
                                     Shadow="{StaticResource Elevation1}">
@@ -248,7 +241,8 @@
 
                                 <Grid ColumnDefinitions="40,*,40,40"
                                       RowDefinitions="40,Auto"
-                                      ColumnSpacing="8" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+                                      ColumnSpacing="8"
+                                      BackgroundColor="Transparent"
                                       VerticalOptions="Start">
 
                                     <!--
@@ -291,7 +285,7 @@
                                                     StrokeShape="RoundRectangle 12"
                                                         BackgroundColor="{OnIdiom Phone=Transparent, Default={StaticResource ChipBackgroundColor}}">
                                                     <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                                            <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=12}" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" WidthRequest="{OnIdiom Phone=18, Default=12}" HeightRequest="{OnIdiom Phone=18, Default=12}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                            <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=12}" TextColor="{OnIdiom Phone=#B3261E, Default={AppThemeBinding Light=#49454F, Dark=#E6E1E5}}" WidthRequest="{OnIdiom Phone=18, Default=12}" HeightRequest="{OnIdiom Phone=18, Default=12}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                             <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}" FontSize="10" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
                                                         </HorizontalStackLayout>
                                                     </Border>
@@ -430,7 +424,7 @@
                                         </Border>
                                         <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
                                             Padding="14,10"
-                                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+                                            BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                             StrokeThickness="0" StrokeShape="RoundRectangle 10"
                                             Shadow="{StaticResource Elevation1}">
                                         <Border.GestureRecognizers>
@@ -479,7 +473,7 @@
                                                             <Label Text="&#xe24f;"
                                                                    FontFamily="MaterialIconRegular"
                                                                    FontSize="{OnIdiom Phone=16, Default=14}"
-                                                                   TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                                   TextColor="{OnIdiom Phone=#B3261E, Default={AppThemeBinding Light=#49454F, Dark=#E6E1E5}}"
                                                                    WidthRequest="{OnIdiom Phone=18, Default=14}"
                                                                    HeightRequest="{OnIdiom Phone=18, Default=14}"
                                                                    HorizontalTextAlignment="Center"
@@ -564,56 +558,15 @@
 
             <!-- Bottom input bar -->
             <Border Grid.Row="2"
+                    x:Name="AddNotePanel"
+                    ZIndex="4"
+                    IsVisible="{OnIdiom Phone={Binding IsAddNotePanelOpen}, Default=True}"
                     Margin="{OnIdiom Phone='16,4,16,8', Default='16,12,16,16'}"
                     Padding="{OnIdiom Phone=4, Default=8}"
                     Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
-                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*" RowSpacing="{OnIdiom Phone=0, Desktop=0, Default=8}" VerticalOptions="Center">
-                    <ScrollView Grid.Row="0"
-                                Orientation="Horizontal"
-                                HeightRequest="22"
-                                HorizontalScrollBarVisibility="Never"
-                                IsVisible="{OnIdiom Phone={Binding HasDraftMetadata}, Default=False}">
-                        <HorizontalStackLayout Spacing="6">
-                            <Border IsVisible="{Binding HasDraftDueDate}"
-                                    Padding="6,2"
-                                    Stroke="{StaticResource ChipStrokeColor}"
-                                    StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 12"
-                                    BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                    <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" />
-                                    <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                    <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
-                                </HorizontalStackLayout>
-                            </Border>
-                            <Border IsVisible="{Binding HasDraftRepeat}"
-                                    Padding="6,2"
-                                    Stroke="{StaticResource ChipStrokeColor}"
-                                    StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 12"
-                                    BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                    <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" />
-                                    <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                    <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
-                                </HorizontalStackLayout>
-                            </Border>
-                            <Border IsVisible="{Binding HasDraftReminder}"
-                                    Padding="6,2"
-                                    Stroke="{StaticResource ChipStrokeColor}"
-                                    StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 12"
-                                    BackgroundColor="{StaticResource ChipBackgroundColor}">
-                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" />
-                                    <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                    <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftReminderCommand}" />
-                                </HorizontalStackLayout>
-                            </Border>
-                        </HorizontalStackLayout>
-                    </ScrollView>
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" RowSpacing="{OnIdiom Phone=8, Desktop=0, Default=8}" VerticalOptions="Center">
                     <FlexLayout Grid.Row="0"
                                 Direction="Row"
                                 Wrap="Wrap"
@@ -660,8 +613,9 @@
                             </HorizontalStackLayout>
                         </Border>
                     </FlexLayout>
-                    <syncfusionCore:SfTextInputLayout Grid.Row="1"
-                                                     Hint="Add a note"
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                    <syncfusionCore:SfTextInputLayout Grid.Column="0"
+                                                     Hint="{OnIdiom Phone='Add task', Default='Add a note'}"
                                                      ContainerType="Outlined"
                                                      OutlineCornerRadius="28"
                                                      FocusedStrokeThickness="1"
@@ -671,7 +625,7 @@
                                                      Stroke="Transparent"
                                                      EnableFloating="False"
                                                      ReserveSpaceForAssistiveLabels="False"
-                                                     InputViewPadding="14,0,150,0"
+                                                     InputViewPadding="{OnIdiom Phone='14,0,14,0', Default='14,0,150,0'}"
                                                      VerticalOptions="Center">
                         <syncfusionCore:SfTextInputLayout.HintLabelStyle>
                             <syncfusionCore:LabelStyle FontSize="14"
@@ -680,11 +634,13 @@
                         </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                         <syncfusionCore:SfTextInputLayout.TrailingView>
                             <Grid ColumnDefinitions="36,36,36,36"
+                                  IsVisible="{OnIdiom Phone=False, Default=True}"
                                   VerticalOptions="Center"
                                   HorizontalOptions="Fill"
                                   WidthRequest="{OnIdiom Phone=150, Desktop=144, Default=150}"
                                   Margin="{OnIdiom Phone=0, Desktop=0, Default='0,8,0,0'}">
                                 <Border Grid.Column="0" WidthRequest="36" HeightRequest="36"
+                                        IsVisible="{OnIdiom Phone=False, Default=True}"
                                         BackgroundColor="Transparent" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 18">
                                     <Border.GestureRecognizers>
@@ -692,6 +648,7 @@
                                                                   PointerExited="OnPointerExited" />
                                     </Border.GestureRecognizers>
                                     <buttons:SfButton WidthRequest="36" HeightRequest="36" Padding="0"
+                                                      IsVisible="{OnIdiom Phone=False, Default=True}"
                                                       Background="Transparent" Clicked="OnDueDateClicked"
                                                       CornerRadius="18"
                                                       ToolTipProperties.Text="Due date"
@@ -712,6 +669,7 @@
                                     </buttons:SfButton>
                                 </Border>
                                 <Border Grid.Column="1" WidthRequest="36" HeightRequest="36"
+                                        IsVisible="{OnIdiom Phone=False, Default=True}"
                                         BackgroundColor="Transparent" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 18">
                                     <Border.GestureRecognizers>
@@ -719,6 +677,7 @@
                                                                   PointerExited="OnPointerExited" />
                                     </Border.GestureRecognizers>
                                     <buttons:SfButton WidthRequest="36" HeightRequest="36" Padding="0"
+                                                      IsVisible="{OnIdiom Phone=False, Default=True}"
                                                       Background="Transparent" Clicked="OnRepeatClicked"
                                                       CornerRadius="18"
                                                       ToolTipProperties.Text="Repeat"
@@ -739,6 +698,7 @@
                                     </buttons:SfButton>
                                 </Border>
                                 <Border Grid.Column="2" WidthRequest="36" HeightRequest="36"
+                                        IsVisible="{OnIdiom Phone=False, Default=True}"
                                         BackgroundColor="Transparent" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 18">
                                     <Border.GestureRecognizers>
@@ -746,6 +706,7 @@
                                                                   PointerExited="OnPointerExited" />
                                     </Border.GestureRecognizers>
                                     <buttons:SfButton WidthRequest="36" HeightRequest="36" Padding="0"
+                                                      IsVisible="{OnIdiom Phone=False, Default=True}"
                                                       Background="Transparent" Clicked="OnReminderClicked"
                                                       CornerRadius="18"
                                                       ToolTipProperties.Text="Reminder"
@@ -766,6 +727,7 @@
                                     </buttons:SfButton>
                                 </Border>
                                 <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="{OnIdiom Phone='0,0,0,5', Desktop=0, Default='0,0,0,5'}"
+                                                  IsVisible="{OnIdiom Phone=False, Default=True}"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
                                                   TextColor="White"
                                                   SemanticProperties.Description="Save note">
@@ -795,14 +757,146 @@
                                 </buttons:SfButton>
                             </Grid>
                         </syncfusionCore:SfTextInputLayout.TrailingView>
-                        <Entry Text="{Binding NewNoteTitle, Mode=TwoWay}"
+                        <Entry x:Name="NewNoteEntry"
+                               Text="{Binding NewNoteTitle, Mode=TwoWay}"
                                Style="{StaticResource InputPillEntryStyle}"
                                BackgroundColor="Transparent"
                                Margin="0"
                                ReturnCommand="{Binding AddNoteCommand}" />
                     </syncfusionCore:SfTextInputLayout>
+                    <buttons:SfButton Grid.Column="1"
+                                      IsVisible="{OnIdiom Phone={Binding IsAddNotePanelOpen}, Default=False}"
+                                      Text="&#xe876;"
+                                      FontFamily="MaterialIconRegular"
+                                      FontSize="20"
+                                      WidthRequest="40"
+                                      HeightRequest="40"
+                                      Padding="0"
+                                      CornerRadius="20"
+                                      Background="#1C1B1F1F"
+                                      TextColor="#1C1B1F61"
+                                      Command="{Binding AddNoteCommand}"
+                                      SemanticProperties.Description="Save task" />
+                    </Grid>
+                    <ScrollView Grid.Row="2"
+                                Orientation="Horizontal"
+                                HorizontalScrollBarVisibility="Never"
+                                VerticalScrollBarVisibility="Never"
+                                IsVisible="{OnIdiom Phone=True, Default=False}">
+                        <HorizontalStackLayout Spacing="8">
+                        <Border Padding="10,8"
+                                BackgroundColor="Transparent"
+                                Stroke="#79747E"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 18">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <HorizontalStackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnDueDateClicked" />
+                                    </HorizontalStackLayout.GestureRecognizers>
+                                    <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="16" TextColor="#6750A4" VerticalTextAlignment="Center" />
+                                    <Label Text="{Binding DraftDueDateOptionText}" FontSize="12" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" />
+                                </HorizontalStackLayout>
+                                <buttons:SfButton Grid.Column="1"
+                                                  IsVisible="{Binding HasDraftDueDate}"
+                                                  Text="&#xe5cd;"
+                                                  FontFamily="MaterialIconRegular"
+                                                  FontSize="12"
+                                                  WidthRequest="20"
+                                                  HeightRequest="20"
+                                                  Padding="0"
+                                                  CornerRadius="10"
+                                                  Background="Transparent"
+                                                  TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                  Command="{Binding RemoveDraftDueDateCommand}"
+                                                  SemanticProperties.Description="Clear due date" />
+                            </Grid>
+                        </Border>
+                        <Border Padding="10,8"
+                                BackgroundColor="Transparent"
+                                Stroke="#79747E"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 18">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <HorizontalStackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnRepeatClicked" />
+                                    </HorizontalStackLayout.GestureRecognizers>
+                                    <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="16" TextColor="#6750A4" VerticalTextAlignment="Center" />
+                                    <Label Text="{Binding DraftRepeatOptionText}" FontSize="12" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" />
+                                </HorizontalStackLayout>
+                                <buttons:SfButton Grid.Column="1"
+                                                  IsVisible="{Binding HasDraftRepeat}"
+                                                  Text="&#xe5cd;"
+                                                  FontFamily="MaterialIconRegular"
+                                                  FontSize="12"
+                                                  WidthRequest="20"
+                                                  HeightRequest="20"
+                                                  Padding="0"
+                                                  CornerRadius="10"
+                                                  Background="Transparent"
+                                                  TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                  Command="{Binding RemoveDraftRepeatCommand}"
+                                                  SemanticProperties.Description="Clear repeat" />
+                            </Grid>
+                        </Border>
+                        <Border Padding="10,8"
+                                BackgroundColor="Transparent"
+                                Stroke="#79747E"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 18">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <HorizontalStackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnReminderClicked" />
+                                    </HorizontalStackLayout.GestureRecognizers>
+                                    <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="16" TextColor="#6750A4" VerticalTextAlignment="Center" />
+                                    <Label Text="{Binding DraftReminderOptionText}" FontSize="12" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" />
+                                </HorizontalStackLayout>
+                                <buttons:SfButton Grid.Column="1"
+                                                  IsVisible="{Binding HasDraftReminder}"
+                                                  Text="&#xe5cd;"
+                                                  FontFamily="MaterialIconRegular"
+                                                  FontSize="12"
+                                                  WidthRequest="20"
+                                                  HeightRequest="20"
+                                                  Padding="0"
+                                                  CornerRadius="10"
+                                                  Background="Transparent"
+                                                  TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                                  Command="{Binding RemoveDraftReminderCommand}"
+                                                  SemanticProperties.Description="Clear reminder" />
+                            </Grid>
+                        </Border>
+                        </HorizontalStackLayout>
+                    </ScrollView>
                 </Grid>
             </Border>
+            <BoxView Grid.RowSpan="3"
+                     ZIndex="3"
+                     BackgroundColor="#66000000"
+                     IsVisible="{OnIdiom Phone={Binding IsAddNotePanelOpen}, Default=False}">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCloseAddNoteBackdropTapped" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <buttons:SfButton Grid.Row="1"
+                              ZIndex="2"
+                              IsVisible="{OnIdiom Phone={Binding CanShowMobileAddNoteButton}, Default=False}"
+                              Text="&#xe145;"
+                              FontFamily="MaterialIconRegular"
+                              FontSize="28"
+                              WidthRequest="56"
+                              HeightRequest="56"
+                              Padding="0"
+                              CornerRadius="28"
+                              Background="{StaticResource PrimaryColor}"
+                              TextColor="White"
+                              HorizontalOptions="End"
+                              VerticalOptions="End"
+                              Margin="0,0,20,20"
+                              Clicked="OnAddNoteClicked"
+                              SemanticProperties.Description="Add a task" />
             <noteViews:TaskSchedulingFlyout x:Name="SchedulingFlyout"
                                             Grid.RowSpan="3"
                                             WidthRequest="0"

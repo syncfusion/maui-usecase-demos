@@ -59,7 +59,10 @@ public sealed class TaskSchedulingFlyout : ContentView
         _isReminder = isReminder;
         _selectedDateTime = isReminder ? viewModel.DraftReminderDate ?? DateTime.Now : viewModel.DraftDueDate ?? DateTime.Now;
         _datePopup.ContentTemplate = new DataTemplate(CreateDateSurface);
-        _datePopup.ShowRelativeToView(anchor, PopupRelativePosition.AlignTopRight);
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            _datePopup.Show();
+        else
+            _datePopup.ShowRelativeToView(anchor, PopupRelativePosition.AlignTopRight);
     }
 
     public void ShowRepeat(View anchor, NotesListViewModel viewModel)
@@ -191,11 +194,23 @@ public sealed class TaskSchedulingFlyout : ContentView
         repeatDivider.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
         content.Children.Add(repeatDivider);
         var customButton = CreateMenuButton("Custom", _viewModel?.DraftRepeatFrequency == NoteRepeatFrequency.Custom,
-            () => { _repeatPopup.Dismiss(); if (_repeatAnchor is not null) _customPopup.ShowRelativeToView(_repeatAnchor, PopupRelativePosition.AlignTopRight); },
+            ShowCustomRepeatPopup,
             iconGlyph: "\ue24f");
         customButton.Margin = new Thickness(10, 4, 0, 0);
         content.Children.Add(customButton);
         return CreateBorder(210, 332, content);
+    }
+
+    private void ShowCustomRepeatPopup()
+    {
+        _repeatPopup.Dismiss();
+        if (_repeatAnchor is null)
+            return;
+
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+            _customPopup.Show();
+        else
+            _customPopup.ShowRelativeToView(_repeatAnchor, PopupRelativePosition.AlignTopRight);
     }
 
     private View CreateCustomSurface()

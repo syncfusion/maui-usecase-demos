@@ -29,6 +29,7 @@ public partial class MainLayoutView : ContentView
         Header.DesktopNavigationRequested += OnDesktopNavigationRequested;
 
         UpdateSidebarColumn(viewModel.IsSidebarCollapsed);
+        UpdatePageBackgroundImage();
         if (!_isPhone && !_isDesktop)
             viewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
@@ -41,6 +42,7 @@ public partial class MainLayoutView : ContentView
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
             UpdateMainContent();
+            UpdatePageBackgroundImage();
             return;
         }
 
@@ -51,6 +53,7 @@ public partial class MainLayoutView : ContentView
         _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
         UpdateMainContent();
+        UpdatePageBackgroundImage();
     }
 
     public void Deactivate()
@@ -72,11 +75,23 @@ public partial class MainLayoutView : ContentView
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(NotesListViewModel.IsSidebarCollapsed))
+        {
             UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
+            UpdatePageBackgroundImage();
+        }
         else if (e.PropertyName == nameof(NotesListViewModel.IsSearchActive))
         {
             UpdateHeaderDivider();
             UpdateMainContent();
+            UpdatePageBackgroundImage();
+        }
+        else if (e.PropertyName is nameof(NotesListViewModel.HasBackgroundImage)
+                 or nameof(NotesListViewModel.BackgroundImage)
+                 or nameof(NotesListViewModel.ListBackgroundColor))
+        {
+            UpdateHeaderDivider();
+            UpdatePageBackgroundImage();
+            UpdateSearchBackground();
         }
     }
 
@@ -99,8 +114,24 @@ public partial class MainLayoutView : ContentView
 
         MainContent.Content = new SearchResultsView
         {
-            BindingContext = _viewModel.SearchViewModel
+            BindingContext = _viewModel.SearchViewModel,
+            ListBackgroundColor = _viewModel.ListBackgroundColor,
+            ListBackgroundImage = _viewModel.BackgroundImage
         };
+    }
+
+    private void UpdateSearchBackground()
+    {
+        if (MainContent.Content is SearchResultsView searchResults)
+        {
+            searchResults.ListBackgroundColor = _viewModel.ListBackgroundColor;
+            searchResults.ListBackgroundImage = _viewModel.BackgroundImage;
+        }
+    }
+
+    private void UpdatePageBackgroundImage()
+    {
+        PageBackgroundImage.IsVisible = _viewModel.HasBackgroundImage && MainContent.IsVisible;
     }
 
     private void UpdateSidebarColumn(bool isCollapsed)
@@ -130,11 +161,12 @@ public partial class MainLayoutView : ContentView
 
     private void UpdateHeaderDivider()
     {
-        HeaderDivider.IsVisible = _isDesktop
+        var hasSharedBackground = _viewModel.HasBackgroundImage && MainContent.IsVisible;
+        HeaderDivider.IsVisible = !hasSharedBackground && (_isDesktop
             ? false
             : !_isPhone
               || !_viewModel.IsSidebarCollapsed
-              || _viewModel.IsSearchActive;
+              || _viewModel.IsSearchActive);
     }
 
     private static bool DeviceIdiomMatches(DeviceIdiom idiom) =>
