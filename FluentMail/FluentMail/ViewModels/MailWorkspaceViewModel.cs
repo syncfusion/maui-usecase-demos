@@ -47,6 +47,81 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public ComposeViewModel Composer { get; } = new();
 
+    public IReadOnlyList<string> SortOptions { get; } = ["Unread first", "Newest first"];
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsOtherTab))]
+    private bool isFocusedTab = true;
+
+    public bool IsOtherTab => !IsFocusedTab;
+
+    [ObservableProperty]
+    private string selectedSort = "Unread first";
+
+    [ObservableProperty]
+    private ObservableCollection<MailGroup> mobileGroups = [];
+
+    [ObservableProperty]
+    private int focusedUnread;
+
+    [ObservableProperty]
+    private int otherUnread;
+
+    [ObservableProperty]
+    private int totalUnread;
+
+    [ObservableProperty]
+    private MailMessage? openedMessage;
+
+    [ObservableProperty]
+    private bool isMessageOpen;
+
+    partial void OnIsFocusedTabChanged(bool value) => RefreshMobile();
+    partial void OnSelectedSortChanged(string value) => RefreshMobile();
+
+    [RelayCommand]
+    void ShowFocused() => IsFocusedTab = true;
+
+    [RelayCommand]
+    void ShowOther() => IsFocusedTab = false;
+
+    [RelayCommand]
+    void OpenMessage(MailMessage? message)
+    {
+        if (message is null) return;
+        OpenedMessage = message;
+        IsMessageOpen = true;
+        message.IsRead = true;
+        UpdateFolderCounts();
+    }
+
+    [RelayCommand]
+    void CloseMessage() => IsMessageOpen = false;
+
+    void RefreshMobile()
+    {
+        var focused = mailbox.Inbox.Where(x => x.Folder == "Inbox").ToList();
+        var other = mailbox.Inbox.Where(x => x.Folder != "Inbox").ToList();
+        FocusedUnread = focused.Count(x => !x.IsRead);
+        OtherUnread = other.Count(x => !x.IsRead);
+        TotalUnread = FocusedUnread + OtherUnread;
+
+        var source = IsFocusedTab ? focused : other;
+        var ordered = SelectedSort == "Unread first"
+            ? source.OrderBy(x => x.IsRead).ThenByDescending(x => x.ReceivedOn)
+            : source.OrderByDescending(x => x.ReceivedOn);
+
+        MobileGroups = new ObservableCollection<MailGroup>(ordered
+            .GroupBy(x => x.ReceivedOn.Date)
+            .OrderByDescending(g => g.Key)
+            .Select(g => new MailGroup
+            {
+                Title = g.Key == DateTime.Today ? "TODAY" : g.Key == DateTime.Today.AddDays(-1) ? "YESTERDAY" : g.Key.ToString("MMM d").ToUpperInvariant(),
+                CountText = g.Count(x => !x.IsRead) is var n && n > 0 ? $"{n} updates" : string.Empty,
+                Items = g.ToList()
+            }));
+    }
+
     [ObservableProperty]
     private bool hasToError;
 
@@ -54,7 +129,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
     private string toErrorText = string.Empty;
 
     [ObservableProperty]
-    private string to;
+    private string to = string.Empty;
 
     private void Composer_PropertyChanged(object? sender,
      PropertyChangedEventArgs e)
@@ -293,5 +368,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
     void UpdateFolderCounts()
     {
         mailbox.RefreshCounts();
+        RefreshMobile();
     }
 }

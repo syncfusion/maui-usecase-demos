@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FluentMail.Views.Controls.MobileHeader"
+             x:Name="Root">
+    <Grid Padding="16,12" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="14" BackgroundColor="#FCF7F5">
+        <Grid WidthRequest="48" HeightRequest="48">
+            <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" HorizontalOptions="Start" VerticalOptions="Start">
+                <Label Text="{Binding Initials, Source={x:Reference Root}}" TextColor="White" FontAttributes="Bold" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Border WidthRequest="14" HeightRequest="14" StrokeThickness="2" Stroke="#FCF7F5" StrokeShape="Ellipse" BackgroundColor="#0A4A94" HorizontalOptions="End" VerticalOptions="End" />
+        </Grid>
+        <Label Grid.Column="1" Text="{Binding Title, Source={x:Reference Root}}" FontSize="26" FontAttributes="Bold" TextColor="#1B1B1B" VerticalOptions="Center" />
+        <Image Grid.Column="2" Source="ic_filter.svg" WidthRequest="24" HeightRequest="24" VerticalOptions="Center" />
+        <Border Grid.Column="3" WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0A4A94">
+            <Image Source="ic_person_w.svg" WidthRequest="22" HeightRequest="22" HorizontalOptions="Center" VerticalOptions="Center" />
+        </Border>
+    </Grid>
+</ContentView>

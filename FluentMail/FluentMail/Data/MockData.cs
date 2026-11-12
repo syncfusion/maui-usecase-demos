@@ -221,6 +221,10 @@ public static class MockData
         {
             var local = message.Recipients.Split(',')[0].Trim().Split('@')[0];
             var name = string.Join(' ', local.Split('.', StringSplitOptions.RemoveEmptyEntries).Select(x => char.ToUpper(x[0]) + x[1..]));
+            if (message.HasAttachments)
+                message.AttachmentName = new[] { "spec-v2.fig", "Pitch-Final.pptx", "boarding-pass.pdf", "Q3-Forecast.xlsx" }[Math.Abs(message.Id.GetHashCode()) % 4];
+            if (message.Folder == "Inbox" && Math.Abs(message.Id.GetHashCode()) % 3 == 0)
+                message.Tag = new[] { "Product Ops", "Strategy", "Engineering" }[Math.Abs(message.Id.GetHashCode()) % 3 == 0 ? Math.Abs(message.Id.GetHashCode() / 3) % 3 : 0];
             message.Greeting = message.Folder == "Sent Items" ? string.Empty : $"Hi {name},";
         }
 

@@ -6,4 +6,6 @@ public partial class MailWorkspacePage : ContentPage
     {
         InitializeComponent();
     }
+
+    async void OnCalendarClicked(object? sender, EventArgs e) => await Shell.Current.GoToAsync("//CalendarPage");
 }

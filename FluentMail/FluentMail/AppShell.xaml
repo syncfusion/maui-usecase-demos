@@ -2,6 +2,10 @@
 <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:FluentMail.Views"
-       x:Class="FluentMail.AppShell">
-    <ShellContent ContentTemplate="{DataTemplate views:MailWorkspacePage}" />
+       x:Class="FluentMail.AppShell"
+       FlyoutBehavior="Disabled"
+       TabBarIsVisible="False">
+    <ShellContent Route="MailPage" ContentTemplate="{DataTemplate views:MailWorkspacePage}" />
+    <ShellContent Route="SearchPage" ContentTemplate="{DataTemplate views:SearchPage}" />
+    <ShellContent Route="CalendarPage" ContentTemplate="{DataTemplate views:CalendarPage}" />
 </Shell>

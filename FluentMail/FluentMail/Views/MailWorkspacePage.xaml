@@ -9,6 +9,7 @@
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
              xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
+             xmlns:models="clr-namespace:FluentMail.Models"
              x:Class="FluentMail.Views.MailWorkspacePage"
              x:Name="MailWorkspaceRoot"
              x:DataType="vm:MailWorkspaceViewModel"
@@ -18,7 +19,8 @@
         <vm:MailWorkspaceViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="56,1,*" ColumnDefinitions="300,380,1,*" Padding="0" BackgroundColor="White">
+    <Grid>
+    <Grid IsVisible="{OnIdiom Default=True, Phone=False}" RowDefinitions="56,1,*" ColumnDefinitions="300,380,1,*" Padding="0" BackgroundColor="White">
         
         <Grid HeightRequest="64"
               Grid.ColumnSpan="4"
@@ -89,6 +91,15 @@
             <HorizontalStackLayout Grid.Column="2"
                            Spacing="10"
                            VerticalOptions="Center">
+
+                <Button Text="Calendar"
+                        Clicked="OnCalendarClicked"
+                        BackgroundColor="#106EBE"
+                        TextColor="White"
+                        CornerRadius="6"
+                        HeightRequest="40"
+                        Padding="14,0"
+                        VerticalOptions="Center" />
 
                 <VerticalStackLayout IsVisible="{OnIdiom Default=true, Phone=false}">
                     <Label Text="Kerry Best"
@@ -369,5 +380,179 @@
                 </ScrollView>
             </Grid>
         </Grid>
+    </Grid>
+
+    <Grid IsVisible="{OnIdiom Default=False, Phone=True}" RowDefinitions="Auto,*,Auto" BackgroundColor="#FCF7F5">
+        <controls:MobileHeader Title="Mail Inbox" Initials="KB" />
+
+        <Grid Grid.Row="1">
+            <ScrollView>
+                <VerticalStackLayout Padding="16,4,16,100" Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <Border StrokeThickness="0" BackgroundColor="#F1EDEB" Padding="6" StrokeShape="RoundRectangle 28">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                                <Border StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding IsFocusedTab}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="White" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowFocusedCommand}" /></Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="Focused" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsFocusedTab}" Value="True">
+                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Border StrokeThickness="0" BackgroundColor="#0F5DB5" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                                            <Label Text="{Binding FocusedUnread}" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </Border>
+                                <Border Grid.Column="1" StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding IsOtherTab}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="White" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowOtherCommand}" /></Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="Other" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsOtherTab}" Value="True">
+                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Border StrokeThickness="0" BackgroundColor="#E4E0DE" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                                            <Label Text="{Binding OtherUnread}" TextColor="#4A4A4A" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0" VerticalOptions="Center">
+                            <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" IsClearButtonVisible="False" TextColor="#3C3C3C" />
+                        </Border>
+                    </Grid>
+
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding MobileGroups}" Spacing="4">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:MailGroup">
+                                <VerticalStackLayout Spacing="0">
+                                    <Grid ColumnDefinitions="*,Auto" Padding="0,18,0,8">
+                                        <Label Text="{Binding Title}" FontSize="15" TextColor="#3C3C3C" CharacterSpacing="1" />
+                                        <Label Grid.Column="1" Text="{Binding CountText}" FontSize="14" TextColor="#3C3C3C" />
+                                    </Grid>
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="models:MailMessage">
+                                                <VerticalStackLayout>
+                                                    <Grid ColumnDefinitions="14,52,*" ColumnSpacing="10" Padding="0,14,0,12">
+                                                        <Grid.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.OpenMessageCommand}" CommandParameter="{Binding .}" />
+                                                        </Grid.GestureRecognizers>
+                                                        <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#0F5DB5" VerticalOptions="Start" Margin="0,22,0,0" IsVisible="{Binding IsUnread}" />
+                                                        <Border Grid.Column="1" WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#D7E8FB" VerticalOptions="Start">
+                                                            <Label Text="{Binding Sender, Converter={StaticResource InitialsConverter}}" FontSize="17" FontAttributes="Bold" TextColor="#1B1B1B" HorizontalOptions="Center" VerticalOptions="Center" />
+                                                        </Border>
+                                                        <VerticalStackLayout Grid.Column="2" Spacing="3">
+                                                            <Grid ColumnDefinitions="*,Auto">
+                                                                <Label Text="{Binding Sender}" FontSize="19" TextColor="#1B1B1B" LineBreakMode="TailTruncation" />
+                                                                <Label Grid.Column="1" Text="{Binding TimeText}" FontSize="14" TextColor="#3C3C3C" VerticalOptions="Center">
+                                                                    <Label.Triggers>
+                                                                        <DataTrigger TargetType="Label" Binding="{Binding IsUnread}" Value="True">
+                                                                            <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
+                                                                        </DataTrigger>
+                                                                    </Label.Triggers>
+                                                                </Label>
+                                                            </Grid>
+                                                            <Grid ColumnDefinitions="*,Auto">
+                                                                <Label Text="{Binding Subject}" FontSize="16" TextColor="#2B2B2B" LineBreakMode="TailTruncation">
+                                                                    <Label.Triggers>
+                                                                        <DataTrigger TargetType="Label" Binding="{Binding IsUnread}" Value="True">
+                                                                            <Setter Property="FontAttributes" Value="Bold" />
+                                                                        </DataTrigger>
+                                                                    </Label.Triggers>
+                                                                </Label>
+                                                                <Image Grid.Column="1" Source="ic_flag_r.svg" WidthRequest="18" HeightRequest="18" IsVisible="{Binding IsFlagged}" Margin="6,0,0,0" />
+                                                            </Grid>
+                                                            <Label Text="{Binding Preview}" FontSize="15" TextColor="#5A5A5A" LineBreakMode="TailTruncation" />
+                                                            <HorizontalStackLayout Spacing="8" Margin="0,4,0,0">
+                                                                <Border IsVisible="{Binding HasAttachmentName}" StrokeThickness="0" BackgroundColor="#EEE9E7" StrokeShape="RoundRectangle 8" Padding="8,4">
+                                                                    <HorizontalStackLayout Spacing="6">
+                                                                        <Image Source="ic_clip.svg" WidthRequest="16" HeightRequest="16" />
+                                                                        <Label Text="{Binding AttachmentName}" FontSize="13" TextColor="#3C3C3C" />
+                                                                    </HorizontalStackLayout>
+                                                                </Border>
+                                                                <Border IsVisible="{Binding HasTag}" StrokeThickness="0" BackgroundColor="#D7E8FB" StrokeShape="RoundRectangle 8" Padding="8,4">
+                                                                    <Label Text="{Binding Tag}" FontSize="13" TextColor="#0F5DB5" />
+                                                                </Border>
+                                                            </HorizontalStackLayout>
+                                                        </VerticalStackLayout>
+                                                    </Grid>
+                                                    <BoxView HeightRequest="1" Color="#E3DEDC" Margin="62,0,0,0" />
+                                                </VerticalStackLayout>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <Border WidthRequest="64" HeightRequest="64" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,24">
+                <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding NewMailCommand}" /></Border.GestureRecognizers>
+                <Image Source="ic_edit_w.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+        </Grid>
+
+        <controls:MobileTabBar Grid.Row="2" Selected="Mail" Badge="{Binding TotalUnread}" />
+
+        <Grid Grid.RowSpan="3" BackgroundColor="#FCF7F5" IsVisible="{Binding IsMessageOpen}" RowDefinitions="Auto,*">
+            <Grid Padding="12,14" ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Image Source="ic_back.svg" WidthRequest="26" HeightRequest="26">
+                    <Image.GestureRecognizers><TapGestureRecognizer Command="{Binding CloseMessageCommand}" /></Image.GestureRecognizers>
+                </Image>
+                <Label Grid.Column="1" Text="Message" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+            </Grid>
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="20,8" Spacing="14">
+                    <Label Text="{Binding OpenedMessage.Subject}" FontSize="24" FontAttributes="Bold" />
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="12">
+                        <Border WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#D7E8FB">
+                            <Label Text="{Binding OpenedMessage.Sender, Converter={StaticResource InitialsConverter}}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="{Binding OpenedMessage.Sender}" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="{Binding OpenedMessage.ReceivedOn, StringFormat='{0:dd/MM/yyyy h:mm tt}'}" FontSize="14" TextColor="#5A5A5A" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Label Text="{Binding OpenedMessage.Greeting}" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="{Binding OpenedMessage.Body}" FontSize="15" LineHeight="1.5" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+
+        <Grid Grid.RowSpan="3" BackgroundColor="#FCF7F5" IsVisible="{Binding IsComposing}" RowDefinitions="Auto,*">
+            <Grid Padding="12,14" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Image Source="ic_close.svg" WidthRequest="26" HeightRequest="26">
+                    <Image.GestureRecognizers><TapGestureRecognizer Command="{Binding CloseComposerCommand}" /></Image.GestureRecognizers>
+                </Image>
+                <Label Grid.Column="1" Text="New message" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+                <Button Grid.Column="2" Text="Send" Command="{Binding Composer.SendCommand}" BackgroundColor="#0F5DB5" TextColor="White" CornerRadius="20" />
+            </Grid>
+            <VerticalStackLayout Grid.Row="1" Padding="20,8" Spacing="10">
+                <Entry Placeholder="To" Text="{Binding Composer.To}" Keyboard="Email" />
+                <Entry Placeholder="Cc" Text="{Binding Composer.Cc}" Keyboard="Email" />
+                <Entry Placeholder="Subject" Text="{Binding Composer.Subject}" />
+                <Editor Placeholder="Write your message" Text="{Binding Composer.Body}" HeightRequest="320" AutoSize="Disabled" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
     </Grid>
 </ContentPage>
