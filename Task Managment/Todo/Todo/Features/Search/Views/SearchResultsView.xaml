@@ -133,7 +133,10 @@
                                                       IsChecked="{Binding IsCompleted, Mode=OneWay}"
                                                       CheckedChanged="OnCheckChanged"
                                                       Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Desktop={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={StaticResource PrimaryColor}}"
-                                                      VerticalOptions="Center" />
+                                                      VerticalOptions="Center"
+                                                      HorizontalOptions="Center"
+                                                      WidthRequest="32"
+                                                      HeightRequest="32" />
 
                                                 <Label Grid.Column="1"
                                                        Style="{StaticResource NoteTitleStyle}"
@@ -156,20 +159,30 @@
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
                                                         <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#0D7D12" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                                        <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
+                                                        <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
                                                     </HorizontalStackLayout>
+                                                    <Label Text="&#8226;"
+                                                           IsVisible="{OnIdiom Phone={Binding HasMetadataSeparatorAfterDueDate}, Tablet={Binding HasMetadataSeparatorAfterDueDate}, Default=False}"
+                                                           FontSize="14"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                           VerticalTextAlignment="Center" />
                                                     <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
                                                         <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#2667A3" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                                        <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
+                                                        <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
                                                     </HorizontalStackLayout>
+                                                    <Label Text="&#8226;"
+                                                           IsVisible="{OnIdiom Phone={Binding HasMetadataSeparatorAfterRepeat}, Tablet={Binding HasMetadataSeparatorAfterRepeat}, Default=False}"
+                                                           FontSize="14"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                           VerticalTextAlignment="Center" />
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
                                                         <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#7D5294" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                                        <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
+                                                        <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                 </HorizontalStackLayout>
 
-                                            <Border Grid.Column="2"
+                                            <Border Grid.Row="0" Grid.Column="2"
                                                     WidthRequest="40"
                                                     HeightRequest="40"
                                                     BackgroundColor="Transparent"
@@ -195,7 +208,7 @@
                                                                   SemanticProperties.Description="Toggle important" />
                                             </Border>
 
-                                            <Border Grid.Column="3"
+                                            <Border Grid.Row="0" Grid.Column="3"
                                                     WidthRequest="40"
                                                     HeightRequest="40"
                                                     BackgroundColor="Transparent"
@@ -208,7 +221,7 @@
                                                 </Border.GestureRecognizers>
                                                 <buttons:SfButton Text="&#8943;"
                                                                   FontAttributes="Bold"
-                                                                  FontSize="{OnIdiom Phone=20, Default=22}"
+                                                                  FontSize="20"
                                                                   Rotation="90"
                                                                   Background="Transparent"
                                                                   TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"

@@ -64,11 +64,15 @@ public partial class Note : ObservableObject
 
     public bool HasRepeat => RepeatFrequency != NoteRepeatFrequency.Never;
     public bool HasMetadata => DueDate.HasValue || HasRepeat || HasReminder;
+    public bool HasMetadataSeparatorAfterDueDate => DueDate.HasValue && (HasRepeat || HasReminder);
+    public bool HasMetadataSeparatorAfterRepeat => HasRepeat && HasReminder;
 
     partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value)
     {
         OnPropertyChanged(nameof(HasRepeat));
         OnPropertyChanged(nameof(HasMetadata));
+        OnPropertyChanged(nameof(HasMetadataSeparatorAfterDueDate));
+        OnPropertyChanged(nameof(HasMetadataSeparatorAfterRepeat));
     }
 
     /// <summary>
@@ -80,12 +84,15 @@ public partial class Note : ObservableObject
     {
         OnPropertyChanged(nameof(IsDueToday));
         OnPropertyChanged(nameof(HasMetadata));
+        OnPropertyChanged(nameof(HasMetadataSeparatorAfterDueDate));
     }
 
     partial void OnReminderDateChanged(DateTime? value)
     {
         OnPropertyChanged(nameof(HasReminder));
         OnPropertyChanged(nameof(HasMetadata));
+        OnPropertyChanged(nameof(HasMetadataSeparatorAfterDueDate));
+        OnPropertyChanged(nameof(HasMetadataSeparatorAfterRepeat));
     }
 
     /// <summary>
