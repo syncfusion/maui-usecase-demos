@@ -61,7 +61,7 @@
 
             <!-- Search -->
             <Border Grid.Column="1"
-                    Margin="24,0"
+                    Margin="12,0"
                     BackgroundColor="White"
                     Stroke="#D9D9D9"
                     StrokeShape="RoundRectangle 6"
@@ -92,12 +92,14 @@
                            Spacing="10"
                            VerticalOptions="Center">
 
-                <Button Text="Calendar"
+                    <Button Text="&#xE71d;"
+                        FontFamily="MauiMaterialAssets"
                         Clicked="OnCalendarClicked"
                         BackgroundColor="#106EBE"
                         TextColor="White"
                         CornerRadius="6"
                         HeightRequest="40"
+                            FontSize="18"
                         Padding="14,0"
                         VerticalOptions="Center" />
 
@@ -203,8 +205,14 @@
                                     </BoxView>
                                     <HorizontalStackLayout Grid.Column="2" Margin="0,0,6,0" Spacing="0" IsVisible="{Binding IsHovered}" VerticalOptions="Center" HorizontalOptions="End">
                                         <ImageButton Source="unread.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}"><ImageButton.Triggers><DataTrigger TargetType="ImageButton" Binding="{Binding IsRead}" Value="True"><Setter Property="Opacity" Value="0.45" /></DataTrigger></ImageButton.Triggers></ImageButton>
-                                        <ImageButton Source="flag.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}"><ImageButton.Triggers><DataTrigger TargetType="ImageButton" Binding="{Binding IsFlagged}" Value="False"><Setter Property="Opacity" Value="0.45" /></DataTrigger></ImageButton.Triggers></ImageButton>
-                                        <ImageButton Source="archieve.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}"></ImageButton>
+                                            <ImageButton Source="flag_filled.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}">
+                                                <ImageButton.Triggers>
+                                                    <DataTrigger TargetType="ImageButton" Binding="{Binding IsFlagged}" Value="False">
+                                                        <Setter Property="Source" Value="flag.png" />
+                                                    </DataTrigger>
+                                                </ImageButton.Triggers>
+                                            </ImageButton>
+                                            <ImageButton Source="archieve.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}"></ImageButton>
                                         </HorizontalStackLayout>
                                     <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="16" TextColor="#222222" />
                                     <Label Grid.Row="1" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Subject}" FontSize="14" TextColor="#2F8FE0" LineBreakMode="TailTruncation">
