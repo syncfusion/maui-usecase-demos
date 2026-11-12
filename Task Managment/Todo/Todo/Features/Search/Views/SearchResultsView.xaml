@@ -182,7 +182,7 @@
                                                     </HorizontalStackLayout>
                                                 </HorizontalStackLayout>
 
-                                            <Border Grid.Row="0" Grid.Column="2"
+                                            <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
                                                     WidthRequest="40"
                                                     HeightRequest="40"
                                                     BackgroundColor="Transparent"
@@ -208,7 +208,7 @@
                                                                   SemanticProperties.Description="Toggle important" />
                                             </Border>
 
-                                            <Border Grid.Row="0" Grid.Column="3"
+                                            <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"
                                                     WidthRequest="40"
                                                     HeightRequest="40"
                                                     BackgroundColor="Transparent"

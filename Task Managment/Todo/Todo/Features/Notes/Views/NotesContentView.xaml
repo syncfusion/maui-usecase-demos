@@ -330,7 +330,7 @@
                                         </HorizontalStackLayout>
 
                                     <!-- Star (Important) -->
-                                    <Border Grid.Row="0" Grid.Column="2"
+                                    <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
                                     WidthRequest="40" Margin="0"
                                             HeightRequest="40"
                                             BackgroundColor="Transparent"
@@ -359,7 +359,7 @@
                                     </Border>
 
                                     <!-- More menu (three-dot) -->
-                                    <Border Grid.Row="0" Grid.Column="3" Margin="0"
+                                    <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" Margin="0"
                                             WidthRequest="40"
                                             HeightRequest="40"
                                             BackgroundColor="Transparent"
@@ -533,7 +533,7 @@
                                                         </HorizontalStackLayout>
                                                     </Border>
                                                 </HorizontalStackLayout>
-                                            <buttons:SfButton Grid.Row="0" Grid.Column="2"
+                                            <buttons:SfButton Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
                                                               Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
                                                               TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
                                                               IsEnabled="{Binding IsActive}"
@@ -543,7 +543,7 @@
                                                               VerticalOptions="Center"
                                                               Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.ToggleImportantCommand}"
                                                               CommandParameter="{Binding .}" />
-                                            <buttons:SfButton Grid.Row="0" Grid.Column="3" Text="&#8943;" Rotation="90"
+                                            <buttons:SfButton Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" Text="&#8943;" Rotation="90"
                                                               Background="Transparent" Padding="0"
                                                               FontAttributes="Bold"
                                                               FontSize="20" WidthRequest="40" HeightRequest="40"
