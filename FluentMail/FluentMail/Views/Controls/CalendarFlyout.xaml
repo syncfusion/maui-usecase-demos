@@ -4,18 +4,20 @@
              xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
              xmlns:vm="clr-namespace:FluentMail.ViewModels"
              xmlns:models="clr-namespace:FluentMail.Models"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              x:Class="FluentMail.Views.Controls.CalendarFlyout"
              x:DataType="vm:CalendarViewModel">
-    <Grid RowDefinitions="Auto,Auto,*,Auto" BackgroundColor="White" Padding="0">
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="White" Padding="0">
         <Grid Padding="24,16,16,8" ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="24">
             <Label Text="Calendar" FontSize="18" FontAttributes="Bold" TextColor="#0F5DB5" VerticalOptions="Center" />
-            <Label Grid.Column="1" Text="To Do" FontSize="18" VerticalOptions="Center" />
-            <Button Grid.Column="3" Text="✕" FontSize="18" BackgroundColor="Transparent" TextColor="#3C3C3C" Padding="8,0" Clicked="OnCloseClicked" />
+            <Button Grid.Column="3" Text="✕" BorderWidth="0" FontSize="18" BackgroundColor="Transparent" TextColor="#3C3C3C" Padding="8,0" Clicked="OnCloseClicked" />
         </Grid>
-        <calendar:SfCalendar x:Name="FlyoutCalendar" Grid.Row="1" View="Month" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" ShowTrailingAndLeadingDates="True" Background="White" HeightRequest="330" Margin="12,0" />
-        <ScrollView Grid.Row="2">
-            <VerticalStackLayout BindableLayout.ItemsSource="{Binding AgendaGroups}" Padding="16,0" Spacing="6">
-                <BindableLayout.ItemTemplate>
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout>
+                <calendar:SfCalendar x:Name="FlyoutCalendar" View="Month" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectionBackground="#0F5DB5" ShowTrailingAndLeadingDates="True" Background="White" HeightRequest="330" Margin="12,0" />
+        
+                <listview:SfListView ItemsSource="{Binding AgendaGroups}" Padding="16,0" IsScrollingEnabled="False" SelectionBackground="Transparent" SelectionMode="None" AutoFitMode="DynamicHeight">
+                    <listview:SfListView.ItemTemplate>
                     <DataTemplate x:DataType="models:AgendaGroup">
                         <VerticalStackLayout Spacing="8">
                             <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" Padding="0,14,0,2" />
@@ -39,11 +41,12 @@
                             </VerticalStackLayout>
                         </VerticalStackLayout>
                     </DataTemplate>
-                </BindableLayout.ItemTemplate>
+                </listview:SfListView.ItemTemplate>
+            </listview:SfListView>
             </VerticalStackLayout>
         </ScrollView>
-        <Button Grid.Row="3" Text="＋  New event" Command="{Binding OpenAddCommand}" BackgroundColor="Transparent" TextColor="#0F5DB5" FontSize="16" HorizontalOptions="Start" Margin="12,4,0,8" />
-        <Grid Grid.RowSpan="4" IsVisible="{Binding IsAddOpen}" BackgroundColor="#80000000">
+        <Button Grid.Row="2" Text="＋ New event" Command="{Binding OpenAddCommand}" BackgroundColor="Transparent" TextColor="#0F5DB5" FontSize="16" HorizontalOptions="Start" Margin="12,4,0,8" />
+        <Grid Grid.RowSpan="3" IsVisible="{Binding IsAddOpen}" BackgroundColor="#80000000">
             <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 12" Padding="20" WidthRequest="300" VerticalOptions="Center" HorizontalOptions="Center">
                 <VerticalStackLayout Spacing="12">
                     <Label Text="Add to calendar" FontSize="18" FontAttributes="Bold" />

@@ -189,17 +189,32 @@
             <Grid RowDefinitions="Auto,*">
                 <Grid Padding="40,16,20,8" ColumnDefinitions="*,Auto">
                     <Label Text="{Binding SelectedFolder.Name}" FontSize="22" VerticalOptions="Center" />
-                    <inputs:SfComboBox
-                            WidthRequest="100"
+                        <Border
                             Grid.Column="2"
-                            ItemsSource="{Binding FilterOptions}"
-                            SelectedItem="{Binding SelectedFilter}"
-                            IsDropDownShadowVisible="True"
-                            ShowBorder="False"
-                            TextColor="#0A6BD6"
-                            IsClearButtonVisible="False"
-                            DropDownBackground="Transparent" />
-                </Grid>
+                            Background="#F3F0ED"
+                            StrokeThickness="0"
+                            Padding="6,0"
+                            HeightRequest="34"
+                            HorizontalOptions="Start">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16"/>
+                            </Border.StrokeShape>
+
+                            <inputs:SfComboBox
+                                    WidthRequest="120"
+                                    ItemsSource="{Binding FilterOptions}"
+                                    SelectedItem="{Binding SelectedFilter}"
+                                    ShowBorder="False"
+                                    BackgroundColor="Transparent"
+                                    DropDownBackground="White"
+                                    SelectedDropDownItemBackground="#D7E8FB"
+                                    TextColor="#1F3B5B"
+                                    FontSize="16"
+                                    IsClearButtonVisible="False"
+                                    IsDropDownShadowVisible="False" />
+                        </Border>
+                    </Grid>
                 <Grid Grid.Row="1">
                     <listview:SfListView ItemsSource="{Binding VisibleMessages}" SelectionMode="Single" ScrollBarVisibility="Never" AutoFitMode="DynamicHeight" SelectionBackground="#D7E8FB" ItemSpacing="0" SelectedItem="{Binding SelectedMessage, Mode=TwoWay}" BackgroundColor="White">
                         <listview:SfListView.ItemTemplate>
@@ -259,6 +274,7 @@
                  VerticalOptions="Fill" />
 
         <Grid Grid.Row="2" Grid.Column="3" BackgroundColor="White">
+            
             <Grid IsVisible="{Binding IsComposing}"
                     Padding="10"
                     RowDefinitions="Auto,Auto,Auto,*,Auto"
@@ -324,20 +340,20 @@
                 <richtext:SfRichTextEditor Grid.Row="3"
                                            Grid.ColumnSpan="2"
                                            ShowToolbar="True"
+                                           EditorBackgroundColor="White"
                                            HtmlText="{Binding Composer.Body, Mode=TwoWay}" >
                     <richtext:SfRichTextEditor.ToolbarItems>
                         <!-- Define a custom set of toolbar items -->
-                        <richtext:RichTextToolbarItem Type="Bold" />
-                        <richtext:RichTextToolbarItem Type="Underline" />
-                        <richtext:RichTextToolbarItem Type="Separator" />
-                        <richtext:RichTextToolbarItem Type="NumberList" />
-                        <richtext:RichTextToolbarItem Type="BulletList" />
-                        <richtext:RichTextToolbarItem Type="FontFamily" />
-                        <richtext:RichTextToolbarItem Type="FontSize" />
-                        <richtext:RichTextToolbarItem Type="TextColor" />
-                        <richtext:RichTextToolbarItem Type="Hyperlink" />
-                        <richtext:RichTextToolbarItem Type="Image" />
-                        <richtext:RichTextToolbarItem Type="Table" />
+                            <richtext:RichTextToolbarItem Type="Bold" />
+                            <richtext:RichTextToolbarItem Type="Underline" />
+                            <richtext:RichTextToolbarItem Type="Separator" />
+                            <richtext:RichTextToolbarItem Type="FontFamily" />
+                            <richtext:RichTextToolbarItem Type="HighlightColor" />
+                            <richtext:RichTextToolbarItem Type="FontSize" />
+                            <richtext:RichTextToolbarItem Type="TextColor" />
+                            <richtext:RichTextToolbarItem Type="Hyperlink" />
+                            <richtext:RichTextToolbarItem Type="Image" />
+                            <richtext:RichTextToolbarItem Type="Table" />
                     </richtext:SfRichTextEditor.ToolbarItems>
                     <richtext:SfRichTextEditor.ToolbarSettings>
                         <richtext:RichTextEditorToolbarSettings BackgroundColor="Transparent" SelectionColor="#3B9DE8"/>
