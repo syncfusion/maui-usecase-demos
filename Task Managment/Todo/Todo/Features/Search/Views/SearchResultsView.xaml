@@ -88,7 +88,7 @@
                                        Grid.Row="0"
                                        IsVisible="{Binding HasResults}"
                                        ItemSpacing="0"
-                                       ItemSize="76"
+                                       AutoFitMode="DynamicHeight"
                                        BackgroundColor="Transparent"
                                        SelectionMode="None">
                             <syncfusion:SfListView.ItemTemplate>
@@ -125,6 +125,7 @@
                                             </Border.GestureRecognizers>
 
                                             <Grid ColumnDefinitions="{OnIdiom Desktop='40,*,40,40', Default='44,*,40,40'}"
+                                                  RowDefinitions="40,Auto"
                                                   ColumnSpacing="8"
                                                   VerticalOptions="Center">
 
@@ -134,11 +135,10 @@
                                                       Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Desktop={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={StaticResource PrimaryColor}}"
                                                       VerticalOptions="Center" />
 
-                                            <VerticalStackLayout Grid.Column="1"
-                                                                 Spacing="{OnIdiom Phone=2, Desktop=4, Default=2}"
-                                                                 VerticalOptions="Center">
-                                                <Label Style="{StaticResource NoteTitleStyle}"
+                                                <Label Grid.Column="1"
+                                                       Style="{StaticResource NoteTitleStyle}"
                                                        HeightRequest="{OnIdiom Desktop=24, Default=-1}"
+                                                       VerticalOptions="Center"
                                                        MaxLines="1">
                                                     <Label.FormattedText>
                                                         <MultiBinding Converter="{StaticResource SearchHighlightMultiValueConverter}">
@@ -148,7 +148,11 @@
                                                         </MultiBinding>
                                                     </Label.FormattedText>
                                                 </Label>
-                                                <HorizontalStackLayout Spacing="{OnIdiom Phone=10, Desktop=8, Default=10}" VerticalOptions="Center">
+                                                <HorizontalStackLayout Grid.Row="1"
+                                                                       Grid.Column="1"
+                                                                       IsVisible="{Binding HasMetadata}"
+                                                                       Spacing="{OnIdiom Phone=10, Desktop=8, Default=10}"
+                                                                       VerticalOptions="Center">
                                                     <HorizontalStackLayout Spacing="4"
                                                                            IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
                                                         <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#0D7D12" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
@@ -164,7 +168,6 @@
                                                         <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Default=True}" />
                                                     </HorizontalStackLayout>
                                                 </HorizontalStackLayout>
-                                            </VerticalStackLayout>
 
                                             <Border Grid.Column="2"
                                                     WidthRequest="40"
@@ -179,6 +182,7 @@
                                                 </Border.GestureRecognizers>
                                                 <buttons:SfButton Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
                                                                   TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                                                  FontAttributes="Bold"
                                                                   FontSize="20"
                                                                   Background="Transparent"
                                                                   WidthRequest="40"
@@ -203,6 +207,7 @@
                                                                               PointerExited="OnPointerExited" />
                                                 </Border.GestureRecognizers>
                                                 <buttons:SfButton Text="&#8943;"
+                                                                  FontAttributes="Bold"
                                                                   FontSize="{OnIdiom Phone=20, Default=22}"
                                                                   Rotation="90"
                                                                   Background="Transparent"

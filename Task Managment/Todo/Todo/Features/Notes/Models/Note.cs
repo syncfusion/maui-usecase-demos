@@ -63,9 +63,13 @@ public partial class Note : ObservableObject
     public bool HasReminder => ReminderDate.HasValue;
 
     public bool HasRepeat => RepeatFrequency != NoteRepeatFrequency.Never;
+    public bool HasMetadata => DueDate.HasValue || HasRepeat || HasReminder;
 
     partial void OnRepeatFrequencyChanged(NoteRepeatFrequency value)
-        => OnPropertyChanged(nameof(HasRepeat));
+    {
+        OnPropertyChanged(nameof(HasRepeat));
+        OnPropertyChanged(nameof(HasMetadata));
+    }
 
     /// <summary>
     /// Indicates whether the note is due today.
@@ -73,10 +77,16 @@ public partial class Note : ObservableObject
     public bool IsDueToday => DueDate.HasValue && DueDate.Value.Date == DateTime.Today;
 
     partial void OnDueDateChanged(DateTime? value)
-        => OnPropertyChanged(nameof(IsDueToday));
+    {
+        OnPropertyChanged(nameof(IsDueToday));
+        OnPropertyChanged(nameof(HasMetadata));
+    }
 
     partial void OnReminderDateChanged(DateTime? value)
-        => OnPropertyChanged(nameof(HasReminder));
+    {
+        OnPropertyChanged(nameof(HasReminder));
+        OnPropertyChanged(nameof(HasMetadata));
+    }
 
     /// <summary>
     /// Whether the note is visible in the My Notes (active) view —
