@@ -23,8 +23,11 @@
                 <syncfusionCards:SfCardView CornerRadius="24"
                                             BackgroundColor="#FFFFFF"
                                             Padding="22">
-                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="10">
-                        <VerticalStackLayout Spacing="6">
+					<Grid ColumnDefinitions="{OnIdiom Default='*,Auto', Phone='*'}"
+						  RowDefinitions="{OnIdiom Default='Auto,Auto', Phone='Auto,Auto'}"
+						  ColumnSpacing="16"
+						  RowSpacing="10">
+						<VerticalStackLayout Spacing="6">
                             <Label Text="My Bookings &amp; Tickets"
                                    FontFamily="OpenSansSemibold"
                                    FontSize="30"
@@ -35,7 +38,8 @@
                                    TextColor="#5B6275" />
                         </VerticalStackLayout>
 
-                        <HorizontalStackLayout Grid.Column="1" Spacing="10" HorizontalOptions="End" VerticalOptions="Center">
+						<HorizontalStackLayout IsVisible="{OnIdiom Default=true, Phone=false}"
+											   Grid.Column="1" Spacing="10" HorizontalOptions="End" VerticalOptions="Center">
                             <Border StrokeThickness="0" BackgroundColor="#EEF2FF" StrokeShape="RoundRectangle 16" Padding="14,8">
                                 <Label Text="{Binding UpcomingCount, StringFormat='Upcoming ({0})'}" FontSize="12" TextColor="#4338CA" />
                             </Border>
@@ -92,6 +96,7 @@
                                                IsScrollingEnabled="False"
 											   AutoFitMode="DynamicHeight"
 											   SelectionMode="None"
+                                               Padding="-26"
 							                   ItemSpacing="14"
 											   BackgroundColor="Transparent">
 							<syncfusion:SfListView.ItemsLayout>
@@ -99,10 +104,11 @@
 							</syncfusion:SfListView.ItemsLayout>
 							<syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Booking">
+									<ScrollView>
 									<Border StrokeShape="RoundRectangle 22"
 											BackgroundColor="#FAFAFF"
-                                                                 Padding="16">
-                                        <Grid ColumnDefinitions="220,*,140" ColumnSpacing="16">
+                                                                 Padding="12">
+											<Grid ColumnDefinitions="{OnIdiom Default='220,*,140', Phone='180,140'}" ColumnSpacing="16">
                                             <Border StrokeThickness="0"
                                                     Background="#111827"
                                                     StrokeShape="RoundRectangle 20"
@@ -112,7 +118,7 @@
                                                             StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 16"
                                                             Padding="10"
-                                                            HeightRequest="238">
+																HeightRequest="{OnIdiom Default='235', Phone='200'}">
                                                         <Grid RowDefinitions="Auto,*,Auto">
                                                             <Border BackgroundColor="#7C3AED"
                                                                     StrokeThickness="0"
@@ -126,7 +132,7 @@
                                                             </Border>
 
                                                             <VerticalStackLayout Grid.Row="1"
-                                                                                 VerticalOptions="Center"
+																					 VerticalOptions="Center"
                                                                                  Spacing="4">
                                                                 <Label Text="{Binding MovieTitle}"
                                                                        FontFamily="OpenSansSemibold"
@@ -153,7 +159,8 @@
                                                 </Grid>
                                             </Border>
 
-                                            <VerticalStackLayout Grid.Column="1" Spacing="12" VerticalOptions="Center">
+												<VerticalStackLayout IsVisible="{OnIdiom Default=true, Phone=false}"
+																	 Grid.Column="1" Spacing="12" VerticalOptions="Center">
                                                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="10">
                                                     <VerticalStackLayout Spacing="4">
                                                         <Label Text="Theater"
@@ -257,6 +264,7 @@
                                             </VerticalStackLayout>
                                         </Grid>
                                     </Border>
+                                    </ScrollView>
                                 </DataTemplate>
                             </syncfusion:SfListView.ItemTemplate>
                             <syncfusion:SfListView.EmptyView>
