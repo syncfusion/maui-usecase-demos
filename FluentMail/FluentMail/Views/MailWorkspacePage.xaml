@@ -138,18 +138,14 @@
                                                           PointerExitedCommand="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ClearFolderHoverCommand}" PointerExitedCommandParameter="{Binding .}" />
                             </Grid.GestureRecognizers>
                             <Label Text="{Binding Name}" FontSize="16" VerticalOptions="Center" />
-                            <Grid Grid.Column="1" WidthRequest="32" HeightRequest="32" IsVisible="{Binding ShowStar}" BackgroundColor="Transparent">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFolderFavouriteCommand}" CommandParameter="{Binding .}" />
-                                </Grid.GestureRecognizers>
-                                <Image Source="star.png" WidthRequest="16" HeightRequest="16" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
-                                    <Image.Triggers>
-                                        <DataTrigger TargetType="Image" Binding="{Binding IsFavourite}" Value="True">
-                                            <Setter Property="Source" Value="star_filled.png" />
-                                        </DataTrigger>
-                                    </Image.Triggers>
-                                </Image>
-                            </Grid>
+                            <ImageButton Grid.Column="1" IsVisible="{Binding ShowStar}" Source="star.png" WidthRequest="28" HeightRequest="28" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" VerticalOptions="Center"
+                                         Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFolderFavouriteCommand}" CommandParameter="{Binding .}">
+                                <ImageButton.Triggers>
+                                    <DataTrigger TargetType="ImageButton" Binding="{Binding IsFavourite}" Value="True">
+                                        <Setter Property="Source" Value="star_filled.png" />
+                                    </DataTrigger>
+                                </ImageButton.Triggers>
+                            </ImageButton>
                             <Label Grid.Column="2" Text="{Binding Count}" FontSize="16" VerticalOptions="Center" TextColor="{StaticResource PrimaryLight}">
                                 <Label.Triggers>
                                     <DataTrigger TargetType="Label" Binding="{Binding Count}" Value="0">
@@ -194,36 +190,11 @@
                                             </DataTrigger>
                                         </BoxView.Triggers>
                                     </BoxView>
-                                    <HorizontalStackLayout Grid.Column="2" Margin="0,0,10,0" IsVisible="{Binding IsHovered}" VerticalOptions="Center" HorizontalOptions="End">
-                                        <Grid WidthRequest="30" HeightRequest="24" BackgroundColor="Transparent">
-                                            <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}" />
-                                            </Grid.GestureRecognizers>
-                                            <Image Source="unread.png" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
-                                                <Image.Triggers>
-                                                    <DataTrigger TargetType="Image" Binding="{Binding IsRead}" Value="True"><Setter Property="Opacity" Value="0.45" /></DataTrigger>
-                                                </Image.Triggers>
-                                            </Image>
-                                        </Grid>
-                                        <Grid WidthRequest="30" HeightRequest="24" BackgroundColor="Transparent">
-                                            <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}" />
-                                            </Grid.GestureRecognizers>
-                                            <Image Source="flag_filled.png" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True">
-                                                <Image.Triggers>
-                                                    <DataTrigger TargetType="Image" Binding="{Binding IsFlagged}" Value="False">
-                                                        <Setter Property="Source" Value="flag.png" />
-                                                    </DataTrigger>
-                                                </Image.Triggers>
-                                            </Image>
-                                        </Grid>
-                                        <Grid WidthRequest="30" HeightRequest="24" BackgroundColor="Transparent">
-                                            <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}" />
-                                            </Grid.GestureRecognizers>
-                                            <Image Source="archieve.png" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"></Image>
-                                        </Grid>
-                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Column="2" Margin="0,0,6,0" Spacing="0" IsVisible="{Binding IsHovered}" VerticalOptions="Center" HorizontalOptions="End">
+                                        <ImageButton Source="unread.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleReadCommand}" CommandParameter="{Binding .}"><ImageButton.Triggers><DataTrigger TargetType="ImageButton" Binding="{Binding IsRead}" Value="True"><Setter Property="Opacity" Value="0.45" /></DataTrigger></ImageButton.Triggers></ImageButton>
+                                        <ImageButton Source="flag.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}"><ImageButton.Triggers><DataTrigger TargetType="ImageButton" Binding="{Binding IsFlagged}" Value="False"><Setter Property="Opacity" Value="0.45" /></DataTrigger></ImageButton.Triggers></ImageButton>
+                                        <ImageButton Source="archieve.png" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}"></ImageButton>
+                                        </HorizontalStackLayout>
                                     <Label Grid.Column="1" Grid.ColumnSpan="2" Margin="35,0,10,0" Text="{Binding Sender}" FontSize="16" TextColor="#222222" />
                                     <Label Grid.Row="1" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Subject}" FontSize="14" TextColor="#2F8FE0" LineBreakMode="TailTruncation">
                                         <Label.Triggers>
@@ -234,12 +205,9 @@
                                     </Label>
                                     <HorizontalStackLayout Grid.Row="1" Grid.Column="2" Margin="0,0,10,0" Spacing="6" HorizontalOptions="End">
                                         <Label Text="{Binding ReceivedOn, StringFormat='{0:h:mm tt}'}" FontSize="14" TextColor="#2F8FE0" VerticalOptions="Center" />
-                                        <Grid WidthRequest="26" HeightRequest="20" IsVisible="{Binding IsHovered}" BackgroundColor="Transparent">
-                                            <Grid.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
-                                            </Grid.GestureRecognizers>
-                                            <Label FontFamily="MauiMaterialAssets" Text="&#xE70F;" FontSize="16" TextColor="#555555" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True" />
-                                        </Grid>
+                                        <ImageButton IsVisible="{Binding IsHovered}" WidthRequest="30" HeightRequest="30" Padding="6" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit" Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}">
+                                            <ImageButton.Source><FontImageSource FontFamily="MauiMaterialAssets" Glyph="&#xE70F;" Size="18" Color="#555555" /></ImageButton.Source>
+                                        </ImageButton>
                                     </HorizontalStackLayout>
                                     <Label Grid.Row="2" Grid.Column="1" Margin="35,0,0,0" Text="{Binding Preview}" FontSize="14" TextColor="#777777" LineBreakMode="TailTruncation" />
                                 </Grid>

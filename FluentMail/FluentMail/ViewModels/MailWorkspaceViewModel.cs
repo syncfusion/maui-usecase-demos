@@ -213,19 +213,20 @@ public partial class MailWorkspaceViewModel : ObservableObject
     void ToggleFolderFavourite(FolderNode? folder)
     {
         if (folder is null || !folder.CanFavourite) return;
-        var favorites = mailbox.Folders[0];
-        var existing = favorites.Children.FirstOrDefault(x => x.Name == folder.Name);
-        if (existing is null)
-        {
-            favorites.Children.Add(new FolderNode { Name = folder.Name, CanFavourite = true, IsFavourite = true });
-        }
-        else
-        {
-            favorites.Children.Remove(existing);
-        }
 
-        foreach (var node in mailbox.Folders.SelectMany(x => x.Children).Where(x => x.Name == folder.Name && x != existing))
-            node.IsFavourite = existing is null;
+        var makeFavourite = !folder.IsFavourite;
+        var favorites = mailbox.Folders[0];
+
+        foreach (var node in mailbox.Folders.SelectMany(x => x.Children).Where(x => x.Name == folder.Name))
+            node.IsFavourite = makeFavourite;
+        folder.IsFavourite = makeFavourite;
+
+        var existing = favorites.Children.FirstOrDefault(x => x.Name == folder.Name);
+        if (makeFavourite && existing is null)
+            favorites.Children.Add(new FolderNode { Name = folder.Name, CanFavourite = true, IsFavourite = true });
+        else if (!makeFavourite && existing is not null)
+            favorites.Children.Remove(existing);
+
         UpdateFolderCounts();
     }
 
