@@ -293,35 +293,36 @@
                  VerticalOptions="Fill" />
 
         <Grid Grid.Row="2" Grid.Column="3" BackgroundColor="White">
-            
-            <Grid IsVisible="{Binding IsComposing}"
+
+                <Grid IsVisible="{Binding IsComposing}"
                     Padding="10"
-                    RowDefinitions="Auto,Auto,Auto,*,Auto"
+                    RowDefinitions="Auto,1,Auto,1,Auto,*,Auto"
                     RowSpacing="10"
                     ColumnDefinitions="Auto,*"
                     ColumnSpacing="10">
 
+                    <Border Grid.Row="0" WidthRequest="48" HeightRequest="40" VerticalOptions="Start" Stroke="#D1D1D1" StrokeThickness="1" StrokeShape="RoundRectangle 4" BackgroundColor="White">
+                       <Label Text="To" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <editors:SfAutocomplete Grid.Row="0" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start" SelectedDropDownItemBackground="#D7E8FB"
+                                            ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                            SelectedItems="{Binding Composer.ToContacts, Mode=TwoWay}" Text="{Binding Composer.ToText, Mode=TwoWay}"
+                                            DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                            TextSearchMode="Contains" DropdownWidth="420" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
+                        <editors:SfAutocomplete.DropdownHeaderView>
+                            <Label Text="Suggested contacts" FontAttributes="Bold" FontSize="14" Padding="16,10" VerticalOptions="Center" />
+                        </editors:SfAutocomplete.DropdownHeaderView>
+                        <editors:SfAutocomplete.ItemTemplate>
+                            <StaticResource Key="ContactSuggestionTemplate" />
+                        </editors:SfAutocomplete.ItemTemplate>
+                    </editors:SfAutocomplete>
 
-                <Border Grid.Row="0" WidthRequest="48" HeightRequest="40" VerticalOptions="Start" Stroke="#D1D1D1" StrokeThickness="1" StrokeShape="RoundRectangle 4" BackgroundColor="White">
-                    <Label Text="To" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-                </Border>
-                <editors:SfAutocomplete Grid.Row="0" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start"
-                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
-                                        SelectedItems="{Binding Composer.ToContacts, Mode=TwoWay}" Text="{Binding Composer.ToText, Mode=TwoWay}"
-                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
-                                        TextSearchMode="Contains" DropdownWidth="420" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
-                    <editors:SfAutocomplete.DropdownHeaderView>
-                        <Label Text="Suggested contacts" FontAttributes="Bold" FontSize="14" Padding="16,10" VerticalOptions="Center" />
-                    </editors:SfAutocomplete.DropdownHeaderView>
-                    <editors:SfAutocomplete.ItemTemplate>
-                        <StaticResource Key="ContactSuggestionTemplate" />
-                    </editors:SfAutocomplete.ItemTemplate>
-                </editors:SfAutocomplete>
+                    <BoxView Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="1" HeightRequest="0.75" Margin="0,-30,0,0" Color="Black"/>
 
-                <Border Grid.Row="1" WidthRequest="48" HeightRequest="40" VerticalOptions="Start" Stroke="#D1D1D1" StrokeThickness="1" StrokeShape="RoundRectangle 4" BackgroundColor="White">
-                    <Label Text="Cc" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-                </Border>
-                <editors:SfAutocomplete Grid.Row="1" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start"
+                    <Border Grid.Row="2" WidthRequest="48" HeightRequest="40" VerticalOptions="Start" Stroke="#D1D1D1" StrokeThickness="1" StrokeShape="RoundRectangle 4" BackgroundColor="White">
+                        <Label Text="Cc" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <editors:SfAutocomplete Grid.Row="2" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start" SelectedDropDownItemBackground="#D7E8FB"
                                         ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
                                         SelectedItems="{Binding Composer.CcContacts, Mode=TwoWay}" Text="{Binding Composer.CcText, Mode=TwoWay}"
                                         DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
@@ -334,10 +335,12 @@
                     </editors:SfAutocomplete.ItemTemplate>
                 </editors:SfAutocomplete>
 
-                <Entry Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Add a subject" FontSize="16" HeightRequest="44" />
+                    <BoxView Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="3" HeightRequest="0.75" Margin="0,-30,0,0" Color="Black"/>
+
+                    <Entry Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Add a subject" FontSize="16" HeightRequest="44" />
 
                 <!-- Editor -->
-                <richtext:SfRichTextEditor Grid.Row="3"
+                <richtext:SfRichTextEditor Grid.Row="5"
                                            Grid.ColumnSpan="2"
                                            ShowToolbar="True"
                                            EditorBackgroundColor="White"
@@ -361,7 +364,7 @@
                 </richtext:SfRichTextEditor>
 
                 <!-- Actions -->
-                <HorizontalStackLayout Grid.Row="4"
+                <HorizontalStackLayout Grid.Row="6"
                            Grid.ColumnSpan="2"
                            Spacing="12">
 
