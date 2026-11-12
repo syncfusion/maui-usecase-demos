@@ -22,7 +22,11 @@ public partial class DiagramDesignerPage : ContentPage
     private readonly SfPopup _savePopup;
     private readonly SfPopup _printPopup;
     private readonly System.ComponentModel.PropertyChangedEventHandler _zoomSubscription;
+    private Button? _propertyPanelToggleButton;
     private bool _dialogShown;
+    private bool? _isCompactLayout;
+    private bool _desktopShowProperties = true;
+    private bool _desktopShowStencil = true;
 
     public DiagramDesignerPage(
         DiagramDesignerViewModel viewModel,
@@ -36,6 +40,12 @@ public partial class DiagramDesignerPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
+        SizeChanged += OnDesignerSizeChanged;
+        WorkspaceHost.SizeChanged += (_, _) => UpdateMobilePropertyPanelHeight();
+        MobilePropertyScrim.GestureRecognizers.Add(new TapGestureRecognizer
+        {
+            Command = viewModel.TogglePropertiesCommand,
+        });
         _viewModel = viewModel;
         _diagramService = diagramService;
         _propertyService = propertyService;
@@ -141,6 +151,10 @@ public partial class DiagramDesignerPage : ContentPage
             {
                 _ = Workspace.ApplyStencilVisibilityAsync(viewModel.ShowStencil);
             }
+            else if (args.PropertyName == nameof(DiagramDesignerViewModel.ShowProperties))
+            {
+                MobilePropertyScrim.IsVisible = _isCompactLayout == true && viewModel.ShowProperties;
+            }
         };
         _ = Workspace.ApplyGridSettingsAsync(viewModel.Zoom.ShowGrid, viewModel.Zoom.SnapToGrid);
 
@@ -149,6 +163,90 @@ public partial class DiagramDesignerPage : ContentPage
 
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
+    }
+
+    private void OnDesignerSizeChanged(object? sender, EventArgs e)
+    {
+        if (Width <= 0 || Height <= 0)
+        {
+            return;
+        }
+
+        var compact = Width < 720;
+        if (_isCompactLayout == compact)
+        {
+            UpdateMobilePropertyPanelHeight();
+            return;
+        }
+
+        if (compact)
+        {
+            _desktopShowProperties = _viewModel.ShowProperties;
+            _desktopShowStencil = _viewModel.ShowStencil;
+            _viewModel.ShowProperties = false;
+            _viewModel.ShowStencil = false;
+
+            DesignerLayout.ColumnDefinitions.Clear();
+            DesignerLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0) });
+            DesignerLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+            DesignerLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0) });
+            DesignerLayout.ColumnSpacing = 0;
+
+            Grid.SetColumn(WorkspaceHost, 0);
+            Grid.SetColumnSpan(WorkspaceHost, 3);
+            Grid.SetColumn(PropertyPanel, 0);
+            Grid.SetColumnSpan(PropertyPanel, 3);
+            PropertyPanel.WidthRequest = -1;
+            PropertyPanel.HorizontalOptions = LayoutOptions.Fill;
+            PropertyPanel.VerticalOptions = LayoutOptions.End;
+            PropertyPanel.Margin = Thickness.Zero;
+            Toolbar.IsCompactLayout = true;
+        }
+        else
+        {
+            DesignerLayout.ColumnDefinitions.Clear();
+            DesignerLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            DesignerLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+            DesignerLayout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            DesignerLayout.ColumnSpacing = 8;
+
+            Grid.SetColumn(WorkspaceHost, 0);
+            Grid.SetColumnSpan(WorkspaceHost, 2);
+            Grid.SetColumn(PropertyPanel, 2);
+            Grid.SetColumnSpan(PropertyPanel, 1);
+            PropertyPanel.WidthRequest = 320;
+            PropertyPanel.HeightRequest = -1;
+            PropertyPanel.HorizontalOptions = LayoutOptions.Fill;
+            PropertyPanel.VerticalOptions = LayoutOptions.Fill;
+            PropertyPanel.Margin = Thickness.Zero;
+            Toolbar.IsCompactLayout = false;
+
+            if (_isCompactLayout == true)
+            {
+                _viewModel.ShowProperties = _desktopShowProperties;
+                _viewModel.ShowStencil = _desktopShowStencil;
+            }
+        }
+
+        _isCompactLayout = compact;
+        if (_propertyPanelToggleButton is not null)
+        {
+            _propertyPanelToggleButton.Text = compact
+                ? Constants.MaterialIcons.DropdownCaret
+                : Constants.MaterialIcons.ChevronRight;
+        }
+        MobilePropertyScrim.IsVisible = compact && _viewModel.ShowProperties;
+        UpdateMobilePropertyPanelHeight();
+    }
+
+    private void UpdateMobilePropertyPanelHeight()
+    {
+        if (_isCompactLayout != true || WorkspaceHost.Height <= 0)
+        {
+            return;
+        }
+
+        PropertyPanel.HeightRequest = Math.Min(WorkspaceHost.Height, Math.Max(320, WorkspaceHost.Height * 0.72));
     }
 
     private void WireWorkspace(DiagramWorkspaceControl workspace)
@@ -357,6 +455,7 @@ public partial class DiagramDesignerPage : ContentPage
             Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
             AutomationId = "property_panel_close",
         };
+        _propertyPanelToggleButton = button;
         button.Clicked += (_, _) => _viewModel.TogglePropertiesCommand.Execute(null);
         return button;
     }

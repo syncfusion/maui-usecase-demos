@@ -11,7 +11,6 @@
                           ShowRecentColors="True"
                           ShowAlphaSlider="True"
                           ShowInputArea="True"
-                          DisplayViewHeight="30"
                           DropDownWidth="18"
                           SelectedColorIconSize="20"
                           DisplayViewStrokeThickness="1"

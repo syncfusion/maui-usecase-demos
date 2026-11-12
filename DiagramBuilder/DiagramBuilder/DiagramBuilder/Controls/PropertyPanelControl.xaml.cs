@@ -303,12 +303,14 @@ public partial class PropertyPanelControl : ContentView
     {
         var entry = new SfNumericEntry
         {
-            Minimum = model.Min ?? 0,
-            Maximum = model.Max ?? 100000,
+            Minimum = model.Min ?? double.MinValue,
+            Maximum = model.Max ?? double.MaxValue,
             // SfNumericEntry.CustomFormat expects a .NET *custom numeric* format
             // string ("#,0.00##"), not a composite format ("{0:0.##}"). Passing
             // braces makes them render literally, e.g. "{35:0}".
             CustomFormat = model.IsInteger ? "#,0" : "#,0.##",
+            IsEditable = true,
+            ValueChangeMode = ValueChangeMode.OnKeyFocus,
             ShowBorder = true,
             ShowClearButton = false,
             UpDownPlacementMode = NumericEntryUpDownPlacementMode.Inline,
@@ -317,7 +319,7 @@ public partial class PropertyPanelControl : ContentView
             LargeChange = model.IsInteger ? 10 : 1,
             UpDownButtonColor = Services.ResourceLookup.ResourceColor("TextSecondary"),
             FontSize = 13,
-            HeightRequest = 42,
+            HeightRequest = 38,
             HorizontalTextAlignment = TextAlignment.Start,
             VerticalTextAlignment = TextAlignment.Center,
             AutomationId = "property_value_" + model.Key.ToLowerInvariant(),
@@ -367,13 +369,15 @@ public partial class PropertyPanelControl : ContentView
             ItemsSource = model.Options.ToList(),
             FontSize = 13,
             ShowBorder = true,
-            HeightRequest = 42,
+            HeightRequest = 38,
             HorizontalTextAlignment = TextAlignment.Start,
             VerticalTextAlignment = TextAlignment.Center,
             // The combo renders a clear (✕) button by default, which crowds the
             // narrow panel and suggests the value can be emptied — these pickers
             // always have a valid selection, so the button is hidden.
             IsClearButtonVisible = false,
+            IsEditable = true,
+            IsFilteringEnabled = true,
         };
 
         var selected = model.Value as string;
@@ -401,7 +405,9 @@ public partial class PropertyPanelControl : ContentView
     {
         var picker = new ColorPickerButton
         {
-            ColorValue = model.Value as string ?? string.Empty,
+            // Property pickers start at white; the shape color changes only after a selection is committed.
+            ColorValue = "#FFFFFFFF",
+            HeightRequest = 42,
         };
         picker.ColorChanged += (_, key) => Commit(vm, model, key);
         return picker;
@@ -448,13 +454,13 @@ public partial class PropertyPanelControl : ContentView
         {
             ActiveSize = 4,
             InactiveSize = 4,
-            ActiveFill = Services.ResourceLookup.ResourceColor("SelectionBlue"),
+            ActiveFill = Services.ResourceLookup.ResourceColor("PrimaryColor"),
             InactiveFill = Services.ResourceLookup.ResourceColor("PanelBorderColor"),
         };
         slider.ThumbStyle = new Syncfusion.Maui.Sliders.SliderThumbStyle
         {
             Radius = 8,
-            Fill = Services.ResourceLookup.ResourceColor("SelectionBlue"),
+            Fill = Services.ResourceLookup.ResourceColor("PrimaryColor"),
         };
 
         var grid = new Grid
@@ -569,27 +575,84 @@ public partial class PropertyPanelControl : ContentView
 
     private View BuildToggleEditor(PropertyModel model, PropertyPanelViewModel vm)
     {
+        var isOn = model.Value is bool value && value;
         var toggle = new SfSwitch
         {
-            IsOn = model.Value is bool value && value,
-            SwitchSettings = new SwitchSettings
-            {
-                TrackBackground = Services.ResourceLookup.ResourceColor("PrimaryColor"),
-                ThumbBackground = Colors.White,
-                // The default switch is far too large for a 320 px inspector;
-                // these are compact inline toggles.
-                TrackWidthRequest = 24,
-                TrackHeightRequest = 14,
-                ThumbWidthRequest = 10,
-                ThumbHeightRequest = 10,
-            },
+            IsOn = isOn,
+            HeightRequest = 30,
+            MinimumHeightRequest = 30,
             HorizontalOptions = LayoutOptions.Start,
             VerticalOptions = LayoutOptions.Center,
         };
+
+        var onSettings = CreateToggleSettings(
+            Services.ResourceLookup.ResourceColor("PrimaryColor"),
+            Colors.White,
+            Services.ResourceLookup.ResourceColor("PrimaryColor"),
+            Colors.White);
+        var offColor = Services.ResourceLookup.ResourceColor("TextSecondary");
+        var offSettings = CreateToggleSettings(
+            Services.ResourceLookup.ResourceColor("CanvasBackground"),
+            offColor,
+            offColor,
+            offColor);
+
+        var commonStates = new VisualStateGroup { Name = "CommonStates" };
+        var onState = new VisualState { Name = "On" };
+        onState.Setters.Add(new Setter
+        {
+            Property = SfSwitch.SwitchSettingsProperty,
+            Value = onSettings,
+        });
+        var onHoveredState = new VisualState { Name = "OnHovered" };
+        onHoveredState.Setters.Add(new Setter
+        {
+            Property = SfSwitch.SwitchSettingsProperty,
+            Value = onSettings,
+        });
+        var offState = new VisualState { Name = "Off" };
+        offState.Setters.Add(new Setter
+        {
+            Property = SfSwitch.SwitchSettingsProperty,
+            Value = offSettings,
+        });
+        var offHoveredState = new VisualState { Name = "OffHovered" };
+        offHoveredState.Setters.Add(new Setter
+        {
+            Property = SfSwitch.SwitchSettingsProperty,
+            Value = offSettings,
+        });
+        commonStates.States.Add(onState);
+        commonStates.States.Add(onHoveredState);
+        commonStates.States.Add(offState);
+        commonStates.States.Add(offHoveredState);
+
+        var stateGroups = new VisualStateGroupList();
+        stateGroups.Add(commonStates);
+        VisualStateManager.SetVisualStateGroups(toggle, stateGroups);
+        VisualStateManager.GoToState(toggle, isOn ? "On" : "Off");
+
         toggle.StateChanged += (_, args) => Commit(vm, model, args.NewValue);
         SemanticProperties.SetDescription(toggle, model.LabelKey);
         return toggle;
     }
+
+    private static SwitchSettings CreateToggleSettings(Color trackBackground, Color trackStroke, Color thumbBackground, Color thumbStroke) =>
+        new()
+        {
+            TrackBackground = trackBackground,
+            TrackStroke = trackStroke,
+            TrackStrokeThickness = 1.5,
+            TrackWidthRequest = 40,
+            TrackHeightRequest = 20,
+            TrackCornerRadius = new CornerRadius(10),
+            ThumbBackground = thumbBackground,
+            ThumbStroke = thumbStroke,
+            ThumbStrokeThickness = 1,
+            ThumbWidthRequest = 14,
+            ThumbHeightRequest = 14,
+            ThumbCornerRadius = new CornerRadius(7),
+        };
 
     /// <summary>Pushes an edited value into the model and applies it to the live element.</summary>
     private static void Commit(PropertyPanelViewModel vm, PropertyModel model, object? value)

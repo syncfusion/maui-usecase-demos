@@ -10,13 +10,18 @@
              xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
              x:Class="DiagramBuilder.Controls.MenuBarControl">
 
-    <HorizontalStackLayout x:Name="RootsBar"
-                           Spacing="0"
-                           HeightRequest="44"
-                           Padding="6,0"
-                           BackgroundColor="{DynamicResource PrimaryColor}">
-
-        <!-- Per-root flyouts are created dynamically in code-behind so each root
-             carries its own SfPopup host with the right RelativeView anchor. -->
-    </HorizontalStackLayout>
+    <ScrollView Orientation="Horizontal"
+                HorizontalScrollBarVisibility="Never"
+                VerticalScrollBarVisibility="Never"
+                HeightRequest="44"
+                BackgroundColor="{DynamicResource PrimaryColor}">
+        <HorizontalStackLayout x:Name="RootsBar"
+                               Spacing="0"
+                               HeightRequest="44"
+                               Padding="6,0"
+                               BackgroundColor="{DynamicResource PrimaryColor}">
+            <!-- Per-root flyouts are created dynamically in code-behind so each root
+                 carries its own SfPopup host with the right RelativeView anchor. -->
+        </HorizontalStackLayout>
+    </ScrollView>
 </ContentView>

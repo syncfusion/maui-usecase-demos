@@ -2,16 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DiagramBuilder.Views.DiagramDesignerPage"
-             xmlns:constants="clr-namespace:DiagramBuilder.Constants"
              xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
              xmlns:behaviors="clr-namespace:DiagramBuilder.Behaviors;assembly=DiagramBuilder"
              x:Name="RootPage"
-             Title="{Binding DocumentTitle}"
              BackgroundColor="{DynamicResource WindowBackground}">
 
     <!--
       Designer frame per ui-spec.md §1: Canvas | Properties.
-      Rows: blue-chrome(title+menu) / toolbar / content / status; columns: /* / 320.
+      Rows: blue-chrome(document title+menu) / toolbar / content / status; columns: /* / 320.
       Panels collapse to 0 width via WINDOW menu toggles.
 
       The shapes render in the native Syncfusion palette inside the SfDiagram's
@@ -19,31 +17,26 @@
       sibling of the SfDiagram — it lives inside DiagramWorkspaceControl's
       DiagramGrid (hidden, config-only).
     -->
-    <Grid RowDefinitions="Auto,Auto,*,Auto"
+    <Grid x:Name="DesignerLayout"
+          RowDefinitions="Auto,Auto,*,Auto"
           ColumnDefinitions="Auto,*,Auto"
           Padding="8"
           ColumnSpacing="8">
 
         <!-- Row 0: blue chrome — document title on top, menu roots (File/Edit/View/
-             Arrange/Window) on a second line, both left-aligned per the design. -->
+             Arrange/Window) on a second line. -->
         <VerticalStackLayout Grid.Row="0" Grid.ColumnSpan="3"
                              BackgroundColor="{DynamicResource PrimaryColor}"
                              Spacing="0">
             <Grid ColumnDefinitions="*,Auto"
                   Padding="12,8,12,2"
                   HeightRequest="30">
-                <StackLayout Grid.Column="0"
-                             Orientation="Horizontal" Spacing="12"
-                             VerticalOptions="Center">
-                    <Label Text="{x:Static constants:AppStrings.AppTitle}"
-                           FontSize="15" FontAttributes="Bold"
-                           TextColor="White"
-                           VerticalOptions="Center" />
-                    <Label Text="{Binding DocumentTitle}"
-                           FontSize="12"
-                           TextColor="#CCFFFFFF"
-                           VerticalOptions="Center" />
-                </StackLayout>
+                <Label Grid.Column="0"
+                       Text="{Binding DocumentTitle}"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       VerticalOptions="Center" />
             </Grid>
 
             <!-- Menu bar: File / Edit / View / Arrange / Window pills -->
@@ -53,7 +46,8 @@
         </VerticalStackLayout>
 
         <!-- Row 1: toolbar (collapsible) -->
-        <controls:ToolbarControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+        <controls:ToolbarControl x:Name="Toolbar"
+                                 Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                                  IsVisible="{Binding ShowToolbar}"
                                  ItemsSource="{Binding Toolbar.Items}"
                                  ToolCommand="{Binding Toolbar.ToolCommand}"
@@ -70,17 +64,27 @@
              canvas area; the shape palette is discovered by Syncfusion from
              the SymbolPalette sibling inside the workspace control and renders
              inside the SfDiagram's own webview. -->
-        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+        <Grid x:Name="WorkspaceHost"
+              Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
               ColumnDefinitions="*">
             <controls:DiagramWorkspaceControl x:Name="Workspace"
                                                Margin="0" />
         </Grid>
+
+        <BoxView x:Name="MobilePropertyScrim"
+                 Grid.Row="2"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="3"
+                 BackgroundColor="#66000000"
+                 IsVisible="False"
+                 ZIndex="1" />
 
         <!-- Properties (right, 320 px, collapsible) -->
         <controls:PropertyPanelControl x:Name="PropertyPanel"
                                        Grid.Row="2" Grid.Column="2"
                                        BindingContext="{Binding PropertyPanel}"
                                        WidthRequest="320"
+                                       ZIndex="2"
                                        IsVisible="{Binding Source={x:Reference RootPage}, Path=BindingContext.ShowProperties}" />
 
         <!-- Row 3: status bar -->

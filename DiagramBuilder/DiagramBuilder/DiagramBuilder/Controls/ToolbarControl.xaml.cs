@@ -110,6 +110,23 @@ public partial class ToolbarControl : ContentView
         set => SetValue(SelectedElementIdProperty, value);
     }
 
+    private bool _isCompactLayout;
+
+    public bool IsCompactLayout
+    {
+        get => _isCompactLayout;
+        set
+        {
+            if (_isCompactLayout == value)
+            {
+                return;
+            }
+
+            _isCompactLayout = value;
+            ApplyLayoutMode();
+        }
+    }
+
     private readonly Dictionary<string, Button> _toggleButtons = new();
     private string _fillColorKey = "AccentFlow";
     private string _strokeColorKey = "TextPrimary";
@@ -189,6 +206,45 @@ public partial class ToolbarControl : ContentView
         ApplyActiveToolHighlight();
     }
 
+    private void ApplyLayoutMode()
+    {
+        if (_isCompactLayout)
+        {
+            ToolbarLayout.Children.Remove(LeftGroupsBar);
+            ToolbarLayout.Children.Remove(CenterGroupsBar);
+            ToolbarLayout.Children.Remove(RightGroupsBar);
+
+            LeftGroupsBar.HorizontalOptions = LayoutOptions.Start;
+            CenterGroupsBar.HorizontalOptions = LayoutOptions.Start;
+            RightGroupsBar.HorizontalOptions = LayoutOptions.Start;
+            CompactToolbarBar.Children.Add(LeftGroupsBar);
+            CompactToolbarBar.Children.Add(CenterGroupsBar);
+            CompactToolbarBar.Children.Add(RightGroupsBar);
+            ToolbarLayout.IsVisible = false;
+            CompactToolbarScroll.IsVisible = true;
+        }
+        else
+        {
+            CompactToolbarBar.Children.Remove(LeftGroupsBar);
+            CompactToolbarBar.Children.Remove(CenterGroupsBar);
+            CompactToolbarBar.Children.Remove(RightGroupsBar);
+
+            Grid.SetColumn(LeftGroupsBar, 0);
+            Grid.SetColumn(CenterGroupsBar, 1);
+            Grid.SetColumn(RightGroupsBar, 2);
+            LeftGroupsBar.HorizontalOptions = LayoutOptions.Start;
+            CenterGroupsBar.HorizontalOptions = LayoutOptions.Center;
+            RightGroupsBar.HorizontalOptions = LayoutOptions.End;
+            ToolbarLayout.Children.Add(LeftGroupsBar);
+            ToolbarLayout.Children.Add(CenterGroupsBar);
+            ToolbarLayout.Children.Add(RightGroupsBar);
+            CompactToolbarScroll.IsVisible = false;
+            ToolbarLayout.IsVisible = true;
+        }
+
+        Rebuild();
+    }
+
     private void BuildLeftToolbar(List<DiagramToolbarItem> allItems)
     {
         var byGroup = allItems.GroupBy(i => i.Group).OrderBy(g => g.Key).ToList();
@@ -259,17 +315,19 @@ public partial class ToolbarControl : ContentView
         {
             if (group6Items.Any(i => i.Id == AppConstants.CmdBringToFront || i.Id == AppConstants.CmdSendToBack))
             {
-                CenterGroupsBar.Children.Add(BuildArrangeDropdown());
+                var arrangeDropdown = BuildArrangeDropdown();
+                arrangeDropdown.Margin = new Thickness(0);
+                CenterGroupsBar.Children.Add(arrangeDropdown);
             }
 
             foreach (var item in group6Items.Where(i => i.Id == AppConstants.ToolLock))
             {
-                CenterGroupsBar.Children.Add(BuildIconButton(item));
+                CenterGroupsBar.Children.Add(BuildIconButton(item, centered: true));
             }
 
             foreach (var item in group5Items.Where(i => i.Id == AppConstants.CmdDelete))
             {
-                CenterGroupsBar.Children.Add(BuildIconButton(item));
+                CenterGroupsBar.Children.Add(BuildIconButton(item, centered: true));
             }
         }
     }
@@ -284,7 +342,8 @@ public partial class ToolbarControl : ContentView
         {
             Text = Constants.MaterialIcons.TextFor(AppConstants.CmdShowProperties),
             FontFamily = "MaterialIcons",
-            Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            FontSize = 20,
+            Style = (Style)Application.Current!.Resources["ToolbarPrimaryActionStyle"],
             AutomationId = "toolbar_properties",
         };
         btn.Clicked += (_, _) => ShowPropertiesCommand?.Execute(null);
@@ -309,7 +368,7 @@ public partial class ToolbarControl : ContentView
         };
     }
 
-    private Button BuildIconButton(DiagramToolbarItem item)
+    private Button BuildIconButton(DiagramToolbarItem item, bool centered = false)
     {
         var btn = new Button
         {
@@ -317,6 +376,8 @@ public partial class ToolbarControl : ContentView
             Text = Constants.MaterialIcons.TextFor(item.Id) ?? item.Id,
             FontFamily = "MaterialIcons",
             Style = (Style)Application.Current!.Resources["ToolbarIconButtonStyle"],
+            FontSize = item.Id is AppConstants.ToolLock or AppConstants.CmdDelete ? 16 : 14,
+            Margin = centered ? new Thickness(0) : new Thickness(1, 0),
             AutomationId = "toolbar_" + item.Id.Replace('.', '_'),
         };
 
@@ -337,7 +398,7 @@ public partial class ToolbarControl : ContentView
         var picker = new ColorPickerButton
         {
             ColorValue = colorValue,
-            Margin = new Thickness(7, 0),
+            Margin = new Thickness(0),
             AutomationId = "toolbar_fill_color",
         };
 
@@ -366,7 +427,7 @@ public partial class ToolbarControl : ContentView
         var picker = new ColorPickerButton
         {
             ColorValue = colorValue,
-            Margin = new Thickness(7, 0),
+            Margin = new Thickness(0),
             AutomationId = "toolbar_stroke_color",
         };
 
@@ -472,13 +533,14 @@ public partial class ToolbarControl : ContentView
             {
                 Spacing = 4,
                 VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
                 Children =
                 {
                     new Label
                     {
                         Text = Constants.MaterialIcons.TextFor(id),
                         FontFamily = "MaterialIcons",
-                        FontSize = 14,
+                        FontSize = id == "arrange" ? 18 : 14,
                         TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
                         VerticalTextAlignment = TextAlignment.Center,
                     },
@@ -565,9 +627,9 @@ public partial class ToolbarControl : ContentView
             ShowFooter = false,
             ShowCloseButton = false,
             StaysOpen = false,
-            // Size the popup to its content instead of the default fixed width.
-            AutoSizeMode = PopupAutoSizeMode.Both,
-            AutoSizeTarget = PopupAutoSizeTarget.Content,
+            WidthRequest = 132,
+            HeightRequest = 144,
+            AutoSizeMode = PopupAutoSizeMode.None,
             // Visible border around the dropdown surface.
             PopupStyle = new PopupStyle
             {
@@ -582,12 +644,15 @@ public partial class ToolbarControl : ContentView
         var button = new SfButton
         {
             Style = (Style)Application.Current!.Resources["ToolbarDropdownButtonStyle"],
+            Padding = new Thickness(0),
             AutomationId = "toolbar_zoom",
             // SfButton.Content is a DataTemplate (same pattern as the menu rows).
             Content = new DataTemplate(() => new HorizontalStackLayout
             {
                 Spacing = 2,
                 VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
+                Padding = new Thickness(4, 0),
                 Children =
                 {
                     new Label
@@ -612,7 +677,7 @@ public partial class ToolbarControl : ContentView
         button.Clicked += (_, _) =>
         {
             PopupXamlRootHelper.AttachIfAvailable(popup, button);
-            popup.ShowRelativeToView(button, PopupRelativePosition.AlignBottomLeft);
+            popup.ShowRelativeToView(button, PopupRelativePosition.AlignBottomRight);
         };
 
         return button;
@@ -620,56 +685,49 @@ public partial class ToolbarControl : ContentView
 
     private View BuildZoomContent(SfPopup popup)
     {
-        var stack = new VerticalStackLayout { Spacing = 0, Padding = new Thickness(4) };
-
-        if (ZoomLevels is not null)
+        var stack = new VerticalStackLayout
         {
-            foreach (var level in ZoomLevels)
-            {
-                if (level is not ZoomLevel zl)
-                    continue;
+            Spacing = 0,
+            Padding = new Thickness(4),
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Fill,
+        };
 
-                var isSelected = Math.Abs(CurrentZoom - zl.Value) < 0.0001;
-                var row = new SfButton
+        var zoomLevels = ZoomLevels?.Cast<object>().OfType<ZoomLevel>().ToList();
+        if (zoomLevels is null || zoomLevels.Count == 0)
+        {
+            zoomLevels = AppConstants.ZoomLevels
+                .Select(value => new ZoomLevel
                 {
-                    Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
-                    Padding = new Thickness(8, 6),
-                    HeightRequest = 32,
-                    Command = new Command(() =>
+                    Value = value,
+                    LabelKey = $"{value * 100:0}%",
+                })
+                .ToList();
+        }
+
+        foreach (var level in zoomLevels)
+        {
+            var isSelected = Math.Abs(CurrentZoom - level.Value) < 0.0001;
+            var row = new SfButton
+            {
+                Style = (Style)Application.Current!.Resources["MenuRowHitAreaStyle"],
+                Text = level.LabelKey,
+                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
+                FontAttributes = isSelected ? FontAttributes.Bold : FontAttributes.None,
+                HorizontalTextAlignment = TextAlignment.Start,
+                Padding = new Thickness(12, 6),
+                HeightRequest = 32,
+                HorizontalOptions = LayoutOptions.Fill,
+                Command = new Command(() =>
+                {
+                    SetZoomCommand?.Execute(level);
+                    if (popup.IsOpen)
                     {
-                        SetZoomCommand?.Execute(zl);
-                        if (popup.IsOpen)
-                        {
-                            popup.IsOpen = false;
-                        }
-                    }),
-                    Content = new DataTemplate(() => new HorizontalStackLayout
-                    {
-                        Spacing = 8,
-                        VerticalOptions = LayoutOptions.Center,
-                        Children =
-                        {
-                            new Label
-                            {
-                                Text = isSelected ? Constants.MaterialIcons.CheckGlyph : string.Empty,
-                                FontFamily = "MaterialIcons",
-                                FontSize = 14,
-                                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
-                                VerticalTextAlignment = TextAlignment.Center,
-                                WidthRequest = 18,
-                            },
-                            new Label
-                            {
-                                Text = zl.LabelKey,
-                                FontSize = 12,
-                                TextColor = Services.ResourceLookup.ResourceColor("TextPrimary"),
-                                VerticalTextAlignment = TextAlignment.Center,
-                            },
-                        },
-                    }),
-                };
-                stack.Children.Add(row);
-            }
+                        popup.IsOpen = false;
+                    }
+                }),
+            };
+            stack.Children.Add(row);
         }
 
         // The popup root owns the surface: PopupStyle supplies the background,

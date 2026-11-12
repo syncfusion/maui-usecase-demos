@@ -26,6 +26,7 @@ public partial class PropertyPanelViewModel : ObservableObject
     public PropertyPanelViewModel(IPropertyService propertyService)
     {
         _propertyService = propertyService;
+        Refresh(null);
     }
 
     /// <summary>True when nothing is selected — the panel shows the page settings.</summary>

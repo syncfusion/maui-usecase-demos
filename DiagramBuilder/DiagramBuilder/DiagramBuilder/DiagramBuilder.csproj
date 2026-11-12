@@ -62,6 +62,8 @@
 		<MauiXaml Update="Views\DiagramDesignerPage.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Views\CreateDiagramPage.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Views\Dialogs\ExportDialog.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Views\Dialogs\SaveDialog.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Views\Dialogs\PrintDialog.xaml" Inflator="Runtime" />
 	</ItemGroup>
 
 	<ItemGroup>

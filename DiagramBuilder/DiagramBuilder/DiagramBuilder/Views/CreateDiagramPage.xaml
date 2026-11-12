@@ -14,10 +14,12 @@
         <!-- Modal scrim -->
         <Grid BackgroundColor="{DynamicResource ModalScrim}" />
 
-        <Border HorizontalOptions="Center"
+        <Border x:Name="CreateDialog"
+                HorizontalOptions="Center"
                 VerticalOptions="Center"
-                WidthRequest="980"
-                HeightRequest="640"
+                Margin="12"
+                MaximumWidthRequest="980"
+                MaximumHeightRequest="640"
                 BackgroundColor="{DynamicResource WindowBackground}"
                 Stroke="{DynamicResource PanelBorderBrush}"
                 StrokeThickness="1">
@@ -27,7 +29,8 @@
 
             <Grid RowDefinitions="Auto,*">
                 <!-- Header row -->
-                <Grid Padding="24,18,20,12"
+                <Grid x:Name="CreateHeader"
+                      Padding="24,18,20,12"
                       ColumnDefinitions="*,Auto">
                     <VerticalStackLayout Grid.Column="0" Spacing="4">
                         <Label Text="{Binding Title}"
@@ -51,13 +54,25 @@
                 </Grid>
 
                 <!-- Body: category rail + template list -->
-                <Grid Grid.Row="1"
+                <Grid x:Name="CreateBody"
+                      Grid.Row="1"
                       ColumnDefinitions="240,*">
+                    <Picker x:Name="MobileCategoryPicker"
+                            Grid.ColumnSpan="2"
+                            IsVisible="False"
+                            ItemsSource="{Binding Categories}"
+                            SelectedItem="{Binding SelectedCategoryLabel, Mode=TwoWay}"
+                            Title="Diagram type"
+                            Margin="12,8"
+                            HeightRequest="44"
+                            AutomationId="mobile_diagram_category" />
+
                     <!-- Left category rail: Syncfusion SfListView owns selection, so the
                          active category gets the persistent highlight via SelectedItemTemplate
                          (no fragile trigger). Each item is a Syncfusion SfButton so the
                          touch press overlay fires reliably from Android touch events. -->
-                    <Border BackgroundColor="{DynamicResource CategoryRailBackground}"
+                    <Border x:Name="CategoryRailContainer"
+                            BackgroundColor="{DynamicResource CategoryRailBackground}"
                             StrokeThickness="0"
                             Padding="0,12">
                         <VerticalStackLayout x:Name="CategoryRail"
@@ -66,8 +81,11 @@
                     </Border>
 
                     <!-- Right template panel -->
-                    <ScrollView Grid.Column="1">
-                        <VerticalStackLayout Padding="40,20,40,20" Spacing="20">
+                    <ScrollView x:Name="TemplateScrollView"
+                                Grid.Column="1">
+                        <VerticalStackLayout x:Name="TemplateContent"
+                                             Padding="40,20,40,20"
+                                             Spacing="20">
 
                             <!-- Blank section -->
                             <VerticalStackLayout Spacing="8">
@@ -80,7 +98,7 @@
                                         StrokeThickness="1"
                                         Padding="0"
                                         BackgroundColor="{DynamicResource CanvasBackground}"
-                                        WidthRequest="640"
+                                        HorizontalOptions="Fill"
                                         HeightRequest="170">
                                     <Border.StrokeShape>
                                         <shapes:RoundRectangle CornerRadius="6" />
@@ -98,8 +116,9 @@
                                         </VerticalStackLayout>
                                         <Button Grid.Column="1"
                                                 Text="{x:Static constants:AppStrings.CreateAction}"
-                                                WidthRequest="100"
+                                                WidthRequest="88"
                                                 HeightRequest="36"
+                                                Margin="8,0,0,0"
                                                 VerticalOptions="Center"
                                                 BackgroundColor="{Binding EmptyDiagramTemplate.AccentColorKey, Converter={StaticResource ColorToBrushConverter}}"
                                                 TextColor="White"
@@ -117,24 +136,20 @@
                                        FontAttributes="Bold"
                                        CharacterSpacing="1"
                                        TextColor="{DynamicResource TextSecondary}" />
-                                <CollectionView ItemsSource="{Binding PredefinedTemplates}"
-                                                SelectionMode="None">
-                                    <CollectionView.ItemsLayout>
-                                        <LinearItemsLayout ItemSpacing="12"
-                                                            Orientation="Vertical" />
-                                    </CollectionView.ItemsLayout>
-                                    <CollectionView.ItemTemplate>
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding PredefinedTemplates}"
+                                                     Spacing="12">
+                                    <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="models:DiagramTemplate">
                                             <Border Stroke="{DynamicResource PanelBorderBrush}"
                                                     StrokeThickness="1"
                                                     Padding="0"
                                                     BackgroundColor="{DynamicResource CanvasBackground}"
                                                     HeightRequest="160"
-                                                    WidthRequest="640">
+                                                    HorizontalOptions="Fill">
                                                 <Border.StrokeShape>
                                                     <shapes:RoundRectangle CornerRadius="6" />
                                                 </Border.StrokeShape>
-                                                <Grid ColumnDefinitions="160,*,Auto" Padding="0,0,0,0">
+                                                <Grid ColumnDefinitions="112,*,Auto" Padding="0,0,0,0">
                                                     <!-- Thumbnail area (left, accent color stripe) -->
                                                     <Grid Grid.Column="0">
                                                         <BoxView Color="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}" />
@@ -172,7 +187,7 @@
                                                     </Grid>
 
                                                     <!-- Text content -->
-                                                    <VerticalStackLayout Grid.Column="1" Padding="20,16,12,16" Spacing="6" VerticalOptions="Center">
+                                                    <VerticalStackLayout Grid.Column="1" Padding="12,12,8,12" Spacing="6" VerticalOptions="Center">
                                                         <Label Text="{Binding Title}"
                                                                FontSize="15"
                                                                FontAttributes="Bold"
@@ -190,9 +205,9 @@
                                                     <!-- Create button -->
                                                     <Button Grid.Column="2"
                                                             Text="{x:Static constants:AppStrings.CreateAction}"
-                                                            WidthRequest="100"
+                                                            WidthRequest="88"
                                                             HeightRequest="36"
-                                                            Margin="0,0,20,0"
+                                                            Margin="0,0,12,0"
                                                             VerticalOptions="Center"
                                                             BackgroundColor="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}"
                                                             TextColor="White"
@@ -202,8 +217,8 @@
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
                             </VerticalStackLayout>
 
                         </VerticalStackLayout>

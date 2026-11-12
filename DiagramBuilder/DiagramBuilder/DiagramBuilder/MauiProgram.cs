@@ -17,7 +17,7 @@ namespace DiagramBuilder
         public static MauiApp CreateMauiApp()
         {
 
-            SyncfusionLicenseProvider.RegisterLicense("Syncfusion_License_Key");
+            SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JBaF5cXmRCf1FpRGJGfV5yckVHYVZTRnxeRk0SNHVRdkdlWH5fcXVURGJdV0ZyWUdWYEw=");
 
             var builder = MauiApp.CreateBuilder();
             builder

@@ -71,8 +71,8 @@ public static class MaterialIcons
 
     // Window menu
     private const int ViewModule = 0xE8F0;
-    private const int ViewQuilt = 0xE8F1;
     private const int ViewSidebar = 0xF114;
+    private const int Tune = 0xE429;
 
     /// <summary>Material icon text for a command/tool id, or null for unknown ids.</summary>
     public static string? TextFor(string id) => id switch
@@ -124,7 +124,7 @@ public static class MaterialIcons
         // Window
         AppConstants.CmdShowToolbar => Glyph(ViewModule),
         AppConstants.CmdShowStencil => Glyph(ViewSidebar),
-        AppConstants.CmdShowProperties => Glyph(ViewQuilt),
+        AppConstants.CmdShowProperties => Glyph(Tune),
 
         // Toolbar-only ids
         AppConstants.ToolLock => Glyph(Lock),

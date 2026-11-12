@@ -13,6 +13,8 @@ namespace DiagramBuilder.Services;
 /// </summary>
 public static class DiagramModelAdapter
 {
+    private const string StencilShapeAnnotationPrefix = "stencil-shape-";
+
     /// <summary>
     /// Maps a domain <see cref="ShapeItem"/> to a Syncfusion <see cref="Node"/>,
     /// setting an explicit <c>Id</c> so connector <c>SourceID</c>/<c>TargetID</c> resolve.
@@ -149,6 +151,54 @@ public static class DiagramModelAdapter
 
         _ => new BasicShape(NodeBasicShapes.Rectangle, 0),
     };
+
+    public static void RestoreStencilShape(Node node)
+    {
+        if ((TryGetStencilShapeType(node, out var shapeType)
+                || TryGetStencilShapeType(node.Id, out shapeType))
+            && FromShape(node.Shape) != shapeType)
+        {
+            node.Shape = ToShape(shapeType);
+        }
+    }
+
+    private static bool TryGetStencilShapeType(Node node, out ShapeType shapeType)
+    {
+        var annotationId = node.Annotations
+            .OfType<ShapeAnnotation>()
+            .Select(annotation => annotation.Id)
+            .FirstOrDefault(id => id.StartsWith(StencilShapeAnnotationPrefix, StringComparison.Ordinal));
+
+        if (annotationId is not null
+            && Enum.TryParse(
+                annotationId[StencilShapeAnnotationPrefix.Length..],
+                ignoreCase: true,
+                out shapeType)
+            && Enum.IsDefined(shapeType))
+        {
+            return true;
+        }
+
+        shapeType = default;
+        return false;
+    }
+
+    private static bool TryGetStencilShapeType(string symbolId, out ShapeType shapeType)
+    {
+        foreach (var item in StencilCatalog.All.SelectMany(group => group.Items))
+        {
+            if (item.ShapeType is { } candidate
+                && (symbolId.Equals(item.Id, StringComparison.Ordinal)
+                    || symbolId.StartsWith(item.Id + "_", StringComparison.Ordinal)))
+            {
+                shapeType = candidate;
+                return true;
+            }
+        }
+
+        shapeType = default;
+        return false;
+    }
 
     private static ShapeType FromShape(Shape? shape) => shape switch
     {
@@ -312,14 +362,25 @@ public static class DiagramModelAdapter
     }
 
     /// <summary>Palette symbol node for a stencil shape (fixed preview size, label below).</summary>
-    private static Node ToSymbolNode(StencilItem item, Shape shape) => new()
+    private static Node ToSymbolNode(StencilItem item, Shape shape)
     {
-        Id = item.Id,
-        Shape = shape,
-        Width = 64,
-        Height = 64,
-        Style = new ShapeStyle { Fill = ResourceLookup.Color(ResourceKeys.CanvasBackground) },
-    };
+        var node = new Node
+        {
+            Id = item.Id,
+            Shape = shape,
+            Width = 64,
+            Height = 64,
+            Style = new ShapeStyle { Fill = ResourceLookup.Color(ResourceKeys.CanvasBackground) },
+        };
+
+        // The annotation ID carries the stencil type through nodeAdded even if
+        // the palette changes the dropped node's ID. It remains invisible in the canvas.
+        node.Annotations.Add(new ShapeAnnotation
+        {
+            Id = StencilShapeAnnotationPrefix + item.ShapeType!.Value,
+        });
+        return node;
+    }
 
     /// <summary>
     /// Palette symbol for a connector stencil entry. Each kind gets a **distinct** source/target
