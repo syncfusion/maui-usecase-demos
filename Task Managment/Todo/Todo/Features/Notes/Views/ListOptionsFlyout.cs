@@ -18,6 +18,12 @@ public sealed class ListOptionsFlyout : ContentView
     private const double ImageGalleryHeight = 66;
     private const double MenuTopMargin = 10;
     private const double SurfaceBorderAllowance = 4;
+    private static readonly string[] DefaultBackgroundImageSources =
+    [
+        "background1.jpg",
+        "background2.jpg",
+        "background3.jpg"
+    ];
 
     private readonly SfPopup _popup;
     private readonly SfPopup _sortPopup;
@@ -389,8 +395,12 @@ public sealed class ListOptionsFlyout : ContentView
         });
         _customImageGallery.Children.Add(addButton);
 
-        foreach (var source in _viewModel?.GetCustomBackgroundImageSources(_selectedList, _selectedCategory) ?? [])
+        var customImageSources = _viewModel?.GetCustomBackgroundImageSources(_selectedList, _selectedCategory) ?? [];
+        foreach (var source in DefaultBackgroundImageSources
+                     .Concat(customImageSources)
+                     .Distinct(StringComparer.Ordinal))
         {
+            var isDefaultImage = DefaultBackgroundImageSources.Contains(source, StringComparer.Ordinal);
             var isSelected = string.Equals(
                 _viewModel?.GetBackgroundImageSource(_selectedList, _selectedCategory),
                 source,
@@ -403,31 +413,34 @@ public sealed class ListOptionsFlyout : ContentView
                 InputTransparent = true
             });
 
-            var removeButton = new Border
+            if (!isDefaultImage)
             {
-                WidthRequest = 18,
-                HeightRequest = 18,
-                HorizontalOptions = LayoutOptions.End,
-                VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(0, -3, -3, 0),
-                StrokeThickness = 0,
-                BackgroundColor = Color.FromArgb("#CC29272F"),
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(9) },
-                Content = new Label
+                var removeButton = new Border
                 {
-                    Text = "×",
-                    TextColor = Colors.White,
-                    FontSize = 13,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center
-                }
-            };
-            SemanticProperties.SetDescription(removeButton, "Remove custom background image");
-            removeButton.GestureRecognizers.Add(new TapGestureRecognizer
-            {
-                Command = new Command(() => RemoveImageBackground(source))
-            });
-            thumbnailGrid.Children.Add(removeButton);
+                    WidthRequest = 18,
+                    HeightRequest = 18,
+                    HorizontalOptions = LayoutOptions.End,
+                    VerticalOptions = LayoutOptions.Start,
+                    Margin = new Thickness(0, -3, -3, 0),
+                    StrokeThickness = 0,
+                    BackgroundColor = Color.FromArgb("#CC29272F"),
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(9) },
+                    Content = new Label
+                    {
+                        Text = "×",
+                        TextColor = Colors.White,
+                        FontSize = 13,
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        VerticalTextAlignment = TextAlignment.Center
+                    }
+                };
+                SemanticProperties.SetDescription(removeButton, "Remove custom background image");
+                removeButton.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(() => RemoveImageBackground(source))
+                });
+                thumbnailGrid.Children.Add(removeButton);
+            }
 
             var thumbnail = new Border
             {
