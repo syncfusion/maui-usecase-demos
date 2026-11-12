@@ -12,8 +12,7 @@ public partial class CalendarPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
         ConfigureCalendar(PhoneCalendar);
-        ConfigureCalendar(DesktopCalendar);
-        viewModel.EntriesChanged += (_, _) => { ConfigureCalendar(PhoneCalendar); ConfigureCalendar(DesktopCalendar); };
+        viewModel.EntriesChanged += (_, _) => { ConfigureCalendar(PhoneCalendar); };
         viewModel.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(CalendarViewModel.Mode)) ConfigureCalendar(PhoneCalendar); };
     }
 
@@ -26,6 +25,4 @@ public partial class CalendarPage : ContentPage
             SpecialDayPredicate = date => viewModel.GetMarker(date)!
         };
     }
-
-    async void OnBackClicked(object? sender, EventArgs e) => await Shell.Current.GoToAsync("//MailPage");
 }

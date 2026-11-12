@@ -10,7 +10,7 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#FCF7F5">
     <Grid>
-        <Grid IsVisible="{OnIdiom Default=False, Phone=True}" RowDefinitions="Auto,*,Auto">
+        <Grid RowDefinitions="Auto,*,Auto">
             <controls:MobileHeader Title="Calendar" Initials="KB" />
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout Padding="16,4,16,100" Spacing="10">
@@ -78,62 +78,6 @@
             <controls:MobileTabBar Grid.Row="2" Selected="Calendar" Badge="0" />
         </Grid>
 
-        <Grid IsVisible="{OnIdiom Default=True, Phone=False}" RowDefinitions="64,1,*" ColumnDefinitions="360,*" BackgroundColor="White">
-            <Grid Grid.ColumnSpan="2" Padding="16,10" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
-                <Button Text="←  Mail" Clicked="OnBackClicked" BackgroundColor="#106EBE" TextColor="White" CornerRadius="6" HeightRequest="44" />
-                <Label Grid.Column="1" Text="Calendar" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
-                <Button Grid.Column="2" Text="+ New event" Command="{Binding OpenAddCommand}" BackgroundColor="#106EBE" TextColor="White" CornerRadius="6" HeightRequest="44" />
-            </Grid>
-            <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" Color="#E1DFDD" />
-            <Border Grid.Row="2" StrokeThickness="0" BackgroundColor="#F4F4F4" Padding="12">
-                <calendar:SfCalendar x:Name="DesktopCalendar" View="Month" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" Background="White" VerticalOptions="Start" HeightRequest="380" />
-            </Border>
-            <ScrollView Grid.Row="2" Grid.Column="1">
-                <VerticalStackLayout Padding="24,8">
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding AgendaGroups}" Spacing="6">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:AgendaGroup">
-                                <VerticalStackLayout Spacing="10">
-                                    <Grid ColumnDefinitions="*,Auto" Padding="0,14,0,2">
-                                        <Label Text="{Binding Title}" FontSize="17" FontAttributes="Bold" TextColor="#2B2B2B" />
-                                        <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#E3EEF9" StrokeShape="RoundRectangle 10" Padding="10,4"><Label Text="{Binding CountText}" FontSize="13" TextColor="#0F5DB5" /></Border>
-                                    </Grid>
-                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="10">
-                                        <BindableLayout.ItemTemplate>
-                                            <DataTemplate x:DataType="models:CalendarEntry">
-                                                <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 12" Padding="0">
-                                                    <Grid ColumnDefinitions="6,*">
-                                                        <BoxView Color="{Binding Accent}" />
-                                                        <VerticalStackLayout Grid.Column="1" Padding="14,12" Spacing="6">
-                                                            <Grid ColumnDefinitions="*,Auto">
-                                                                <Label Text="{Binding Category}" FontSize="12" CharacterSpacing="0.5" TextColor="{Binding Accent}" FontAttributes="Bold" />
-                                                                <Label Grid.Column="1" Text="{Binding KindText}" FontSize="12" TextColor="#5A5A5A" />
-                                                            </Grid>
-                                                            <Label Text="{Binding Title}" FontSize="17" FontAttributes="Bold" LineBreakMode="TailTruncation" />
-                                                            <HorizontalStackLayout Spacing="8">
-                                                                <Image Source="ic_clock_b.svg" WidthRequest="18" HeightRequest="18" />
-                                                                <Label Text="{Binding TimeText}" FontSize="14" TextColor="#3C3C3C" VerticalOptions="Center" />
-                                                            </HorizontalStackLayout>
-                                                            <HorizontalStackLayout Spacing="8" IsVisible="{Binding HasLocation}">
-                                                                <Image Source="ic_pin.svg" WidthRequest="18" HeightRequest="18" />
-                                                                <Label Text="{Binding Location}" FontSize="14" TextColor="#5A5A5A" VerticalOptions="Center" />
-                                                            </HorizontalStackLayout>
-                                                            <Label Text="Remove" FontSize="13" TextColor="#C50F1F" HorizontalOptions="End">
-                                                                <Label.GestureRecognizers><TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarViewModel}}, Path=DeleteEntryCommand}" CommandParameter="{Binding .}" /></Label.GestureRecognizers>
-                                                            </Label>
-                                                        </VerticalStackLayout>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </BindableLayout.ItemTemplate>
-                                    </VerticalStackLayout>
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
-                </VerticalStackLayout>
-            </ScrollView>
-        </Grid>
         <Grid IsVisible="{Binding IsAddOpen}" BackgroundColor="#80000000" Grid.RowSpan="3">
             <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16" Padding="20" WidthRequest="340" VerticalOptions="Center" HorizontalOptions="Center">
                 <VerticalStackLayout Spacing="12">

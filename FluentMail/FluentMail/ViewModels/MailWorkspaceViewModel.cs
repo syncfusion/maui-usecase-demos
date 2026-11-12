@@ -15,6 +15,11 @@ public partial class MailWorkspaceViewModel : ObservableObject
     readonly List<MailMessage> folderMessages = [];
 
     public ObservableCollection<FolderNode> Folders => mailbox.Folders;
+    public ObservableCollection<FolderNode> FolderItems { get; } = [];
+    public CalendarViewModel Calendar { get; } = new();
+
+    [ObservableProperty]
+    private bool isCalendarOpen;
     public IReadOnlyList<string> FilterOptions { get; } = ["All", "Unread", "Flagged"];
     public MailAccount CurrentAccount { get; } = new() { DisplayName = "Kerry Best", Email = "kerry.best@contoso.com" };
 
@@ -189,6 +194,13 @@ public partial class MailWorkspaceViewModel : ObservableObject
                 LoadFolder(SelectedFolder ?? mailbox.Folders.First());
             }
         };
+        foreach (var root in mailbox.Folders)
+            foreach (var child in root.Children)
+            {
+                child.Section = root.Name;
+                FolderItems.Add(child);
+            }
+
         SelectedFolder = mailbox.Folders[^1].Children[0];
         LoadFolder(SelectedFolder);
         IsLoading = false;
@@ -285,6 +297,9 @@ public partial class MailWorkspaceViewModel : ObservableObject
     }
 
     [RelayCommand]
+    void ToggleCalendar() => IsCalendarOpen = !IsCalendarOpen;
+
+    [RelayCommand]
     void ToggleFolderFavourite(FolderNode? folder)
     {
         if (folder is null || !folder.CanFavourite) return;
@@ -292,15 +307,24 @@ public partial class MailWorkspaceViewModel : ObservableObject
         var makeFavourite = !folder.IsFavourite;
         var favorites = mailbox.Folders[0];
 
-        foreach (var node in mailbox.Folders.SelectMany(x => x.Children).Where(x => x.Name == folder.Name))
+        foreach (var node in FolderItems.Where(x => x.Name == folder.Name))
             node.IsFavourite = makeFavourite;
-        folder.IsFavourite = makeFavourite;
 
         var existing = favorites.Children.FirstOrDefault(x => x.Name == folder.Name);
         if (makeFavourite && existing is null)
-            favorites.Children.Add(new FolderNode { Name = folder.Name, CanFavourite = true, IsFavourite = true });
+        {
+            var added = new FolderNode { Name = folder.Name, CanFavourite = true, IsFavourite = true, Section = favorites.Name };
+            favorites.Children.Add(added);
+            FolderItems.Insert(favorites.Children.Count - 1, added);
+        }
         else if (!makeFavourite && existing is not null)
+        {
+            var wasSelected = SelectedFolder == existing;
             favorites.Children.Remove(existing);
+            FolderItems.Remove(existing);
+            if (wasSelected)
+                SelectedFolder = FolderItems.FirstOrDefault(x => x.Name == folder.Name && x.Section != favorites.Name);
+        }
 
         UpdateFolderCounts();
     }

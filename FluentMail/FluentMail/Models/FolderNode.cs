@@ -23,6 +23,8 @@ public partial class FolderNode : ObservableObject
 
     public bool ShowStar => IsHovered && CanFavourite;
 
+    public string Section { get; set; } = string.Empty;
+
     public bool CanFavourite { get; set; }
 
     public ObservableCollection<FolderNode> Children { get; set; } = [];

@@ -10,6 +10,7 @@
              xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              xmlns:models="clr-namespace:FluentMail.Models"
+             xmlns:data="clr-namespace:Syncfusion.Maui.DataSource;assembly=Syncfusion.Maui.DataSource"
              x:Class="FluentMail.Views.MailWorkspacePage"
              x:Name="MailWorkspaceRoot"
              x:DataType="vm:MailWorkspaceViewModel"
@@ -94,7 +95,7 @@
 
                     <Button Text="&#xE71d;"
                         FontFamily="MauiMaterialAssets"
-                        Clicked="OnCalendarClicked"
+                        Command="{Binding ToggleCalendarCommand}"
                         BackgroundColor="#106EBE"
                         TextColor="White"
                         CornerRadius="6"
@@ -133,19 +134,31 @@
                  VerticalOptions="Fill" />
 
         <Border Grid.Row="2" BackgroundColor="#F4F4F4" StrokeThickness="1">
-            <syncfusion:SfTreeView ItemsSource="{Binding Folders}"
-                                   VerticalScrollBarVisibility="Never"
-                                   ChildPropertyName="Children"
-                                   AutoExpandMode="AllNodesExpanded"
-                                   ExpandActionTarget="Node"
-                                   ItemTemplateContextType="Item"
-                                   SelectionBackground="#D7E8FB"
-                                   SelectionMode="Single"
-                                   ItemHeight="34"
-                                   SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
-                <syncfusion:SfTreeView.ItemTemplate>
+            <listview:SfListView ItemsSource="{Binding FolderItems}"
+                                 ScrollBarVisibility="Never"
+                                 SelectionMode="Single"
+                                 SelectionBackground="#D7E8FB"
+                                 ItemSize="36"
+                                 GroupHeaderSize="38"
+                                 AllowGroupExpandCollapse="True"
+                                 SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
+                <listview:SfListView.DataSource>
+                    <data:DataSource>
+                        <data:DataSource.GroupDescriptors>
+                            <data:GroupDescriptor PropertyName="Section" />
+                        </data:DataSource.GroupDescriptors>
+                    </data:DataSource>
+                </listview:SfListView.DataSource>
+                <listview:SfListView.GroupHeaderTemplate>
                     <DataTemplate>
-                        <Grid Padding="8,0,8,0" ColumnDefinitions="*,Auto,Auto" BackgroundColor="Transparent">
+                        <Grid Padding="12,0" BackgroundColor="#F4F4F4">
+                            <Label Text="{Binding Key}" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </listview:SfListView.GroupHeaderTemplate>
+                <listview:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="24,0,8,0" ColumnDefinitions="*,Auto,Auto" BackgroundColor="Transparent">
                             <Grid.GestureRecognizers>
                                 <PointerGestureRecognizer PointerEnteredCommand="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.SetFolderHoverCommand}" PointerEnteredCommandParameter="{Binding .}"
                                                           PointerExitedCommand="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ClearFolderHoverCommand}" PointerExitedCommandParameter="{Binding .}" />
@@ -168,8 +181,8 @@
                             </Label>
                         </Grid>
                     </DataTemplate>
-                </syncfusion:SfTreeView.ItemTemplate>
-            </syncfusion:SfTreeView>
+                </listview:SfListView.ItemTemplate>
+            </listview:SfListView>
         </Border>
 
         <Border Grid.Row="2" Grid.Column="1" BackgroundColor="White" StrokeThickness="1">
@@ -562,5 +575,12 @@
             </VerticalStackLayout>
         </Grid>
     </Grid>
+    <BoxView IsVisible="{Binding IsCalendarOpen}" BackgroundColor="Transparent">
+        <BoxView.GestureRecognizers><TapGestureRecognizer Command="{Binding ToggleCalendarCommand}" /></BoxView.GestureRecognizers>
+    </BoxView>
+    <Border IsVisible="{Binding IsCalendarOpen}" WidthRequest="400" HorizontalOptions="End" StrokeThickness="1" Stroke="#E1DFDD" BackgroundColor="White" Padding="0">
+        <Border.Shadow><Shadow Brush="Black" Opacity="0.2" Radius="16" Offset="-4,0" /></Border.Shadow>
+        <controls:CalendarFlyout BindingContext="{Binding Calendar}" />
+    </Border>
     </Grid>
 </ContentPage>
