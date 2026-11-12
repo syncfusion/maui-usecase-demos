@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentMail.Data;
@@ -11,44 +12,45 @@ public partial class ComposeViewModel : ObservableObject
 {
     readonly Mailbox mailbox = MockData.Mailbox;
 
-    [ObservableProperty] private string fromAccount = "Me <me@contoso.com>";
-    [ObservableProperty] private string recipientSearch = string.Empty;
-    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(SendCommand))] private string to = string.Empty;
-    [ObservableProperty] private string cc = string.Empty;
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(SendCommand))] private string toText = string.Empty;
+    [ObservableProperty] private string ccText = string.Empty;
     [ObservableProperty] private string subject = string.Empty;
     [ObservableProperty] private string body = string.Empty;
-    [ObservableProperty] private ObservableCollection<MailContact> recipientChips = [];
-    [ObservableProperty] private ObservableCollection<MailContact> recipientSuggestions = [];
+    [ObservableProperty] private ObservableCollection<object> toContacts = [];
+    [ObservableProperty] private ObservableCollection<object> ccContacts = [];
     [ObservableProperty] private ObservableCollection<AttachmentInfo> attachments = [];
     [ObservableProperty] private string statusMessage = "Unsaved Changes";
     [ObservableProperty] private bool showMessage;
 
-    public IReadOnlyList<string> Accounts { get; } = ["Me <me@contoso.com>", "Work <work@contoso.com>"];
     public ObservableCollection<MailContact> Contacts => mailbox.Contacts;
 
-    public ComposeViewModel() => UpdateSuggestions();
+    public ComposeViewModel()
+    {
+        ToContacts.CollectionChanged += OnToContactsCollectionChanged;
+    }
 
-    partial void OnRecipientSearchChanged(string value) => UpdateSuggestions();
+    partial void OnToContactsChanged(ObservableCollection<object>? oldValue, ObservableCollection<object> newValue)
+    {
+        if (oldValue is not null) oldValue.CollectionChanged -= OnToContactsCollectionChanged;
+        newValue.CollectionChanged += OnToContactsCollectionChanged;
+        SendCommand.NotifyCanExecuteChanged();
+    }
+
+    void OnToContactsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => SendCommand.NotifyCanExecuteChanged();
+
     partial void OnSubjectChanged(string value) => StatusMessage = "Unsaved Changes";
     partial void OnBodyChanged(string value) => StatusMessage = "Unsaved Changes";
 
-    [RelayCommand]
-    void AddRecipient(MailContact? contact)
+    public void Reset()
     {
-        if (contact is null || RecipientChips.Any(x => x.Email == contact.Email)) return;
-        RecipientChips.Add(contact);
-        SendCommand.NotifyCanExecuteChanged();
-        RecipientSearch = string.Empty;
-        UpdateSuggestions();
-    }
-
-    [RelayCommand]
-    void RemoveRecipient(MailContact? contact)
-    {
-        if (contact is null) return;
-        RecipientChips.Remove(contact);
-        SendCommand.NotifyCanExecuteChanged();
-        UpdateSuggestions();
+        ToContacts = [];
+        CcContacts = [];
+        ToText = string.Empty;
+        CcText = string.Empty;
+        Subject = string.Empty;
+        Body = string.Empty;
+        Attachments.Clear();
+        StatusMessage = "Unsaved Changes";
     }
 
     [RelayCommand]
@@ -60,28 +62,33 @@ public partial class ComposeViewModel : ObservableObject
     [RelayCommand]
     void Attach() => AddAttachment(mailbox.Attachments.FirstOrDefault());
 
-    bool CanSend() => !string.IsNullOrWhiteSpace(To) || RecipientChips.Count > 0;
+    static string Resolve(IEnumerable<object> selected, string typed)
+    {
+        var emails = selected.OfType<MailContact>().Select(x => x.Email).ToList();
+        var text = typed.Trim();
+        if (text.Length > 0 && System.Net.Mail.MailAddress.TryCreate(text, out var address) && !emails.Contains(address.Address))
+            emails.Add(address.Address);
+        return string.Join(", ", emails);
+    }
+
+    bool CanSend() => Resolve(ToContacts, ToText).Length > 0;
 
     [RelayCommand(CanExecute = nameof(CanSend))]
     async Task SendAsync()
     {
         var plainBody = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(Body ?? string.Empty, "<[^>]+>", " ")).Trim();
         plainBody = System.Text.RegularExpressions.Regex.Replace(plainBody, @"\s+", " ");
-        var recipients = string.IsNullOrWhiteSpace(To) ? string.Join(", ", RecipientChips.Select(x => x.Email)) : To.Trim();
-        if (string.IsNullOrWhiteSpace(recipients)) { StatusMessage = "Add at least one recipient."; return; }
-        mailbox.SentItems.Insert(0, new MailMessage { Id=$"sent-{Guid.NewGuid():N}", Folder="Sent Items", Sender="Me", SenderEmail="me@contoso.com", Subject=string.IsNullOrWhiteSpace(Subject) ? "(No subject)" : Subject, Preview=plainBody[..Math.Min(plainBody.Length, 80)], Body=plainBody, ReceivedOn=DateTime.Now, Recipients=recipients, Cc=Cc.Trim(), Status="Sent", IsRead=true, HasAttachments=Attachments.Count>0 });
+        var recipients = Resolve(ToContacts, ToText);
+        var cc = Resolve(CcContacts, CcText);
+        mailbox.SentItems.Insert(0, new MailMessage { Id = $"sent-{Guid.NewGuid():N}", Folder = "Sent Items", Sender = "Me", SenderEmail = "me@contoso.com", Subject = string.IsNullOrWhiteSpace(Subject) ? "(No subject)" : Subject, Preview = plainBody[..Math.Min(plainBody.Length, 80)], Body = plainBody, ReceivedOn = DateTime.Now, Recipients = recipients, Cc = cc, Status = "Sent", IsRead = true, HasAttachments = Attachments.Count > 0 });
         mailbox.RefreshCounts();
-        RecipientChips.Clear(); SendCommand.NotifyCanExecuteChanged(); Attachments.Clear(); To=string.Empty; Cc=string.Empty; Subject=string.Empty; Body=string.Empty; StatusMessage="Message sent"; ShowMessage = true;
+        Reset();
+        StatusMessage = "Message sent";
+        ShowMessage = true;
         var page = Application.Current?.Windows.FirstOrDefault()?.Page;
         if (page is not null)
         {
             await page.DisplayAlertAsync("Mail sent", "Your message has been sent.", "OK");
         }
-    }
-
-    void UpdateSuggestions()
-    {
-        var term = RecipientSearch.Trim();
-        RecipientSuggestions = new ObservableCollection<MailContact>(string.IsNullOrWhiteSpace(term) ? mailbox.Contacts.Take(8) : mailbox.Contacts.Where(c => c.Name.Contains(term, StringComparison.OrdinalIgnoreCase) || c.Email.Contains(term, StringComparison.OrdinalIgnoreCase)).Take(8));
     }
 }

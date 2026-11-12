@@ -127,15 +127,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
             }));
     }
 
-    [ObservableProperty]
-    private bool hasToError;
-
-    [ObservableProperty]
-    private string toErrorText = string.Empty;
-
-    [ObservableProperty]
-    private string to = string.Empty;
-
     private void Composer_PropertyChanged(object? sender,
      PropertyChangedEventArgs e)
     {
@@ -149,51 +140,10 @@ public partial class MailWorkspaceViewModel : ObservableObject
         }
     }
 
-    private bool ValidateTo(string? email)
-    {
-        if (!HasAttemptedSend)
-        {
-            HasToError = false;
-            ToErrorText = string.Empty;
-            return true;
-        }
-
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            HasToError = true;
-            ToErrorText = "Recipient is required.";
-            return false;
-        }
-
-        try
-        {
-            _ = new System.Net.Mail.MailAddress(email);
-            HasToError = false;
-            ToErrorText = string.Empty;
-            return true;
-        }
-        catch
-        {
-            HasToError = true;
-            ToErrorText = "Enter a valid email address.";
-            return false;
-        }
-    }
-
-
     public MailWorkspaceViewModel()
     {
         Composer.PropertyChanged += Composer_PropertyChanged;
 
-        Composer.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(ComposeViewModel.ShowMessage) && Composer.ShowMessage)
-            {
-                IsComposing = false;
-                Composer.ShowMessage = false;
-                LoadFolder(SelectedFolder ?? mailbox.Folders.First());
-            }
-        };
         foreach (var root in mailbox.Folders)
             foreach (var child in root.Children)
             {
@@ -332,11 +282,8 @@ public partial class MailWorkspaceViewModel : ObservableObject
     [RelayCommand]
     async Task NewMailAsync()
     {
-        HasAttemptedSend = false;
         IsComposing = true;
-        Composer.Subject = string.Empty;
-        Composer.Body = string.Empty;
-        Composer.StatusMessage = "Unsaved Changes";
+        Composer.Reset();
     }
 
     [RelayCommand]

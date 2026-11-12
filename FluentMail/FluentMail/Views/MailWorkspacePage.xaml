@@ -6,6 +6,7 @@
              xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:vm="clr-namespace:FluentMail.ViewModels"
              xmlns:richtext="clr-namespace:Syncfusion.Maui.RichTextEditor;assembly=Syncfusion.Maui.RichTextEditor"
+             xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
              xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
@@ -16,6 +17,24 @@
              x:DataType="vm:MailWorkspaceViewModel"
              Title="Mail"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="ContactSuggestionTemplate" x:DataType="models:Contact">
+                            <Grid ColumnDefinitions="48,*" Padding="12,4" ColumnSpacing="12">
+                                <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#C7DDF0" VerticalOptions="Center">
+                                    <Label Text="{Binding Name, Converter={StaticResource InitialsConverter}}" FontAttributes="Bold" FontSize="15" TextColor="#1B3A57" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="{Binding Name}" FontSize="16" TextColor="#222222" />
+                                        <Border IsVisible="{Binding IsExternal}" StrokeThickness="0" BackgroundColor="#F0F0F0" StrokeShape="RoundRectangle 4" Padding="8,2" VerticalOptions="Center">
+                                            <Label Text="External" FontSize="12" TextColor="#444444" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding Email}" FontSize="13" TextColor="#5A5A5A" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+    </ContentPage.Resources>
     <ContentPage.BindingContext>
         <vm:MailWorkspaceViewModel />
     </ContentPage.BindingContext>
@@ -278,63 +297,44 @@
             <Grid IsVisible="{Binding IsComposing}"
                     Padding="10"
                     RowDefinitions="Auto,Auto,Auto,*,Auto"
-                    RowSpacing="8"
+                    RowSpacing="10"
                     ColumnDefinitions="Auto,*"
                     ColumnSpacing="10">
 
-                <!-- To -->
-                <Label Grid.Row="0"
-                       Text="To"
-                       FontSize="14"
-                       BackgroundColor="#EEEEEE"
-                       HeightRequest="36"
-                       WidthRequest="40"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center" />
 
-                <inputLayout:SfTextInputLayout Grid.Row="0"
-                                               Grid.Column="1"
-                                               HeightRequest="60"
-                                               Margin="0,10,0,0"
-                                               InputViewPadding="8,0,15,0"
-                                               ErrorText="{Binding ToErrorText}"
-                                               HasError="{Binding HasToError}"
-                                               ContainerType="Outlined">
+                <Border Grid.Row="0" WidthRequest="48" HeightRequest="40" VerticalOptions="Start" Stroke="#D1D1D1" StrokeThickness="1" StrokeShape="RoundRectangle 4" BackgroundColor="White">
+                    <Label Text="To" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <editors:SfAutocomplete Grid.Row="0" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start"
+                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                        SelectedItems="{Binding Composer.ToContacts, Mode=TwoWay}" Text="{Binding Composer.ToText, Mode=TwoWay}"
+                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                        TextSearchMode="Contains" DropdownWidth="420" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
+                    <editors:SfAutocomplete.DropdownHeaderView>
+                        <Label Text="Suggested contacts" FontAttributes="Bold" FontSize="14" Padding="16,10" VerticalOptions="Center" />
+                    </editors:SfAutocomplete.DropdownHeaderView>
+                    <editors:SfAutocomplete.ItemTemplate>
+                        <StaticResource Key="ContactSuggestionTemplate" />
+                    </editors:SfAutocomplete.ItemTemplate>
+                </editors:SfAutocomplete>
 
-                    <Entry Text="{Binding Composer.To, Mode=TwoWay}"
-                           Keyboard="Email" />
-                </inputLayout:SfTextInputLayout>
+                <Border Grid.Row="1" WidthRequest="48" HeightRequest="40" VerticalOptions="Start" Stroke="#D1D1D1" StrokeThickness="1" StrokeShape="RoundRectangle 4" BackgroundColor="White">
+                    <Label Text="Cc" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <editors:SfAutocomplete Grid.Row="1" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start"
+                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                        SelectedItems="{Binding Composer.CcContacts, Mode=TwoWay}" Text="{Binding Composer.CcText, Mode=TwoWay}"
+                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                        TextSearchMode="Contains" DropdownWidth="420" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
+                    <editors:SfAutocomplete.DropdownHeaderView>
+                        <Label Text="Suggested contacts" FontAttributes="Bold" FontSize="14" Padding="16,10" VerticalOptions="Center" />
+                    </editors:SfAutocomplete.DropdownHeaderView>
+                    <editors:SfAutocomplete.ItemTemplate>
+                        <StaticResource Key="ContactSuggestionTemplate" />
+                    </editors:SfAutocomplete.ItemTemplate>
+                </editors:SfAutocomplete>
 
-                <!-- Cc -->
-                <Label Grid.Row="1"
-                       Text="Cc"
-                       FontSize="14"
-                       BackgroundColor="#EEEEEE"
-                       HeightRequest="36"
-                       WidthRequest="40"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center" />
-
-                <inputLayout:SfTextInputLayout Grid.Row="1"
-                                               HeightRequest="60"
-                                               Margin="0,10,0,0"
-                                               InputViewPadding="8,0,15,0"
-                                               Grid.Column="1"
-                                               ContainerType="Outlined">
-
-                    <Entry Text="{Binding Composer.Cc, Mode=TwoWay}"
-                           Keyboard="Email" />
-                </inputLayout:SfTextInputLayout>
-
-                <!-- Subject -->
-                <inputLayout:SfTextInputLayout Grid.Row="2"
-                               Grid.ColumnSpan="2"
-                                               HeightRequest="60"
-                                               InputViewPadding="8,0,15,0"
-                               ContainerType="Outlined">
-
-                    <controls:SfEntry Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Add a Subject"/>
-                </inputLayout:SfTextInputLayout>
+                <Entry Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Composer.Subject, Mode=TwoWay}" Placeholder="Add a subject" FontSize="16" HeightRequest="44" />
 
                 <!-- Editor -->
                 <richtext:SfRichTextEditor Grid.Row="3"
@@ -584,8 +584,24 @@
                 <Button Grid.Column="2" Text="Send" Command="{Binding Composer.SendCommand}" BackgroundColor="#0F5DB5" TextColor="White" CornerRadius="20" />
             </Grid>
             <VerticalStackLayout Grid.Row="1" Padding="20,8" Spacing="10">
-                <Entry Placeholder="To" Text="{Binding Composer.To}" Keyboard="Email" />
-                <Entry Placeholder="Cc" Text="{Binding Composer.Cc}" Keyboard="Email" />
+                <editors:SfAutocomplete Placeholder="To" MinimumHeightRequest="48"
+                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                        SelectedItems="{Binding Composer.ToContacts, Mode=TwoWay}" Text="{Binding Composer.ToText, Mode=TwoWay}"
+                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="True" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                        TextSearchMode="Contains" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
+                    <editors:SfAutocomplete.ItemTemplate>
+                        <StaticResource Key="ContactSuggestionTemplate" />
+                    </editors:SfAutocomplete.ItemTemplate>
+                </editors:SfAutocomplete>
+                <editors:SfAutocomplete Placeholder="Cc" MinimumHeightRequest="48"
+                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                        SelectedItems="{Binding Composer.CcContacts, Mode=TwoWay}" Text="{Binding Composer.CcText, Mode=TwoWay}"
+                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="True" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                        TextSearchMode="Contains" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
+                    <editors:SfAutocomplete.ItemTemplate>
+                        <StaticResource Key="ContactSuggestionTemplate" />
+                    </editors:SfAutocomplete.ItemTemplate>
+                </editors:SfAutocomplete>
                 <Entry Placeholder="Subject" Text="{Binding Composer.Subject}" />
                 <Editor Placeholder="Write your message" Text="{Binding Composer.Body}" HeightRequest="320" AutoSize="Disabled" />
             </VerticalStackLayout>

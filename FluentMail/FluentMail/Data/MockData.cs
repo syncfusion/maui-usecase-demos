@@ -211,11 +211,18 @@ public static class MockData
                 DeletedOn = DateTime.Today.AddDays(-(i + 2))
             });
 
-        mailbox.Contacts.Add(new MailContact { Name = "Ava Johnson", Email = "ava.johnson@contoso.com" });
-        mailbox.Contacts.Add(new MailContact { Name = "Noah Smith", Email = "noah.smith@contoso.com" });
-        mailbox.Contacts.Add(new MailContact { Name = "Mia Chen", Email = "mia.chen@contoso.com" });
-        mailbox.Contacts.Add(new MailContact { Name = "Liam Patel", Email = "liam.patel@contoso.com" });
-        mailbox.Contacts.Add(new MailContact { Name = "Sophia Garcia", Email = "sophia.garcia@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Anastasia Callahan", Email = "anastasia.callahan@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Avram Kent", Email = "avram.kent@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Otto Ashley", Email = "otto.ashley@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Prescott Mccormick", Email = "prescott.mccormick@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Stewart Gibbs", Email = "stewart.gibbs@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Renee Walters", Email = "renee.walters@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Jordan Patel", Email = "jordan.patel@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Monica Reed", Email = "monica.reed@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Ethan Brooks", Email = "ethan.brooks@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Camila Torres", Email = "camila.torres@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Front Office", Email = "frontoffice@contoso.com" });
+        mailbox.Contacts.Add(new MailContact { Name = "Taylor Morgan", Email = "taylor.morgan@gmail.com" });
         mailbox.Attachments.Add(new AttachmentInfo { FileName = "Proposal.pdf", FileType = "PDF", FileSize = 218000 });
         foreach (var message in mailbox.Inbox.Concat(mailbox.SentItems).Concat(mailbox.Drafts).Concat(mailbox.Archive).Concat(mailbox.Deleted))
         {
