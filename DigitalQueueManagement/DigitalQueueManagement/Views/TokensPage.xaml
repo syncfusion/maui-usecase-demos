@@ -10,6 +10,10 @@
              x:DataType="vm:TokenManagementViewModel">
     <ContentView.Resources>
         <ResourceDictionary>
+            <x:Double x:Key="TokenDetailFontSize">12</x:Double>
+            <x:Double x:Key="TokenMetricLabelFontSize">13</x:Double>
+            <x:Double x:Key="TokenMetricValueFontSize">32</x:Double>
+            <x:Double x:Key="TokenServiceFontSize">13</x:Double>
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
                 <Setter Property="BackgroundColor" Value="Transparent" />
@@ -61,61 +65,61 @@
                 <Border Grid.Column="0" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="TOTAL TOKENS" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="TOTAL TOKENS" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
                             <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 9">
                                 <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                             </Border>
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding TotalTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Grid.Column="1" Text="Active pool" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                            <Label Text="{Binding TotalTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Active pool" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
-                        <Label Grid.Row="2" Text="●  All services combined" FontSize="9" TextColor="#183E91" />
+                        <Label Grid.Row="2" Text="●  All services combined" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#183E91" />
                     </Grid>
                 </Border>
                 <Border Grid.Column="1" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="WAITING" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="WAITING" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
                             <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#FFF7E6" StrokeThickness="0" StrokeShape="RoundRectangle 9">
                                 <Label Text="schedule" FontFamily="MaterialIcons" FontSize="17" TextColor="#D18A16" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                             </Border>
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding WaitingTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Grid.Column="1" Text="Tokens in queue" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                            <Label Text="{Binding WaitingTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Tokens in queue" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
-                        <Label Grid.Row="2" Text="●  Queue estimate updates live" FontSize="9" TextColor="#D18A16" />
+                        <Label Grid.Row="2" Text="●  Queue estimate updates live" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#D18A16" />
                     </Grid>
                 </Border>
                 <Border Grid.Column="2" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="SERVING NOW" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="SERVING NOW" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
                             <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 9">
                                 <Label Text="shield" FontFamily="MaterialIcons" FontSize="17" TextColor="#159B85" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                             </Border>
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding ServingTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Grid.Column="1" Text="Engaged now" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                            <Label Text="{Binding ServingTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Engaged now" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
-                        <Label Grid.Row="2" Text="{Binding OnlineCounterCount, StringFormat='●  Across {0} counters'}" FontSize="9" TextColor="#159B85" />
+                        <Label Grid.Row="2" Text="{Binding OnlineCounterCount, StringFormat='●  Across {0} counters'}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#159B85" />
                     </Grid>
                 </Border>
                 <Border Grid.Column="3" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="SKIPPED / ON HOLD" FontSize="10" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="SKIPPED / ON HOLD" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
                             <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#FFF1F2" StrokeThickness="0" StrokeShape="RoundRectangle 9">
                                 <Label Text="monitor_heart" FontFamily="MaterialIcons" FontSize="17" TextColor="#DC6670" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                             </Border>
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding SkippedTokenCount}" FontSize="30" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Grid.Column="1" Text="Action required" FontSize="9" TextColor="#64748B" VerticalOptions="End" />
+                            <Label Text="{Binding SkippedTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Action required" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" VerticalOptions="End" />
                         </Grid>
-                        <Label Grid.Row="2" Text="●  Recallable on request" FontSize="9" TextColor="#DC6670" />
+                        <Label Grid.Row="2" Text="●  Recallable on request" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#DC6670" />
                     </Grid>
                 </Border>
             </Grid>
@@ -284,8 +288,8 @@
                         StrokeShape="RoundRectangle 14">
                     <VerticalStackLayout Spacing="14">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                            <Label Text="Filter tokens" FontSize="13" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Grid.Column="1" Text="{Binding VisibleTokenCountText}" FontSize="9" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="Filter tokens" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="{Binding VisibleTokenCountText}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" VerticalOptions="Center" />
                         </Grid>
                         <Border x:Name="DesktopSearchBorder"
                                 Padding="12,0"
@@ -332,13 +336,13 @@
                                 </DataTrigger>
                             </Border.Triggers>
                         </Border>
-                        <Label Text="QUEUE STATUS" FontSize="9" FontAttributes="Bold" TextColor="#94A3B8" />
+                        <Label Text="QUEUE STATUS" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#94A3B8" />
                         <VerticalStackLayout Spacing="2">
                             <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                 <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
                                     <BoxView WidthRequest="6" HeightRequest="6" Color="#183E91" CornerRadius="3" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="All Tokens" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
-                                    <Label Grid.Column="2" Text="{Binding TotalTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="All Tokens" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding TotalTokenCount}" FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
                                 </Grid>
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="All Tokens">
@@ -352,8 +356,8 @@
                             <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                 <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
                                     <BoxView WidthRequest="6" HeightRequest="6" Color="#8AA1C7" CornerRadius="3" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Waiting" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
-                                    <Label Grid.Column="2" Text="{Binding WaitingTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Waiting" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding WaitingTokenCount}" FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
                                 </Grid>
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Waiting">
@@ -367,8 +371,8 @@
                             <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                 <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
                                     <BoxView WidthRequest="6" HeightRequest="6" Color="#159B85" CornerRadius="3" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Serving" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
-                                    <Label Grid.Column="2" Text="{Binding ServingTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Serving" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding ServingTokenCount}" FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
                                 </Grid>
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Serving">
@@ -382,8 +386,8 @@
                             <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                 <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
                                     <BoxView WidthRequest="6" HeightRequest="6" Color="#DC6670" CornerRadius="3" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Skipped" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
-                                    <Label Grid.Column="2" Text="{Binding SkippedTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Skipped" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding SkippedTokenCount}" FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
                                 </Grid>
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Skipped">
@@ -397,8 +401,8 @@
                             <Border Style="{StaticResource StatusFilterHover}" Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 8">
                                 <Grid ColumnDefinitions="10,*,Auto" ColumnSpacing="8">
                                     <BoxView WidthRequest="6" HeightRequest="6" Color="#94A3B8" CornerRadius="3" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Completed" FontSize="11" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
-                                    <Label Grid.Column="2" Text="{Binding CompletedTokenCount}" FontSize="10" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Completed" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#475569" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding CompletedTokenCount}" FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" BackgroundColor="#F1F5F9" Padding="6,3" VerticalOptions="Center" />
                                 </Grid>
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding StatusFilter}" Value="Completed">
@@ -413,13 +417,13 @@
                         <Border Padding="12" BackgroundColor="#F7F9FD" Stroke="#EEF2F7" StrokeThickness="1" StrokeShape="RoundRectangle 8">
                             <VerticalStackLayout Spacing="8">
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Text="Priority routing rate" FontSize="9" TextColor="#64748B" />
-                                    <Label Grid.Column="1" Text="{Binding PriorityRoutingRate, StringFormat='{0}% Priority'}" FontSize="10" FontAttributes="Bold" TextColor="#183E91" />
+                                    <Label Text="Priority routing rate" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" />
+                                    <Label Grid.Column="1" Text="{Binding PriorityRoutingRate, StringFormat='{0}% Priority'}" FontSize="{StaticResource TokenDetailFontSize}" FontAttributes="Bold" TextColor="#183E91" />
                                 </Grid>
                                 <ProgressBar Progress="{Binding PriorityRoutingProgress}" ProgressColor="#183E91" BackgroundColor="#E2E8F0" HeightRequest="5" />
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Text="{Binding PriorityWaitingCount, StringFormat='Priority: {0} tokens'}" FontSize="8" TextColor="#94A3B8" />
-                                    <Label Grid.Column="1" Text="{Binding NormalWaitingCount, StringFormat='Normal: {0} tokens'}" FontSize="8" TextColor="#94A3B8" />
+                                    <Label Text="{Binding PriorityWaitingCount, StringFormat='Priority: {0} tokens'}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#94A3B8" />
+                                    <Label Grid.Column="1" Text="{Binding NormalWaitingCount, StringFormat='Normal: {0} tokens'}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#94A3B8" />
                                 </Grid>
                             </VerticalStackLayout>
                         </Border>
@@ -439,13 +443,13 @@
                                 <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" VerticalOptions="Center" />
                                 <Label Text="Tokens list" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
                                 <Border Padding="8,4" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
-                                    <Label Text="Local sequence" FontSize="8" FontAttributes="Bold" TextColor="#183E91" />
+                                    <Label Text="Local sequence" FontSize="{StaticResource CaptionFontSize}" FontAttributes="Bold" TextColor="#183E91" />
                                 </Border>
                             </HorizontalStackLayout>
                             <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
                                 <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
                                     <BoxView WidthRequest="6" HeightRequest="6" Color="#10B981" CornerRadius="3" VerticalOptions="Center" />
-                                    <Label Text="Local sample data" FontSize="9" TextColor="#64748B" VerticalOptions="Center" />
+                                    <Label Text="Local sample data" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
                             </HorizontalStackLayout>
                         </Grid>
@@ -483,7 +487,7 @@
                                                     <Label Text="{Binding Id}" FontSize="27" FontAttributes="Bold" TextColor="#0F172A" />
                                                     <HorizontalStackLayout Spacing="5">
                                                         <Border Padding="7,3" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 5">
-                                                            <Label Text="{Binding Priority}" TextTransform="Uppercase" FontSize="8" FontAttributes="Bold" TextColor="#183E91">
+                                                            <Label Text="{Binding Priority}" TextTransform="Uppercase" FontSize="{StaticResource CaptionFontSize}" FontAttributes="Bold" TextColor="#183E91">
                                                                 <Label.Triggers>
                                                                     <DataTrigger TargetType="Label" Binding="{Binding Priority}" Value="{x:Static models:TokenPriority.Normal}">
                                                                         <Setter Property="TextColor" Value="#475569" />
@@ -497,7 +501,7 @@
                                                             </Border.Triggers>
                                                         </Border>
                                                         <Border Padding="7,3" BackgroundColor="#EFF6FF" StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                                                            <Label Text="{Binding Status}" FontSize="8" FontAttributes="Bold" TextColor="#1D4ED8">
+                                                            <Label Text="{Binding Status}" FontSize="{StaticResource CaptionFontSize}" FontAttributes="Bold" TextColor="#1D4ED8">
                                                                 <Label.Triggers>
                                                                     <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
                                                                         <Setter Property="TextColor" Value="#159B85" />
@@ -526,24 +530,24 @@
                                                 </VerticalStackLayout>
                                                 <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="46" Color="#E2E8F0" VerticalOptions="Center" />
                                                 <VerticalStackLayout Grid.Column="2" Spacing="6" VerticalOptions="Center">
-                                                    <Label Text="{Binding Service}" FontSize="11" FontAttributes="Bold" TextColor="#0F172A" />
+                                                    <Label Text="{Binding Service}" FontSize="{StaticResource TokenServiceFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
                                                     <HorizontalStackLayout Spacing="6">
                                                         <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="11" TextColor="#64748B" />
-                                                        <Label Text="{Binding CounterName}" FontSize="9" TextColor="#64748B" />
-                                                        <Label Text="·" FontSize="9" TextColor="#94A3B8" />
+                                                        <Label Text="{Binding CounterName}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" />
+                                                        <Label Text="·" FontSize="{StaticResource CaptionFontSize}" TextColor="#94A3B8" />
                                                         <Label Text="schedule" FontFamily="MaterialIcons" FontSize="11" TextColor="#64748B" />
-                                                        <Label Text="{Binding Wait}" FontSize="9" TextColor="#64748B" />
+                                                        <Label Text="{Binding Wait}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" />
                                                     </HorizontalStackLayout>
                                                 </VerticalStackLayout>
                                                 <VerticalStackLayout Grid.Column="3" Spacing="3" HorizontalOptions="End" VerticalOptions="Center">
-                                                    <Label Text="Queue position" FontSize="8" TextColor="#64748B" HorizontalTextAlignment="End">
+                                                    <Label Text="Queue position" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" HorizontalTextAlignment="End">
                                                         <Label.Triggers>
                                                             <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="{x:Static models:TokenStatus.Serving}">
                                                                 <Setter Property="Text" Value="Status" />
                                                             </DataTrigger>
                                                         </Label.Triggers>
                                                     </Label>
-                                                    <Label Text="{Binding QueuePositionText}" FontSize="10" FontAttributes="Bold" TextColor="#0F172A" HorizontalTextAlignment="End" />
+                                                    <Label Text="{Binding QueuePositionText}" FontSize="{StaticResource TokenDetailFontSize}" FontAttributes="Bold" TextColor="#0F172A" HorizontalTextAlignment="End" />
                                                 </VerticalStackLayout>
                                                 <Border Grid.Column="4" WidthRequest="34" HeightRequest="34" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 8" VerticalOptions="Center">
                                                     <Label Text="chevron_right" FontFamily="MaterialIcons" FontSize="18" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />

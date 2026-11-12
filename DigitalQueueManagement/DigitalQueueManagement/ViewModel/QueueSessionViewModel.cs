@@ -210,28 +210,28 @@ public partial class QueueSessionViewModel : ObservableObject
     public string NowServingCounterName =>
         Tokens.FirstOrDefault(token => token.Status == TokenStatus.Serving)?.CounterName ?? "No active counter";
 
-    public string ActiveHeaderTitle =>
-        ActiveHeaderTab == "Overview" ? "Queue Overview" : "Token Directory";
+    public string ActiveHeaderTitle => ActiveHeaderTab switch
+    {
+        "Tokens" => "Token Directory",
+        "Counters" => "Counter Management",
+        _ => "Queue Overview"
+    };
 
     public string CurrentDateText => DateTime.Now.ToString("dddd, MMM d");
 
     public int HeaderTabIndex
     {
-        get => ActiveHeaderTab == "Overview" ? 0 : 1;
-        set => SetHeader(value == 0 ? "Overview" : "Manage");
-    }
-
-    public int ManageTabIndex
-    {
-        get => ActiveTab switch
+        get => ActiveHeaderTab switch
         {
-            "Counters" => 1,
+            "Tokens" => 1,
+            "Counters" => 2,
             _ => 0
         };
-        set => SetManageTab(value switch
+        set => SetHeader(value switch
         {
-            1 => "Counters",
-            _ => "Tokens"
+            1 => "Tokens",
+            2 => "Counters",
+            _ => "Overview"
         });
     }
 
@@ -300,25 +300,19 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public void SetHeader(string tab)
     {
-        if (tab is not ("Overview" or "Manage"))
+        if (tab is not ("Overview" or "Tokens" or "Counters"))
         {
             return;
+        }
+
+        if (tab is "Tokens" or "Counters")
+        {
+            ActiveTab = tab;
         }
 
         ActiveHeaderTab = tab;
         OnPropertyChanged(nameof(HeaderTabIndex));
         OnPropertyChanged(nameof(ActiveHeaderTitle));
-    }
-
-    public void SetManageTab(string tab)
-    {
-        if (tab is not ("Tokens" or "Counters"))
-        {
-            return;
-        }
-
-        ActiveTab = tab;
-        OnPropertyChanged(nameof(ManageTabIndex));
     }
 
     public void SetStatusFilter(string filter)
@@ -487,8 +481,7 @@ public partial class QueueSessionViewModel : ObservableObject
         _completedTokenByCounter.Clear();
         ActiveCounterName = "Counter 1";
         SearchText = string.Empty;
-        SetHeader("Manage");
-        SetManageTab("Tokens");
+        SetHeader("Tokens");
         SetStatusFilter("All Tokens");
         SetUpcomingFilter("All");
         _store.Reset();

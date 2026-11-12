@@ -3,18 +3,17 @@ using DigitalQueueManagement.ViewModel;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Layouts;
 using Syncfusion.Maui.Buttons;
-using Syncfusion.Maui.Charts;
 
 namespace DigitalQueueManagement.Views;
 
 public partial class MainPage : ContentPage
 {
+    private const double MinimumCaptionFontSize = 11;
+
     private static readonly Color Cobalt = Color.FromArgb("#183E91");
-    private static readonly Color Canvas = Color.FromArgb("#F3F6FC");
     private static readonly Color Slate50 = Color.FromArgb("#F8FAFC");
     private static readonly Color Slate100 = Color.FromArgb("#F1F5F9");
     private static readonly Color Slate200 = Color.FromArgb("#E2E8F0");
-    private static readonly Color Slate400 = Color.FromArgb("#94A3B8");
     private static readonly Color Slate500 = Color.FromArgb("#64748B");
     private static readonly Color Slate700 = Color.FromArgb("#334155");
     private static readonly Color Slate900 = Color.FromArgb("#0F172A");
@@ -26,11 +25,12 @@ public partial class MainPage : ContentPage
     private readonly AppShellViewModel _shellViewModel;
     private IReadOnlyList<SfSegmentItem> _headerTabItems = Array.Empty<SfSegmentItem>();
     private OverviewPage? _overviewPage;
-    private ManagePage? _managePage;
+    private TokensPage? _tokensPage;
+    private CountersPage? _countersPage;
+    private ScrollView? _tokensScrollHost;
+    private ScrollView? _countersScrollHost;
     private bool? _lastWideLayout;
     private bool? _lastMobileLayout;
-    private VerticalStackLayout? _tokenList;
-    private Label? _tokenCountLabel;
 
     public MainPage()
     {
@@ -59,8 +59,14 @@ public partial class MainPage : ContentPage
             },
             new SfSegmentItem
             {
-                Text = "Manage",
-                ImageSource = CreateHeaderTabIcon("tune", Slate500),
+                Text = "Tokens",
+                ImageSource = CreateHeaderTabIcon("confirmation_number", Slate500),
+                ImageSize = 15
+            },
+            new SfSegmentItem
+            {
+                Text = "Counters",
+                ImageSource = CreateHeaderTabIcon("desktop_windows", Slate500),
                 ImageSize = 15
             }
         };
@@ -86,7 +92,11 @@ public partial class MainPage : ContentPage
         }
         else if (e.NewIndex == 1)
         {
-            _viewModel.SetHeader("Manage");
+            _viewModel.SetHeader("Tokens");
+        }
+        else if (e.NewIndex == 2)
+        {
+            _viewModel.SetHeader("Counters");
         }
     }
 
@@ -94,7 +104,12 @@ public partial class MainPage : ContentPage
     {
         for (var index = 0; index < _headerTabItems.Count; index++)
         {
-            var glyph = index == 0 ? "dashboard" : "tune";
+            var glyph = index switch
+            {
+                0 => "dashboard",
+                1 => "confirmation_number",
+                _ => "desktop_windows"
+            };
             var color = index == _viewModel.HeaderTabIndex ? Colors.White : Slate500;
             _headerTabItems[index].ImageSource = CreateHeaderTabIcon(glyph, color);
         }
@@ -113,7 +128,6 @@ public partial class MainPage : ContentPage
         if (e.PropertyName == nameof(QueueSessionViewModel.ActiveTab))
         {
             UpdateShellPresentation();
-            _managePage?.SetActiveSection();
         }
     }
 
@@ -148,11 +162,12 @@ public partial class MainPage : ContentPage
         var isMobile = Width is > 0 and < 768;
         if (MobileHeaderTitle is not null)
         {
-            MobileHeaderTitle.Text = _viewModel.ActiveHeaderTab == "Overview"
-                ? "Queue Overview"
-                : _viewModel.ActiveTab == "Counters"
-                    ? "Counter Operations"
-                    : "Token Directory";
+            MobileHeaderTitle.Text = _viewModel.ActiveHeaderTab switch
+            {
+                "Counters" => "Counter Operations",
+                "Tokens" => "Token Directory",
+                _ => "Queue Overview"
+            };
             MobileHeaderDate.IsVisible = true;
         }
 
@@ -163,9 +178,13 @@ public partial class MainPage : ContentPage
                 "dashboard",
                 _viewModel.ActiveHeaderTab == "Overview");
             SetMobileNavigationButton(
-                MobileManageButton,
-                "tune",
-                _viewModel.ActiveHeaderTab == "Manage");
+                MobileTokensButton,
+                "confirmation_number",
+                _viewModel.ActiveHeaderTab == "Tokens");
+            SetMobileNavigationButton(
+                MobileCountersButton,
+                "desktop_windows",
+                _viewModel.ActiveHeaderTab == "Counters");
         }
 
         DesktopHeader.IsVisible = !isMobile;
@@ -189,27 +208,21 @@ public partial class MainPage : ContentPage
     private void OnMobileOverviewClicked(object? sender, EventArgs e) =>
         _viewModel.SetHeader("Overview");
 
-    private void OnMobileManageClicked(object? sender, EventArgs e) =>
-        _viewModel.SetHeader("Manage");
+    private void OnMobileTokensClicked(object? sender, EventArgs e) =>
+        _viewModel.SetHeader("Tokens");
+
+    private void OnMobileCountersClicked(object? sender, EventArgs e) =>
+        _viewModel.SetHeader("Counters");
 
     private void RenderPage()
     {
-        View page;
-        if (_viewModel.ActiveHeaderTab == "Overview")
+        var page = _viewModel.ActiveHeaderTab switch
         {
-            page = _overviewPage ??= new OverviewPage(
-                new QueueOverviewViewModel(_viewModel));
-        }
-        else
-        {
-            page = _managePage ??= new ManagePage(
-                new ManagePageViewModel(_viewModel),
-                ShowTokenDetails,
-                ShowCounterManagement,
-                action => RunCounterAction(action),
-                action => RunCounterAction(action),
-                ShowTokenPickerForTransfer);
-        }
+            "Overview" => _overviewPage ??= new OverviewPage(
+                new QueueOverviewViewModel(_viewModel)),
+            "Counters" => GetCountersPage(),
+            _ => GetTokensPage()
+        };
 
         if (!ReferenceEquals(PageHost.Content, page))
         {
@@ -217,410 +230,36 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private View BuildManagePage()
+    private View GetTokensPage()
     {
-        var content = new VerticalStackLayout
-        {
-            Spacing = 18,
-            Padding = new Thickness(28, 22, 28, 36)
-        };
-        var navigationRow = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Auto), new(GridLength.Star) },
-            ColumnSpacing = 12
-        };
-        navigationRow.Add(BuildManageNavigation(), 0, 0);
-        navigationRow.Add(new Border
-        {
-            Padding = new Thickness(12, 7),
-            BackgroundColor = Colors.White,
-            Stroke = Color.FromArgb("#A7F3D0"),
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(18) },
-            Content = TextLabel("●  Operational Hub  ·  Local sample", 11, Slate700, FontAttributes.Bold),
-            HorizontalOptions = LayoutOptions.End,
-            VerticalOptions = LayoutOptions.Center
-        }, 1, 0);
-        content.Add(navigationRow);
-        content.Add(_viewModel.ActiveTab switch
-        {
-            "Counters" => new CountersPage(
-                new CounterOperationsViewModel(_viewModel),
-                ShowCounterManagement,
-                ShowTokenDetails,
-                action => RunCounterAction(action),
-                action => RunCounterAction(action),
-                ShowTokenPickerForTransfer),
-            _ => new TokensPage(new TokenManagementViewModel(_viewModel), ShowTokenDetails)
-        });
-        return content;
+        _tokensPage ??= new TokensPage(
+            new TokenManagementViewModel(_viewModel),
+            ShowTokenDetails);
+        return _tokensScrollHost ??= new ScrollView { Content = _tokensPage };
     }
 
-    private View BuildManageNavigation()
+    private View GetCountersPage()
     {
-        var navigation = new SfSegmentedControl
-        {
-            ItemsSource = new[]
-            {
-                $"Tokens  {_viewModel.TotalTokenCount}",
-                $"Counters  {_viewModel.Counters.Count} active"
-            },
-            SegmentHeight = 38,
-            WidthRequest = 280
-        };
-        navigation.SetBinding(
-            SfSegmentedControl.SelectedIndexProperty,
-            new Binding($"{nameof(AppShellViewModel.QueueSession)}.{nameof(QueueSessionViewModel.ManageTabIndex)}", BindingMode.TwoWay));
-        navigation.SelectionIndicatorSettings = new SelectionIndicatorSettings
-        {
-            SelectionIndicatorPlacement = SelectionIndicatorPlacement.Fill,
-            Background = Cobalt,
-            TextColor = Colors.White
-        };
-        return new Border
-        {
-            Padding = 0,
-            BackgroundColor = Colors.White,
-            Stroke = Slate200,
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(12) },
-            Content = navigation
-        };
+        _countersPage ??= new CountersPage(
+            new CounterOperationsViewModel(_viewModel),
+            ShowCounterManagement,
+            ShowTokenDetails,
+            action => RunCounterAction(action),
+            action => RunCounterAction(action),
+            ShowTokenPickerForTransfer);
+        return _countersScrollHost ??= new ScrollView { Content = _countersPage };
     }
 
-    private View BuildOverview()
-    {
-        var content = new VerticalStackLayout
-        {
-            Spacing = 18,
-            Padding = new Thickness(28, 22, 28, 36)
-        };
-        content.Add(BuildMetrics(
-        [
-            ("Now Serving", _viewModel.Tokens.FirstOrDefault(token => token.Status == TokenStatus.Serving)?.Id ?? "—", "Counter 1", "In Progress", Cobalt),
-            ("Waiting Tokens", _viewModel.WaitingTokenCount.ToString(), "In Queue", $"~{_viewModel.WaitingTokenCount * 4}m est. avg", Cobalt),
-            ("Completed Tokens", _viewModel.CompletedTokenCount.ToString(), "Today", "Tokens Today", Teal),
-            ("Average Wait", $"{_viewModel.WaitingTokenCount * 4}m", "Within SLA", "Queue estimate", Cobalt)
-        ]));
 
-        var body = new Grid
-        {
-            ColumnDefinitions = Width > 1050
-                ? new ColumnDefinitionCollection { new(new GridLength(1, GridUnitType.Star)), new(new GridLength(1.35, GridUnitType.Star)) }
-                : new ColumnDefinitionCollection { new(GridLength.Star) },
-            ColumnSpacing = 18,
-            RowSpacing = 16
-        };
-        var left = new VerticalStackLayout { Spacing = 16 };
-        left.Add(BuildQueueLoadCard());
-        left.Add(BuildCounterStatusCard());
-        body.Add(left, 0, 0);
-        body.Add(BuildUpcomingCard(), Width > 1050 ? 1 : 0, 0);
-        content.Add(body);
-        return content;
-    }
 
-    private View BuildMetrics((string Title, string Value, string Left, string Right, Color Accent)[] metrics)
-    {
-        var grid = new Grid
-        {
-            ColumnDefinitions = Width > 1050
-                ? new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star), new(GridLength.Star), new(GridLength.Star) }
-                : new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star) },
-            RowDefinitions = Width > 1050
-                ? new RowDefinitionCollection { new(GridLength.Auto) }
-                : new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) },
-            ColumnSpacing = 14,
-            RowSpacing = 14
-        };
-        for (var index = 0; index < metrics.Length; index++)
-        {
-            var item = metrics[index];
-            var inner = new VerticalStackLayout { Spacing = 8 };
-            var top = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) }
-            };
-            top.Add(TextLabel(item.Title, 12, Slate500), 0, 0);
-            top.Add(TextLabel("◈", 16, item.Accent, FontAttributes.Bold), 1, 0);
-            inner.Add(top);
-            inner.Add(TextLabel(item.Value, 30, Cobalt, FontAttributes.Bold));
-            var footer = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
-            };
-            footer.Add(TextLabel(item.Left, 10, Slate500), 0, 0);
-            footer.Add(TextLabel(item.Right, 10, item.Accent, FontAttributes.Bold), 1, 0);
-            inner.Add(footer);
-            grid.Add(Card(inner, 16), index % (Width > 1050 ? 4 : 2), index / (Width > 1050 ? 4 : 2));
-        }
-        return grid;
-    }
 
-    private View BuildQueueLoadCard()
-    {
-        var body = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(100), new(GridLength.Star) },
-            ColumnSpacing = 18,
-            RowDefinitions = new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) }
-        };
-        body.Add(CardHeading("Queue Load", "Current load capacity metric", "Optimal", Teal), 0, 0);
-        body.SetColumnSpan(body.Children.Last(), 2);
 
-        var gauge = new Border
-        {
-            WidthRequest = 94,
-            HeightRequest = 94,
-            Stroke = Cobalt,
-            StrokeThickness = 8,
-            BackgroundColor = Colors.White,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(47) },
-            Content = new VerticalStackLayout
-            {
-                Spacing = 0,
-                VerticalOptions = LayoutOptions.Center,
-                Children =
-                {
-                    TextLabel($"{_viewModel.QueueLoad}%", 22, Slate900, FontAttributes.Bold),
-                    TextLabel("LOAD", 9, Slate400, FontAttributes.Bold)
-                }
-            },
-            HorizontalOptions = LayoutOptions.Start
-        };
-        body.Add(gauge, 0, 1);
-        var metrics = new VerticalStackLayout
-        {
-            Spacing = 14,
-            VerticalOptions = LayoutOptions.Center,
-            Children =
-            {
-                LabelPair("Waiting Tokens", $"{_viewModel.WaitingTokenCount} waiting"),
-                LabelPair("Active Terminals", $"{_viewModel.OnlineCounterCount} of {_viewModel.Counters.Count} active")
-            }
-        };
-        body.Add(metrics, 1, 1);
-        return Card(body, 18);
-    }
 
-    private View BuildCounterStatusCard()
-    {
-        var stack = new VerticalStackLayout { Spacing = 12 };
-        stack.Add(CardHeading("Counter Status", "Local terminal assignment", $"{_viewModel.OnlineCounterCount} Desks Online", Cobalt));
-        foreach (var counter in _viewModel.Counters)
-        {
-            var token = _viewModel.CurrentTokenFor(counter.Name);
-            var row = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitionCollection { new(40), new(GridLength.Star), new(GridLength.Auto) },
-                ColumnSpacing = 12,
-                Padding = new Thickness(12, 10),
-                BackgroundColor = Slate50
-            };
-            row.Add(TextLabel(counter.Name.Replace("Counter ", string.Empty), 13, Cobalt, FontAttributes.Bold), 0, 0);
-            var details = new VerticalStackLayout { Spacing = 2 };
-            details.Add(TextLabel($"{counter.Name} · {token?.Id ?? "Available"}", 12, Slate900, FontAttributes.Bold));
-            details.Add(TextLabel(counter.Service, 10, Slate500));
-            row.Add(details, 1, 0);
-            var status = _viewModel.GetCounterAvailabilityText(counter);
-            var statusColors = CounterStatusColors(status);
-            row.Add(StatusPill(status, statusColors.Background, statusColors.Foreground), 2, 0);
-            var button = new Button
-            {
-                Text = string.Empty,
-                BackgroundColor = Colors.Transparent,
-                Opacity = 0,
-                HeightRequest = 54,
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Fill
-            };
-            button.Clicked += (_, _) =>
-            {
-                _viewModel.SelectCounter(counter.Name);
-                ShowCounterOperations(counter);
-            };
-            var rowContainer = new Grid();
-            rowContainer.Add(new Border
-            {
-                Padding = 0,
-                BackgroundColor = Slate50,
-                Stroke = Colors.Transparent,
-                StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(9) },
-                Content = row
-            });
-            rowContainer.Add(button);
-            stack.Add(rowContainer);
-        }
-        return Card(stack, 18);
-    }
 
-    private View BuildUpcomingCard()
-    {
-        var stack = new VerticalStackLayout { Spacing = 12 };
-        var heading = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) }
-        };
-        var title = new VerticalStackLayout { Spacing = 3 };
-        title.Add(TextLabel("Upcoming Tokens", 14, Slate900, FontAttributes.Bold));
-        title.Add(TextLabel("Next in line across all counters", 11, Slate500));
-        heading.Add(title, 0, 0);
-        heading.Add(BuildUpcomingFilter(), 1, 0);
-        stack.Add(heading);
-        var upcoming = _viewModel.Tokens
-            .Where(token => token.Status == TokenStatus.Waiting)
-            .Where(token => _viewModel.UpcomingFilter == "All" || token.Priority.ToString() == _viewModel.UpcomingFilter)
-            .Take(6).ToArray();
-        if (upcoming.Length == 0)
-        {
-            stack.Add(EmptyState("No tokens match this filter.", "Change the priority filter to see the queue."));
-        }
-        foreach (var token in upcoming)
-        {
-            stack.Add(TokenSummaryRow(token, () => OpenTokenDetails(token)));
-        }
-        return Card(stack, 18);
-    }
 
-    private View BuildUpcomingFilter()
-    {
-        var picker = new Picker
-        {
-            ItemsSource = new[] { "All", "Normal", "Priority" },
-            SelectedItem = _viewModel.UpcomingFilter,
-            FontSize = 11,
-            WidthRequest = 115,
-            HeightRequest = 38,
-            TextColor = Slate700,
-            BackgroundColor = Slate50
-        };
-        picker.SelectedIndexChanged += (_, _) =>
-        {
-            if (picker.SelectedItem is string filter)
-            {
-                _viewModel.SetUpcomingFilter(filter);
-                RenderPage();
-            }
-        };
-        return picker;
-    }
 
-    private View BuildTokensPlaceholder()
-    {
-        var stack = new VerticalStackLayout { Spacing = 14 };
-        stack.Add(BuildMetrics(
-        [
-            ("Total tokens", _viewModel.TotalTokenCount.ToString(), "Active pool", "All services combined", Cobalt),
-            ("Waiting", _viewModel.WaitingTokenCount.ToString(), "In queue", "Estimated from local queue", Amber),
-            ("Serving now", _viewModel.ServingTokenCount.ToString(), "Engaged now", $"Across {_viewModel.Counters.Count} counters", Teal),
-            ("Skipped / on hold", _viewModel.SkippedTokenCount.ToString(), "Action required", "Recallable on request", Rose)
-        ]));
 
-        var directory = new Grid
-        {
-            ColumnDefinitions = Width > 1050
-                ? new ColumnDefinitionCollection { new(260), new(GridLength.Star) }
-                : new ColumnDefinitionCollection { new(GridLength.Star) },
-            ColumnSpacing = 16,
-            RowSpacing = 16
-        };
-        directory.Add(BuildTokenFilters(), 0, 0);
 
-        var list = new VerticalStackLayout { Spacing = 10 };
-        var title = new VerticalStackLayout { Spacing = 3 };
-        title.Add(TextLabel("Token directory", 18, Slate900, FontAttributes.Bold));
-        title.Add(TextLabel("Review, update, and manage queue tokens", 11, Slate500));
-        _tokenCountLabel = TextLabel(string.Empty, 10, Slate500);
-        list.Add(title);
-        var countRow = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
-            Children = { _tokenCountLabel }
-        };
-        list.Add(countRow);
-        _tokenList = new VerticalStackLayout { Spacing = 8 };
-        list.Add(_tokenList);
-        directory.Add(Card(list, 16), Width > 1050 ? 1 : 0, 0);
-        stack.Add(directory);
-        RefreshTokenList();
-        return stack;
-    }
-
-    private View BuildTokenFilters()
-    {
-        var filter = new VerticalStackLayout { Spacing = 10 };
-        filter.Add(TextLabel("Filter tokens", 14, Slate900, FontAttributes.Bold));
-        filter.Add(TextLabel($"{_viewModel.VisibleTokens.Count} of {_viewModel.TotalTokenCount} showing", 10, Slate500));
-        var search = new Entry
-        {
-            Placeholder = "Search token number...",
-            Text = _viewModel.SearchText,
-            FontSize = 12,
-            ClearButtonVisibility = ClearButtonVisibility.WhileEditing,
-            BackgroundColor = Slate50,
-            TextColor = Slate700,
-            PlaceholderColor = Slate400,
-            HeightRequest = 40
-        };
-        search.TextChanged += (_, args) =>
-        {
-            _viewModel.SearchText = args.NewTextValue ?? string.Empty;
-            if (_tokenCountLabel is not null)
-            {
-                _tokenCountLabel.Text = $"{_viewModel.VisibleTokens.Count} of {_viewModel.TotalTokenCount} showing";
-            }
-            RefreshTokenList();
-        };
-        filter.Add(search);
-        filter.Add(TextLabel("QUEUE STATUS", 9, Slate400, FontAttributes.Bold));
-        foreach (var status in new[] { "All Tokens", "Waiting", "Serving", "Skipped", "Completed" })
-        {
-            var count = status == "All Tokens"
-                ? _viewModel.TotalTokenCount
-                : _viewModel.Tokens.Count(token => token.Status.ToString() == status);
-            var selected = _viewModel.StatusFilter == status;
-            var button = TextButton($"{status}      {count}", () =>
-            {
-                _viewModel.SetStatusFilter(status);
-                RenderPage();
-            }, selected);
-            button.HorizontalOptions = LayoutOptions.Fill;
-            filter.Add(button);
-        }
-        var waitingCount = Math.Max(1, _viewModel.WaitingTokenCount);
-        var priorityRate = (int)Math.Round(_viewModel.PriorityWaitingCount * 100d / waitingCount);
-        filter.Add(Card(new VerticalStackLayout
-        {
-            Spacing = 6,
-            Children =
-            {
-                TextLabel("Priority routing rate", 10, Slate500),
-                TextLabel($"{priorityRate}% Priority", 13, Cobalt, FontAttributes.Bold),
-                TextLabel("Based on waiting tokens", 9, Slate400)
-            }
-        }, 12));
-        return Card(filter, 14);
-    }
-
-    private void RefreshTokenList()
-    {
-        if (_tokenList is null)
-        {
-            return;
-        }
-
-        _tokenList.Children.Clear();
-        if (_viewModel.VisibleTokens.Count == 0)
-        {
-            _tokenList.Add(EmptyState("No tokens found.", "Try changing the status filter or search term."));
-            return;
-        }
-
-        foreach (var token in _viewModel.VisibleTokens)
-        {
-            _tokenList.Add(TokenSummaryRow(token, () => ShowTokenDetails(token)));
-        }
-    }
 
     private void ShowTokenDetails(QueueToken token)
     {
@@ -1152,189 +791,7 @@ public partial class MainPage : ContentPage
         MobileBottomSheetHost.Hide();
     }
 
-    private View BuildCountersPlaceholder()
-    {
-        var stack = new VerticalStackLayout { Spacing = 12 };
-        stack.Add(BuildMetrics(
-        [
-            ("Active counter", _viewModel.SelectedCounter?.Name ?? "—", _viewModel.SelectedCounterAvailabilityText, $"{_viewModel.SelectedCounter?.Service ?? "No service"} terminal", Teal),
-            ("Waiting", _viewModel.WaitingTokenCount.ToString(), "Tokens", "Across all counters", Cobalt),
-            ("Completed", _viewModel.CompletedTokenCount.ToString(), "Tokens", "Today", Teal),
-            ("Skipped", _viewModel.SkippedTokenCount.ToString(), "Tokens", "Available for recall", Rose)
-        ]));
 
-        var workspace = new Grid
-        {
-            ColumnDefinitions = Width > 1050
-                ? new ColumnDefinitionCollection { new(320), new(GridLength.Star) }
-                : new ColumnDefinitionCollection { new(GridLength.Star) },
-            RowDefinitions = Width > 1050
-                ? new RowDefinitionCollection { new(GridLength.Auto) }
-                : new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) },
-            ColumnSpacing = 16,
-            RowSpacing = 16
-        };
-        var terminals = new VerticalStackLayout { Spacing = 10 };
-        var terminalHeader = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) }
-        };
-        terminalHeader.Add(TextLabel("Terminals & counters", 14, Slate900, FontAttributes.Bold), 0, 0);
-        terminalHeader.Add(TextLabel($"{_viewModel.OnlineCounterCount} Active", 10, Slate500), 1, 0);
-        terminals.Add(terminalHeader);
-        foreach (var counter in _viewModel.Counters)
-        {
-            var current = _viewModel.CurrentTokenFor(counter.Name);
-            var selected = counter.Name == _viewModel.ActiveCounterName;
-            var item = new VerticalStackLayout
-            {
-                Spacing = 7,
-                Children =
-                {
-                    TextLabel($"{counter.Name} · {_viewModel.GetCounterAvailabilityText(counter)}", 12, selected ? Cobalt : Slate900, FontAttributes.Bold),
-                    TextLabel(counter.Service, 10, Slate500),
-                    TextLabel($"{current?.Status.ToString().ToUpperInvariant() ?? "READY"}   {current?.Id ?? "No token"}", 9, Slate500)
-                }
-            };
-            var card = new Border
-            {
-                Padding = 13,
-                BackgroundColor = selected ? Color.FromArgb("#F1F5FF") : Colors.White,
-                Stroke = selected ? Cobalt : Slate200,
-                StrokeThickness = 1,
-                StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(10) },
-                Content = item
-            };
-            var tap = new TapGestureRecognizer();
-            tap.Tapped += (_, _) => ShowCounterOperations(counter);
-            card.GestureRecognizers.Add(tap);
-            terminals.Add(card);
-        }
-        terminals.Add(TextButton("Manage terminals", ShowCounterManagement, false));
-        workspace.Add(Card(terminals, 16), 0, 0);
-        workspace.Add(BuildCounterOperations(), Width > 1050 ? 1 : 0, Width > 1050 ? 0 : 1);
-        stack.Add(workspace);
-        return stack;
-    }
-
-    private View BuildCounterOperations()
-    {
-        var counter = _viewModel.SelectedCounter;
-        var token = _viewModel.SelectedCounterToken;
-        var content = new VerticalStackLayout { Spacing = 14 };
-        if (counter is null)
-        {
-            content.Add(EmptyState("No counters available.", "Create a counter to start serving tokens."));
-            return Card(content, 18);
-        }
-
-        var heading = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) }
-        };
-        var counterStatus = _viewModel.GetCounterAvailabilityText(counter);
-        var counterStatusColors = CounterStatusColors(counterStatus);
-        heading.Add(new HorizontalStackLayout
-        {
-            Spacing = 8,
-            Children =
-            {
-                StatusPill(counterStatus, counterStatusColors.Background, counterStatusColors.Foreground),
-                StatusPill(token?.Priority.ToString() ?? "Normal", Color.FromArgb("#FFF6E8"), Amber)
-            }
-        }, 0, 0);
-        heading.Add(StatusPill(counter.Name, Color.FromArgb("#EEF4FF"), Cobalt), 1, 0);
-        content.Add(heading);
-        content.Add(new VerticalStackLayout
-        {
-            Spacing = 6,
-            Padding = new Thickness(0, 10),
-            HorizontalOptions = LayoutOptions.Center,
-            Children =
-            {
-                TextLabel(token?.Id ?? "—", 48, Slate900, FontAttributes.Bold),
-                TextLabel(token?.Service ?? counter.Service, 12, Cobalt)
-            }
-        });
-        var info = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star) },
-            Padding = 14,
-            BackgroundColor = Color.FromArgb("#F4F7FD")
-        };
-        info.Add(new VerticalStackLayout
-        {
-            Spacing = 4,
-            Children =
-            {
-                TextLabel("Wait time", 10, Slate500),
-                TextLabel(token?.Wait ?? "—", 14, Slate900, FontAttributes.Bold)
-            }
-        }, 0, 0);
-        info.Add(new VerticalStackLayout
-        {
-            Spacing = 4,
-            Children =
-            {
-                TextLabel("Current status", 10, Slate500),
-                TextLabel(token?.Status.ToString() ?? "Ready", 14, Teal, FontAttributes.Bold)
-            }
-        }, 1, 0);
-        content.Add(new Border
-        {
-            BackgroundColor = Color.FromArgb("#F4F7FD"),
-            StrokeThickness = 0,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(9) },
-            Content = info
-        });
-
-        var primaryActions = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star) },
-            ColumnSpacing = 8
-        };
-        var callNext = TextButton("Call next", () => RunCounterAction(() => _viewModel.CallNext(counter.Name)), true);
-        callNext.HorizontalOptions = LayoutOptions.Fill;
-        callNext.IsEnabled = _viewModel.CanCallNextFor(counter.Name);
-        var complete = TextButton(token?.Status == TokenStatus.Completed ? "Completed" : "Complete service",
-            () => RunCounterAction(() => _viewModel.CompleteCurrent(counter.Name)), true);
-        complete.BackgroundColor = Teal;
-        complete.BorderColor = Teal;
-        complete.IsEnabled = token?.Status == TokenStatus.Serving && counter.IsOnline;
-        primaryActions.Add(callNext, 0, 0);
-        primaryActions.Add(complete, 1, 0);
-        content.Add(primaryActions);
-
-        var queueActions = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new(GridLength.Star), new(GridLength.Star), new(GridLength.Star)
-            },
-            ColumnSpacing = 8
-        };
-        var skip = TextButton("Skip", () => RunCounterAction(() => _viewModel.SkipCurrent(counter.Name)), false);
-        skip.IsEnabled = token?.Status == TokenStatus.Serving && counter.IsOnline;
-        var recall = TextButton("Recall", () => RunCounterAction(() => _viewModel.RecallCurrent(counter.Name)), false);
-        recall.IsEnabled = _viewModel.Tokens.Any(item => item.CounterName == counter.Name && item.Status == TokenStatus.Skipped) && counter.IsOnline;
-        var transfer = TextButton("Transfer", () =>
-        {
-            if (token is null)
-            {
-                ShowTokenPickerForTransfer(counter.Name);
-            }
-            else
-            {
-                ShowTransferForm(token);
-            }
-        }, false);
-        transfer.IsEnabled = token?.Status == TokenStatus.Serving && counter.IsOnline;
-        queueActions.Add(skip, 0, 0);
-        queueActions.Add(recall, 1, 0);
-        queueActions.Add(transfer, 2, 0);
-        content.Add(queueActions);
-        return Card(content, 18);
-    }
 
     private void ShowCounterOperations(QueueCounter counter)
     {
@@ -1673,7 +1130,7 @@ public partial class MainPage : ContentPage
             {
                 var counter = _viewModel.AddCounter(selectedService);
                 ShowCounterManagement();
-                _managePage?.ScrollToCounter(counter.Name);
+                _countersPage?.ScrollToCounter(counter.Name);
             }
         }, Cobalt, Colors.White, Colors.Transparent), 1, 0);
         content.Add(new Border
@@ -1774,252 +1231,6 @@ public partial class MainPage : ContentPage
         ShowModal(form);
     }
 
-    private View BuildInsightsPlaceholder() =>
-        BuildInsights();
-
-    private View BuildInsights()
-    {
-        var stack = new VerticalStackLayout { Spacing = 14 };
-        stack.Add(TextLabel("Illustrative local sample analytics", 10, Slate500));
-        stack.Add(BuildMetrics(
-        [
-            ("In line", "8", "Tokens", "Across all services", Cobalt),
-            ("Completed", "42", "Today", "+18.5% vs. avg", Teal),
-            ("Counters", "3", "Active", "100% capacity", Cobalt),
-            ("Average wait", "6.4m", "Within SLA", "Target under 10m", Amber)
-        ]));
-
-        var charts = new Grid
-        {
-            ColumnDefinitions = Width > 1050
-                ? new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Star) }
-                : new ColumnDefinitionCollection { new(GridLength.Star) },
-            RowDefinitions = Width > 1050
-                ? new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) }
-                : new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto), new(GridLength.Auto), new(GridLength.Auto) },
-            ColumnSpacing = 14,
-            RowSpacing = 14
-        };
-        charts.Add(BuildServiceDistributionCard(), 0, 0);
-        charts.Add(BuildAverageWaitCard(), Width > 1050 ? 1 : 0, Width > 1050 ? 0 : 1);
-        charts.Add(BuildFulfillmentCard(), 0, Width > 1050 ? 1 : 2);
-        charts.Add(BuildCounterPerformanceCard(), Width > 1050 ? 1 : 0, Width > 1050 ? 1 : 3);
-        stack.Add(charts);
-        return stack;
-    }
-
-    private View BuildServiceDistributionCard()
-    {
-        var chart = new SfCircularChart
-        {
-            HeightRequest = 190,
-            BackgroundColor = Colors.Transparent
-        };
-        chart.Series.Add(new DoughnutSeries
-        {
-            ItemsSource = new[]
-            {
-                new AnalyticsPoint("Enquiry", 22),
-                new AnalyticsPoint("Payment", 18),
-                new AnalyticsPoint("Support", 10)
-            },
-            XBindingPath = nameof(AnalyticsPoint.Category),
-            YBindingPath = nameof(AnalyticsPoint.Value),
-            InnerRadius = 0.72,
-            PaletteBrushes = new List<Brush>
-            {
-                new SolidColorBrush(Cobalt),
-                new SolidColorBrush(Teal),
-                new SolidColorBrush(Color.FromArgb("#7589D4"))
-            }
-        });
-        var content = new VerticalStackLayout { Spacing = 8 };
-        content.Add(ChartTitle("Tokens by service type", "Distribution across customer categories", "50 tokens"));
-        content.Add(chart);
-        content.Add(AnalyticsLegendRow("Enquiry", 22, "44%", Cobalt));
-        content.Add(AnalyticsLegendRow("Payment", 18, "36%", Teal));
-        content.Add(AnalyticsLegendRow("Support", 10, "20%", Color.FromArgb("#7589D4")));
-        content.Add(TextLabel("Category total                                      100% (50 issued)", 9, Slate500));
-        return Card(content, 16);
-    }
-
-    private View BuildAverageWaitCard()
-    {
-        var content = new VerticalStackLayout { Spacing = 15 };
-        content.Add(ChartTitle("Average wait time", "Average customer queue duration by service", "Scale: 15m max"));
-        foreach (var item in new[]
-        {
-            ("Enquiry", 7.5, Cobalt),
-            ("Payment", 4.2, Teal),
-            ("Support", 11d, Color.FromArgb("#EFA867"))
-        })
-        {
-            var row = new VerticalStackLayout { Spacing = 5 };
-            var header = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) }
-            };
-            header.Add(TextLabel(item.Item1, 11, Slate700), 0, 0);
-            header.Add(TextLabel($"{item.Item2:0.#}m", 11, Slate900, FontAttributes.Bold), 1, 0);
-            row.Add(header);
-            var bar = new Grid
-            {
-                ColumnDefinitions = new ColumnDefinitionCollection { new(new GridLength(item.Item2, GridUnitType.Star)), new(new GridLength(15 - item.Item2, GridUnitType.Star)) },
-                HeightRequest = 9,
-                BackgroundColor = Slate100
-            };
-            bar.Add(new BoxView { Color = item.Item3, CornerRadius = 5 }, 0, 0);
-            row.Add(new Border
-            {
-                Padding = 0,
-                StrokeThickness = 0,
-                StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(5) },
-                Content = bar
-            });
-            content.Add(row);
-        }
-        content.Add(TextLabel("0m                     5m target                10m SLA                 15m max", 9, Slate400));
-        return Card(content, 16);
-    }
-
-    private View BuildFulfillmentCard()
-    {
-        var chart = new SfCircularChart { HeightRequest = 190, BackgroundColor = Colors.Transparent };
-        chart.Series.Add(new DoughnutSeries
-        {
-            ItemsSource = new[]
-            {
-                new AnalyticsPoint("Completed", 42),
-                new AnalyticsPoint("Pending", 8)
-            },
-            XBindingPath = nameof(AnalyticsPoint.Category),
-            YBindingPath = nameof(AnalyticsPoint.Value),
-            InnerRadius = 0.72,
-            PaletteBrushes = new List<Brush> { new SolidColorBrush(Teal), new SolidColorBrush(Color.FromArgb("#DCE8F5")) }
-        });
-        var content = new VerticalStackLayout { Spacing = 8 };
-        content.Add(ChartTitle("Completed vs pending", "Session fulfillment status", "Healthy"));
-        content.Add(chart);
-        content.Add(AnalyticsLegendRow("Completed · Processed & cleared", 42, "84%", Teal));
-        content.Add(AnalyticsLegendRow("Pending · Waiting dispatch", 8, "16%", Color.FromArgb("#93B4E2")));
-        return Card(content, 16);
-    }
-
-    private View BuildCounterPerformanceCard()
-    {
-        var chart = new SfCartesianChart
-        {
-            HeightRequest = 210,
-            BackgroundColor = Colors.Transparent
-        };
-        chart.XAxes.Add(new CategoryAxis
-        {
-            LabelStyle = new ChartAxisLabelStyle { TextColor = Slate500, FontSize = 9 }
-        });
-        chart.YAxes.Add(new NumericalAxis
-        {
-            LabelStyle = new ChartAxisLabelStyle { TextColor = Slate500, FontSize = 9 }
-        });
-        chart.Series.Add(new ColumnSeries
-        {
-            ItemsSource = new[]
-            {
-                new AnalyticsPoint("Counter 1", 18),
-                new AnalyticsPoint("Counter 2", 14),
-                new AnalyticsPoint("Counter 3", 10)
-            },
-            XBindingPath = nameof(AnalyticsPoint.Category),
-            YBindingPath = nameof(AnalyticsPoint.Value),
-            Fill = Cobalt,
-            Width = 0.6,
-            Spacing = 0.25,
-            ShowDataLabels = true
-        });
-        var content = new VerticalStackLayout { Spacing = 8 };
-        content.Add(ChartTitle("Counter performance", "Completed tokens handled per desk", "100% operational"));
-        content.Add(chart);
-        content.Add(TextLabel("Total completed: 42 tokens   ·   Desk throughput: ~14 tokens/desk", 10, Slate500));
-        return Card(content, 16);
-    }
-
-    private static View ChartTitle(string title, string subtitle, string badge)
-    {
-        var heading = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) },
-            ColumnSpacing = 8
-        };
-        heading.Add(new VerticalStackLayout
-        {
-            Spacing = 3,
-            Children =
-            {
-                TextLabel(title, 13, Slate900, FontAttributes.Bold),
-                TextLabel(subtitle, 10, Slate500)
-            }
-        }, 0, 0);
-        heading.Add(StatusPill(badge, Color.FromArgb("#EEF4FF"), Cobalt), 1, 0);
-        return heading;
-    }
-
-    private static View AnalyticsLegendRow(string label, int value, string percent, Color color)
-    {
-        var row = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new(GridLength.Star), new(GridLength.Auto), new(44)
-            },
-            ColumnSpacing = 12
-        };
-        row.Add(new HorizontalStackLayout
-        {
-            Spacing = 7,
-            Children =
-            {
-                new BoxView { Color = color, WidthRequest = 8, HeightRequest = 8, CornerRadius = 4, VerticalOptions = LayoutOptions.Center },
-                TextLabel(label, 10, Slate700)
-            }
-        }, 0, 0);
-        row.Add(TextLabel($"{value} tokens", 10, Slate500), 1, 0);
-        row.Add(TextLabel(percent, 10, Slate900, FontAttributes.Bold), 2, 0);
-        return row;
-    }
-
-    private View TokenSummaryRow(QueueToken token, Action onSelected)
-    {
-        var layout = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitionCollection
-            {
-                new(90), new(GridLength.Star), new(GridLength.Auto)
-            },
-            ColumnSpacing = 12,
-            Padding = new Thickness(12, 10),
-            BackgroundColor = Slate50
-        };
-        layout.Add(TextLabel(token.Id, 13, Cobalt, FontAttributes.Bold), 0, 0);
-        var info = new VerticalStackLayout { Spacing = 2 };
-        info.Add(TextLabel(token.Service, 12, Slate900, FontAttributes.Bold));
-        info.Add(TextLabel($"{token.CounterName} · {token.Priority}", 10, Slate500));
-        layout.Add(info, 1, 0);
-        layout.Add(StatusPill(token.Status.ToString(), StatusColor(token.Status).Background, StatusColor(token.Status).Foreground), 2, 0);
-        var card = new Border
-        {
-            Padding = 0,
-            BackgroundColor = Colors.White,
-            Stroke = Slate200,
-            StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(9) },
-            Content = layout
-        };
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) => onSelected();
-        card.GestureRecognizers.Add(tap);
-        SemanticProperties.SetDescription(card, $"Open token {token.Id}, {token.Status}, {token.Service}");
-        return card;
-    }
-
     private static (Color Background, Color Foreground) StatusColor(TokenStatus status) =>
         status switch
         {
@@ -2095,7 +1306,7 @@ public partial class MainPage : ContentPage
         {
             Text = text,
             FontFamily = "Segoe UI",
-            FontSize = fontSize,
+            FontSize = Math.Max(fontSize, MinimumCaptionFontSize),
             TextColor = color ?? Slate900,
             FontAttributes = attributes,
             VerticalTextAlignment = TextAlignment.Center
@@ -2221,22 +1432,5 @@ public partial class MainPage : ContentPage
         content.Add(actions);
         ShowModal(content);
     }
-
-    private void OpenTokenDetails(QueueToken token) => ShowTokenDetails(token);
-
-    private sealed class KeyGlyphDrawable : IDrawable
-    {
-        public void Draw(ICanvas canvas, RectF dirtyRect)
-        {
-            canvas.StrokeColor = Colors.White;
-            canvas.StrokeSize = 2;
-            canvas.DrawCircle(7, 8, 4);
-            canvas.DrawLine(10, 11, 17, 18);
-            canvas.DrawLine(14, 15, 17, 12);
-            canvas.DrawLine(16, 17, 19, 14);
-        }
-    }
-
-    private sealed record AnalyticsPoint(string Category, double Value);
 
 }

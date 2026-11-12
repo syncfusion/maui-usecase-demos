@@ -213,7 +213,7 @@ public partial class CountersPage : ContentView
         SelectedTokenIdLabel.FontSize = 58;
         InitialWaitLabel.Text = compact ? _viewModel.SelectedCounterTokenWait : "3m 12s";
         CallNextButton.Text = compact ? "Call Next" : "Call next";
-        CallNextButton.FontSize = 14;
+        CallNextButton.FontSize = 16;
         CallNextButton.MinimumHeightRequest = compact ? 76 : 50;
         CallNextButton.BackgroundColor = compact ? Color.FromArgb("#102A8C") : Color.FromArgb("#153F9A");
         CallNextButton.ImageSource = new FontImageSource
@@ -224,7 +224,7 @@ public partial class CountersPage : ContentView
             Size = compact ? 18 : 16
         };
         CompleteButton.Text = compact ? "Complete\nService" : "Complete service";
-        CompleteButton.FontSize = 14;
+        CompleteButton.FontSize = 16;
         CompleteButton.MinimumHeightRequest = compact ? 76 : 50;
         CompleteButton.BackgroundColor = Color.FromArgb("#153F9A");
         CompleteButton.ImageSource = new FontImageSource
@@ -237,9 +237,9 @@ public partial class CountersPage : ContentView
         SkipButton.Text = compact ? "Skip Token" : "Skip token";
         RecallButton.Text = compact ? "Recall Token" : "Recall token";
         TransferButton.Text = compact ? "Transfer Token" : "Transfer token";
-        SkipButton.FontSize = 12;
-        RecallButton.FontSize = 12;
-        TransferButton.FontSize = 12;
+        SkipButton.FontSize = compact ? 12 : 14;
+        RecallButton.FontSize = compact ? 12 : 14;
+        TransferButton.FontSize = compact ? 12 : 14;
         SkipButton.ImageSource = compact
             ? new FontImageSource { Glyph = "fast_forward", FontFamily = "MaterialIcons", Color = Color.FromArgb("#C62828"), Size = 16 }
             : null;

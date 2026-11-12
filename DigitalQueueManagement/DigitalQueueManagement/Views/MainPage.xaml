@@ -58,24 +58,25 @@
                 <Border Grid.Column="0"
                         Grid.ColumnSpan="3"
                         Padding="4"
-                        BackgroundColor="#F8FAFC"
+                        BackgroundColor="white"
                         Stroke="#E2E8F0"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center">
                     <buttons:SfSegmentedControl x:Name="HeaderTabs"
-                                               WidthRequest="240"
+                                               WidthRequest="360"
                                                SegmentWidth="116"
                                                SegmentHeight="38"
+                                               Background="#EEF4FF"
                                                CornerRadius="7"
                                                SegmentCornerRadius="7"
                                                StrokeThickness="0"
                                                ShowSeparator="False"
-                                               SegmentBackground="Transparent"
+                                               SegmentBackground="#EEF4FF"
                                                SelectedIndex="{Binding QueueSession.HeaderTabIndex, Mode=TwoWay}">
                         <buttons:SfSegmentedControl.TextStyle>
-                            <buttons:SegmentTextStyle FontSize="12" TextColor="#64748B" />
+                            <buttons:SegmentTextStyle FontSize="14" TextColor="#64748B" />
                         </buttons:SfSegmentedControl.TextStyle>
                         <buttons:SfSegmentedControl.SegmentTemplate>
                             <DataTemplate x:DataType="buttons:SfSegmentItem">
@@ -113,7 +114,7 @@
                                                VerticalOptions="Center" />
                                         <Label Grid.Column="1"
                                                Text="{Binding Text}"
-                                               FontSize="12"
+                                               FontSize="14"
                                                TextColor="#64748B"
                                                VerticalTextAlignment="Center">
                                             <Label.Triggers>
@@ -186,30 +187,39 @@
               Grid.Row="2"
               IsVisible="False"
               HeightRequest="68"
-              ColumnDefinitions="*,*"
+              ColumnDefinitions="*,*,*"
               BackgroundColor="White">
             <BoxView HeightRequest="1"
                      Color="#E2E8F0"
                      VerticalOptions="Start"
-                     Grid.ColumnSpan="2" />
+                     Grid.ColumnSpan="3" />
             <Button x:Name="MobileOverviewButton"
                     Grid.Column="0"
                     Text="Overview"
-                    FontSize="11"
+                    FontSize="12"
                     FontAttributes="Bold"
                     BackgroundColor="Transparent"
                     Padding="0,6"
                     ContentLayout="Top,2"
                     Clicked="OnMobileOverviewClicked" />
-            <Button x:Name="MobileManageButton"
+            <Button x:Name="MobileTokensButton"
                     Grid.Column="1"
-                    Text="Manage"
-                    FontSize="11"
+                    Text="Tokens"
+                    FontSize="12"
                     FontAttributes="Bold"
                     BackgroundColor="Transparent"
                     Padding="0,6"
                     ContentLayout="Top,2"
-                    Clicked="OnMobileManageClicked" />
+                    Clicked="OnMobileTokensClicked" />
+            <Button x:Name="MobileCountersButton"
+                    Grid.Column="2"
+                    Text="Counters"
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    BackgroundColor="Transparent"
+                    Padding="0,6"
+                    ContentLayout="Top,2"
+                    Clicked="OnMobileCountersClicked" />
         </Grid>
         <dialogs:DesktopPopupHost x:Name="DesktopPopupHost"
                                   Grid.RowSpan="3"

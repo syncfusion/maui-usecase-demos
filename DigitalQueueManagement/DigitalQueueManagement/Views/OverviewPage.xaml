@@ -10,12 +10,15 @@
              x:Class="DigitalQueueManagement.Views.OverviewPage"
              x:DataType="vm:QueueOverviewViewModel">
     <ContentView.Resources>
+        <x:Double x:Key="OverviewCaptionFontSize">12</x:Double>
+        <x:Double x:Key="OverviewEmphasisFontSize">13</x:Double>
+        <x:Double x:Key="OverviewSectionFontSize">18</x:Double>
         <Style x:Key="InsightsStatusChip" TargetType="chips:SfChip">
             <Setter Property="HeightRequest" Value="24" />
             <Setter Property="Padding" Value="8,0" />
             <Setter Property="CornerRadius" Value="12" />
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
-            <Setter Property="FontSize" Value="9" />
+            <Setter Property="FontSize" Value="{StaticResource CaptionFontSize}" />
             <Setter Property="InputTransparent" Value="True" />
             <Setter Property="VerticalOptions" Value="Start" />
         </Style>
@@ -49,18 +52,18 @@
                     <BoxView Grid.Row="0" Color="#3478F6" />
                     <Grid Grid.Row="1" Padding="20,14,18,16" RowDefinitions="Auto,*,Auto" RowSpacing="3">
                         <Grid ColumnDefinitions="*,38">
-                            <Label Text="Total Tokens" FontSize="13" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="Total Tokens" FontSize="14" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
                             <Border Grid.Column="1" WidthRequest="38" HeightRequest="38" BackgroundColor="#EEF4FF" Stroke="#D5E5FF" StrokeThickness="1" StrokeShape="RoundRectangle 12">
                                 <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="19" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                             </Border>
                         </Grid>
                         <HorizontalStackLayout Grid.Row="1" Spacing="7" VerticalOptions="Center">
-                            <Label Text="{Binding TotalTokenCount}" FontSize="36" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
-                            <Label Text="tokens" FontSize="12" TextColor="#475569" VerticalOptions="End" Margin="0,0,0,7" />
+                            <Label Text="{Binding TotalTokenCount}" FontSize="38" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
+                            <Label Text="tokens" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#475569" VerticalOptions="End" Margin="0,0,0,7" />
                         </HorizontalStackLayout>
                         <HorizontalStackLayout Grid.Row="2" Spacing="7" VerticalOptions="Center">
                             <BoxView WidthRequest="7" HeightRequest="7" CornerRadius="4" Color="#3478F6" VerticalOptions="Center" />
-                            <Label Text="Across all counters" FontSize="11" TextColor="#475569" VerticalOptions="Center" />
+                            <Label Text="Across all counters" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#475569" VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </Grid>
                 </Grid>
@@ -146,7 +149,7 @@
                         <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="18" TextColor="#183E91" VerticalOptions="Start" />
                         <VerticalStackLayout Grid.Column="1" Spacing="4">
                             <Label Text="Tokens by service type" FontSize="15" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Text="Distribution across customer categories" FontSize="11" TextColor="#64748B" />
+                            <Label Text="Distribution across customer categories" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                         </VerticalStackLayout>
                         <chips:SfChip Grid.Column="2"
                                       Text="{Binding TotalTokenCount, StringFormat='{0} tokens'}"
@@ -178,7 +181,7 @@
                                            TextColor="#0F172A"
                                            HorizontalTextAlignment="Center" />
                                     <Label Text="TOKENS"
-                                           FontSize="8"
+                                           FontSize="{StaticResource CaptionFontSize}"
                                            FontAttributes="Bold"
                                            TextColor="#64748B"
                                            HorizontalTextAlignment="Center" />
@@ -198,13 +201,13 @@
                                                          Color="{Binding ChartColor}"
                                                          VerticalOptions="Center" />
                                                 <Label Text="{Binding Category}"
-                                                       FontSize="9"
+                                                       FontSize="{StaticResource CaptionFontSize}"
                                                        TextColor="#334155"
                                                        LineBreakMode="TailTruncation" />
                                             </HorizontalStackLayout>
                                             <Label Grid.Column="1"
                                                    Text="{Binding Value, StringFormat='{0:0}'}"
-                                                   FontSize="10"
+                                                   FontSize="{StaticResource CaptionFontSize}"
                                                    FontAttributes="Bold"
                                                    TextColor="#0F172A"
                                                    HorizontalTextAlignment="End"
@@ -256,11 +259,11 @@
                                                 <Label Text="{Binding Category}" FontSize="11" TextColor="#334155" />
                                                 <Label Grid.Column="1"
                                                        Text="{Binding ShareText}"
-                                                       FontSize="9"
+                                                       FontSize="{StaticResource OverviewCaptionFontSize}"
                                                        TextColor="#64748B" />
                                                 <Label Grid.Column="2"
                                                        Text="{Binding Value, StringFormat='{0:0.#}m'}"
-                                                       FontSize="11"
+                                                       FontSize="{StaticResource OverviewCaptionFontSize}"
                                                        FontAttributes="Bold"
                                                        TextColor="#0F172A" />
                                             </Grid>
@@ -280,10 +283,10 @@
                                 </BindableLayout.ItemTemplate>
                             </VerticalStackLayout>
                             <Grid ColumnDefinitions="*,*,*,*,*,*,*" Margin="0,-4,0,0">
-                                <Label Text="0m" FontSize="8" TextColor="#94A3B8" />
-                                <Label Grid.Column="2" Text="20m" FontSize="8" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
-                                <Label Grid.Column="4" Text="40m" FontSize="8" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
-                                <Label Grid.Column="6" Text="60m max" FontSize="8" TextColor="#94A3B8" HorizontalTextAlignment="End" />
+                                <Label Text="0m" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#94A3B8" />
+                                <Label Grid.Column="2" Text="20m" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
+                                <Label Grid.Column="4" Text="40m" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
+                                <Label Grid.Column="6" Text="60m max" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#94A3B8" HorizontalTextAlignment="End" />
                             </Grid>
                         </VerticalStackLayout>
                     </Border>
@@ -305,8 +308,8 @@
                     <Grid ColumnDefinitions="24,*,Auto" ColumnSpacing="8">
                         <Label Text="bar_chart" FontFamily="MaterialIcons" FontSize="20" TextColor="#214A9A" VerticalOptions="Start" />
                         <VerticalStackLayout Grid.Column="1" Spacing="5">
-                            <Label Text="Counter performance" FontSize="17" FontAttributes="Bold" TextColor="#0F172A" />
-                            <Label Text="Completions and live queue load" FontSize="12" TextColor="#64748B" />
+                            <Label Text="Counter performance" FontSize="{StaticResource OverviewSectionFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="Completions and live queue load" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                         </VerticalStackLayout>
                         <chips:SfChip Grid.Column="2"
                                       Text="{Binding CompletedTokenCount, StringFormat='{0} completed'}"
@@ -330,13 +333,13 @@
                                               ColumnSpacing="8"
                                               RowSpacing="11">
                                             <Label Text="{Binding Name}"
-                                                   FontSize="13"
+                                                   FontSize="14"
                                                    FontAttributes="Bold"
                                                    TextColor="#0F172A"
                                                    VerticalOptions="Center" />
                                             <Label Grid.Column="1"
                                                    Text="{Binding TrackedTokenCount, StringFormat='{0} tracked'}"
-                                                   FontSize="10"
+                                                   FontSize="{StaticResource OverviewCaptionFontSize}"
                                                    TextColor="#64748B"
                                                    HorizontalTextAlignment="End"
                                                    VerticalOptions="Center" />
@@ -364,15 +367,15 @@
                                                   ColumnSpacing="14">
                                                 <HorizontalStackLayout Spacing="6">
                                                   <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#214A9A" VerticalOptions="Center" />
-                                                  <Label Text="{Binding CompletedTokenCount, StringFormat='{0} completed'}" FontSize="10" TextColor="#64748B" />
+                                                  <Label Text="{Binding CompletedTokenCount, StringFormat='{0} completed'}" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                                                 </HorizontalStackLayout>
                                                 <HorizontalStackLayout Grid.Column="1" Spacing="6">
                                                   <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#0C897B" VerticalOptions="Center" />
-                                                  <Label Text="{Binding ServingTokenCount, StringFormat='{0} serving'}" FontSize="10" TextColor="#64748B" />
+                                                  <Label Text="{Binding ServingTokenCount, StringFormat='{0} serving'}" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                                                 </HorizontalStackLayout>
                                                 <HorizontalStackLayout Grid.Column="2" Spacing="6">
                                                   <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#F59E0B" VerticalOptions="Center" />
-                                                  <Label Text="{Binding WaitingTokenCount, StringFormat='{0} waiting'}" FontSize="10" TextColor="#64748B" />
+                                                  <Label Text="{Binding WaitingTokenCount, StringFormat='{0} waiting'}" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                                                 </HorizontalStackLayout>
                                             </Grid>
                                         </Grid>
@@ -390,7 +393,7 @@
                     <Grid ColumnDefinitions="*">
                         <HorizontalStackLayout Spacing="8">
                             <Label Text="show_chart" FontFamily="MaterialIcons" FontSize="15" TextColor="#64748B" VerticalOptions="Center" />
-                            <Label Text="{Binding CounterActivitySummary}" FontSize="11" TextColor="#64748B" VerticalOptions="Center" />
+                            <Label Text="{Binding CounterActivitySummary}" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </Grid>
                 </VerticalStackLayout>
@@ -411,8 +414,8 @@
                         <VerticalStackLayout Spacing="16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Upcoming Tokens" FontSize="16" FontAttributes="Bold" TextColor="#0F172A" />
-                                    <Label Text="Next in line across all counters" FontSize="12" TextColor="#64748B" />
+                                    <Label Text="Upcoming Tokens" FontSize="{StaticResource OverviewSectionFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Text="Next in line across all counters" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                                 </VerticalStackLayout>
                                 <Border Grid.Column="1"
                                         Padding="3"
@@ -429,18 +432,19 @@
                                                                SegmentCornerRadius="7"
                                                                ShowSeparator="False"
                                                                StrokeThickness="0"
-                                                               SegmentBackground="Transparent"
+                                                               SegmentBackground="#EEF4FF"
+                                                               Background="#EEF4FF"
                                                                HorizontalOptions="Start"
                                                                VerticalOptions="Center">
                                         <buttons:SfSegmentedControl.TextStyle>
-                                            <buttons:SegmentTextStyle FontSize="9" TextColor="#64748B" />
+                                            <buttons:SegmentTextStyle FontSize="11" TextColor="#183E91" />
                                         </buttons:SfSegmentedControl.TextStyle>
                                         <buttons:SfSegmentedControl.SelectionIndicatorSettings>
-                                            <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Border"
-                                                                                Background="White"
-                                                                                Stroke="#E2E8F0"
+                                            <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
+                                                                                Background="#183E91"
+                                                                                Stroke="#FFDBE5F2"
                                                                                 StrokeThickness="1"
-                                                                                TextColor="#183E91" />
+                                                                                TextColor="White" />
                                         </buttons:SfSegmentedControl.SelectionIndicatorSettings>
                                     </buttons:SfSegmentedControl>
                                 </Border>
@@ -466,12 +470,12 @@
                                                                      Spacing="4"
                                                                      VerticalOptions="Center">
                                                     <Label Text="{Binding Service}"
-                                                           FontSize="11"
+                                                           FontSize="{StaticResource OverviewEmphasisFontSize}"
                                                            FontAttributes="Bold"
                                                            TextColor="#0F172A"
                                                            LineBreakMode="TailTruncation" />
                                                     <Label Text="{Binding CounterName}"
-                                                           FontSize="10"
+                                                           FontSize="{StaticResource OverviewCaptionFontSize}"
                                                            TextColor="#64748B" />
                                                 </VerticalStackLayout>
                                                 <VerticalStackLayout Grid.Column="2"
@@ -483,7 +487,7 @@
                                                             StrokeThickness="0"
                                                             StrokeShape="RoundRectangle 8">
                                                         <Label Text="{Binding Priority}"
-                                                               FontSize="9"
+                                                               FontSize="{StaticResource CaptionFontSize}"
                                                                FontAttributes="Bold"
                                                                TextColor="#475569">
                                                             <Label.Triggers>
@@ -503,7 +507,7 @@
                                                         </Border.Triggers>
                                                     </Border>
                                                     <Label Text="{Binding Wait}"
-                                                           FontSize="9"
+                                                            FontSize="{StaticResource OverviewCaptionFontSize}"
                                                            TextColor="#64748B"
                                                            HorizontalTextAlignment="End" />
                                                 </VerticalStackLayout>
@@ -513,7 +517,7 @@
                                 </BindableLayout.ItemTemplate>
                             </VerticalStackLayout>
                             <Label Text="No tokens are waiting."
-                                   FontSize="10"
+                                   FontSize="{StaticResource CaptionFontSize}"
                                    TextColor="#64748B"
                                    HorizontalTextAlignment="Center"
                                    IsVisible="{Binding HasNoUpcomingTokens}" />
@@ -524,11 +528,11 @@
                                              CornerRadius="3"
                                              Color="#10B981"
                                              VerticalOptions="Center" />
-                                    <Label Text="Live queue" FontSize="10" TextColor="#64748B" />
+                                    <Label Text="Live queue" FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" />
                                 </HorizontalStackLayout>
                                 <Label Grid.Column="1"
                                        Text="{Binding UpcomingTokens.Count, StringFormat='{0} tokens shown'}"
-                                       FontSize="10"
+                                       FontSize="{StaticResource CaptionFontSize}"
                                        TextColor="#64748B"
                                        HorizontalTextAlignment="End" />
                             </Grid>
@@ -545,8 +549,8 @@
                         <VerticalStackLayout Spacing="16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Counter Status" FontSize="16" FontAttributes="Bold" TextColor="#0F172A" />
-                                    <Label Text="Live overview across service counters" FontSize="12" TextColor="#64748B" />
+                                    <Label Text="Counter Status" FontSize="{StaticResource OverviewSectionFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Text="Live overview across service counters" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                                 </VerticalStackLayout>
                                 <Border Grid.Column="1"
                                         Padding="10,6"
@@ -555,7 +559,7 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start">
                                     <Label Text="{Binding OnlineCounterSummary}"
-                                           FontSize="9"
+                                           FontSize="{StaticResource CaptionFontSize}"
                                            FontAttributes="Bold"
                                            TextColor="#183E91" />
                                 </Border>
@@ -589,19 +593,19 @@
                                                                      Spacing="4"
                                                                      VerticalOptions="Center">
                                                     <Label Text="{Binding Name}"
-                                                           FontSize="11"
+                                                           FontSize="{StaticResource OverviewEmphasisFontSize}"
                                                            FontAttributes="Bold"
                                                            TextColor="#0F172A" />
                                                     <Label Text="{Binding Service}"
-                                                           FontSize="10"
+                                                           FontSize="{StaticResource OverviewCaptionFontSize}"
                                                            TextColor="#64748B"
                                                            LineBreakMode="TailTruncation" />
                                                     <Label Text="{Binding TokenAndStatusText}"
-                                                           FontSize="10"
+                                                           FontSize="{StaticResource OverviewCaptionFontSize}"
                                                            TextColor="#334155"
                                                            LineBreakMode="TailTruncation" />
                                                     <Label Text="{Binding ActivitySummary}"
-                                                           FontSize="9"
+                                                           FontSize="{StaticResource OverviewCaptionFontSize}"
                                                            TextColor="#64748B"
                                                            LineBreakMode="TailTruncation" />
                                                 </VerticalStackLayout>
@@ -612,7 +616,7 @@
                                                         StrokeShape="RoundRectangle 8"
                                                         VerticalOptions="Start">
                                                     <Label Text="{Binding AvailabilityText}"
-                                                           FontSize="9"
+                                                           FontSize="{StaticResource CaptionFontSize}"
                                                            FontAttributes="Bold"
                                                            TextColor="{Binding AvailabilityColor}" />
                                                 </Border>
@@ -622,7 +626,7 @@
                                 </BindableLayout.ItemTemplate>
                             </VerticalStackLayout>
                             <Label Text="No counters are configured."
-                                   FontSize="10"
+                                   FontSize="{StaticResource CaptionFontSize}"
                                    TextColor="#64748B"
                                    HorizontalTextAlignment="Center"
                                    IsVisible="{Binding HasNoCounters}" />
