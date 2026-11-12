@@ -6,19 +6,22 @@ namespace Todo.Common;
 /// Provides the in-memory seed notes used by the sample at first launch.
 ///
 /// <para>
-/// The data set is laid out so that each built-in filter view
+/// The data set is laid out so each built-in filter view
 /// (<b>Important</b>, <b>Reminder</b>, <b>Bin</b>) shows a distinct
-/// list of notes:
+/// list of notes, and the sample custom list demonstrates metadata-free tasks:
 /// </para>
 /// <list type="bullet">
 ///   <item><b>Important</b> shows 5 starred notes (no reminder, not soft-deleted).</item>
 ///   <item><b>Reminder</b> shows 3 notes that have a reminder date (not starred, not soft-deleted).</item>
 ///   <item><b>Bin</b> shows 3 soft-deleted notes (not starred, no reminder).</item>
+///   <item><b>Custom List</b> shows 2 active notes without metadata.</item>
 ///   <item><b>My Notes</b> is empty at first launch.</item>
 /// </list>
 /// </summary>
 public static class SampleData
 {
+    public const string SampleCustomListId = "sample-custom-list";
+
     private static readonly object SeedLock = new();
     private static List<Note>? _seeded;
 
@@ -123,26 +126,46 @@ public static class SampleData
                 },
 
                 // ---------------------------------------------------
+                //  Custom List (2 notes without metadata)
+                // ---------------------------------------------------
+                new()
+                {
+                    Title = "Review today's emails",
+                    ListId = SampleCustomListId,
+                    DisplayOrder = 8,
+                    CreatedAt = now.AddDays(-2),
+                    UpdatedAt = now.AddDays(-1)
+                },
+                new()
+                {
+                    Title = "Complete pending design feedback",
+                    ListId = SampleCustomListId,
+                    DisplayOrder = 9,
+                    CreatedAt = now.AddDays(-2),
+                    UpdatedAt = now.AddDays(-1)
+                },
+
+                // ---------------------------------------------------
                 //  Bin (3 soft-deleted notes)
                 // ---------------------------------------------------
                 new()
                 {
                     Title = "Read 20 pages of a book",
-                    DisplayOrder = 8,
+                    DisplayOrder = 10,
                     CreatedAt = now.AddDays(-3),
                     UpdatedAt = now.AddDays(-2)
                 },
                 new()
                 {
                     Title = "Buy groceries for the week",
-                    DisplayOrder = 9,
+                    DisplayOrder = 11,
                     CreatedAt = now.AddDays(-3),
                     UpdatedAt = now.AddDays(-2)
                 },
                 new()
                 {
                     Title = "Water indoor plants",
-                    DisplayOrder = 10,
+                    DisplayOrder = 12,
                     CreatedAt = now.AddDays(-4),
                     UpdatedAt = now.AddDays(-2)
                 }
@@ -157,7 +180,7 @@ public static class SampleData
                 // Only the Bin bucket is soft-deleted; Important and
                 // Reminder notes stay live so they are not visible in
                 // the Bin filter (which only shows DeletedAt != null).
-                if (note.DisplayOrder >= 8)
+                if (note.DisplayOrder >= 10)
                 {
                     note.DeletedAt = softDeleteTimestamp;
                 }

@@ -27,6 +27,7 @@ public sealed class InMemoryListService : IListService
         _lists = new ObservableCollection<NoteList>();
         var storedLists = JsonSerializer.Deserialize<List<StoredNoteList>>(
             Preferences.Default.Get(PersistedListsKey, "[]")) ?? [];
+        var shouldSeedSampleList = !Preferences.Default.ContainsKey(PersistedListsKey);
         var requiresThemeMigration = false;
         foreach (var stored in storedLists.OrderBy(item => item.DisplayOrder))
         {
@@ -56,6 +57,17 @@ public sealed class InMemoryListService : IListService
         }
         _lists.CollectionChanged += OnListsChanged;
         Lists = new ReadOnlyObservableCollection<NoteList>(_lists);
+        if (shouldSeedSampleList)
+        {
+            _lists.Add(new NoteList
+            {
+                Id = SampleData.SampleCustomListId,
+                Name = "Custom List",
+                IsSystem = false,
+                DisplayOrder = _lists.Count,
+                BackgroundColorHex = NoteListThemePalette.GetRandomThemeColor()
+            });
+        }
         if (requiresThemeMigration)
             PersistLists();
     }
