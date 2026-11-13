@@ -18,8 +18,6 @@ public partial class ComposeViewModel : ObservableObject
     [ObservableProperty] private string body = string.Empty;
     [ObservableProperty] private ObservableCollection<object> toContacts = [];
     [ObservableProperty] private ObservableCollection<object> ccContacts = [];
-    [ObservableProperty] private ObservableCollection<AttachmentInfo> attachments = [];
-    [ObservableProperty] private string statusMessage = "Unsaved Changes";
     [ObservableProperty] private bool showMessage;
 
     public ObservableCollection<MailContact> Contacts => mailbox.Contacts;
@@ -38,9 +36,6 @@ public partial class ComposeViewModel : ObservableObject
 
     void OnToContactsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => SendCommand.NotifyCanExecuteChanged();
 
-    partial void OnSubjectChanged(string value) => StatusMessage = "Unsaved Changes";
-    partial void OnBodyChanged(string value) => StatusMessage = "Unsaved Changes";
-
     public void Reset()
     {
         ToContacts = [];
@@ -49,18 +44,7 @@ public partial class ComposeViewModel : ObservableObject
         CcText = string.Empty;
         Subject = string.Empty;
         Body = string.Empty;
-        Attachments.Clear();
-        StatusMessage = "Unsaved Changes";
     }
-
-    [RelayCommand]
-    void AddAttachment(AttachmentInfo? attachment)
-    {
-        if (attachment is not null && !Attachments.Any(x => x.FileName == attachment.FileName)) Attachments.Add(attachment);
-    }
-
-    [RelayCommand]
-    void Attach() => AddAttachment(mailbox.Attachments.FirstOrDefault());
 
     static string Resolve(IEnumerable<object> selected, string typed)
     {
@@ -80,10 +64,9 @@ public partial class ComposeViewModel : ObservableObject
         plainBody = System.Text.RegularExpressions.Regex.Replace(plainBody, @"\s+", " ");
         var recipients = Resolve(ToContacts, ToText);
         var cc = Resolve(CcContacts, CcText);
-        mailbox.SentItems.Insert(0, new MailMessage { Id = $"sent-{Guid.NewGuid():N}", Folder = "Sent Items", Sender = "Me", SenderEmail = "me@contoso.com", Subject = string.IsNullOrWhiteSpace(Subject) ? "(No subject)" : Subject, Preview = plainBody[..Math.Min(plainBody.Length, 80)], Body = plainBody, ReceivedOn = DateTime.Now, Recipients = recipients, Cc = cc, Status = "Sent", IsRead = true, HasAttachments = Attachments.Count > 0 });
+        mailbox.SentItems.Insert(0, new MailMessage { Id = $"sent-{Guid.NewGuid():N}", Folder = "Sent Items", Sender = "Me", SenderEmail = "me@contoso.com", Subject = string.IsNullOrWhiteSpace(Subject) ? "(No subject)" : Subject, Preview = plainBody[..Math.Min(plainBody.Length, 80)], Body = plainBody, ReceivedOn = DateTime.Now, Recipients = recipients, Cc = cc, IsRead = true });
         mailbox.RefreshCounts();
         Reset();
-        StatusMessage = "Message sent";
         ShowMessage = true;
         var page = Application.Current?.Windows.FirstOrDefault()?.Page;
         if (page is not null)

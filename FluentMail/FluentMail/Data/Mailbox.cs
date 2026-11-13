@@ -12,7 +12,6 @@ public class Mailbox
     public ObservableCollection<MailMessage> Drafts { get; } = [];
     public ObservableCollection<MailMessage> Archive { get; } = [];
     public ObservableCollection<MailMessage> Deleted { get; } = [];
-    public ObservableCollection<AttachmentInfo> Attachments { get; } = [];
     public ObservableCollection<MailContact> Contacts { get; } = [];
 
     public void RefreshCounts()

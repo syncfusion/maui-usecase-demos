@@ -12,9 +12,6 @@ public partial class FolderNode : ObservableObject
     private int count;
 
     [ObservableProperty]
-    private int unreadCount;
-
-    [ObservableProperty]
     private bool isFavourite;
 
     [ObservableProperty]

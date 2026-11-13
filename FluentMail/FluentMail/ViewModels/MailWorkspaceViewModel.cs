@@ -39,9 +39,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
     private bool isEmptyFolder;
 
     [ObservableProperty]
-    private bool isLoading = true;
-
-    [ObservableProperty]
     private string searchQuery = string.Empty;
 
     [ObservableProperty]
@@ -153,7 +150,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
         SelectedFolder = mailbox.Folders[^1].Children[0];
         LoadFolder(SelectedFolder);
-        IsLoading = false;
     }
 
     partial void OnSelectedFolderChanged(FolderNode? value)
@@ -179,9 +175,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     partial void OnSearchQueryChanged(string value) => ApplyFilters();
     partial void OnSelectedFilterChanged(string value) => ApplyFilters();
-
-    [RelayCommand]
-    void SelectMessage(MailMessage? message) => SelectedMessage = message;
 
     [RelayCommand]
     void SetHover(MailMessage? message)
@@ -217,7 +210,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
         foreach (var source in new[] { mailbox.Inbox, mailbox.SentItems, mailbox.Drafts, mailbox.Archive })
             source.Remove(message);
         message.IsHovered = false;
-        message.DeletedOn = DateTime.Now;
         mailbox.Deleted.Insert(0, message);
         LoadFolder(SelectedFolder ?? mailbox.Folders[^1].Children[0]);
     }
@@ -229,7 +221,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
         foreach (var source in new[] { mailbox.Inbox, mailbox.SentItems, mailbox.Drafts })
             source.Remove(message);
         message.IsHovered = false;
-        message.ArchivedOn = DateTime.Now;
         if (!mailbox.Archive.Contains(message)) mailbox.Archive.Insert(0, message);
         LoadFolder(SelectedFolder ?? mailbox.Folders[^1].Children[0]);
     }
@@ -287,20 +278,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
     }
 
     [RelayCommand]
-    void MarkAllAsRead()
-    {
-        foreach (var message in VisibleMessages) message.IsRead = true;
-        UpdateFolderCounts();
-    }
-
-    [RelayCommand]
     void CloseComposer() => IsComposing = false;
-
-    [RelayCommand]
-    void SelectFolder(FolderNode? folder)
-    {
-        if (folder is not null) SelectedFolder = folder;
-    }
 
     void LoadFolder(FolderNode folder)
     {

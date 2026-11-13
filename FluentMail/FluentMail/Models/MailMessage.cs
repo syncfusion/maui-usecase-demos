@@ -20,7 +20,6 @@ public partial class MailMessage : ObservableObject
     public bool IsUnread => !IsRead;
     public string TimeText => ReceivedOn.Date == DateTime.Today ? $"{ReceivedOn:h:mm tt}" : ReceivedOn.Date == DateTime.Today.AddDays(-1) ? "Yesterday" : $"{ReceivedOn:MMM d}";
     public string Greeting { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
     public bool HasAttachments { get; set; }
 
     [ObservableProperty]
@@ -34,6 +33,4 @@ public partial class MailMessage : ObservableObject
     private bool isHovered;
 
     public DateTime ReceivedOn { get; set; }
-    public DateTime ArchivedOn { get; set; }
-    public DateTime DeletedOn { get; set; }
 }

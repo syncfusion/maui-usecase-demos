@@ -91,7 +91,6 @@ public static class MockData
                 Body = BuildBody(item.Item4, item.Item1),
                 Recipients = "kerry.best@contoso.com",
                 Cc = i % 3 == 0 ? "project.office@contoso.com" : string.Empty,
-                Status = item.Item5 ? "Attachments" : "Unread",
                 HasAttachments = item.Item5,
                 IsRead = item.Item6 || i % 4 == 0,
                 IsFlagged = i % 7 == 0,
@@ -124,7 +123,6 @@ public static class MockData
                 Preview = item.Item4,
                 Body = BuildBody(item.Item4, item.Item1),
                 Recipients = item.Item5,
-                Status = "Sent",
                 IsRead = true,
                 HasAttachments = item.Item6,
                 ReceivedOn = DateTime.Today.AddDays(-i).AddHours(8 + i)
@@ -152,7 +150,6 @@ public static class MockData
                 Preview = drafts[i].Item3,
                 Body = BuildBody(drafts[i].Item3, "Me"),
                 Recipients = drafts[i].Item2,
-                Status = i % 2 == 0 ? "Saved" : "Unsaved Changes",
                 HasAttachments = i % 2 == 0,
                 ReceivedOn = DateTime.Today.AddDays(-i)
             });
@@ -179,10 +176,8 @@ public static class MockData
                 Preview = archive[i].Item4,
                 Body = BuildBody(archive[i].Item4, archive[i].Item1),
                 Recipients = "team@contoso.com",
-                Status = "Archived",
                 HasAttachments = archive[i].Item5,
-                IsFlagged = i % 2 == 0,
-                ArchivedOn = DateTime.Today.AddDays(-(i + 14))
+                IsFlagged = i % 2 == 0
             });
 
         var deleted = new[]
@@ -206,9 +201,7 @@ public static class MockData
                 Preview = deleted[i].Item4,
                 Body = BuildBody(deleted[i].Item4, deleted[i].Item1),
                 Recipients = "archive@contoso.com",
-                Status = "Deleted",
-                HasAttachments = deleted[i].Item5,
-                DeletedOn = DateTime.Today.AddDays(-(i + 2))
+                HasAttachments = deleted[i].Item5
             });
 
         mailbox.Contacts.Add(new MailContact { Name = "Anastasia Callahan", Email = "anastasia.callahan@contoso.com" });
@@ -223,7 +216,6 @@ public static class MockData
         mailbox.Contacts.Add(new MailContact { Name = "Camila Torres", Email = "camila.torres@contoso.com" });
         mailbox.Contacts.Add(new MailContact { Name = "Front Office", Email = "frontoffice@contoso.com" });
         mailbox.Contacts.Add(new MailContact { Name = "Taylor Morgan", Email = "taylor.morgan@gmail.com" });
-        mailbox.Attachments.Add(new AttachmentInfo { FileName = "Proposal.pdf", FileType = "PDF", FileSize = 218000 });
         foreach (var message in mailbox.Inbox.Concat(mailbox.SentItems).Concat(mailbox.Drafts).Concat(mailbox.Archive).Concat(mailbox.Deleted))
         {
             var local = message.Recipients.Split(',')[0].Trim().Split('@')[0];
