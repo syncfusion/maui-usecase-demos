@@ -81,9 +81,9 @@
                                 <DataTemplate x:DataType="models:TopContact">
                                     <VerticalStackLayout WidthRequest="84" Spacing="6">
                                         <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.ToggleContactCommand}" CommandParameter="{Binding .}" /></VerticalStackLayout.GestureRecognizers>
-                                        <Grid WidthRequest="56" HeightRequest="56">
+                                        <Grid WidthRequest="66" HeightRequest="66">
                                             <Border StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#BBD7F7"><Label Text="{Binding Name, Converter={StaticResource InitialsConverter}}" FontSize="22" FontAttributes="Bold" TextColor="#0A4A94" HorizontalOptions="Center" VerticalOptions="Center" /></Border>
-                                            <BoxView WidthRequest="18" HeightRequest="18" CornerRadius="9" Color="{Binding Status}" HorizontalOptions="End" VerticalOptions="End" />
+                                            <BoxView WidthRequest="12" HeightRequest="12" CornerRadius="9" Color="{Binding Status}" HorizontalOptions="End" VerticalOptions="End" />
                                         </Grid>
                                         <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"/>
                                         <Label Text="{Binding Role}" FontSize="12" TextColor="#5A5A5A" HorizontalOptions="Center" />

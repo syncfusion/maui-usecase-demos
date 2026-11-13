@@ -21,28 +21,28 @@
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
     <ContentPage.Resources>
         <DataTemplate x:Key="ContactSuggestionTemplate" x:DataType="models:Contact">
-                            <Grid ColumnDefinitions="48,*" Padding="12,4" ColumnSpacing="12">
-                                <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#C7DDF0" VerticalOptions="Center">
-                                    <Label Text="{Binding Name, Converter={StaticResource InitialsConverter}}" FontAttributes="Bold" FontSize="15" TextColor="#1B3A57" HorizontalOptions="Center" VerticalOptions="Center" />
-                                </Border>
-                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="{Binding Name}" FontSize="16" TextColor="#222222" />
-                                        <Border IsVisible="{Binding IsExternal}" StrokeThickness="0" BackgroundColor="#F0F0F0" StrokeShape="RoundRectangle 4" Padding="8,2" VerticalOptions="Center">
-                                            <Label Text="External" FontSize="12" TextColor="#444444" />
-                                        </Border>
-                                    </HorizontalStackLayout>
-                                    <Label Text="{Binding Email}" FontSize="13" TextColor="#5A5A5A" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </DataTemplate>
+            <Grid ColumnDefinitions="48,*" Padding="12,4" ColumnSpacing="12">
+                <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#C7DDF0" VerticalOptions="Center">
+                    <Label Text="{Binding Name, Converter={StaticResource InitialsConverter}}" FontAttributes="Bold" FontSize="15" TextColor="#1B3A57" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="{Binding Name}" FontSize="16" TextColor="#222222" />
+                        <Border IsVisible="{Binding IsExternal}" StrokeThickness="0" BackgroundColor="#F0F0F0" StrokeShape="RoundRectangle 4" Padding="8,2" VerticalOptions="Center">
+                            <Label Text="External" FontSize="12" TextColor="#444444" />
+                        </Border>
+                    </HorizontalStackLayout>
+                    <Label Text="{Binding Email}" FontSize="13" TextColor="#5A5A5A" />
+                </VerticalStackLayout>
+            </Grid>
+        </DataTemplate>
         <DataTemplate x:Key="MobileMailItemTemplate" x:DataType="models:MailMessage">
             <Grid BackgroundColor="#FCF7F5" Padding="16,0">
                 <VerticalStackLayout>
                     <Grid ColumnDefinitions="14,52,*" ColumnSpacing="10" Padding="0,14,0,12">
-                        <Grid.GestureRecognizers>
+                        <!--<Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.OpenMessageCommand}" CommandParameter="{Binding .}" />
-                        </Grid.GestureRecognizers>
+                        </Grid.GestureRecognizers>-->
                         <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#0F5DB5" VerticalOptions="Start" Margin="0,22,0,0" IsVisible="{Binding IsUnread}" />
                         <Border Grid.Column="1" WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#D7E8FB" VerticalOptions="Start">
                             <Label Text="{Binding Sender, Converter={StaticResource InitialsConverter}}" FontSize="17" FontAttributes="Bold" TextColor="#1B1B1B" HorizontalOptions="Center" VerticalOptions="Center" />
@@ -421,8 +421,7 @@
                 <richtext:SfRichTextEditor Grid.Row="5"
                                            Grid.ColumnSpan="2"
                                            ShowToolbar="True"
-                                           EditorBackgroundColor="White"
-                                           HtmlText="{Binding Composer.Body, Mode=TwoWay}" >
+                                           EditorBackgroundColor="White" >
                     <richtext:SfRichTextEditor.ToolbarItems>
                         <!-- Define a custom set of toolbar items -->
                             <richtext:RichTextToolbarItem Type="Bold" />
@@ -504,59 +503,59 @@
         <controls:MobileHeader Title="{Binding MobileTitle}" FilterCommand="{Binding SelectMobileFolderCommand}" />
 
         <Grid Grid.Row="1" RowDefinitions="Auto,*">
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="16,4,16,0" IsVisible="{Binding IsMobileInbox}">
-                        <Border StrokeThickness="0" BackgroundColor="#F1EDEB" Padding="6" StrokeShape="RoundRectangle 28">
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="2">
-                                <Border StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsFocusedTab}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="White" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="16,4,16,0" IsVisible="{Binding IsMobileInbox}">
+                <Border StrokeThickness="0" BackgroundColor="#F1EDEB" Padding="6" StrokeShape="RoundRectangle 28">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="2">
+                        <Border StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsFocusedTab}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="White" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowFocusedCommand}" /></Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                                <Label Text="Focused" FontSize="14" TextColor="#4A4A4A" VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsFocusedTab}" Value="True">
+                                            <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
                                         </DataTrigger>
-                                    </Border.Triggers>
-                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowFocusedCommand}" /></Border.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
-                                        <Label Text="Focused" FontSize="14" TextColor="#4A4A4A" VerticalOptions="Center">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsFocusedTab}" Value="True">
-                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                        <Border StrokeThickness="0" BackgroundColor="#0F5DB5" StrokeShape="Ellipse" WidthRequest="18" HeightRequest="18" VerticalOptions="Center">
-                                            <Label Text="{Binding FocusedUnread}" TextColor="White" FontSize="10" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-                                        </Border>
-                                    </HorizontalStackLayout>
+                                    </Label.Triggers>
+                                </Label>
+                                <Border StrokeThickness="0" BackgroundColor="#0F5DB5" StrokeShape="Ellipse" WidthRequest="18" HeightRequest="18" VerticalOptions="Center">
+                                    <Label Text="{Binding FocusedUnread}" TextColor="White" FontSize="10" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
-                                <Border Grid.Column="1" StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsOtherTab}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowOtherCommand}" /></Border.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                                        <Label Text="Other" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsOtherTab}" Value="True">
-                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                        <Border StrokeThickness="0" BackgroundColor="#E4E0DE" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
-                                            <Label Text="{Binding OtherUnread}" TextColor="#4A4A4A" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
-                                        </Border>
-                                    </HorizontalStackLayout>
-                                </Border>
-                            </Grid>
+                            </HorizontalStackLayout>
                         </Border>
-                        <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0" VerticalOptions="Center">
-                        <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" DropDownBackground="White" SelectedDropDownItemBackground="#D7E8FB" IsClearButtonVisible="False" TextColor="#3C3C3C" />
+                        <Border Grid.Column="1" StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsOtherTab}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="White" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowOtherCommand}" /></Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Label Text="Other" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsOtherTab}" Value="True">
+                                            <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Border StrokeThickness="0" BackgroundColor="#E4E0DE" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                                    <Label Text="{Binding OtherUnread}" TextColor="#4A4A4A" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </HorizontalStackLayout>
                         </Border>
                     </Grid>
+                </Border>
+                <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0" VerticalOptions="Center">
+                <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" DropDownBackground="White" SelectedDropDownItemBackground="#D7E8FB" IsClearButtonVisible="False" TextColor="#3C3C3C" />
+                </Border>
+            </Grid>
 
             <listview:SfListView Grid.Row="1" x:Name="MobileMailList" ItemsSource="{Binding MobileMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
                                  StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
-                                 AllowSwiping="True" SwipeOffset="360" SwipeThreshold="30" SwipeEnded="OnMobileSwipeEnded"
+                                 AllowSwiping="True" SwipeOffset="100" SwipeThreshold="30" SwipeEnded="OnMobileSwipeEnded"
                                  SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="#F3F3F3">
                 <listview:SfListView.DataSource>
                     <data:DataSource>
