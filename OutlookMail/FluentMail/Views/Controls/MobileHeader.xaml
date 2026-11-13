@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             x:Class="FluentMail.Views.Controls.MobileHeader"
+             x:Name="Root">
+    <Grid Padding="16,8" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="14" HeightRequest="70" BackgroundColor="#F3F3F3">
+        <Label Text="{Binding Title, Source={x:Reference Root}}" FontSize="26" FontAttributes="Bold" TextColor="#1B1B1B" VerticalOptions="Center" />
+        <Image x:Name="FilterIcon" Grid.Column="1" Source="ic_filter.svg" WidthRequest="24" HeightRequest="24" VerticalOptions="Center"
+               IsVisible="{Binding HasFilter, Source={x:Reference Root}}" SemanticProperties.Description="Filter mail folders">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnFilterTapped" />
+            </Image.GestureRecognizers>
+        </Image>
+        <Border Grid.Column="2" WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse">
+            <Image Source="profile.png" Aspect="AspectFill" />
+        </Border>
+        <popup:SfPopup x:Name="FilterPopup" ShowHeader="False" ShowFooter="False" BackgroundColor="Transparent" ShowCloseButton="False" WidthRequest="210" HeightRequest="200">
+            <popup:SfPopup.PopupStyle>
+                <popup:PopupStyle CornerRadius="12" PopupBackground="White" OverlayColor="Transparent" />
+            </popup:SfPopup.PopupStyle>
+            <popup:SfPopup.ContentTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout Padding="6">
+                        <Label Text="Inbox" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Inbox" /></Label.GestureRecognizers>
+                        </Label>
+                        <Label Text="Sent items" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Sent Items" /></Label.GestureRecognizers>
+                        </Label>
+                        <Label Text="Archived" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Archive" /></Label.GestureRecognizers>
+                        </Label>
+                        <Label Text="Deleted mails" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Deleted Items" /></Label.GestureRecognizers>
+                        </Label>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </popup:SfPopup.ContentTemplate>
+        </popup:SfPopup>
+    </Grid>
+</ContentView>

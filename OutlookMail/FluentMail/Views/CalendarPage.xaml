@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
+             xmlns:vm="clr-namespace:FluentMail.ViewModels"
+             xmlns:models="clr-namespace:FluentMail.Models"
+             xmlns:controls="clr-namespace:FluentMail.Views.Controls"
+             x:Class="FluentMail.Views.CalendarPage"
+             x:DataType="vm:CalendarViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F3F3F3">
+    <Grid>
+        <Grid RowDefinitions="Auto,*,Auto">
+            <controls:MobileHeader Title="Calendar" />
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="16,4,16,100" Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                        <Label Text="{Binding MonthTitle}" FontSize="26" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#E9E4E2" StrokeShape="RoundRectangle 8" Padding="8,4" VerticalOptions="Center"><Label Text="{Binding DayBadge}" FontSize="12" FontAttributes="Bold" HorizontalTextAlignment="Center" /></Border>
+                        <Border Grid.Column="2" StrokeThickness="0" BackgroundColor="#EFEAE8" StrokeShape="RoundRectangle 10" Padding="4" VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="2">
+                                <Button Text="Agenda" Command="{Binding SetModeCommand}" CommandParameter="Agenda" FontSize="13" Padding="10,4" HeightRequest="34" BackgroundColor="Transparent" TextColor="#3C3C3C"><Button.Triggers><DataTrigger TargetType="Button" Binding="{Binding Mode}" Value="Agenda"><Setter Property="BackgroundColor" Value="White" /><Setter Property="TextColor" Value="#0F5DB5" /></DataTrigger></Button.Triggers></Button>
+                                <Button Text="Day" Command="{Binding SetModeCommand}" CommandParameter="Day" FontSize="13" Padding="10,4" HeightRequest="34" BackgroundColor="Transparent" TextColor="#3C3C3C"><Button.Triggers><DataTrigger TargetType="Button" Binding="{Binding Mode}" Value="Day"><Setter Property="BackgroundColor" Value="White" /><Setter Property="TextColor" Value="#0F5DB5" /></DataTrigger></Button.Triggers></Button>
+                                <Button Text="Month" Command="{Binding SetModeCommand}" CommandParameter="Month" FontSize="13" Padding="10,4" HeightRequest="34" BackgroundColor="Transparent" TextColor="#3C3C3C"><Button.Triggers><DataTrigger TargetType="Button" Binding="{Binding Mode}" Value="Month"><Setter Property="BackgroundColor" Value="White" /><Setter Property="TextColor" Value="#0F5DB5" /></DataTrigger></Button.Triggers></Button>
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+                    <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16" Padding="4">
+                        <calendar:SfCalendar x:Name="PhoneCalendar" View="Month" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" HeightRequest="{Binding PhoneCalendarHeight}" ShowTrailingAndLeadingDates="False" Background="White" />
+                    </Border>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding AgendaGroups}" Spacing="6">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:AgendaGroup">
+                                <VerticalStackLayout Spacing="10">
+                                    <Grid ColumnDefinitions="*,Auto" Padding="0,14,0,2">
+                                        <Label Text="{Binding Title}" FontSize="17" FontAttributes="Bold" TextColor="#2B2B2B" />
+                                        <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#E3EEF9" StrokeShape="RoundRectangle 10" Padding="10,4"><Label Text="{Binding CountText}" FontSize="13" TextColor="#0F5DB5" /></Border>
+                                    </Grid>
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="10">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="models:CalendarEntry">
+                                                <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 12" Padding="0">
+                                                    <Grid ColumnDefinitions="6,*">
+                                                        <BoxView Color="{Binding Accent}" />
+                                                        <VerticalStackLayout Grid.Column="1" Padding="14,12" Spacing="6">
+                                                            <Grid ColumnDefinitions="*,Auto">
+                                                                <Label Text="{Binding Category}" FontSize="12" CharacterSpacing="0.5" TextColor="{Binding Accent}" FontAttributes="Bold" />
+                                                                <Label Grid.Column="1" Text="{Binding KindText}" FontSize="12" TextColor="#5A5A5A" />
+                                                            </Grid>
+                                                            <Label Text="{Binding Title}" FontSize="17" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                                            <HorizontalStackLayout Spacing="8">
+                                                                <Image Source="ic_clock_b.svg" WidthRequest="18" HeightRequest="18" />
+                                                                <Label Text="{Binding TimeText}" FontSize="14" TextColor="#3C3C3C" VerticalOptions="Center" />
+                                                            </HorizontalStackLayout>
+                                                            <HorizontalStackLayout Spacing="8" IsVisible="{Binding HasLocation}">
+                                                                <Image Source="ic_pin.svg" WidthRequest="18" HeightRequest="18" />
+                                                                <Label Text="{Binding Location}" FontSize="14" TextColor="#5A5A5A" VerticalOptions="Center" />
+                                                            </HorizontalStackLayout>
+                                                            <Label Text="Remove" FontSize="13" TextColor="#C50F1F" HorizontalOptions="End">
+                                                                <Label.GestureRecognizers><TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarViewModel}}, Path=DeleteEntryCommand}" CommandParameter="{Binding .}" /></Label.GestureRecognizers>
+                                                            </Label>
+                                                        </VerticalStackLayout>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+            <Border Grid.Row="1" WidthRequest="60" HeightRequest="60" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,20">
+                <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding OpenAddCommand}" /></Border.GestureRecognizers>
+                <Image Source="ic_edit_w.svg" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <controls:MobileTabBar Grid.Row="2" Selected="Calendar" Badge="0" />
+        </Grid>
+
+        <Grid IsVisible="{Binding IsAddOpen}" BackgroundColor="#80000000" Grid.RowSpan="3">
+            <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16" Padding="20" WidthRequest="340" VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Add to calendar" FontSize="20" FontAttributes="Bold" />
+                    <Entry Placeholder="Title" Text="{Binding NewTitle}" />
+                    <Grid ColumnDefinitions="*,Auto"><Label Text="Reminder only" VerticalOptions="Center" /><Switch Grid.Column="1" IsToggled="{Binding NewIsReminder}" /></Grid>
+                    <TimePicker Time="{Binding NewTime}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="Cancel" Command="{Binding CancelAddCommand}" BackgroundColor="#EEEEEE" TextColor="Black" />
+                        <Button Grid.Column="1" Text="Save" Command="{Binding SaveEntryCommand}" BackgroundColor="#0F5DB5" TextColor="White" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FluentMail.ViewModels"
+             xmlns:models="clr-namespace:FluentMail.Models"
+             xmlns:controls="clr-namespace:FluentMail.Views.Controls"
+             x:Class="FluentMail.Views.SearchPage"
+             x:Name="SearchRoot"
+             x:DataType="vm:SearchViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F3F3F3">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <controls:MobileHeader Title="Search" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,4,16,100" Spacing="16">
+                <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 8" Padding="16,0">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Image Source="ic_search_b.svg" WidthRequest="24" HeightRequest="24" />
+                        <controls:SfEntry Grid.Column="1" Text="{Binding Query}" Placeholder="Search mail, files, contacts and calendar" FontSize="16" />
+                    </Grid>
+                </Border>
+
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout Spacing="10">
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 20" Padding="16,10" BackgroundColor="White">
+                            <Border.Triggers><DataTrigger TargetType="Border" Binding="{Binding UnreadOnly}" Value="True"><Setter Property="BackgroundColor" Value="#D7E8FB" /></DataTrigger></Border.Triggers>
+                            <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ToggleUnreadCommand}" /></Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8"><BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#0F5DB5" VerticalOptions="Center" /><Label Text="Unread" FontSize="15" /></HorizontalStackLayout>
+                        </Border>
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 20" Padding="16,10" BackgroundColor="White">
+                            <Border.Triggers><DataTrigger TargetType="Border" Binding="{Binding FlaggedOnly}" Value="True"><Setter Property="BackgroundColor" Value="#D7E8FB" /></DataTrigger></Border.Triggers>
+                            <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ToggleFlaggedCommand}" /></Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8"><Image Source="ic_flag_r.svg" WidthRequest="18" HeightRequest="18" /><Label Text="Flagged" FontSize="15" /></HorizontalStackLayout>
+                        </Border>
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 20" Padding="16,10" BackgroundColor="White">
+                            <Border.Triggers><DataTrigger TargetType="Border" Binding="{Binding ToMeOnly}" Value="True"><Setter Property="BackgroundColor" Value="#D7E8FB" /></DataTrigger></Border.Triggers>
+                            <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ToggleToMeCommand}" /></Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8"><Image Source="ic_person_b.svg" WidthRequest="18" HeightRequest="18" /><Label Text="To me only" FontSize="15" /></HorizontalStackLayout>
+                        </Border>
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 20" Padding="16,10" BackgroundColor="White">
+                            <Border.Triggers><DataTrigger TargetType="Border" Binding="{Binding WithAttachments}" Value="True"><Setter Property="BackgroundColor" Value="#D7E8FB" /></DataTrigger></Border.Triggers>
+                            <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ToggleAttachmentsCommand}" /></Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8"><Image Source="ic_clip_b.svg" WidthRequest="18" HeightRequest="18" /><Label Text="Attachments" FontSize="15" /></HorizontalStackLayout>
+                        </Border>
+                    </HorizontalStackLayout>
+                </ScrollView>
+
+                <VerticalStackLayout IsVisible="{Binding ShowResults}" Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{Binding SelectedContact.Name, StringFormat='Mails from {0}', FallbackValue='Results'}" FontSize="18" FontAttributes="Bold" />
+                        <Label Grid.Column="1" Text="Clear" TextColor="#0F5DB5" FontAttributes="Bold" IsVisible="{Binding HasSelectedContact}">
+                            <Label.GestureRecognizers><TapGestureRecognizer Command="{Binding ClearContactCommand}" /></Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                    <Label Text="No mails found." TextColor="#5A5A5A" IsVisible="{Binding HasNoResults}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:MailMessage">
+                                <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 14" Padding="14" Margin="0,0,0,8">
+                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.OpenMessageCommand}" CommandParameter="{Binding .}" /></Border.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="2">
+                                        <Grid ColumnDefinitions="*,Auto"><Label Text="{Binding Sender}" FontSize="17" FontAttributes="Bold" /><Label Grid.Column="1" Text="{Binding TimeText}" FontSize="13" TextColor="#5A5A5A" /></Grid>
+                                        <Label Text="{Binding Subject}" FontSize="15" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Preview}" FontSize="14" TextColor="#5A5A5A" LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding ShowResults, Converter={StaticResource BooleanNegationConverter}}" Spacing="16">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Image Source="ic_person_b.svg" WidthRequest="22" HeightRequest="22" />
+                        <Label Grid.Column="1" Text="Top Contacts" FontSize="19" FontAttributes="Bold" VerticalOptions="Center" />
+                    </Grid>
+                    <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                        <HorizontalStackLayout BindableLayout.ItemsSource="{Binding TopContacts}" Spacing="8">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:TopContact">
+                                    <VerticalStackLayout WidthRequest="84" Spacing="6">
+                                        <VerticalStackLayout.GestureRecognizers><TapGestureRecognizer Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.ToggleContactCommand}" CommandParameter="{Binding .}" /></VerticalStackLayout.GestureRecognizers>
+                                        <Grid WidthRequest="66" HeightRequest="66">
+                                            <Border StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#BBD7F7"><Label Text="{Binding Name, Converter={StaticResource InitialsConverter}}" FontSize="22" FontAttributes="Bold" TextColor="#0A4A94" HorizontalOptions="Center" VerticalOptions="Center" /></Border>
+                                            <BoxView WidthRequest="12" HeightRequest="12" CornerRadius="9" Color="{Binding Status}" HorizontalOptions="End" VerticalOptions="End" />
+                                        </Grid>
+                                        <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                        <Label Text="{Binding Role}" FontSize="12" TextColor="#5A5A5A" HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                    </ScrollView>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                        <Image Source="ic_history.svg" WidthRequest="22" HeightRequest="22" />
+                        <Label Grid.Column="1" Text="Recent Searches" FontSize="19" FontAttributes="Bold" VerticalOptions="Center" />
+                        <Label Grid.Column="2" Text="Clear all" TextColor="#5A5A5A" VerticalOptions="Center">
+                            <Label.GestureRecognizers><TapGestureRecognizer Command="{Binding ClearRecentCommand}" /></Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                    <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16" Padding="16,6">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecentSearches}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14" Padding="0,14">
+                                        <Image Source="ic_history.svg" WidthRequest="22" HeightRequest="22" />
+                                        <Label Grid.Column="1" Text="{Binding .}" FontSize="17" VerticalOptions="Center">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=UseRecentCommand}" CommandParameter="{Binding .}" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                        <Image Grid.Column="2" Source="ic_close.svg" WidthRequest="20" HeightRequest="20">
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=RemoveRecentCommand}" CommandParameter="{Binding .}" />
+                                            </Image.GestureRecognizers>
+                                        </Image>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <controls:MobileTabBar Grid.Row="2" Selected="Search" Badge="0" />
+
+        <Grid Grid.RowSpan="3" BackgroundColor="#FCF7F5" IsVisible="{Binding IsMessageOpen}" RowDefinitions="Auto,*">
+            <Grid Padding="12,14" ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Image Source="ic_back.svg" WidthRequest="26" HeightRequest="26">
+                    <Image.GestureRecognizers><TapGestureRecognizer Command="{Binding CloseMessageCommand}" /></Image.GestureRecognizers>
+                </Image>
+                <Label Grid.Column="1" Text="Message" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+            </Grid>
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="20,8" Spacing="14">
+                    <Label Text="{Binding OpenedMessage.Subject}" FontSize="24" FontAttributes="Bold" />
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="12">
+                        <Border WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#D7E8FB">
+                            <Label Text="{Binding OpenedMessage.Sender, Converter={StaticResource InitialsConverter}}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="{Binding OpenedMessage.Sender}" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="{Binding OpenedMessage.ReceivedOn, StringFormat='{0:dd/MM/yyyy h:mm tt}'}" FontSize="14" TextColor="#5A5A5A" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Label Text="{Binding OpenedMessage.Greeting}" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="{Binding OpenedMessage.Body}" FontSize="15" LineHeight="1.5" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>
