@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.CustomLists.ViewModels"
+             xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.CustomLists.Views.RenameListDialogPage"
+             x:DataType="vm:RenameListDialogViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.PresentationMode="ModalNotAnimated"
+             BackgroundColor="#80000000">
+
+    <Grid Padding="{OnIdiom Phone=16, Default=32}"
+          VerticalOptions="Center"
+          HorizontalOptions="Center">
+
+        <Border MaximumWidthRequest="420"
+                WidthRequest="{OnIdiom Phone=280, Default=360}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
+                Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 27"
+                Padding="20">
+            <Border.Shadow>
+                <Shadow Brush="#4D000000"
+                        Radius="6"
+                        Offset="0,2"
+                        Opacity="1" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="16">
+
+                <!-- Dialog title (matches renamelist.png) -->
+                <Label Text="{Binding DialogTitle}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
+
+                <Grid ColumnDefinitions="*"
+                      ColumnSpacing="12">
+                    <syncfusionCore:SfTextInputLayout Grid.Column="{OnIdiom Desktop=0, Default=1}"
+                                                      Hint="List name"
+                                                      ContainerType="Outlined"
+                                                      ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
+                                                      OutlineCornerRadius="8"
+                                                      FocusedStrokeThickness="1"
+                                                      UnfocusedStrokeThickness="1"
+                                                      ReserveSpaceForAssistiveLabels="False"
+                                                      InputViewPadding="16,0"
+                                                      EnableFloating="False"
+                                                      Margin="0"
+                                                      ShowHelperText="False"
+                                                      ShowHint="True"
+                                                      Stroke="Transparent"
+                                                      HorizontalOptions="Fill">
+                        <Entry Text="{Binding ListName, Mode=TwoWay}"
+                               Placeholder=""
+                               FontFamily="{StaticResource FontFamilyRegular}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                               PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                               VerticalTextAlignment="Center"
+                               HeightRequest="44"
+                               BackgroundColor="Transparent"
+                               Margin="0" />
+                    </syncfusionCore:SfTextInputLayout>
+                </Grid>
+
+                <!-- Inline validation message -->
+                <Label Text="{Binding ErrorMessage}"
+                       FontSize="12"
+                       TextColor="{StaticResource ErrorColor}"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource NotNullToBoolConverter}}" />
+
+                <!-- Action buttons -->
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12"
+                      HorizontalOptions="End"
+                      Margin="0,8,0,0">
+                    <buttons:SfButton Grid.Column="{OnIdiom Desktop=1, Default=2}"
+                            Text="{Binding PrimaryButtonText}"
+                            Background="Transparent"
+                            TextColor="#6750A4"
+                            Command="{Binding SaveCommand}"
+                            HeightRequest="36"
+                            MinimumWidthRequest="72"
+                            CornerRadius="8">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                            <Setter Property="TextColor" Value="#6750A4" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
+                </Grid>
+
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

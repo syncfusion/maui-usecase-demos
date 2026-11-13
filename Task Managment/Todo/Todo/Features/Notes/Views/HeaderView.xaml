@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.Notes.ViewModels"
+             xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.Notes.Views.HeaderView"
+             x:DataType="vm:NotesListViewModel">
+
+    <Grid x:Name="HeaderGrid"
+          HeightRequest="{OnIdiom Phone=56, Default={StaticResource HeaderHeight}}"
+          Padding="{OnIdiom Phone='5,0,10,0', Default='8,0,16,0'}"
+          ColumnDefinitions="{OnIdiom Phone='Auto,*,Auto,Auto', Default='Auto,*,Auto'}"
+          BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=White, Dark=#1C1B1F}, Desktop=Transparent, Default={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}}">
+        <Grid.Shadow>
+            <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="{OnIdiom Phone=0, Desktop=0, Default=0.10}" />
+        </Grid.Shadow>
+
+        <HorizontalStackLayout x:Name="DesktopHeaderContent"
+                               Grid.Column="0"
+                               Spacing="4"
+                               VerticalOptions="Center"
+                               IsVisible="{OnIdiom Phone=False, Default=True}">
+            <!-- Hamburger menu: collapses / expands the sidebar.
+                 Module-08 task 8-2: 48x48 touch target per the spec. -->
+            <buttons:SfButton
+                    x:Name="DesktopNavigationButton"
+                    WidthRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
+                    HeightRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
+                    Margin="{OnIdiom Phone='0,0,8,0', Desktop='0,0,8,0', Default='10,0'}"
+                    CornerRadius="{OnIdiom Phone=20, Desktop=20, Default=0}"
+                    Padding="0" ImageSource="humburger.png" Background="Transparent"    
+                    Clicked="OnDesktopNavigationClicked"
+                    SemanticProperties.Description="Toggle navigation menu">
+                <buttons:SfButton.Content>
+                    <DataTemplate>
+                        <Label Text="&#xe3c7;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular"/>
+                    </DataTemplate>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
+            <Label x:Name="HeaderTitle"
+                   Text="To-do List"
+                   FontSize="17"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                   VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <buttons:SfButton x:Name="MobileNavigationButton"
+                          Grid.Column="0"
+                          WidthRequest="40"
+                          HeightRequest="40"
+                          Padding="0"
+                          CornerRadius="20"
+                          Background="Transparent"
+                          IsVisible="False"
+                          Clicked="OnMobileNavigationClicked"
+                          Text="&#xe5c4;"
+                          FontFamily="MaterialIconRegular"
+                          FontSize="22"
+                          TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                          SemanticProperties.Description="Back to navigation" />
+
+        <Label x:Name="MobileAppTitle"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               Text="To-do List"
+               FontSize="17"
+               FontAttributes="Bold"
+               Margin="{OnIdiom Phone='20,0,-2,0', Default=0}"
+               HorizontalOptions="Start"
+               VerticalOptions="Center"
+               TextColor="{OnIdiom Phone={Binding HeaderForegroundColor}, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}"
+               IsVisible="{OnIdiom Phone=True, Default=False}" />
+        <buttons:SfButton x:Name="MobileSearchButton"
+                          Grid.Column="2"
+                          WidthRequest="40"
+                          HeightRequest="40"
+                          Padding="0"
+                          Background="Transparent"
+                          Text="&#xe8b6;"
+                          FontFamily="MaterialIconRegular"
+                          FontSize="22"
+                          TextColor="{OnIdiom Phone={Binding HeaderForegroundColor}, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}"
+                          IsVisible="{OnIdiom Phone=True, Default=False}"
+                          Clicked="OnMobileSearchClicked"
+                          SemanticProperties.Description="Search notes" />
+
+        <buttons:SfButton x:Name="MobileMoreOptionsButton"
+                          Grid.Column="{OnIdiom Phone=3, Default=0}"
+                          WidthRequest="40"
+                          HeightRequest="40"
+                          Padding="0"
+                          CornerRadius="20"
+                          Background="Transparent"
+                          Text="&#8943;"
+                          FontFamily="MaterialIconRegular"
+                          FontSize="22"
+                          Rotation="90"
+                          TextColor="{OnIdiom Phone={Binding HeaderForegroundColor}, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}"
+                          IsVisible="False"
+                          Clicked="OnMobileMoreOptionsClicked"
+                          SemanticProperties.Description="More list options" />
+
+        <!-- Search pill -->
+        <Border x:Name="SearchPill"
+                Grid.Column="1"
+                WidthRequest="{OnIdiom Phone=0, Default=460}"
+                Margin="0,8"
+                Padding="0"
+                HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                VerticalOptions="Center"
+                IsVisible="{OnIdiom Phone=False, Default=True}"
+                BackgroundColor="Transparent"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 8">
+            <syncfusionCore:SfTextInputLayout Hint="Search"
+                                              ContainerType="Outlined"
+                                              ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
+                                              OutlineCornerRadius="8"
+                                              HorizontalOptions="End"
+                                              FocusedStrokeThickness="1"
+                                              UnfocusedStrokeThickness="1" 
+                                              ReserveSpaceForAssistiveLabels="False"
+                                              InputViewPadding="16,0,16,0"
+                                              EnableFloating="False"
+                                              Margin="0"
+                                              ShowHelperText="False"
+                                              ShowHint="True"
+                                              Stroke="Transparent"
+                                              VerticalOptions="Fill">
+                <syncfusionCore:SfTextInputLayout.TrailingView>
+                    <Image Source="search.png"
+                           WidthRequest="18"
+                           HeightRequest="18"
+                           VerticalOptions="Center"
+                           Margin="0,5,0,0"
+                           SemanticProperties.Description="Search notes" />
+                </syncfusionCore:SfTextInputLayout.TrailingView>
+                <syncfusionCore:SfTextInputLayout.HintLabelStyle>
+                    <syncfusionCore:LabelStyle FontSize="14"
+                                               FontFamily="{StaticResource FontFamilyRegular}"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
+                </syncfusionCore:SfTextInputLayout.HintLabelStyle>
+                <Entry x:Name="SearchEntry"
+                       Text="{Binding SearchViewModel.Query, Mode=TwoWay}"
+                       Focused="OnSearchEntryFocused"
+                       Unfocused="OnSearchEntryUnfocused"
+                       FontFamily="{StaticResource FontFamilyRegular}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                       Placeholder=""
+                       VerticalTextAlignment="Center"
+                       HeightRequest="44"
+                       BackgroundColor="Transparent"
+                       Margin="0" />
+            </syncfusionCore:SfTextInputLayout>
+        </Border>
+
+        <Border x:Name="ProfileImageContainer"
+                Grid.Column="{OnIdiom Phone=3, Default=2}"
+                IsVisible="{OnIdiom Phone=False, Default=True}"
+                WidthRequest="34"
+                HeightRequest="34"
+                Margin="{OnIdiom Phone='10,0,0,0', Default=0}"
+                Padding="0"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 17"
+                VerticalOptions="Center">
+            <Border.GestureRecognizers>
+                <PointerGestureRecognizer PointerEntered="OnProfilePointerEntered"
+                                          PointerExited="OnProfilePointerExited" />
+                <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+            </Border.GestureRecognizers>
+            <Image Source="profile.png"
+                   Aspect="AspectFill"
+                   SemanticProperties.Description="Open theme settings" />
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.78" />
+                            <Setter Property="Scale" Value="1.06" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </Border>
+
+    </Grid>
+
+</ContentView>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Todo.Features.Search.ViewModels"
+             xmlns:models="clr-namespace:Todo.Features.Notes.Models"
+             xmlns:noteViews="clr-namespace:Todo.Features.Notes.Views"
+             xmlns:conv="clr-namespace:Todo.Converters"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="Todo.Features.Search.Views.SearchResultsView"
+             x:Name="SearchRoot"
+             x:DataType="vm:SearchResultsViewModel"
+             Padding="{OnIdiom Phone=0, Default=16}"
+             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <conv:SearchHighlightMultiValueConverter x:Key="SearchHighlightMultiValueConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ContentView.Triggers>
+        <DataTrigger TargetType="ContentView"
+                     Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                     Value="True">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </DataTrigger>
+    </ContentView.Triggers>
+
+    <Border x:Name="SearchSurface"
+            BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 14">
+        <Border.Triggers>
+            <DataTrigger TargetType="Border"
+                         Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                         Value="True">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </DataTrigger>
+        </Border.Triggers>
+        <Grid RowDefinitions="Auto,*"
+              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}">
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid"
+                             Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                             Value="True">
+                    <Setter Property="BackgroundColor" Value="Transparent" />
+                </DataTrigger>
+            </Grid.Triggers>
+
+            <VerticalStackLayout Grid.Row="0"
+                                 Padding="{OnIdiom Phone='16,16,16,12', Default='24,20,24,12'}"
+                                 Spacing="6">
+                <Label Text="Search Results"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                       SemanticProperties.HeadingLevel="Level1">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
+                                     Value="True">
+                            <Setter Property="TextColor"
+                                    Value="{OnIdiom Phone=White, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Text="{Binding ResultsDescription}"
+                       IsVisible="{Binding IsQueryEmpty, Converter={StaticResource InvertedBoolConverter}}"
+                       FontSize="15"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
+                <Label Text="{Binding ResultCountText}"
+                       IsVisible="{Binding IsQueryEmpty, Converter={StaticResource InvertedBoolConverter}}"
+                       FontSize="13"
+                       TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
+            </VerticalStackLayout>
+
+            <Grid Grid.Row="1"
+                  Padding="{OnIdiom Phone='0,4,0,12', Default='8,4,8,12'}">
+                <VerticalStackLayout IsVisible="{Binding IsQueryEmpty}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="12">
+                    <Image Source="notesicon.png"
+                           WidthRequest="40"
+                           HeightRequest="40"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center" />
+                    <Label Text="Type a word or phrase to search your notes."
+                           FontSize="16"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding HasNoResults}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="8">
+                    <Image Source="notesicon.png"
+                           WidthRequest="40"
+                           HeightRequest="40"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center" />
+                    <Label Text="{Binding NoResultsMessage}"
+                           FontSize="16"
+                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <syncfusion:SfListView ItemsSource="{Binding Results}"
+                                       Grid.Row="0"
+                                       IsVisible="{Binding HasResults}"
+                                       ItemSpacing="0"
+                                       AutoFitMode="DynamicHeight"
+                                       BackgroundColor="Transparent"
+                                       SelectionMode="None">
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Note">
+                                    <Grid Margin="16,6">
+                                        <Border InputTransparent="True"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 10">
+                                            <Border.Shadow>
+                                                <Shadow Brush="#26000000"
+                                                        Radius="3"
+                                                        Offset="0,1"
+                                                        Opacity="1" />
+                                            </Border.Shadow>
+                                        </Border>
+                                        <Border Padding="14,10"
+                                                BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 10">
+                                            <Border.Shadow>
+                                                <Shadow Brush="#4D000000"
+                                                        Radius="2"
+                                                        Offset="0,1"
+                                                        Opacity="1" />
+                                            </Border.Shadow>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.OpenNoteCommand}"
+                                                CommandParameter="{Binding .}" />
+                                                <TapGestureRecognizer Buttons="Secondary"
+                                                                  Tapped="OnNoteSecondaryTapped" />
+                                                <PointerGestureRecognizer PointerEntered="OnResultPointerEntered"
+                                                                          PointerExited="OnResultPointerExited" />
+                                            </Border.GestureRecognizers>
+
+                                            <Grid ColumnDefinitions="{OnIdiom Desktop='40,*,40,40', Default='44,*,40,40'}"
+                                                  RowDefinitions="40,Auto"
+                                                  ColumnSpacing="8"
+                                                  VerticalOptions="Center">
+
+                                            <CheckBox Grid.Column="0"
+                                                      IsChecked="{Binding IsCompleted, Mode=OneWay}"
+                                                      CheckedChanged="OnCheckChanged"
+                                                      Color="{OnIdiom Phone={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Desktop={AppThemeBinding Light=#49454F, Dark=#CAC4D0}, Default={StaticResource PrimaryColor}}"
+                                                      VerticalOptions="Center"
+                                                      HorizontalOptions="Center"
+                                                      WidthRequest="32"
+                                                      HeightRequest="32" />
+
+                                                <Label Grid.Column="1"
+                                                       Style="{StaticResource NoteTitleStyle}"
+                                                       HeightRequest="{OnIdiom Desktop=24, Default=-1}"
+                                                       VerticalOptions="Center"
+                                                       MaxLines="1">
+                                                    <Label.FormattedText>
+                                                        <MultiBinding Converter="{StaticResource SearchHighlightMultiValueConverter}">
+                                                            <Binding Path="Title" />
+                                                            <Binding Source="{x:Reference SearchRoot}" Path="BindingContext.Query" />
+                                                            <Binding Path="IsCompleted" />
+                                                        </MultiBinding>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                                <HorizontalStackLayout Grid.Row="1"
+                                                                       Grid.Column="1"
+                                                                       IsVisible="{Binding HasMetadata}"
+                                                                       Spacing="{OnIdiom Phone=10, Desktop=8, Default=10}"
+                                                                       VerticalOptions="Center">
+                                                    <HorizontalStackLayout Spacing="4"
+                                                                           IsVisible="{Binding DueDate, Converter={StaticResource NotNullToBoolConverter}}">
+                                                        <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="{OnIdiom Phone=#B3261E, Default=#0D7D12}" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
+                                                    </HorizontalStackLayout>
+                                                    <Label Text="&#8226;"
+                                                           IsVisible="{OnIdiom Phone={Binding HasMetadataSeparatorAfterDueDate}, Tablet={Binding HasMetadataSeparatorAfterDueDate}, Default=False}"
+                                                           FontSize="14"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                           VerticalTextAlignment="Center" />
+                                                    <HorizontalStackLayout Spacing="4" IsVisible="{Binding HasRepeat}">
+                                                        <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#2667A3" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="{Binding RepeatFrequency}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
+                                                    </HorizontalStackLayout>
+                                                    <Label Text="&#8226;"
+                                                           IsVisible="{OnIdiom Phone={Binding HasMetadataSeparatorAfterRepeat}, Tablet={Binding HasMetadataSeparatorAfterRepeat}, Default=False}"
+                                                           FontSize="14"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                           VerticalTextAlignment="Center" />
+                                                    <HorizontalStackLayout Spacing="4"
+                                                                           IsVisible="{Binding ReminderDate, Converter={StaticResource NotNullToBoolConverter}}">
+                                                        <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Desktop=12, Default=14}" TextColor="#7D5294" WidthRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HeightRequest="{OnIdiom Phone=18, Desktop=12, Default=14}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}}" Style="{StaticResource NoteMetaStyle}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
+                                                    </HorizontalStackLayout>
+                                                </HorizontalStackLayout>
+
+                                            <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                                                    WidthRequest="40"
+                                                    HeightRequest="40"
+                                                    BackgroundColor="Transparent"
+                                                    StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 20"
+                                                    VerticalOptions="Center">
+                                                <Border.GestureRecognizers>
+                                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                              PointerExited="OnPointerExited" />
+                                                </Border.GestureRecognizers>
+                                                <buttons:SfButton Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                                                  TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
+                                                                  FontAttributes="Bold"
+                                                                  FontSize="20"
+                                                                  Background="Transparent"
+                                                                  WidthRequest="40"
+                                                                  HeightRequest="40"
+                                                                  CornerRadius="20"
+                                                                  VerticalOptions="Center"
+                                                                  Padding="0"
+                                                                  Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.ToggleImportantCommand}"
+                                                                  CommandParameter="{Binding .}"
+                                                                  SemanticProperties.Description="Toggle important" />
+                                            </Border>
+
+                                            <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"
+                                                    WidthRequest="40"
+                                                    HeightRequest="40"
+                                                    BackgroundColor="Transparent"
+                                                    StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 20"
+                                                    VerticalOptions="Center">
+                                                <Border.GestureRecognizers>
+                                                    <PointerGestureRecognizer PointerEntered="OnPointerEntered"
+                                                                              PointerExited="OnPointerExited" />
+                                                </Border.GestureRecognizers>
+                                                <buttons:SfButton Text="&#8943;"
+                                                                  FontAttributes="Bold"
+                                                                  FontSize="20"
+                                                                  Rotation="90"
+                                                                  Background="Transparent"
+                                                                  TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
+                                                                  WidthRequest="40"
+                                                                  HeightRequest="40"
+                                                                  CornerRadius="20"
+                                                                  VerticalOptions="Center"
+                                                                  Padding="0"
+                                                                  Clicked="OnNoteMenuClicked"
+                                                                  SemanticProperties.Description="More note options" />
+                                            </Border>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                        </syncfusion:SfListView>
+            </Grid>
+
+            <noteViews:NoteActionFlyout x:Name="ActionFlyout"
+                                        Grid.RowSpan="3"
+                                        WidthRequest="0"
+                                        HeightRequest="0"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Start"
+                                        ZIndex="1000" />
+        </Grid>
+    </Border>
+</ContentView>
