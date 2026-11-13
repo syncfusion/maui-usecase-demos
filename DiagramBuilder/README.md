@@ -94,6 +94,10 @@ dotnet build DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj -t:Run -f net10
 
 Open `DiagramBuilder/DiagramBuilder.slnx` in Visual Studio or VS Code with .NET MAUI support to select a target device and run the sample.
 
+## Output
+
+![Diagram builder demo](Diagram-Builder-sample-demo.gif)
+
 ## Project Structure
 
 - `DiagramBuilder/DiagramBuilder/Views/` — Create and designer pages, plus Save As, Export, and Print dialogs.
