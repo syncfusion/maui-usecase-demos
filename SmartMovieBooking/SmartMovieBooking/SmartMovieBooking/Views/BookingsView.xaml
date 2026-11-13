@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:syncfusionCards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:syncfusionButtons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:barcode="clr-namespace:Syncfusion.Maui.Barcode;assembly=Syncfusion.Maui.Barcode"
+             xmlns:vm="clr-namespace:SmartMovieBooking.ViewModels"
+             xmlns:models="clr-namespace:SmartMovieBooking.Models"
+             xmlns:controls="clr-namespace:SmartMovieBooking.Views"
+             x:Class="SmartMovieBooking.Views.BookingsView"
+             x:DataType="vm:BookingsViewModel"
+             Title="Bookings">
+    <Grid RowDefinitions="{OnIdiom Default='*,Auto', Phone='*,72'}"
+          ColumnDefinitions="{OnIdiom Default='200,*', Phone='*'}">
+        <controls:AppSideBar Grid.Row="{OnIdiom Default=0, Phone=1}" ActiveTab="Bookings" />
+
+        <ScrollView Grid.Row="{OnIdiom Default=0, Phone=0}"
+                    Grid.Column="{OnIdiom Default='1', Phone='0'}">
+            <VerticalStackLayout MaximumWidthRequest="1200"
+                                 Padding="{OnIdiom Default='24', Phone='12'}"
+                                 Spacing="18">
+                <syncfusionCards:SfCardView CornerRadius="24"
+                                            BackgroundColor="#FFFFFF"
+                                            Padding="22">
+					<Grid ColumnDefinitions="{OnIdiom Default='*,Auto', Phone='*'}"
+						  RowDefinitions="{OnIdiom Default='Auto,Auto', Phone='Auto,Auto'}"
+						  ColumnSpacing="16"
+						  RowSpacing="10">
+						<VerticalStackLayout Spacing="6">
+                            <Label Text="My Bookings &amp; Tickets"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="30"
+                                   FontAttributes="Bold"
+                                   TextColor="#111827" />
+                            <Label Text="Manage your digital tickets, payment details, and show history in one place."
+                                   FontSize="13"
+                                   TextColor="#5B6275" />
+                        </VerticalStackLayout>
+
+						<HorizontalStackLayout IsVisible="{OnIdiom Default=true, Phone=false}"
+											   Grid.Column="1" Spacing="10" HorizontalOptions="End" VerticalOptions="Center">
+                            <Border StrokeThickness="0" BackgroundColor="#EEF2FF" StrokeShape="RoundRectangle 16" Padding="14,8">
+                                <Label Text="{Binding UpcomingCount, StringFormat='Upcoming ({0})'}" FontSize="12" TextColor="#4338CA" />
+                            </Border>
+                            <Border StrokeThickness="0" BackgroundColor="#F3F4F6" StrokeShape="RoundRectangle 16" Padding="14,8">
+                                <Label Text="All Tickets" FontSize="12" TextColor="#374151" />
+                            </Border>
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+                            <Border StrokeThickness="0" BackgroundColor="#FFFFFF" Stroke="#D9DDEE" StrokeShape="RoundRectangle 12" Padding="12,8">
+                                <Label Text="{Binding Bookings.Count, StringFormat='Total {0}'}" FontSize="12" TextColor="#4B5563" />
+                            </Border>
+                            <Border StrokeThickness="0" BackgroundColor="#FFFFFF" Stroke="#D9DDEE" StrokeShape="RoundRectangle 12" Padding="12,8">
+                                <Label Text="Digital QR ticket" FontSize="12" TextColor="#4B5563" />
+                            </Border>
+                            <Border StrokeThickness="0" BackgroundColor="#FFFFFF" Stroke="#D9DDEE" StrokeShape="RoundRectangle 12" Padding="12,8">
+                                <Label Text="Auto-synced" FontSize="12" TextColor="#4B5563" />
+                            </Border>
+                        </HorizontalStackLayout>
+                    </Grid>
+                </syncfusionCards:SfCardView>
+
+				<Border StrokeShape="RoundRectangle 22"
+						BackgroundColor="#FFFFFF"
+                                            Padding="18">
+                    <VerticalStackLayout Spacing="14">
+						<Grid ColumnDefinitions="*,Auto"
+							  VerticalOptions="Center">
+							<VerticalStackLayout Spacing="4">
+								<Label Text="Upcoming Showtimes"
+									   FontFamily="OpenSansSemibold"
+									   FontSize="20"
+									   FontAttributes="Bold"
+									   TextColor="#111827" />
+								<Label Text="Most booking details are shown directly on the ticket card below."
+									   FontSize="12"
+									   TextColor="#6B7280" />
+							</VerticalStackLayout>
+							<Border Grid.Column="1"
+									BackgroundColor="#EDE9FE"
+									StrokeThickness="0"
+									StrokeShape="RoundRectangle 999"
+									Padding="12,6"
+									HorizontalOptions="End"
+									VerticalOptions="Center">
+								<Label Text="{Binding UpcomingCount, StringFormat='{0} Ready'}"
+									   FontSize="12"
+									   FontFamily="OpenSansSemibold"
+									   TextColor="#5B21B6" />
+							</Border>
+						</Grid>
+						<syncfusion:SfListView ItemsSource="{Binding Bookings}"
+											   ScrollBarVisibility="Never"
+                                               IsScrollingEnabled="False"
+											   AutoFitMode="DynamicHeight"
+											   SelectionMode="None"
+                                               Padding="-26"
+							                   ItemSpacing="14"
+											   BackgroundColor="Transparent">
+							<syncfusion:SfListView.ItemsLayout>
+								<syncfusion:GridLayout SpanCount="1" />
+							</syncfusion:SfListView.ItemsLayout>
+							<syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Booking">
+									<ScrollView>
+									<Border StrokeShape="RoundRectangle 22"
+											BackgroundColor="#FAFAFF"
+                                                                 Padding="12">
+											<Grid ColumnDefinitions="{OnIdiom Default='220,*,140', Phone='180,140'}" ColumnSpacing="16">
+                                            <Border StrokeThickness="0"
+                                                    Background="#111827"
+                                                    StrokeShape="RoundRectangle 20"
+                                                    Padding="14">
+                                                <Grid RowDefinitions="Auto,*">
+                                                    <Border Background="#1F2937"
+                                                            StrokeThickness="0"
+                                                            StrokeShape="RoundRectangle 16"
+                                                            Padding="10"
+																HeightRequest="{OnIdiom Default='235', Phone='200'}">
+                                                        <Grid RowDefinitions="Auto,*,Auto">
+                                                            <Border BackgroundColor="#7C3AED"
+                                                                    StrokeThickness="0"
+                                                                    StrokeShape="RoundRectangle 999"
+                                                                    Padding="10,4"
+                                                                    HorizontalOptions="Start">
+                                                                <Label Text="{Binding StatusText}"
+                                                                       FontSize="10"
+                                                                       FontFamily="OpenSansSemibold"
+                                                                       TextColor="White" />
+                                                            </Border>
+
+                                                            <VerticalStackLayout Grid.Row="1"
+																					 VerticalOptions="Center"
+                                                                                 Spacing="4">
+                                                                <Label Text="{Binding MovieTitle}"
+                                                                       FontFamily="OpenSansSemibold"
+                                                                       FontSize="20"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="White"
+                                                                       LineBreakMode="TailTruncation" />
+                                                                <Label Text="{Binding TheaterName}"
+                                                                       FontSize="12"
+                                                                       TextColor="#D1D5DB"
+                                                                       LineBreakMode="TailTruncation" />
+                                                                <Label Text="{Binding ShowtimeText}"
+                                                                       FontSize="12"
+                                                                       TextColor="#D1D5DB" />
+                                                            </VerticalStackLayout>
+
+                                                            <Label Grid.Row="2"
+                                                                   Text="{Binding BookingId}"
+                                                                   FontSize="10"
+                                                                   CharacterSpacing="1.2"
+                                                                   TextColor="#9CA3AF" />
+                                                        </Grid>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+												<VerticalStackLayout IsVisible="{OnIdiom Default=true, Phone=false}"
+																	 Grid.Column="1" Spacing="12" VerticalOptions="Center">
+                                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="10">
+                                                    <VerticalStackLayout Spacing="4">
+                                                        <Label Text="Theater"
+                                                               FontSize="10"
+                                                               TextColor="#6B7280"
+                                                               CharacterSpacing="1" />
+                                                        <Label Text="{Binding TheaterName}"
+                                                               FontFamily="OpenSansSemibold"
+                                                               FontSize="13"
+                                                               TextColor="#111827" />
+                                                    </VerticalStackLayout>
+                                                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                                        <Label Text="Date &amp; Time"
+                                                               FontSize="10"
+                                                               TextColor="#6B7280"
+                                                               CharacterSpacing="1" />
+                                                        <Label Text="{Binding ShowtimeText}"
+                                                               FontFamily="OpenSansSemibold"
+                                                               FontSize="13"
+                                                               TextColor="#111827" />
+                                                    </VerticalStackLayout>
+
+                                                    <VerticalStackLayout Grid.Row="1" Spacing="4">
+                                                        <Label Text="Seats"
+                                                               FontSize="10"
+                                                               TextColor="#6B7280"
+                                                               CharacterSpacing="1" />
+                                                        <Label Text="{Binding SeatsText}"
+                                                               FontFamily="OpenSansSemibold"
+                                                               FontSize="13"
+                                                               TextColor="#111827"
+                                                               LineBreakMode="WordWrap" />
+                                                    </VerticalStackLayout>
+                                                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                                                        <Label Text="Seat Count"
+                                                               FontSize="10"
+                                                               TextColor="#6B7280"
+                                                               CharacterSpacing="1" />
+                                                        <Label Text="{Binding SeatCountText}"
+                                                               FontFamily="OpenSansSemibold"
+                                                               FontSize="13"
+                                                               TextColor="#111827" />
+                                                    </VerticalStackLayout>
+                                                </Grid>
+
+                                                <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="10">
+                                                    <Border Background="#EEF2FF" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="10,6">
+                                                        <Label Text="{Binding PaymentMethod}" FontSize="11" TextColor="#4338CA" />
+                                                    </Border>
+                                                    <Border Background="#ECFDF5" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="10,6">
+                                                        <Label Text="{Binding StatusText}" FontSize="11" TextColor="#047857" />
+                                                    </Border>
+                                                    <Border Background="#FFF7ED" StrokeThickness="0" StrokeShape="RoundRectangle 999" Padding="10,6">
+                                                        <Label Text="{Binding CreatedAtText}" FontSize="11" TextColor="#9A3412" />
+                                                    </Border>
+                                                </Grid>
+
+                                                <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
+                                                    <VerticalStackLayout Spacing="2">
+                                                        <Label Text="Subtotal" FontSize="10" TextColor="#6B7280" />
+                                                        <Label Text="{Binding Subtotal, StringFormat='${0:F2}'}" FontFamily="OpenSansSemibold" FontSize="13" TextColor="#111827" />
+                                                    </VerticalStackLayout>
+                                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                        <Label Text="Fee" FontSize="10" TextColor="#6B7280" />
+                                                        <Label Text="{Binding ConvenienceFee, StringFormat='${0:F2}'}" FontFamily="OpenSansSemibold" FontSize="13" TextColor="#111827" />
+                                                    </VerticalStackLayout>
+                                                    <VerticalStackLayout Grid.Column="2" Spacing="2">
+                                                        <Label Text="Total" FontSize="10" TextColor="#6B7280" />
+                                                        <Label Text="{Binding Total, StringFormat='${0:F2}'}" FontFamily="OpenSansSemibold" FontSize="13" TextColor="#3525CD" />
+                                                    </VerticalStackLayout>
+                                                </Grid>
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout Grid.Column="2" Spacing="8" HorizontalOptions="End" VerticalOptions="Center">
+                                                <Label Text="SCAN AT TURNSTILE"
+                                                       FontSize="10"
+                                                       TextColor="#6B7280"
+                                                       HorizontalTextAlignment="Center" />
+                                                <Border BackgroundColor="#FFFFFF"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 18"
+                                                        Padding="12">
+                                                    <barcode:SfBarcodeGenerator Value="{Binding BookingId}"
+                                                                                ShowText="False"
+                                                                                WidthRequest="104"
+                                                                                HeightRequest="104"
+                                                                                HorizontalOptions="Center">
+                                                        <barcode:SfBarcodeGenerator.Symbology>
+                                                            <barcode:QRCode />
+                                                        </barcode:SfBarcodeGenerator.Symbology>
+                                                    </barcode:SfBarcodeGenerator>
+                                                </Border>
+                                                <Label Text="{Binding SeatCountText, StringFormat='Admit: {0}'}"
+                                                       FontSize="11"
+                                                       HorizontalTextAlignment="Center"
+                                                       TextColor="#374151" />
+                                                <Label Text="{Binding Total, StringFormat='Total Paid: ${0:F2}'}"
+                                                       FontSize="11"
+                                                       HorizontalTextAlignment="Center"
+                                                       TextColor="#374151" />
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Border>
+                                    </ScrollView>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                            <syncfusion:SfListView.EmptyView>
+                                <syncfusionCards:SfCardView CornerRadius="22"
+                                                            BackgroundColor="#FFFFFF"
+                                                            Padding="30">
+                                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="🎟️" FontSize="44" HorizontalTextAlignment="Center" />
+                                        <Label Text="No bookings yet"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="16"
+                                               HorizontalTextAlignment="Center"
+                                               TextColor="#111827" />
+                                        <Label Text="Your confirmed tickets will appear here with QR code, showtime, seat selection, and payment details."
+                                               FontSize="12"
+                                               HorizontalTextAlignment="Center"
+                                               TextColor="#6B7280" />
+                                    </VerticalStackLayout>
+                                </syncfusionCards:SfCardView>
+                            </syncfusion:SfListView.EmptyView>
+                        </syncfusion:SfListView>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

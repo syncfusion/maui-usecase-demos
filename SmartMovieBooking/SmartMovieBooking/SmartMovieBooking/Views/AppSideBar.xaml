@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SmartMovieBooking"
+             x:Class="SmartMovieBooking.Views.AppSideBar"
+             x:Name="Root">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:TabBackgroundConverter x:Key="TabBackgroundConverter" />
+            <converters:TabTextColorConverter x:Key="TabTextColorConverter" />
+            <converters:TabIconConverter x:Key="TabIconConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Border StrokeThickness="0"
+            BackgroundColor="#EAEAF0"
+            Padding="8">
+        <VerticalStackLayout>
+			<Grid ColumnDefinitions="{OnIdiom Default='180', Phone='92,92,92,92'}"
+				  RowDefinitions="{OnIdiom Default='52,52,52,52', Phone='Auto'}"
+				  IsVisible="{OnIdiom Default='True', Phone='False'}"
+				  HorizontalOptions="Start">
+
+				<Border Grid.Column="0"
+                        Grid.Row="0"
+                        StrokeThickness="0"
+                        Padding="12,8"
+                        BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Movies}"
+                        StrokeShape="RoundRectangle 18">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnMoviesTapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                        <Image HeightRequest="20"
+                               WidthRequest="20"
+                               Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabIconConverter}, ConverterParameter=Movies}" />
+                        <Label Text="Movies"
+                               FontSize="12"
+                               TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabTextColorConverter}, ConverterParameter=Movies}" />
+                    </HorizontalStackLayout>
+                </Border>
+
+				<Border Grid.Column="{OnIdiom Default='0', Phone='1'}"
+						Grid.Row="{OnIdiom Default='1', Phone='0'}"
+						StrokeThickness="0"
+                        Padding="12,8"
+                        BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Theaters}"
+                        StrokeShape="RoundRectangle 18">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTheatersTapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                        <Image HeightRequest="20"
+                               WidthRequest="20"
+                               Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabIconConverter}, ConverterParameter=Theaters}" />
+                        <Label Text="Theaters"
+                               FontSize="12"
+                               TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabTextColorConverter}, ConverterParameter=Theaters}" />
+                    </HorizontalStackLayout>
+                </Border>
+
+				<Border Grid.Column="{OnIdiom Default='0', Phone='2'}"
+						Grid.Row="{OnIdiom Default='2', Phone='0'}"
+						StrokeThickness="0"
+                        Padding="12,8"
+                        BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Bookings}"
+                        StrokeShape="RoundRectangle 18">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBookingsTapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                        <Image HeightRequest="20"
+                               WidthRequest="20"
+                               Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabIconConverter}, ConverterParameter=Bookings}" />
+                        <Label Text="Bookings"
+                               FontSize="12"
+                               TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabTextColorConverter}, ConverterParameter=Bookings}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
+
+			<Grid ColumnDefinitions="{OnIdiom Default='Auto', Phone='*,*,*'}"
+				  RowDefinitions="{OnIdiom Default='70,70,70,70', Phone='Auto'}"
+				  IsVisible="{OnIdiom Default='False', Phone='True'}"
+				  HorizontalOptions="Fill"
+				  ColumnSpacing="8">
+
+					<Border Grid.Column="0"
+							StrokeThickness="0"
+							Padding="12,8"
+							BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Movies}"
+							StrokeShape="RoundRectangle 18">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Tapped="OnMoviesTapped" />
+						</Border.GestureRecognizers>
+						<VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+							<Image HeightRequest="20" WidthRequest="20"
+								   Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabIconConverter}, ConverterParameter=Movies}" />
+							<Label Text="Movies" FontSize="12"
+								   HorizontalTextAlignment="Center"
+								   TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabTextColorConverter}, ConverterParameter=Movies}" />
+						</VerticalStackLayout>
+					</Border>
+
+					<Border Grid.Column="1"
+							StrokeThickness="0"
+							Padding="12,8"
+							BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Theaters}"
+							StrokeShape="RoundRectangle 18">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Tapped="OnTheatersTapped" />
+						</Border.GestureRecognizers>
+						<VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+							<Image HeightRequest="20" WidthRequest="20"
+								   Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabIconConverter}, ConverterParameter=Theaters}" />
+							<Label Text="Theaters" FontSize="12"
+								   HorizontalTextAlignment="Center"
+								   TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabTextColorConverter}, ConverterParameter=Theaters}" />
+						</VerticalStackLayout>
+					</Border>
+
+					<Border Grid.Column="2"
+							StrokeThickness="0"
+							Padding="12,8"
+							BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabBackgroundConverter}, ConverterParameter=Bookings}"
+							StrokeShape="RoundRectangle 18">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Tapped="OnBookingsTapped" />
+						</Border.GestureRecognizers>
+						<VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+							<Image HeightRequest="20" WidthRequest="20"
+								   Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabIconConverter}, ConverterParameter=Bookings}" />
+							<Label Text="Bookings" FontSize="12"
+								   HorizontalTextAlignment="Center"
+								   TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabTextColorConverter}, ConverterParameter=Bookings}" />
+						</VerticalStackLayout>
+					</Border>
+</Grid>
+		</VerticalStackLayout>
+    </Border>
+</ContentView>
