@@ -7,6 +7,7 @@
              xmlns:progress="clr-namespace:Syncfusion.Maui.ProgressBar;assembly=Syncfusion.Maui.ProgressBar"
              xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:controls="clr-namespace:DigitalQueueManagement.Controls"
              x:Class="DigitalQueueManagement.Views.OverviewPage"
              x:DataType="vm:QueueOverviewViewModel">
     <ContentView.Resources>
@@ -417,37 +418,9 @@
                                     <Label Text="Upcoming Tokens" FontSize="{StaticResource OverviewSectionFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
                                     <Label Text="Next in line across all counters" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#64748B" />
                                 </VerticalStackLayout>
-                                <Border Grid.Column="1"
-                                        Padding="3"
-                                        BackgroundColor="#F8FAFC"
-                                        Stroke="#E2E8F0"
-                                        StrokeThickness="1"
-                                        StrokeShape="RoundRectangle 8"
-                                        VerticalOptions="Center">
-                                    <buttons:SfSegmentedControl x:Name="UpcomingFilterControl"
-                                                               Padding="0"
-                                                               SegmentWidth="52"
-                                                               SegmentHeight="30"
-                                                               CornerRadius="7"
-                                                               SegmentCornerRadius="7"
-                                                               ShowSeparator="False"
-                                                               StrokeThickness="0"
-                                                               SegmentBackground="#EEF4FF"
-                                                               Background="#EEF4FF"
-                                                               HorizontalOptions="Start"
-                                                               VerticalOptions="Center">
-                                        <buttons:SfSegmentedControl.TextStyle>
-                                            <buttons:SegmentTextStyle FontSize="11" TextColor="#183E91" />
-                                        </buttons:SfSegmentedControl.TextStyle>
-                                        <buttons:SfSegmentedControl.SelectionIndicatorSettings>
-                                            <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
-                                                                                Background="#183E91"
-                                                                                Stroke="#FFDBE5F2"
-                                                                                StrokeThickness="1"
-                                                                                TextColor="White" />
-                                        </buttons:SfSegmentedControl.SelectionIndicatorSettings>
-                                    </buttons:SfSegmentedControl>
-                                </Border>
+                                <controls:PriorityFilter Grid.Column="1"
+                                                         SelectedIndex="{Binding UpcomingFilterIndex, Mode=TwoWay}"
+                                                         VerticalOptions="Center" />
                             </Grid>
                             <VerticalStackLayout BindableLayout.ItemsSource="{Binding UpcomingTokens}"
                                                  Spacing="10"

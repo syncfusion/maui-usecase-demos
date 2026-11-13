@@ -102,7 +102,16 @@ public partial class TokensPage : ContentView
         MetricGrid.IsVisible = !mobile;
         FilterPanel.IsVisible = !mobile;
         MobileTokenFilterPanel.IsVisible = mobile;
-        DirectoryHeader.IsVisible = !mobile;
+        DirectoryHeader.IsVisible = true;
+        var compactHeader = Width < 440;
+        DirectoryHeader.ColumnDefinitions = compactHeader
+            ? new ColumnDefinitionCollection { new(GridLength.Star) }
+            : new ColumnDefinitionCollection { new(GridLength.Star), new(GridLength.Auto) };
+        DirectoryHeader.RowDefinitions = compactHeader
+            ? new RowDefinitionCollection { new(GridLength.Auto), new(GridLength.Auto) }
+            : new RowDefinitionCollection { new(GridLength.Auto) };
+        DirectoryHeader.SetColumn(TokenListPriorityFilter, compactHeader ? 0 : 1);
+        DirectoryHeader.SetRow(TokenListPriorityFilter, compactHeader ? 1 : 0);
         DesktopTokenListHost.IsVisible = !mobile;
         MobileTokenContent.IsVisible = mobile;
 

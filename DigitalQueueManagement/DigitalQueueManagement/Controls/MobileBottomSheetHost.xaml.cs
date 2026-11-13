@@ -1,7 +1,7 @@
 using Microsoft.Maui.Controls.Shapes;
 using Syncfusion.Maui.Popup;
 
-namespace DigitalQueueManagement.Views.Dialogs;
+namespace DigitalQueueManagement.Controls;
 
 public partial class MobileBottomSheetHost : ContentView
 {

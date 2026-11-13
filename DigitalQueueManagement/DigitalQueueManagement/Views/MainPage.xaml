@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
-             xmlns:dialogs="clr-namespace:DigitalQueueManagement.Views.Dialogs"
+             xmlns:controls="clr-namespace:DigitalQueueManagement.Controls"
              x:Class="DigitalQueueManagement.Views.MainPage"
              x:DataType="vm:AppShellViewModel"
              BackgroundColor="{StaticResource Canvas}"
@@ -221,10 +221,10 @@
                     ContentLayout="Top,2"
                     Clicked="OnMobileCountersClicked" />
         </Grid>
-        <dialogs:DesktopPopupHost x:Name="DesktopPopupHost"
+        <controls:DesktopPopupHost x:Name="DesktopPopupHost"
                                   Grid.RowSpan="3"
                                   IsVisible="False" />
-        <dialogs:MobileBottomSheetHost x:Name="MobileBottomSheetHost"
+        <controls:MobileBottomSheetHost x:Name="MobileBottomSheetHost"
                                        Grid.RowSpan="3"
                                        IsVisible="False" />
     </Grid>

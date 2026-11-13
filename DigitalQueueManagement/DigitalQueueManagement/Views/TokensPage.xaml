@@ -14,6 +14,7 @@
             <x:Double x:Key="TokenMetricLabelFontSize">13</x:Double>
             <x:Double x:Key="TokenMetricValueFontSize">32</x:Double>
             <x:Double x:Key="TokenServiceFontSize">13</x:Double>
+            <x:Double x:Key="TokenRoutingCountFontSize">14</x:Double>
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
                 <Setter Property="BackgroundColor" Value="Transparent" />
@@ -422,8 +423,8 @@
                                 </Grid>
                                 <ProgressBar Progress="{Binding PriorityRoutingProgress}" ProgressColor="#183E91" BackgroundColor="#E2E8F0" HeightRequest="5" />
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Text="{Binding PriorityWaitingCount, StringFormat='Priority: {0} tokens'}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#94A3B8" />
-                                    <Label Grid.Column="1" Text="{Binding NormalWaitingCount, StringFormat='Normal: {0} tokens'}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#94A3B8" />
+                                    <Label Text="{Binding PriorityWaitingCount, StringFormat='Priority: {0} tokens'}" FontSize="{StaticResource TokenRoutingCountFontSize}" TextColor="#94A3B8" />
+                                    <Label Grid.Column="1" Text="{Binding NormalWaitingCount, StringFormat='Normal: {0} tokens'}" FontSize="{StaticResource TokenRoutingCountFontSize}" TextColor="#94A3B8" />
                                 </Grid>
                             </VerticalStackLayout>
                         </Border>
@@ -438,20 +439,23 @@
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 12">
                     <VerticalStackLayout Spacing="12">
-                        <Grid x:Name="DirectoryHeader" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <Grid x:Name="DirectoryHeader"
+                              ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto"
+                              ColumnSpacing="12"
+                              RowSpacing="8">
                             <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                                 <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" VerticalOptions="Center" />
-                                <Label Text="Tokens list" FontSize="14" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
+                                <Label Text="Tokens list" FontSize="16" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
                                 <Border Padding="8,4" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
                                     <Label Text="Local sequence" FontSize="{StaticResource CaptionFontSize}" FontAttributes="Bold" TextColor="#183E91" />
                                 </Border>
                             </HorizontalStackLayout>
-                            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
-                                <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
-                                    <BoxView WidthRequest="6" HeightRequest="6" Color="#10B981" CornerRadius="3" VerticalOptions="Center" />
-                                    <Label Text="Local sample data" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#64748B" VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                            </HorizontalStackLayout>
+                            <controls:PriorityFilter x:Name="TokenListPriorityFilter"
+                                                     Grid.Column="1"
+                                                     SelectedIndex="{Binding TokenListPriorityFilterIndex, Mode=TwoWay}"
+                                                     HorizontalOptions="End"
+                                                     VerticalOptions="Center" />
                         </Grid>
                         <Grid x:Name="DesktopTokenListHost" HeightRequest="520">
                             <listview:SfListView ItemsSource="{Binding VisibleTokenRows}"

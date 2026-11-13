@@ -1,6 +1,5 @@
 using DigitalQueueManagement.Model;
 using DigitalQueueManagement.ViewModel;
-using Syncfusion.Maui.Buttons;
 using Syncfusion.Maui.Charts;
 
 namespace DigitalQueueManagement.Views;
@@ -13,11 +12,6 @@ public partial class OverviewPage : ContentView
     {
         BindingContext = viewModel;
         InitializeComponent();
-
-        UpcomingFilterControl.ItemsSource = new[] { "All", "Normal", "Priority" };
-        UpcomingFilterControl.SetBinding(
-            SfSegmentedControl.SelectedIndexProperty,
-            new Binding(nameof(QueueSessionViewModel.UpcomingFilterIndex), BindingMode.TwoWay));
 
         ServiceChartHost.Content = CreateDoughnutChart(
             viewModel.QueueSession.ServiceAnalytics,

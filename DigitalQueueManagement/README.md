@@ -14,6 +14,7 @@ Digital Queue Management demonstrates how a service desk can organize customer w
 
 ## Key Features
 
+- Navigate between the three main sections: Overview, Tokens, and Counters.
 - View queue and counter summaries, including queue progress and analytics.
 - Call the next token and complete, skip, or recall service.
 - Transfer tokens between available counters.
@@ -25,7 +26,7 @@ Digital Queue Management demonstrates how a service desk can organize customer w
 - `SfCardView` — presents queue and counter summary cards.
 - `SfChip` — displays compact status and count badges in analytics cards.
 - `SfListView` — displays queue tokens and service counters.
-- `SfSegmentedControl` — switches between app sections and filters.
+- `SfSegmentedControl` — switches between the Overview, Tokens, and Counters sections and filters upcoming tokens.
 - `SfLinearProgressBar` — visualizes queue progress.
 - `SfCircularChart` — summarizes queue activity.
 - `SfPopup` — displays desktop dialogs and mobile bottom sheets.
@@ -41,7 +42,7 @@ The app separates queue state and operations from the UI:
 - `Resources/` — styles, fonts, app icon, and splash screen.
 - `MauiProgram.cs` — configures MAUI, Syncfusion controls, fonts, and logging.
 
-The views bind to view models, which use `QueueStore` to read and update the in-memory queue. The resulting state is shown in the queue, counter, and overview screens.
+The Overview, Tokens, and Counters sections bind to view models, which use `QueueStore` to read and update the in-memory queue. The resulting state is shown across the three sections.
 
 ## Prerequisites
 
@@ -72,11 +73,11 @@ The project also targets Android, iOS, and Mac Catalyst. Build or run with `net1
 
 ## Output
 
-The app opens to a queue-management interface with overview cards, token and counter lists, service actions, and queue analytics. The sample does not currently include an application screenshot.
+The app opens to Overview; Overview, Tokens, and Counters are its three main sections. They provide overview cards and analytics, token lists and service actions, and counter operations. The sample does not currently include an application screenshot. The app icon and splash screen use a shared queue-ticket design with a blue background, a white ticket card, and blue and teal queue lines. .NET MAUI generates the platform-specific assets from the SVG files in `DigitalQueueManagement/Resources/AppIcon/` and `DigitalQueueManagement/Resources/Splash/` during the build.
 
 ## Project Structure
 
-- `DigitalQueueManagement/Views/` — queue, overview, counter, management, and dialog UI.
+- `DigitalQueueManagement/Views/` — main navigation, overview, token, counter, and dialog UI.
 - `DigitalQueueManagement/ViewModel/` — presentation logic and user actions.
 - `DigitalQueueManagement/Model/` — queue data models and in-memory storage.
 - `DigitalQueueManagement/Controls/` — reusable custom controls.

@@ -163,7 +163,12 @@ public partial class CountersPage : ContentView
         }
 
         WorkspaceGrid.ColumnDefinitions = threeColumn
-            ? new ColumnDefinitionCollection { new(300), new(GridLength.Star), new(320) }
+            ? new ColumnDefinitionCollection
+            {
+                new(new GridLength(1, GridUnitType.Star)),
+                new(new GridLength(2, GridUnitType.Star)),
+                new(new GridLength(1, GridUnitType.Star))
+            }
             : wide
                 ? new ColumnDefinitionCollection { new(320), new(GridLength.Star) }
                 : new ColumnDefinitionCollection { new(GridLength.Star) };

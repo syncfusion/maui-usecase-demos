@@ -251,6 +251,22 @@ public partial class QueueSessionViewModel : ObservableObject
         });
     }
 
+    public int TokenListPriorityFilterIndex
+    {
+        get => TokenListPriorityFilter switch
+        {
+            "Normal" => 1,
+            "Priority" => 2,
+            _ => 0
+        };
+        set => SetTokenListPriorityFilter(value switch
+        {
+            1 => "Normal",
+            2 => "Priority",
+            _ => "All"
+        });
+    }
+
     public int StatusFilterIndex
     {
         get => StatusFilter switch
@@ -298,6 +314,9 @@ public partial class QueueSessionViewModel : ObservableObject
     [ObservableProperty]
     public partial string UpcomingFilter { get; set; } = "All";
 
+    [ObservableProperty]
+    public partial string TokenListPriorityFilter { get; set; } = "All";
+
     public void SetHeader(string tab)
     {
         if (tab is not ("Overview" or "Tokens" or "Counters"))
@@ -336,6 +355,17 @@ public partial class QueueSessionViewModel : ObservableObject
         UpcomingFilter = filter;
         OnPropertyChanged(nameof(UpcomingFilterIndex));
         RefreshUpcomingTokens();
+    }
+
+    public void SetTokenListPriorityFilter(string filter)
+    {
+        if (filter is not ("All" or "Normal" or "Priority"))
+        {
+            return;
+        }
+
+        TokenListPriorityFilter = filter;
+        OnPropertyChanged(nameof(TokenListPriorityFilterIndex));
     }
 
     public void SelectCounter(string counterName)
@@ -484,6 +514,7 @@ public partial class QueueSessionViewModel : ObservableObject
         SetHeader("Tokens");
         SetStatusFilter("All Tokens");
         SetUpcomingFilter("All");
+        SetTokenListPriorityFilter("All");
         _store.Reset();
     }
 
@@ -704,6 +735,7 @@ public partial class QueueSessionViewModel : ObservableObject
     private void RefreshVisibleTokens()
     {
         var statusFilter = StatusFilter;
+        var priorityFilter = TokenListPriorityFilter;
         var filteredStatus = statusFilter switch
         {
             "Waiting" => TokenStatus.Waiting,
@@ -726,10 +758,11 @@ public partial class QueueSessionViewModel : ObservableObject
             }
 
             var statusMatches = showAllStatuses || token.Status == filteredStatus;
+            var priorityMatches = priorityFilter == "All" || token.Priority.ToString() == priorityFilter;
             var searchMatches = searchText is null
                 || $"{token.Id} {token.Service} {token.CounterName}"
                     .Contains(searchText, StringComparison.OrdinalIgnoreCase);
-            if (!statusMatches || !searchMatches)
+            if (!statusMatches || !priorityMatches || !searchMatches)
             {
                 continue;
             }
@@ -835,4 +868,6 @@ public partial class QueueSessionViewModel : ObservableObject
     partial void OnSearchTextChanged(string value) => RefreshVisibleTokens();
 
     partial void OnStatusFilterChanged(string value) => RefreshVisibleTokens();
+
+    partial void OnTokenListPriorityFilterChanged(string value) => RefreshVisibleTokens();
 }

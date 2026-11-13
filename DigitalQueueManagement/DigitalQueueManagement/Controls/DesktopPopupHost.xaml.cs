@@ -1,6 +1,6 @@
 using Microsoft.Maui.Controls.Shapes;
 
-namespace DigitalQueueManagement.Views.Dialogs;
+namespace DigitalQueueManagement.Controls;
 
 public partial class DesktopPopupHost : ContentView
 {

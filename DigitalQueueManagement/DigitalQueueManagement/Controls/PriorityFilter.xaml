@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             x:Class="DigitalQueueManagement.Controls.PriorityFilter"
+             x:Name="Root">
+    <Border Padding="3"
+            BackgroundColor="#F8FAFC"
+            Stroke="#E2E8F0"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 8"
+            VerticalOptions="Center">
+        <buttons:SfSegmentedControl x:Name="FilterControl"
+                                   Padding="0"
+                                   SegmentWidth="52"
+                                   SegmentHeight="30"
+                                   CornerRadius="7"
+                                   SegmentCornerRadius="7"
+                                   ShowSeparator="False"
+                                   StrokeThickness="0"
+                                   SegmentBackground="#EEF4FF"
+                                   Background="#EEF4FF"
+                                   HorizontalOptions="Start"
+                                   VerticalOptions="Center">
+            <buttons:SfSegmentedControl.TextStyle>
+                <buttons:SegmentTextStyle FontSize="11" TextColor="#183E91" />
+            </buttons:SfSegmentedControl.TextStyle>
+            <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
+                                                    Background="#183E91"
+                                                    Stroke="#FFDBE5F2"
+                                                    StrokeThickness="1"
+                                                    TextColor="White" />
+            </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+        </buttons:SfSegmentedControl>
+    </Border>
+</ContentView>
