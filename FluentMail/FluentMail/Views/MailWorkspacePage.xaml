@@ -559,16 +559,16 @@
 
             <Grid Grid.Row="1" IsVisible="{Binding IsMobileInbox, Converter={StaticResource BooleanNegationConverter}}">
                 <listview:SfListView ItemsSource="{Binding FolderMessagesMobile}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
-                                             StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
-                                             AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
-                                <listview:SfListView.DataSource>
-                                    <data:DataSource>
-                                        <data:DataSource.GroupDescriptors>
-                                            <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
-                                        </data:DataSource.GroupDescriptors>
-                                    </data:DataSource>
-                                </listview:SfListView.DataSource>
-                            </listview:SfListView>
+                                    StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
+                                    AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
+                    <listview:SfListView.DataSource>
+                        <data:DataSource>
+                            <data:DataSource.GroupDescriptors>
+                                <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
+                            </data:DataSource.GroupDescriptors>
+                        </data:DataSource>
+                    </listview:SfListView.DataSource>
+                </listview:SfListView>
             </Grid>
 
             <Border Grid.Row="1" WidthRequest="64" HeightRequest="64" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,24">

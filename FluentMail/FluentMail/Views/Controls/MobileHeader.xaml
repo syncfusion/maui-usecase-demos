@@ -15,7 +15,7 @@
         <Border Grid.Column="2" WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse">
             <Image Source="profile.png" Aspect="AspectFill" />
         </Border>
-        <popup:SfPopup x:Name="FilterPopup" ShowHeader="False" ShowFooter="False" ShowCloseButton="False" WidthRequest="210" HeightRequest="240">
+        <popup:SfPopup x:Name="FilterPopup" ShowHeader="False" ShowFooter="False" ShowCloseButton="False" WidthRequest="210" HeightRequest="200">
             <popup:SfPopup.PopupStyle>
                 <popup:PopupStyle CornerRadius="12" PopupBackground="White" OverlayColor="Transparent" />
             </popup:SfPopup.PopupStyle>
