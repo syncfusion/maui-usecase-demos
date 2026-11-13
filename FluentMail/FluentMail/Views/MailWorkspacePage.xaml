@@ -97,10 +97,10 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="MobileArchiveSwipeTemplate" x:DataType="models:MailMessage">
-            <Grid BackgroundColor="#2E7D32">
+            <Grid BackgroundColor="#2E9D32">
                 <VerticalStackLayout HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,28,0" Spacing="4">
                     <Image Source="archieve.png" WidthRequest="26" HeightRequest="26" />
-                    <Label Text="Archive" TextColor="White" FontSize="13" HorizontalOptions="Center" />
+                    <Label Text="Archive" TextColor="Black" FontSize="13" HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </Grid>
         </DataTemplate>
