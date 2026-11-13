@@ -9,30 +9,30 @@
              x:DataType="vm:EditNoteViewModel"
              Shell.NavBarIsVisible="False"
              Shell.PresentationMode="ModalNotAnimated"
-             BackgroundColor="#80000000">
+             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default=#80000000}">
 
     <Grid Padding="{OnIdiom Phone=0, Default=24}"
           VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
           HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}">
         <Border
-                WidthRequest="{OnIdiom Phone=320, Default=330}"
-                HeightRequest="{OnIdiom Desktop=560, Default=-1}"
-                MaximumHeightRequest="{OnIdiom Phone=600, Default=560}"
+                WidthRequest="{OnIdiom Phone=-1, Default=330}"
+                HeightRequest="{OnIdiom Phone=-1, Default=-1}"
+                MaximumHeightRequest="{OnIdiom Phone=-1, Default=560}"
                 Margin="{OnIdiom Phone=0, Default=0}"
                 HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
-                VerticalOptions="Center"
+                VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
-                StrokeThickness="{OnIdiom Phone=1, Default=0}"
-                StrokeShape="RoundRectangle 27"
-                Padding="{OnIdiom Phone='14,12,14,0', Default='18,16,18,0'}">
+                StrokeThickness="{OnIdiom Phone=0, Default=0}"
+                StrokeShape="{OnIdiom Phone=Rectangle, Default=RoundRectangle 27}"
+                Padding="{OnIdiom Phone=0, Default='18,16,18,0'}">
             <Border.Shadow>
                 <Shadow Brush="#4D000000" Radius="6" Offset="0,2" Opacity="1" />
             </Border.Shadow>
 
             <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
                 <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                    <Label Text="{Binding DialogTitle}"
+                    <Label x:Name="PageTitleLabel" Text="{Binding DialogTitle}"
                            FontFamily="{StaticResource FontFamilySemibold}"
                            FontSize="18"
                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
@@ -47,7 +47,7 @@
                             <PointerGestureRecognizer PointerEntered="OnPointerEntered"
                                                       PointerExited="OnPointerExited" />
                         </Border.GestureRecognizers>
-                        <buttons:SfButton Text="&#xe5cd;"
+                        <buttons:SfButton x:Name="CloseButton" Text="&#xe5cd;"
                                           FontFamily="MaterialIconRegular"
                                           WidthRequest="40"
                                           HeightRequest="40"

@@ -27,6 +27,13 @@ public partial class EditNotePage : ContentPage
         }
 
         BindingContext = viewModel;
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
+        {
+            PageTitleLabel.Text = _viewModel.Target?.Title ?? _viewModel.DialogTitle;
+            CloseButton.Text = "\ue5c4";
+            CloseButton.SemanticProperties.Description = "Back";
+        }
+
         if (_usesSchedulingPopups)
         {
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
