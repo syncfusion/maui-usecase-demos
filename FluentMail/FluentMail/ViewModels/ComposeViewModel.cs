@@ -20,10 +20,15 @@ public partial class ComposeViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<object> ccContacts = [];
     [ObservableProperty] private bool showMessage;
 
-    public ObservableCollection<MailContact> Contacts => mailbox.Contacts;
+    static bool IsPhone => DeviceInfo.Idiom == DeviceIdiom.Phone;
+
+    public ObservableCollection<MailContact> DesktopContacts { get; }
+    public ObservableCollection<MailContact> PhoneContacts { get; }
 
     public ComposeViewModel()
     {
+        DesktopContacts = IsPhone ? [] : mailbox.Contacts;
+        PhoneContacts = IsPhone ? mailbox.Contacts : [];
         ToContacts.CollectionChanged += OnToContactsCollectionChanged;
     }
 

@@ -11,7 +11,7 @@
              BackgroundColor="#FCF7F5">
     <Grid>
         <Grid RowDefinitions="Auto,*,Auto">
-            <controls:MobileHeader Title="Calendar" Initials="KB" />
+            <controls:MobileHeader Title="Calendar" />
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout Padding="16,4,16,100" Spacing="10">
                     <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">

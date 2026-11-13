@@ -9,7 +9,7 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#FCF7F5">
     <Grid RowDefinitions="Auto,*,Auto">
-        <controls:MobileHeader Title="Search" Initials="KB" />
+        <controls:MobileHeader Title="Search" />
 
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="16,4,16,100" Spacing="16">

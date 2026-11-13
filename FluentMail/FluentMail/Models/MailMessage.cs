@@ -33,4 +33,5 @@ public partial class MailMessage : ObservableObject
     private bool isHovered;
 
     public DateTime ReceivedOn { get; set; }
+    public DateTime ReceivedDate => ReceivedOn.Date;
 }

@@ -11,6 +11,9 @@
              xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              xmlns:models="clr-namespace:FluentMail.Models"
+             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:dsext="clr-namespace:Syncfusion.Maui.DataSource.Extensions;assembly=Syncfusion.Maui.DataSource"
              xmlns:data="clr-namespace:Syncfusion.Maui.DataSource;assembly=Syncfusion.Maui.DataSource"
              x:Class="FluentMail.Views.MailWorkspacePage"
              x:Name="MailWorkspaceRoot"
@@ -34,6 +37,88 @@
                                 </VerticalStackLayout>
                             </Grid>
                         </DataTemplate>
+        <DataTemplate x:Key="MobileMailItemTemplate" x:DataType="models:MailMessage">
+            <Grid BackgroundColor="#FCF7F5" Padding="16,0">
+                <VerticalStackLayout>
+                    <Grid ColumnDefinitions="14,52,*" ColumnSpacing="10" Padding="0,14,0,12">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.OpenMessageCommand}" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#0F5DB5" VerticalOptions="Start" Margin="0,22,0,0" IsVisible="{Binding IsUnread}" />
+                        <Border Grid.Column="1" WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#D7E8FB" VerticalOptions="Start">
+                            <Label Text="{Binding Sender, Converter={StaticResource InitialsConverter}}" FontSize="17" FontAttributes="Bold" TextColor="#1B1B1B" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="2" Spacing="3">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Sender}" FontSize="19" TextColor="#1B1B1B" LineBreakMode="TailTruncation" />
+                                <Label Grid.Column="1" Text="{Binding TimeText}" FontSize="14" TextColor="#3C3C3C" VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsUnread}" Value="True">
+                                            <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Subject}" FontSize="16" TextColor="#2B2B2B" LineBreakMode="TailTruncation" VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsUnread}" Value="True">
+                                            <Setter Property="FontAttributes" Value="Bold" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <ImageButton Grid.Column="1" Source="flag.png" WidthRequest="30" HeightRequest="30" Padding="5" BackgroundColor="Transparent" BorderWidth="0" Aspect="AspectFit"
+                                             Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ToggleFlagCommand}" CommandParameter="{Binding .}"
+                                             SemanticProperties.Description="Flag or unflag mail">
+                                    <ImageButton.Triggers>
+                                        <DataTrigger TargetType="ImageButton" Binding="{Binding IsFlagged}" Value="True">
+                                            <Setter Property="Source" Value="flag_filled.png" />
+                                        </DataTrigger>
+                                    </ImageButton.Triggers>
+                                </ImageButton>
+                            </Grid>
+                            <Label Text="{Binding Preview}" FontSize="15" TextColor="#5A5A5A" LineBreakMode="TailTruncation" />
+                            <HorizontalStackLayout Spacing="8" Margin="0,4,0,0">
+                                <Border IsVisible="{Binding HasAttachmentName}" StrokeThickness="0" BackgroundColor="#EEE9E7" StrokeShape="RoundRectangle 8" Padding="8,4">
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Image Source="ic_clip.svg" WidthRequest="16" HeightRequest="16" />
+                                        <Label Text="{Binding AttachmentName}" FontSize="13" TextColor="#3C3C3C" />
+                                    </HorizontalStackLayout>
+                                </Border>
+                                <Border IsVisible="{Binding HasTag}" StrokeThickness="0" BackgroundColor="#D7E8FB" StrokeShape="RoundRectangle 8" Padding="8,4">
+                                    <Label Text="{Binding Tag}" FontSize="13" TextColor="#0F5DB5" />
+                                </Border>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <BoxView HeightRequest="1" Color="#E3DEDC" Margin="62,0,0,0" />
+                </VerticalStackLayout>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="MobileGroupHeaderTemplate" x:DataType="dsext:GroupResult">
+            <Grid Padding="16,0" BackgroundColor="#FCF7F5">
+                <Label Text="{Binding Key, Converter={StaticResource DateGroupTitleConverter}}" FontSize="15" TextColor="#3C3C3C" CharacterSpacing="1" VerticalOptions="End" Margin="0,0,0,6" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="MobileArchiveSwipeTemplate" x:DataType="models:MailMessage">
+            <Grid BackgroundColor="#2E7D32">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}" />
+                </Grid.GestureRecognizers>
+                <VerticalStackLayout HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,28,0" Spacing="4">
+                    <Image Source="archieve.png" WidthRequest="26" HeightRequest="26" />
+                    <Label Text="Archive" TextColor="White" FontSize="13" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="MobileDeleteSwipeTemplate" x:DataType="models:MailMessage">
+            <Grid BackgroundColor="#D13438">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
+                </Grid.GestureRecognizers>
+                <Label Text="Delete" TextColor="White" FontSize="15" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center" Margin="28,0,0,0" />
+            </Grid>
+        </DataTemplate>
     </ContentPage.Resources>
     <ContentPage.BindingContext>
         <vm:MailWorkspaceViewModel />
@@ -305,9 +390,9 @@
                        <Label Text="To" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
                     </Border>
                     <editors:SfAutocomplete Grid.Row="0" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start" SelectedDropDownItemBackground="#D7E8FB"
-                                            ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                            ItemsSource="{Binding Composer.DesktopContacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
                                             SelectedItems="{Binding Composer.ToContacts, Mode=TwoWay}" Text="{Binding Composer.ToText, Mode=TwoWay}"
-                                            DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                            DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True"
                                             TextSearchMode="Contains" DropdownWidth="420" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
                         <editors:SfAutocomplete.DropdownHeaderView>
                             <Label Text="Suggested contacts" FontAttributes="Bold" FontSize="14" Padding="16,10" VerticalOptions="Center" />
@@ -323,9 +408,9 @@
                         <Label Text="Cc" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
                     </Border>
                     <editors:SfAutocomplete Grid.Row="2" Grid.Column="1" MinimumHeightRequest="40" VerticalOptions="Start" SelectedDropDownItemBackground="#D7E8FB"
-                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                        ItemsSource="{Binding Composer.DesktopContacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
                                         SelectedItems="{Binding Composer.CcContacts, Mode=TwoWay}" Text="{Binding Composer.CcText, Mode=TwoWay}"
-                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="False" ShowSuggestionsOnFocus="True"
                                         TextSearchMode="Contains" DropdownWidth="420" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
                     <editors:SfAutocomplete.DropdownHeaderView>
                         <Label Text="Suggested contacts" FontAttributes="Bold" FontSize="14" Padding="16,10" VerticalOptions="Center" />
@@ -423,129 +508,70 @@
     </Grid>
 
     <Grid IsVisible="{OnIdiom Default=False, Phone=True}" RowDefinitions="Auto,*,Auto" BackgroundColor="#FCF7F5">
-        <controls:MobileHeader Title="Mail Inbox" Initials="KB" />
+        <controls:MobileHeader Title="{Binding MobileTitle}" FilterCommand="{Binding SelectMobileFolderCommand}" />
 
-        <Grid Grid.Row="1">
-            <ScrollView>
-                <VerticalStackLayout Padding="16,4,16,100" Spacing="8">
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                        <Border StrokeThickness="0" BackgroundColor="#F1EDEB" Padding="6" StrokeShape="RoundRectangle 28">
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
-                                <Border StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsFocusedTab}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowFocusedCommand}" /></Border.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                                        <Label Text="Focused" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsFocusedTab}" Value="True">
-                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                        <Border StrokeThickness="0" BackgroundColor="#0F5DB5" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
-                                            <Label Text="{Binding FocusedUnread}" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-                                        </Border>
-                                    </HorizontalStackLayout>
-                                </Border>
-                                <Border Grid.Column="1" StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
-                                    <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsOtherTab}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                        </DataTrigger>
-                                    </Border.Triggers>
-                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowOtherCommand}" /></Border.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                                        <Label Text="Other" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsOtherTab}" Value="True">
-                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                        <Border StrokeThickness="0" BackgroundColor="#E4E0DE" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
-                                            <Label Text="{Binding OtherUnread}" TextColor="#4A4A4A" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
-                                        </Border>
-                                    </HorizontalStackLayout>
-                                </Border>
-                            </Grid>
-                        </Border>
-                        <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0" VerticalOptions="Center">
-                            <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" IsClearButtonVisible="False" TextColor="#3C3C3C" />
-                        </Border>
-                    </Grid>
+        <Grid Grid.Row="1" RowDefinitions="Auto,*">
+            <Border HorizontalOptions="End" Margin="0,0,16,4" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0">
+                <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" IsClearButtonVisible="False" TextColor="#3C3C3C" />
+            </Border>
 
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding MobileGroups}" Spacing="4">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:MailGroup">
-                                <VerticalStackLayout Spacing="0">
-                                    <Grid ColumnDefinitions="*,Auto" Padding="0,18,0,8">
-                                        <Label Text="{Binding Title}" FontSize="15" TextColor="#3C3C3C" CharacterSpacing="1" />
-                                        <Label Grid.Column="1" Text="{Binding CountText}" FontSize="14" TextColor="#3C3C3C" />
-                                    </Grid>
-                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
-                                        <BindableLayout.ItemTemplate>
-                                            <DataTemplate x:DataType="models:MailMessage">
-                                                <VerticalStackLayout>
-                                                    <Grid ColumnDefinitions="14,52,*" ColumnSpacing="10" Padding="0,14,0,12">
-                                                        <Grid.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.OpenMessageCommand}" CommandParameter="{Binding .}" />
-                                                        </Grid.GestureRecognizers>
-                                                        <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#0F5DB5" VerticalOptions="Start" Margin="0,22,0,0" IsVisible="{Binding IsUnread}" />
-                                                        <Border Grid.Column="1" WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#D7E8FB" VerticalOptions="Start">
-                                                            <Label Text="{Binding Sender, Converter={StaticResource InitialsConverter}}" FontSize="17" FontAttributes="Bold" TextColor="#1B1B1B" HorizontalOptions="Center" VerticalOptions="Center" />
-                                                        </Border>
-                                                        <VerticalStackLayout Grid.Column="2" Spacing="3">
-                                                            <Grid ColumnDefinitions="*,Auto">
-                                                                <Label Text="{Binding Sender}" FontSize="19" TextColor="#1B1B1B" LineBreakMode="TailTruncation" />
-                                                                <Label Grid.Column="1" Text="{Binding TimeText}" FontSize="14" TextColor="#3C3C3C" VerticalOptions="Center">
-                                                                    <Label.Triggers>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding IsUnread}" Value="True">
-                                                                            <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
-                                                                        </DataTrigger>
-                                                                    </Label.Triggers>
-                                                                </Label>
-                                                            </Grid>
-                                                            <Grid ColumnDefinitions="*,Auto">
-                                                                <Label Text="{Binding Subject}" FontSize="16" TextColor="#2B2B2B" LineBreakMode="TailTruncation">
-                                                                    <Label.Triggers>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding IsUnread}" Value="True">
-                                                                            <Setter Property="FontAttributes" Value="Bold" />
-                                                                        </DataTrigger>
-                                                                    </Label.Triggers>
-                                                                </Label>
-                                                                <Image Grid.Column="1" Source="ic_flag_r.svg" WidthRequest="18" HeightRequest="18" IsVisible="{Binding IsFlagged}" Margin="6,0,0,0" />
-                                                            </Grid>
-                                                            <Label Text="{Binding Preview}" FontSize="15" TextColor="#5A5A5A" LineBreakMode="TailTruncation" />
-                                                            <HorizontalStackLayout Spacing="8" Margin="0,4,0,0">
-                                                                <Border IsVisible="{Binding HasAttachmentName}" StrokeThickness="0" BackgroundColor="#EEE9E7" StrokeShape="RoundRectangle 8" Padding="8,4">
-                                                                    <HorizontalStackLayout Spacing="6">
-                                                                        <Image Source="ic_clip.svg" WidthRequest="16" HeightRequest="16" />
-                                                                        <Label Text="{Binding AttachmentName}" FontSize="13" TextColor="#3C3C3C" />
-                                                                    </HorizontalStackLayout>
-                                                                </Border>
-                                                                <Border IsVisible="{Binding HasTag}" StrokeThickness="0" BackgroundColor="#D7E8FB" StrokeShape="RoundRectangle 8" Padding="8,4">
-                                                                    <Label Text="{Binding Tag}" FontSize="13" TextColor="#0F5DB5" />
-                                                                </Border>
-                                                            </HorizontalStackLayout>
-                                                        </VerticalStackLayout>
-                                                    </Grid>
-                                                    <BoxView HeightRequest="1" Color="#E3DEDC" Margin="62,0,0,0" />
-                                                </VerticalStackLayout>
-                                            </DataTemplate>
-                                        </BindableLayout.ItemTemplate>
-                                    </VerticalStackLayout>
-                                </VerticalStackLayout>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
-                </VerticalStackLayout>
-            </ScrollView>
+            <tabView:SfTabView Grid.Row="1" IsVisible="{Binding IsMobileInbox}" TabBarPlacement="Top" TabWidthMode="Default"
+                               TabBarBackground="#FCF7F5" IndicatorBackground="#0F5DB5" IndicatorPlacement="Bottom" EnableSwiping="False">
+                <tabView:SfTabView.Items>
+                    <tabView:SfTabItem Header="Focused" TextColor="#0F5DB5" BadgeText="{Binding FocusedUnread}">
+                        <tabView:SfTabItem.BadgeSettings>
+                            <core:BadgeSettings Type="Primary" />
+                        </tabView:SfTabItem.BadgeSettings>
+                        <tabView:SfTabItem.Content>
+                            <listview:SfListView ItemsSource="{Binding FocusedMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
+                                             StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
+                                             AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
+                                <listview:SfListView.DataSource>
+                                    <data:DataSource>
+                                        <data:DataSource.GroupDescriptors>
+                                            <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
+                                        </data:DataSource.GroupDescriptors>
+                                    </data:DataSource>
+                                </listview:SfListView.DataSource>
+                            </listview:SfListView>
+                        </tabView:SfTabItem.Content>
+                    </tabView:SfTabItem>
+                    <tabView:SfTabItem Header="Other" TextColor="#0F5DB5" BadgeText="{Binding OtherUnread}">
+                        <tabView:SfTabItem.BadgeSettings>
+                            <core:BadgeSettings Type="Secondary" />
+                        </tabView:SfTabItem.BadgeSettings>
+                        <tabView:SfTabItem.Content>
+                            <listview:SfListView ItemsSource="{Binding OtherMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
+                                             StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
+                                             AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
+                                <listview:SfListView.DataSource>
+                                    <data:DataSource>
+                                        <data:DataSource.GroupDescriptors>
+                                            <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
+                                        </data:DataSource.GroupDescriptors>
+                                    </data:DataSource>
+                                </listview:SfListView.DataSource>
+                            </listview:SfListView>
+                        </tabView:SfTabItem.Content>
+                    </tabView:SfTabItem>
+                </tabView:SfTabView.Items>
+            </tabView:SfTabView>
 
-            <Border WidthRequest="64" HeightRequest="64" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,24">
+            <Grid Grid.Row="1" IsVisible="{Binding IsMobileInbox, Converter={StaticResource BooleanNegationConverter}}">
+                <listview:SfListView ItemsSource="{Binding FolderMessagesMobile}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
+                                             StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
+                                             AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
+                                <listview:SfListView.DataSource>
+                                    <data:DataSource>
+                                        <data:DataSource.GroupDescriptors>
+                                            <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
+                                        </data:DataSource.GroupDescriptors>
+                                    </data:DataSource>
+                                </listview:SfListView.DataSource>
+                            </listview:SfListView>
+            </Grid>
+
+            <Border Grid.Row="1" WidthRequest="64" HeightRequest="64" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,24">
                 <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding NewMailCommand}" /></Border.GestureRecognizers>
                 <Image Source="ic_edit_w.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center" VerticalOptions="Center" />
             </Border>
@@ -588,18 +614,18 @@
             </Grid>
             <VerticalStackLayout Grid.Row="1" Padding="20,8" Spacing="10">
                 <editors:SfAutocomplete Placeholder="To" MinimumHeightRequest="48"
-                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                        ItemsSource="{Binding Composer.PhoneContacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
                                         SelectedItems="{Binding Composer.ToContacts, Mode=TwoWay}" Text="{Binding Composer.ToText, Mode=TwoWay}"
-                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="True" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="True" ShowSuggestionsOnFocus="True"
                                         TextSearchMode="Contains" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
                     <editors:SfAutocomplete.ItemTemplate>
                         <StaticResource Key="ContactSuggestionTemplate" />
                     </editors:SfAutocomplete.ItemTemplate>
                 </editors:SfAutocomplete>
                 <editors:SfAutocomplete Placeholder="Cc" MinimumHeightRequest="48"
-                                        ItemsSource="{Binding Composer.Contacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
+                                        ItemsSource="{Binding Composer.PhoneContacts}" SelectionMode="Multiple" MultiSelectionDisplayMode="Token" TokensWrapMode="Wrap"
                                         SelectedItems="{Binding Composer.CcContacts, Mode=TwoWay}" Text="{Binding Composer.CcText, Mode=TwoWay}"
-                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="True" ShowSuggestionsOnFocus="True" MaximumSuggestion="5"
+                                        DisplayMemberPath="Name" TextMemberPath="Name" ShowBorder="True" ShowSuggestionsOnFocus="True"
                                         TextSearchMode="Contains" IsDropDownShadowVisible="True" DropDownItemHeight="64" DropDownBackground="White">
                     <editors:SfAutocomplete.ItemTemplate>
                         <StaticResource Key="ContactSuggestionTemplate" />

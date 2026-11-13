@@ -8,6 +8,8 @@
         <ResourceDictionary>
             <converters:InitialsConverter x:Key="InitialsConverter" />
             <converters:BooleanNegationConverter x:Key="BooleanNegationConverter" />
+            <converters:DateGroupTitleConverter x:Key="DateGroupTitleConverter" />
+            <converters:NewestFirstGroupComparer x:Key="NewestFirstGroupComparer" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />

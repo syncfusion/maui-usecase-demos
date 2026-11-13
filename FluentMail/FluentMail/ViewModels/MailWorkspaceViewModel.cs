@@ -30,9 +30,6 @@ public partial class MailWorkspaceViewModel : ObservableObject
     private ObservableCollection<MailMessage> visibleMessages = [];
 
     [ObservableProperty]
-    private bool hasAttemptedSend;
-
-    [ObservableProperty]
     private MailMessage? selectedMessage;
 
     [ObservableProperty]
@@ -51,17 +48,28 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public IReadOnlyList<string> SortOptions { get; } = ["Unread first", "Newest first"];
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsOtherTab))]
-    private bool isFocusedTab = true;
+    public IReadOnlyList<string> MobileFolderOptions { get; } = ["Inbox", "Sent Items", "Archive", "Deleted Items"];
 
-    public bool IsOtherTab => !IsFocusedTab;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(MobileTitle))]
+    private string selectedMobileFolder = "Inbox";
+
+    public string MobileTitle => SelectedMobileFolder == "Inbox" ? "Mail Inbox" : SelectedMobileFolder;
+
+    [ObservableProperty]
+    private bool isMobileInbox = true;
 
     [ObservableProperty]
     private string selectedSort = "Unread first";
 
     [ObservableProperty]
-    private ObservableCollection<MailGroup> mobileGroups = [];
+    private ObservableCollection<MailMessage> focusedMessages = [];
+
+    [ObservableProperty]
+    private ObservableCollection<MailMessage> otherMessages = [];
+
+    [ObservableProperty]
+    private ObservableCollection<MailMessage> folderMessagesMobile = [];
 
     [ObservableProperty]
     private int focusedUnread;
@@ -78,14 +86,14 @@ public partial class MailWorkspaceViewModel : ObservableObject
     [ObservableProperty]
     private bool isMessageOpen;
 
-    partial void OnIsFocusedTabChanged(bool value) => RefreshMobile();
     partial void OnSelectedSortChanged(string value) => RefreshMobile();
+    partial void OnSelectedMobileFolderChanged(string value) => RefreshMobile();
 
     [RelayCommand]
-    void ShowFocused() => IsFocusedTab = true;
-
-    [RelayCommand]
-    void ShowOther() => IsFocusedTab = false;
+    void SelectMobileFolder(string? folder)
+    {
+        if (!string.IsNullOrEmpty(folder)) SelectedMobileFolder = folder;
+    }
 
     [RelayCommand]
     void OpenMessage(MailMessage? message)
@@ -108,21 +116,21 @@ public partial class MailWorkspaceViewModel : ObservableObject
         OtherUnread = other.Count(x => !x.IsRead);
         TotalUnread = FocusedUnread + OtherUnread;
 
-        var source = IsFocusedTab ? focused : other;
-        var ordered = SelectedSort == "Unread first"
-            ? source.OrderBy(x => x.IsRead).ThenByDescending(x => x.ReceivedOn)
-            : source.OrderByDescending(x => x.ReceivedOn);
-
-        MobileGroups = new ObservableCollection<MailGroup>(ordered
-            .GroupBy(x => x.ReceivedOn.Date)
-            .OrderByDescending(g => g.Key)
-            .Select(g => new MailGroup
-            {
-                Title = g.Key == DateTime.Today ? "TODAY" : g.Key == DateTime.Today.AddDays(-1) ? "YESTERDAY" : g.Key.ToString("MMM d").ToUpperInvariant(),
-                CountText = g.Count(x => !x.IsRead) is var n && n > 0 ? $"{n} updates" : string.Empty,
-                Items = g.ToList()
-            }));
+        IsMobileInbox = SelectedMobileFolder == "Inbox";
+        if (IsMobileInbox)
+        {
+            FocusedMessages = Order(focused);
+            OtherMessages = Order(other);
+        }
+        else
+        {
+            FolderMessagesMobile = Order(mailbox.GetMessages(SelectedMobileFolder));
+        }
     }
+
+    ObservableCollection<MailMessage> Order(IEnumerable<MailMessage> source) => new(SelectedSort == "Unread first"
+        ? source.OrderByDescending(x => x.ReceivedOn.Date).ThenBy(x => x.IsRead).ThenByDescending(x => x.ReceivedOn)
+        : source.OrderByDescending(x => x.ReceivedOn));
 
     private void Composer_PropertyChanged(object? sender,
      PropertyChangedEventArgs e)
@@ -210,7 +218,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
         foreach (var source in new[] { mailbox.Inbox, mailbox.SentItems, mailbox.Drafts, mailbox.Archive })
             source.Remove(message);
         message.IsHovered = false;
-        mailbox.Deleted.Insert(0, message);
+        if (!mailbox.Deleted.Contains(message)) mailbox.Deleted.Insert(0, message);
         LoadFolder(SelectedFolder ?? mailbox.Folders[^1].Children[0]);
     }
 
@@ -218,7 +226,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
     void ArchiveMessage(MailMessage? message)
     {
         if (message is null) return;
-        foreach (var source in new[] { mailbox.Inbox, mailbox.SentItems, mailbox.Drafts })
+        foreach (var source in new[] { mailbox.Inbox, mailbox.SentItems, mailbox.Drafts, mailbox.Deleted })
             source.Remove(message);
         message.IsHovered = false;
         if (!mailbox.Archive.Contains(message)) mailbox.Archive.Insert(0, message);
