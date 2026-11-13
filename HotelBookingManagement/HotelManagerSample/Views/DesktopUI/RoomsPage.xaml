@@ -439,7 +439,7 @@
                                     <Grid>
                                         <Border Style="{StaticResource RoomHeroBg}"
                                                 BackgroundColor="{Binding Status, Converter={StaticResource StatusBg}}">
-                                            <Image Source="{Binding PhotoSource}"
+                                            <Image Source="hotel.png"
                                                    Aspect="AspectFill"
                                                    HeightRequest="100"
                                                    VerticalOptions="Fill"
@@ -607,7 +607,7 @@
 
                 <!-- ============== TABLE VIEW (DataGrid) ============== -->
                 <Border IsVisible="{Binding IsTableView}"
-                        BackgroundColor="White"
+                        BackgroundColor="Transparent"
                         Stroke="#EEF2F7"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 10"
@@ -651,7 +651,7 @@
                                             <Grid ColumnDefinitions="44,*" ColumnSpacing="10" Padding="4,0" Margin="20,0,0,0" VerticalOptions="Center" HorizontalOptions="Start">
                                                 <Border Grid.Column="0" WidthRequest="44" HeightRequest="44"
                                                         StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                                                    <Image Source="{Binding PhotoSource}"
+                                                    <Image Source="hotel.png"
                                                            Aspect="AspectFill"
                                                            VerticalOptions="Fill" HorizontalOptions="Fill"/>
                                                 </Border>
