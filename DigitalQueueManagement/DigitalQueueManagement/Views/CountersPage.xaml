@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:DigitalQueueManagement.Model"
+             xmlns:vm="clr-namespace:DigitalQueueManagement.ViewModel"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             x:Class="DigitalQueueManagement.Views.CountersPage"
+             x:DataType="vm:CounterOperationsViewModel">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <x:Double x:Key="CounterDetailFontSize">12</x:Double>
+            <x:Double x:Key="CounterEmphasisFontSize">13</x:Double>
+            <x:Double x:Key="CounterSectionFontSize">14</x:Double>
+            <Style x:Key="CounterCardHover" TargetType="cards:SfCardView">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="BorderColor" Value="#BFDBFE" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            <Style x:Key="CounterActionButton" TargetType="Button">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="1" />
+                                    <Setter Property="Opacity" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="0.96" />
+                                    <Setter Property="Opacity" Value="0.78" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="Opacity" Value="0.55" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            <Style x:Key="CounterCompleteActionButton" TargetType="Button" BasedOn="{StaticResource CounterActionButton}">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="1" />
+                                    <Setter Property="Opacity" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale" Value="0.96" />
+                                    <Setter Property="Opacity" Value="0.78" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="Opacity" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            <DataTemplate x:Key="StatusTokenTemplate" x:DataType="models:QueueTokenListItem">
+                <cards:SfCardView Style="{StaticResource CounterCardHover}" Margin="0,3" Padding="9,7" BackgroundColor="#F8FAFF" BorderColor="#EEF2F7" BorderWidth="1" CornerRadius="8">
+                    <VerticalStackLayout Spacing="4">
+                        <HorizontalStackLayout Spacing="4">
+                            <Label Text="{Binding Id}" FontSize="{StaticResource CounterDetailFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Text="·" FontSize="{StaticResource CounterDetailFontSize}" TextColor="#64748B" />
+                            <Label Text="{Binding Service}" FontSize="{StaticResource CounterDetailFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                        </HorizontalStackLayout>
+                        <Label Text="{Binding Priority, StringFormat='{0} priority'}" FontSize="{StaticResource CounterDetailFontSize}" TextColor="#64748B" />
+                    </VerticalStackLayout>
+                </cards:SfCardView>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <VerticalStackLayout x:Name="PageContentLayout"
+                             BindingContext="{Binding QueueSession}"
+                             x:DataType="vm:QueueSessionViewModel"
+                             Padding="28,22,28,36"
+                             Spacing="18">
+            <Grid x:Name="MetricGrid"
+                  ColumnDefinitions="*,*,*,*"
+                  RowDefinitions="Auto"
+                  ColumnSpacing="12"
+                  RowSpacing="12">
+                <cards:SfCardView Grid.Column="0" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Active counter" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#64748B" />
+                            <Label Grid.Column="1" Text="desktop_windows" FontFamily="MaterialIcons" FontSize="17" TextColor="#159B85" />
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding SelectedCounterDisplayName}" FontSize="24" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="{Binding SelectedCounterAvailabilityText}" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="{Binding SelectedCounterDisplayService, StringFormat='●  {0} terminal'}" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#159B85" />
+                    </Grid>
+                </cards:SfCardView>
+                <cards:SfCardView Grid.Column="1" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Waiting" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#64748B" />
+                            <Label Grid.Column="1" Text="schedule" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" />
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding SelectedCounterWaitingCount}" FontSize="30" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Tokens" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="●  Selected counter" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#183E91" />
+                    </Grid>
+                </cards:SfCardView>
+                <cards:SfCardView Grid.Column="2" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Completed" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#64748B" />
+                            <Label Grid.Column="1" Text="verified_user" FontFamily="MaterialIcons" FontSize="17" TextColor="#159B85" />
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding SelectedCounterCompletedTokenCount}" FontSize="30" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Tokens" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="●  Selected counter" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#159B85" />
+                    </Grid>
+                </cards:SfCardView>
+                <cards:SfCardView Grid.Column="3" Padding="16" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Skipped" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#64748B" />
+                            <Label Grid.Column="1" Text="monitor_heart" FontFamily="MaterialIcons" FontSize="17" TextColor="#DC6670" />
+                        </Grid>
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding SelectedCounterSkippedTokenCount}" FontSize="30" FontFamily="OpenSansSemibold" FontAttributes="Bold" TextColor="#0F172A" />
+                            <Label Grid.Column="1" Text="Tokens" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#64748B" VerticalOptions="End" />
+                        </Grid>
+                        <Label Grid.Row="2" Text="●  Selected counter" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#DC6670" />
+                    </Grid>
+                </cards:SfCardView>
+            </Grid>
+
+            <Grid x:Name="WorkspaceGrid"
+                  ColumnDefinitions="320,*"
+                  RowDefinitions="Auto,Auto"
+                  ColumnSpacing="16"
+                  RowSpacing="16">
+                <Border x:Name="MobileCounterSelectorPanel"
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        IsVisible="False"
+                        Padding="16"
+                        BackgroundColor="White"
+                        Stroke="#DCE7F5"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 18">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="ACTIVE COUNTER" FontSize="11" FontAttributes="Bold" TextColor="#444653" VerticalOptions="Center" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                                <Border Padding="10,5" BackgroundColor="{Binding SelectedCounterAvailabilityBackgroundColor}" StrokeThickness="0" StrokeShape="RoundRectangle 18">
+                                    <HorizontalStackLayout Spacing="6">
+                                        <BoxView WidthRequest="8" HeightRequest="8" Color="{Binding SelectedCounterAvailabilityColor}" CornerRadius="4" VerticalOptions="Center" />
+                                        <Label Text="{Binding SelectedCounterAvailabilityText}" FontSize="12" TextColor="{Binding SelectedCounterAvailabilityColor}" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Border>
+                                <Button Text="Manage"
+                                        FontSize="14"
+                                        Padding="8,4"
+                                        TextColor="#183E91"
+                                        BackgroundColor="#EEF4FF"
+                                        CornerRadius="8"
+                                        Clicked="OnManageCountersClicked" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                        <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                            <HorizontalStackLayout x:Name="MobileCounterChoices"
+                                                   BindableLayout.ItemsSource="{Binding CounterSummaries}"
+                                                   Spacing="8">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:QueueCounterSummary">
+                                        <cards:SfCardView Style="{StaticResource CounterCardHover}"
+                                                          Padding="12,8"
+                                                          BackgroundColor="#F5F7FB"
+                                                          BorderColor="#E2E8F0"
+                                                          BorderWidth="1"
+                                                          CornerRadius="10">
+                                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+                                                <Label Text="desktop_windows"
+                                                       FontFamily="MaterialIcons"
+                                                       FontSize="16"
+                                                       TextColor="#64748B"
+                                                       VerticalOptions="Center" />
+                                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                    <Label Text="{Binding Name}"
+                                                           FontSize="{StaticResource CounterSectionFontSize}"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#334155" />
+                                                    <Label Text="{Binding AvailabilityText}"
+                                                           FontSize="{StaticResource CounterDetailFontSize}"
+                                                           TextColor="#64748B" />
+                                                </VerticalStackLayout>
+                                            </Grid>
+                                            <cards:SfCardView.Triggers>
+                                                <DataTrigger TargetType="cards:SfCardView" Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="BackgroundColor" Value="#EEF4FF" />
+                                                    <Setter Property="BorderColor" Value="#183E91" />
+                                                </DataTrigger>
+                                            </cards:SfCardView.Triggers>
+                                            <cards:SfCardView.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnCounterTapped" />
+                                            </cards:SfCardView.GestureRecognizers>
+                                        </cards:SfCardView>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </HorizontalStackLayout>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                </Border>
+                <Border x:Name="CounterListPanel"
+                        Grid.Column="0"
+                        Padding="16"
+                        BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <HorizontalStackLayout Spacing="7" VerticalOptions="Center">
+                                <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="18" TextColor="#183E91" />
+                                <Label Text="Terminals &amp; counters" FontSize="15" FontAttributes="Bold" TextColor="#0F172A" />
+                            </HorizontalStackLayout>
+                            <Label Grid.Column="1" Text="{Binding OnlineCounterCount, StringFormat='{0} Active'}" FontSize="{StaticResource CounterDetailFontSize}" TextColor="#64748B" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid HeightRequest="288">
+                            <listview:SfListView x:Name="CounterListView"
+                                                 ItemsSource="{Binding CounterSummaries}"
+                                                 ItemSize="96"
+                                                 HeightRequest="288"
+                                                 SelectionMode="None"
+                                                 IsVisible="{Binding HasCounters}">
+                                <listview:SfListView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:QueueCounterSummary">
+                                        <Grid BackgroundColor="White">
+                                            <cards:SfCardView Style="{StaticResource CounterCardHover}" Margin="0,4" Padding="12,8" BackgroundColor="White" BorderColor="#E9EEF5" BorderWidth="1.5" CornerRadius="9">
+                                                <Grid RowDefinitions="Auto,1,Auto" RowSpacing="6">
+                                                    <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="10">
+                                                        <Border WidthRequest="40" HeightRequest="40" BackgroundColor="#F1F5F9" StrokeThickness="0" StrokeShape="RoundRectangle 8" VerticalOptions="Center">
+                                                            <Label Text="desktop_windows" FontFamily="MaterialIcons" FontSize="18" TextColor="#64748B" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                                        </Border>
+                                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                                            <Label Text="{Binding Name}" FontSize="{StaticResource CounterSectionFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                                                            <Label Text="{Binding Service}" FontSize="{StaticResource CounterDetailFontSize}" TextColor="#64748B" />
+                                                        </VerticalStackLayout>
+                                                        <Border Grid.Column="2" Padding="8,3" BackgroundColor="{Binding AvailabilityBackgroundColor}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                                            <Label Text="{Binding AvailabilityText, StringFormat='• {0}'}" FontSize="{StaticResource CounterDetailFontSize}" FontAttributes="Bold" TextColor="{Binding AvailabilityColor}" />
+                                                        </Border>
+                                                    </Grid>
+                                                    <BoxView Grid.Row="1" HeightRequest="1" Color="#E2E8F0" />
+                                                    <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="6" VerticalOptions="End">
+                                                        <HorizontalStackLayout Spacing="6">
+                                                            <Label Text="{Binding TokenStatus}" FontSize="{StaticResource CounterDetailFontSize}" FontAttributes="Bold" TextColor="#64748B" />
+                                                            <Label Text="{Binding TokenId}" FontSize="{StaticResource CounterDetailFontSize}" FontAttributes="Bold" TextColor="#183E91" />
+                                                        </HorizontalStackLayout>
+                                                        <Label Grid.Column="1" Text="{Binding AvailabilityText}" FontSize="{StaticResource CounterDetailFontSize}" TextColor="#64748B" />
+                                                    </Grid>
+                                                </Grid>
+                                                <cards:SfCardView.Triggers>
+                                                    <DataTrigger TargetType="cards:SfCardView" Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="BorderColor" Value="#5277CC" />
+                                                        <Setter Property="BackgroundColor" Value="#F1F5FF" />
+                                                    </DataTrigger>
+                                                </cards:SfCardView.Triggers>
+                                                <cards:SfCardView.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OnCounterTapped" />
+                                                </cards:SfCardView.GestureRecognizers>
+                                            </cards:SfCardView>
+                                        </Grid>
+                                    </DataTemplate>
+                                </listview:SfListView.ItemTemplate>
+                            </listview:SfListView>
+                            <VerticalStackLayout IsVisible="{Binding HasNoCounters}"
+                                                 Spacing="5"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center">
+                                <Label Text="No counters available" FontSize="12" FontAttributes="Bold" TextColor="#334155" HorizontalTextAlignment="Center" />
+                                <Label Text="Add a counter to start serving." FontSize="{StaticResource CounterDetailFontSize}" TextColor="#64748B" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Button Text="···  Manage terminals"
+                                TextColor="#183E91"
+                                BackgroundColor="White"
+                                BorderColor="#D8E2F0"
+                                BorderWidth="1"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                Padding="12,10"
+                                MinimumHeightRequest="52"
+                                CornerRadius="8"
+                                Clicked="OnManageCountersClicked">
+                            <Button.VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="White" />
+                                                <Setter Property="BorderColor" Value="#BFDBFE" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </Button.VisualStateManager.VisualStateGroups>
+                        </Button>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border x:Name="OperationsPanel"
+                        Grid.Column="1"
+                        Padding="22"
+                        BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+                    <VerticalStackLayout Spacing="10">
+                        <Border x:Name="MobileCurrentTokenPanel"
+                                Padding="0"
+                                BackgroundColor="Transparent"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12">
+                            <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <HorizontalStackLayout Spacing="7" VerticalOptions="Center">
+                                <BoxView WidthRequest="10" HeightRequest="10" Color="#10B981" CornerRadius="5" VerticalOptions="Center" />
+                                <Border Padding="10,5" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label Text="{Binding SelectedCounterTokenStatus}" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#159B85" VerticalOptions="Center" />
+                                </Border>
+                                <Border Padding="10,5" BackgroundColor="#FFF6E8" StrokeThickness="0" StrokeShape="RoundRectangle 12">
+                                    <Label x:Name="PriorityLabel"
+                                           Text="{Binding SelectedCounterToken.Priority, StringFormat='{0} Priority'}"
+                                           FontSize="{StaticResource CounterEmphasisFontSize}"
+                                           FontAttributes="Bold"
+                                           TextColor="#B45309"
+                                           VerticalOptions="Center" />
+                                </Border>
+                            </HorizontalStackLayout>
+                            <Border Grid.Column="1" Padding="10,6" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 8" VerticalOptions="Center">
+                                <Label Text="{Binding SelectedCounterDisplayName}" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#183E91" VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="3" Padding="0,4" HorizontalOptions="Center">
+                            <Label x:Name="SelectedTokenIdLabel"
+                                   Text="{Binding SelectedCounterTokenId}"
+                                   FontSize="58"
+                                   FontAttributes="Bold"
+                                   TextColor="#0F172A"
+                                   HorizontalTextAlignment="Center"
+                                   HorizontalOptions="Center" />
+                            <Border Padding="12,6" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 14" HorizontalOptions="Center">
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="12" TextColor="#183E91" />
+                                    <Label Text="{Binding SelectedCounterTokenService}" FontSize="{StaticResource CounterDetailFontSize}" FontAttributes="Bold" TextColor="#183E91" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <cards:SfCardView Padding="16,10" BackgroundColor="#F4F7FD" BorderWidth="0" CornerRadius="8">
+                            <Grid ColumnDefinitions="*,1,*" ColumnSpacing="0">
+                                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                                    <Label Text="Serving duration" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#64748B" />
+                                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                        <Label x:Name="ServingDurationLabel"
+                                               Text="{Binding SelectedCounterServingDurationText}"
+                                               FontSize="20"
+                                               FontAttributes="Bold"
+                                               TextColor="#0F172A" />
+                                        <Border Padding="8,3" BackgroundColor="#D1FAE5" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Center">
+                                            <Label Text="{Binding SelectedCounterTokenStatus}" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#047857" VerticalOptions="Center" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                                <BoxView Grid.Column="1" WidthRequest="1" HeightRequest="44" Color="#E2E8F0" VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="2" Spacing="4" Padding="16,0,0,0" VerticalOptions="Center">
+                                    <Label Text="Initial wait" FontSize="{StaticResource CounterEmphasisFontSize}" TextColor="#64748B" />
+                                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                        <Label x:Name="InitialWaitLabel" Text="3m 12s" FontSize="20" FontAttributes="Bold" TextColor="#0F172A" />
+                                        <Label Text="Under avg." FontSize="{StaticResource CounterDetailFontSize}" TextColor="#64748B" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </cards:SfCardView>
+
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border x:Name="MobileCounterActionsPanel"
+                                Padding="0"
+                                BackgroundColor="Transparent"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12">
+                            <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <Button x:Name="CallNextButton"
+                                    Style="{StaticResource CounterActionButton}"
+                                    Text="Call next"
+                                    TextColor="White"
+                                    BackgroundColor="#153F9A"
+                                    FontSize="16"
+                                    FontFamily="OpenSansSemibold"
+                                    FontAttributes="Bold"
+                                    Padding="12,12"
+                                    ContentLayout="Left, 8"
+                                    CornerRadius="5"
+                                    IsEnabled="{Binding CanCallNext}"
+                                    Clicked="OnCallNextClicked" />
+                            <Button x:Name="CompleteButton"
+                                    Style="{StaticResource CounterCompleteActionButton}"
+                                    Grid.Column="1"
+                                    Text="Complete service"
+                                    TextColor="White"
+                                    BackgroundColor="#153F9A"
+                                    FontSize="16"
+                                    FontFamily="OpenSansSemibold"
+                                    FontAttributes="Bold"
+                                    Padding="12,12"
+                                    ContentLayout="Left, 8"
+                                    CornerRadius="5"
+                                    IsEnabled="{Binding CanCompleteCurrent}"
+                                    Clicked="OnCompleteClicked" />
+                        </Grid>
+                        <BoxView x:Name="CounterActionsDivider" HeightRequest="1" Color="#E2E8F0" />
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <Button x:Name="SkipButton"
+                                    Style="{StaticResource CounterActionButton}"
+                                    Text="Skip token"
+                                    TextColor="#475569"
+                                    BackgroundColor="#F8FAFC"
+                                    BorderColor="#E2E8F0"
+                                    BorderWidth="1"
+                                    FontSize="14"
+                                    FontFamily="OpenSansSemibold"
+                                    FontAttributes="Bold"
+                                    Padding="8,6"
+                                    CornerRadius="5"
+                                    IsEnabled="{Binding CanSkipCurrent}"
+                                    Clicked="OnSkipClicked" />
+                            <Button x:Name="RecallButton"
+                                    Style="{StaticResource CounterActionButton}"
+                                    Grid.Column="1"
+                                    Text="Recall token"
+                                    TextColor="#475569"
+                                    BackgroundColor="#F8FAFC"
+                                    BorderColor="#E2E8F0"
+                                    BorderWidth="1"
+                                    FontSize="14"
+                                    FontFamily="OpenSansSemibold"
+                                    FontAttributes="Bold"
+                                    Padding="8,6"
+                                    CornerRadius="5"
+                                    IsEnabled="{Binding CanRecallCurrent}"
+                                    Clicked="OnRecallClicked" />
+                            <Button x:Name="TransferButton"
+                                    Style="{StaticResource CounterActionButton}"
+                                    Grid.Column="2"
+                                    Text="Transfer token"
+                                    TextColor="#183E91"
+                                    BackgroundColor="#F8FAFC"
+                                    BorderColor="#E2E8F0"
+                                    BorderWidth="1"
+                                    FontSize="14"
+                                    FontFamily="OpenSansSemibold"
+                                    FontAttributes="Bold"
+                                    Padding="8,6"
+                                    CornerRadius="5"
+                                    IsEnabled="{Binding CanTransferCurrent}"
+                                    Clicked="OnTransferClicked" />
+                        </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border x:Name="MobileQueueSummaryPanel"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        IsVisible="False"
+                        Padding="14"
+                        BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="QUEUE SUMMARY" FontSize="11" FontAttributes="Bold" TextColor="#444653" />
+                            <Label Grid.Column="1"
+                                   Text="{Binding SelectedCounterDisplayName, StringFormat='{0} Today'}"
+                                   FontSize="11"
+                                   TextColor="#64748B" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <cards:SfCardView Padding="8" BackgroundColor="#EEF4FF" BorderColor="#DCE8FF" BorderWidth="1" CornerRadius="10">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Waiting" FontSize="11" TextColor="#334155" HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding SelectedCounterWaitingCount}" FontSize="20" FontAttributes="Bold" TextColor="#183E91" HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </cards:SfCardView>
+                            <cards:SfCardView Grid.Column="1" Padding="8" BackgroundColor="#E9FBF4" BorderColor="#D3F3E9" BorderWidth="1" CornerRadius="10">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Completed" FontSize="11" TextColor="#334155" HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding SelectedCounterCompletedTokenCount}" FontSize="20" FontAttributes="Bold" TextColor="#08796D" HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </cards:SfCardView>
+                            <cards:SfCardView Grid.Column="2" Padding="8" BackgroundColor="#F4F4F8" BorderColor="#E7E7ED" BorderWidth="1" CornerRadius="10">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Skipped" FontSize="11" TextColor="#334155" HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding SelectedCounterSkippedTokenCount}" FontSize="20" FontAttributes="Bold" TextColor="#7A7A87" HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </cards:SfCardView>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border x:Name="QueueStatusPanel"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Padding="16"
+                        BackgroundColor="White"
+                        Stroke="#E2E8F0"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                        <Border Padding="12" BackgroundColor="#FFFFFF" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Completed" FontSize="{StaticResource CounterSectionFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Grid.Column="1" Text="{Binding CompletedStatusTokenCount}" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#159B85" />
+                                </Grid>
+                                <Grid>
+                                    <listview:SfListView ItemsSource="{Binding CompletedStatusTokens}"
+                                                         ItemTemplate="{StaticResource StatusTokenTemplate}"
+                                                         ItemSize="56"
+                                                         HeightRequest="144"
+                                                         SelectionMode="None"
+                                                         IsVisible="{Binding HasCompletedStatusTokens}" />
+                                    <VerticalStackLayout IsVisible="{Binding HasNoCompletedStatusTokens}" Spacing="4" Padding="10">
+                                        <Label Text="No completed tokens" FontSize="{StaticResource CaptionFontSize}" FontAttributes="Bold" TextColor="#334155" />
+                                        <Label Text="Completed tokens will appear here." FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Padding="12" BackgroundColor="#FFFFFF" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Waiting" FontSize="{StaticResource CounterSectionFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
+                                    <Label Grid.Column="1" Text="{Binding WaitingStatusTokenCount}" FontSize="{StaticResource CounterEmphasisFontSize}" FontAttributes="Bold" TextColor="#183E91" />
+                                </Grid>
+                                <Grid>
+                                    <listview:SfListView ItemsSource="{Binding WaitingStatusTokens}"
+                                                         ItemTemplate="{StaticResource StatusTokenTemplate}"
+                                                         ItemSize="56"
+                                                         HeightRequest="144"
+                                                         SelectionMode="None"
+                                                         IsVisible="{Binding HasWaitingStatusTokens}" />
+                                    <VerticalStackLayout IsVisible="{Binding HasNoWaitingStatusTokens}" Spacing="4" Padding="10">
+                                        <Label Text="No waiting tokens" FontSize="{StaticResource CaptionFontSize}" FontAttributes="Bold" TextColor="#334155" />
+                                        <Label Text="There are no waiting tokens at this counter." FontSize="{StaticResource CaptionFontSize}" TextColor="#64748B" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+</ContentView>

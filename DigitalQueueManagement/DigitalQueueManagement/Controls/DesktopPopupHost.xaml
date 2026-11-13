@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             x:Class="DigitalQueueManagement.Controls.DesktopPopupHost">
+    <popup:SfPopup x:Name="Popup"
+                   ShowHeader="False"
+                   ShowFooter="False"
+                   ShowCloseButton="False"
+                   ShowOverlayAlways="True"
+                   Padding="0"
+                   AutoSizeMode="Both"
+                   AutoSizeTarget="Content">
+        <popup:SfPopup.PopupStyle>
+            <popup:PopupStyle PopupBackground="White"
+                              MessageBackground="White"
+                              OverlayColor="#800F172A"
+                              Stroke="#E2E8F0"
+                              StrokeThickness="1"
+                              CornerRadius="16"
+                              HasShadow="True" />
+        </popup:SfPopup.PopupStyle>
+    </popup:SfPopup>
+</ContentView>
