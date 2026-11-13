@@ -70,11 +70,25 @@ public sealed class DiagramFileService : IDiagramFileService
         return document;
     }
 
-    public async Task<string> SaveDiagramAsync(DiagramDocument document, string fileName)
+    public Task<string> SaveDiagramAsync(DiagramDocument document, string fileName)
     {
         ArgumentNullException.ThrowIfNull(document);
 
-        var path = GetAvailableDiagramPath(fileName);
+        var path = string.IsNullOrWhiteSpace(document.SavedFilePath)
+            ? GetAvailableDiagramPath(fileName)
+            : document.SavedFilePath;
+        return WriteDiagramAsync(document, path);
+    }
+
+    public Task<string> SaveDiagramAsAsync(DiagramDocument document, string fileName)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+
+        return WriteDiagramAsync(document, GetAvailableDiagramPath(fileName));
+    }
+
+    private static async Task<string> WriteDiagramAsync(DiagramDocument document, string path)
+    {
         var title = Path.GetFileNameWithoutExtension(path);
         var previousTitle = document.Title;
         var wasDirty = document.IsDirty;
@@ -86,6 +100,7 @@ public sealed class DiagramFileService : IDiagramFileService
             document.IsDirty = false;
             var content = JsonSerializer.SerializeToUtf8Bytes(document, JsonOptions);
             await WriteAsync(path, content);
+            document.SavedFilePath = path;
             saved = true;
             return path;
         }

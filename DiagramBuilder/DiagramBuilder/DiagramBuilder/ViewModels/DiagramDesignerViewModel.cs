@@ -211,7 +211,9 @@ public partial class DiagramDesignerViewModel : ObservableObject
 
         try
         {
-            var path = await _fileService.SaveDiagramAsync(snapshot, fileName);
+            var path = saveAs
+                ? await _fileService.SaveDiagramAsAsync(snapshot, fileName)
+                : await _fileService.SaveDiagramAsync(snapshot, fileName);
             var title = Path.GetFileNameWithoutExtension(path);
             if (saveAs)
             {

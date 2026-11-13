@@ -309,6 +309,7 @@ public partial class DiagramWorkspaceControl : ContentView
             Category = source.Category,
             CreatedUtc = source.CreatedUtc,
             IsDirty = source.IsDirty,
+            SavedFilePath = source.SavedFilePath,
         };
 
         foreach (var node in Diagram.Nodes.OfType<Node>())

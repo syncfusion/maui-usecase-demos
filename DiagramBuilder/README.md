@@ -33,8 +33,8 @@ The sample demonstrates a diagram designer with a stencil, canvas, toolbar, menu
 ## File Behavior
 
 - **Open** accepts JSON files containing a Diagram Builder document. Other file extensions and invalid diagram documents are rejected.
-- **Save** saves the current diagram as `Untitled Diagram` without requesting a name.
-- **Save As** prompts for a file name.
+- **Save** does not request a name. The first save uses `Untitled Diagram` (adding a number if that name already exists); later saves update that same file.
+- **Save As** prompts for a file name and creates a uniquely named file; later Save commands update that file.
 - **Export** supports PNG, JPEG, PDF, and SVG, with the content or page settings region as the export area.
 - **Print** supports the content or page settings region, Letter, Legal, Tabloid, A3, A4, A5, A6, or custom paper size, portrait or landscape orientation, and scale-to-fit.
 - On Windows, saved files are written to the user's `Downloads` folder. On other platforms, files are written to an app-specific `Downloads` folder under `FileSystem.AppDataDirectory`.

@@ -8,5 +8,7 @@ public interface IDiagramFileService
 
     Task<string> SaveDiagramAsync(DiagramDocument document, string fileName);
 
+    Task<string> SaveDiagramAsAsync(DiagramDocument document, string fileName);
+
     Task<string> SaveExportAsync(string fileName, string extension, byte[] content);
 }

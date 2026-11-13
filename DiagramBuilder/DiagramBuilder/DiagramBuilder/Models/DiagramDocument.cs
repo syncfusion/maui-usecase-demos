@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace DiagramBuilder.Models;
 
@@ -20,4 +21,7 @@ public class DiagramDocument
     public bool IsDirty { get; set; }
 
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+
+    [JsonIgnore]
+    public string? SavedFilePath { get; set; }
 }
