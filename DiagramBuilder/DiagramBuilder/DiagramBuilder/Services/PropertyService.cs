@@ -108,7 +108,7 @@ public class PropertyService : IPropertyService
                 if (element is Node n4 && property.Value is double h) n4.Height = h;
                 break;
             case "Rotation":
-                if (element is Node n5 && property.Value is double r) n5.RotationAngle = r;
+                if (element is Node n5 && property.Value is double r) n5.RotateAngle = r;
                 break;
             case "BackgroundColor":
             case "Fill":
@@ -179,7 +179,7 @@ public class PropertyService : IPropertyService
             result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "PositionY", LabelKey = AppStrings.PropertyPositionY, PrefixKey = "Y", Value = node.OffsetY, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Width", LabelKey = AppStrings.PropertyWidth, PrefixKey = "W", Value = node.Width, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 0, PairCount = 2 });
             result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Height", LabelKey = AppStrings.PropertyHeight, PrefixKey = "H", Value = node.Height, Min = 10, Max = 2000, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 1, PairCount = 2 });
-            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Rotation", LabelKey = AppStrings.PropertyRotation, PrefixKey = "R", Value = node.RotationAngle, Min = 0, Max = 360, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 0, PairCount = 1 });
+            result.Add(new PropertyModel { Group = PropertyGroup.Dimensions, Key = "Rotation", LabelKey = AppStrings.PropertyRotation, PrefixKey = "R", Value = node.RotateAngle, Min = 0, Max = 360, Editor = PropertyEditorKind.Number, IsInteger = true, PairIndex = 0, PairCount = 1 });
 
             var style = node.Style as ShapeStyle;
 

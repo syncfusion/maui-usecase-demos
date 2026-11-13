@@ -28,7 +28,7 @@ public static class DiagramModelAdapter
             OffsetY = shape.PositionY,
             Width = shape.Width,
             Height = shape.Height,
-            RotationAngle = shape.Rotation,
+            RotateAngle = shape.Rotation,
             Shape = ToShape(shape.ShapeType),
         };
 
@@ -84,7 +84,7 @@ public static class DiagramModelAdapter
             PositionY = node.OffsetY,
             Width = node.Width,
             Height = node.Height,
-            Rotation = node.RotationAngle,
+            Rotation = node.RotateAngle,
             FillColorKey = KeyForColor(style?.Fill),
             FillOpacity = style?.Opacity ?? 1,
             BorderColorKey = KeyForColor(style?.StrokeColor),
