@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:conv="clr-namespace:HotelManagerSample.Converters;assembly=HotelManagerSample"
+             x:Class="HotelManagerSample.Controls.AppSidebar"
+             Shell.NavBarIsVisible="False"
+             x:Name="Root">
+
+    <ContentView.Resources>
+        <conv:ActiveRowToBrushConverter x:Key="ActiveRowBg" />
+        <conv:TabMatchToBoolConverter x:Key="TabMatchBool" />
+        <conv:TabIconSourceConverter x:Key="ActiveIcon" />
+    </ContentView.Resources>
+
+    <Border BackgroundColor="White" Stroke="#E6EAF3" StrokeThickness="1">
+        <Grid RowDefinitions="Auto,*,Auto" Padding="18,18,18,16" RowSpacing="14">
+
+            <!-- Brand block -->
+            <Grid>
+                <VerticalStackLayout Grid.Column="1" Spacing="1">
+                    <Label Text="Grand Horizon" FontSize="15" FontFamily="OpenSansSemibold" TextColor="#1B2435" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Navigation rows -->
+            <VerticalStackLayout Grid.Row="1" Spacing="2">
+
+                <!-- Dashboard row -->
+                <Border BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveRowBg}, ConverterParameter=Dashboard}"
+                        StrokeThickness="0" Padding="10,8"
+                        StrokeShape="RoundRectangle 12">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDashboardTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="24,*,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                        <Image Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveIcon}, ConverterParameter=Dashboard}"
+                               HeightRequest="16" WidthRequest="16" Aspect="AspectFit"
+                               VerticalOptions="Center" HorizontalOptions="Center" />
+                        <Label Grid.Column="1" Text="Dashboard" FontSize="11" FontFamily="OpenSansRegular"
+                               TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveRowBg}, ConverterParameter=DashboardText}"
+                               VerticalOptions="Center" HorizontalOptions="Start" />
+                        <Border Grid.Column="2"
+                                BackgroundColor="#1F324F" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="7,2"
+                                IsVisible="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabMatchBool}, ConverterParameter=Dashboard}"
+                                VerticalOptions="Center">
+                            <Label Text="LIVE" FontSize="7" FontAttributes="Bold" TextColor="#7AEDB0" />
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Bookings row -->
+                <Border BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveRowBg}, ConverterParameter=Bookings}"
+                        StrokeThickness="0" Padding="10,8"
+                        StrokeShape="RoundRectangle 12">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBookingsTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="24,*,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                        <Image Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveIcon}, ConverterParameter=Bookings}"
+                               HeightRequest="16" WidthRequest="16" Aspect="AspectFit"
+                               VerticalOptions="Center" HorizontalOptions="Center" />
+                        <Label Grid.Column="1" Text="Bookings" FontSize="11" FontFamily="OpenSansRegular"
+                               TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveRowBg}, ConverterParameter=BookingsText}"
+                               VerticalOptions="Center" HorizontalOptions="Start" />
+                    </Grid>
+                </Border>
+
+                <!-- Rooms row -->
+                <Border BackgroundColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveRowBg}, ConverterParameter=Rooms}"
+                        StrokeThickness="0" Padding="10,8"
+                        StrokeShape="RoundRectangle 12">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRoomsTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="24,*,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                        <Image Source="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveIcon}, ConverterParameter=Rooms}"
+                               HeightRequest="16" WidthRequest="16" Aspect="AspectFit"
+                               VerticalOptions="Center" HorizontalOptions="Center" />
+                        <Label Grid.Column="1" Text="Rooms" FontSize="11" FontFamily="OpenSansRegular"
+                               TextColor="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource ActiveRowBg}, ConverterParameter=RoomsText}"
+                               VerticalOptions="Center" HorizontalOptions="Start" />
+                        <Ellipse Grid.Column="2"
+                                 WidthRequest="6" HeightRequest="6"
+                                 Fill="#4A43E6"
+                                 IsVisible="{Binding ActiveTab, Source={x:Reference Root}, Converter={StaticResource TabMatchBool}, ConverterParameter=Rooms}"
+                                 VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Profile block -->
+            <Grid Grid.Row="2" ColumnDefinitions="34,*,Auto" ColumnSpacing="10">
+                <Border BackgroundColor="#E8EFFD" StrokeThickness="0" StrokeShape="RoundRectangle 17">
+                    <Image Source="profile.png" Aspect="AspectFill" HeightRequest="34" WidthRequest="34" />
+                </Border>
+                <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                    <Label Text="Alex Morgan" FontSize="10" FontFamily="OpenSansSemibold" TextColor="#1B2435" />
+                    <Label Text="Operations Lead" FontSize="8" TextColor="#8490A5" />
+                </VerticalStackLayout>
+                <Label Grid.Column="2" Text="&#xe5d4;" FontFamily="MaterialAssets" FontSize="14" TextColor="#667085" VerticalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Border>
+</ContentView>

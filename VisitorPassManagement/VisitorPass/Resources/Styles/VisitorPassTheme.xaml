@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ============================================================
+         Syncfusion palette + control-token overrides.
+
+         Loaded LAST in App.xaml so these keys win over the
+         MaterialLight defaults shipped by
+         SyncfusionThemeResourceDictionary. Every key used here
+         resolves to one of our own palette tokens (HARNESS §6
+         rule 6).
+
+         Only the keys actually read by the controls we use are
+         listed. New keys should be added only after a control
+         proves it needs them.
+
+         Conventions from the Syncfusion MAUI docs:
+           SfsPrimary / SfsPrimaryLight / SfsPrimaryDark
+             — accent / accent-light / accent-dark for SfBadgeView,
+               SfAvatarView, SfPopup, SfButton etc.
+           SfBorderColor / SfBackgroundColor
+             — SfDataGrid, SfStepProgressBar surface tokens.
+         ============================================================ -->
+
+    <!-- ============== Core accent chain ============== -->
+    <Color x:Key="SfsPrimary">#5146E5</Color>
+    <Color x:Key="SfsPrimaryLight">#EEF2FF</Color>
+    <Color x:Key="SfsPrimaryDark">#3F38B8</Color>
+    <Color x:Key="SfsPrimaryContrast">#FFFFFF</Color>
+
+    <!-- ============== Surface chain ============== -->
+    <Color x:Key="SfBackgroundColor">#F6F8FD</Color>
+    <Color x:Key="SfSurfaceColor">#FFFFFF</Color>
+    <Color x:Key="SfBorderColor">#E5E9F2</Color>
+
+    <!-- ============== Content / text chain ============== -->
+    <Color x:Key="SfContentBackground">#FFFFFF</Color>
+    <Color x:Key="SfContentForeground">#17243A</Color>
+    <Color x:Key="SfContentForegroundAlt">#3A4658</Color>
+    <Color x:Key="SfContentForegroundMuted">#6B7589</Color>
+
+    <!-- ============== Status palette (foreground + pale) ============== -->
+    <Color x:Key="SfsStatusExpected">#3B82F6</Color>
+    <Color x:Key="SfsStatusExpectedBg">#DBEAFE</Color>
+    <Color x:Key="SfsStatusCheckedIn">#10B981</Color>
+    <Color x:Key="SfsStatusCheckedInBg">#D1FAE5</Color>
+    <Color x:Key="SfsStatusCheckedOut">#6B7280</Color>
+    <Color x:Key="SfsStatusCheckedOutBg">#E5E7EB</Color>
+    <Color x:Key="SfsStatusCancelled">#EF4444</Color>
+    <Color x:Key="SfsStatusCancelledBg">#FEE2E2</Color>
+    <Color x:Key="SfsStatusOverdue">#F59E0B</Color>
+    <Color x:Key="SfsStatusOverdueBg">#FEF3C7</Color>
+
+</ResourceDictionary>

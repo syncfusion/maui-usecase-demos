@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             x:Class="VisitorPass.Controls.VisitorAvatar">
+
+    <!--
+        Reusable avatar tile (VP-021).
+
+        Wraps Syncfusion SfAvatarView. Consumers set:
+
+          - Initials      (string)  - 1-2 character monogram. Falls back
+                                       to "?" when empty.
+          - BackgroundColor (Color) - hex used by the tile background.
+                                       Defaults to the brand Primary
+                                       colour (Resources["Primary"]).
+          - AvatarSize    (SfAvatarView.AvatarSize enum) - small /
+                                       large / extra-large. Defaults
+                                       to Large for the 96 dp Digital
+                                       Pass identity card.
+    -->
+    <core:SfAvatarView x:Name="Avatar"
+                       ContentType="Initials"
+                       InitialsType="DoubleCharacter"
+                       CornerRadius="16"
+                       Background="{StaticResource Primary}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+</ContentView>

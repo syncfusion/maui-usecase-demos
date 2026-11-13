@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:list="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:chips="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:vm="clr-namespace:HotelManagerSample.Bookings;assembly=HotelManagerSample"
+             xmlns:models="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:controls="clr-namespace:HotelManagerSample.Controls;assembly=HotelManagerSample"
+             xmlns:conv="clr-namespace:HotelManagerSample.Converters;assembly=HotelManagerSample"
+             x:Class="HotelManagerSample.Bookings.MobileBookingsPage"
+             x:DataType="vm:MobileBookingsViewModel"
+             Style="{StaticResource MobilePage}"
+             BackgroundColor="{StaticResource MobileSurface}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+            </Style>
+            
+            <conv:AvatarBackgroundConverter x:Key="AvatarBg" />
+            <conv:AvatarForegroundConverter x:Key="AvatarFg" />
+            <conv:GuestInitialsConverter    x:Key="GuestInitials" />
+            <conv:MobileStatusPillBackgroundConverter x:Key="StatusPillBg" />
+            <conv:MobileStatusPillTextConverter        x:Key="StatusPillFg" />
+            <conv:MobileBookingCtaConverter     x:Key="BookingCtaLabel" />
+            <conv:MobileBookingCtaIconConverter x:Key="BookingCtaIcon" />
+            <conv:MobileStringToBoolConverter  x:Key="StringToBool" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- =================== FIXED HEADER =================== -->
+        <VerticalStackLayout Grid.Row="0" Spacing="12" Padding="14,12,14,8">
+
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center">
+                    <Label Style="{StaticResource MobileHotelName}" Text="Grand Horizon" />
+                    <Label Style="{StaticResource MobileHotelSubtitle}" Text="BOOKINGS" />
+                </VerticalStackLayout>
+                <Border Grid.Column="1"
+                    BackgroundColor="#E0E7FF"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 17"
+                    WidthRequest="34" HeightRequest="34">
+                    <Image Source="profile.png" Aspect="AspectFill" HeightRequest="34" WidthRequest="34" />
+                </Border>
+            </Grid>
+
+            <!-- =================== TITLE ROW =================== -->
+            <Grid ColumnDefinitions="*,Auto" Padding="2,0,2,0">
+                <VerticalStackLayout Grid.Column="0" Spacing="0">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Label Style="{StaticResource MobilePageTitle}"
+                               Text="Bookings" />
+                        <Border BackgroundColor="{StaticResource MobilePrimaryLight}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 14"
+                                Margin="0,5,0,0"
+                                Padding="8,3"
+                                VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                                <Ellipse Fill="{StaticResource MobilePrimary}"
+                                         WidthRequest="5" HeightRequest="5"
+                                         VerticalOptions="Center" />
+                                <Label FontFamily="OpenSansSemibold"
+                                       FontSize="10"
+                                       TextColor="{StaticResource MobilePrimary}"
+                                       Text="Live" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- =================== SEARCH =================== -->
+            <Border Style="{StaticResource MobileInputField}">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                    <Label Grid.Column="0"
+                           Text="&#xe715;"
+                           FontFamily="MaterialAssets"
+                           FontSize="18"
+                           TextColor="{StaticResource MobileTextMuted}"
+                           VerticalTextAlignment="Center" />
+                    <controls:SfEntry Grid.Column="1"
+                                   Text="{Binding SearchText, Mode=TwoWay}"
+                                   Placeholder="Search guests, IDs, rooms…"
+                                   PlaceholderColor="{StaticResource MobileTextSubtle}"
+                                   FontSize="16"
+                                   TextColor="{StaticResource MobileText}"
+                                   BackgroundColor="Transparent"
+                                   MinimumHeightRequest="44"
+                                   VerticalOptions="Center" />
+                    <Label Grid.Column="2"
+                           Text="&#xe5cd;"
+                           FontFamily="MaterialAssets"
+                           FontSize="14"
+                           TextColor="{StaticResource MobileTextSubtle}"
+                           IsVisible="{Binding SearchText, Converter={StaticResource StringToBool}}"
+                           VerticalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnClearSearchTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            </Border>
+
+            <!-- =================== FILTER CHIPS =================== -->
+            <ScrollView Orientation="Horizontal"
+                        HorizontalScrollBarVisibility="Never">
+                <HorizontalStackLayout Spacing="8">
+                    <!-- All chip is rendered with the active state inline; the
+                         remaining chips come from the SfChipGroup so a single
+                         Choice-mode group returns the selected item. -->
+                    <chips:SfChipGroup x:Name="BookingsChipGroup"
+                                       ItemsSource="{Binding FilterChips}"
+                                       ChipType="Choice"
+                                       ChoiceMode="Single"
+                                       ItemHeight="32"
+                                       DisplayMemberPath="Label"
+                                       SelectionChanged="OnChipGroupSelectionChanged">
+                        <chips:SfChipGroup.ItemTemplate>
+                            <DataTemplate x:DataType="vm:BookingFilterChip">
+                                <chips:SfChip Text="{Binding Label}">
+                                    <chips:SfChip.Triggers>
+                                        <DataTrigger TargetType="chips:SfChip"
+                                                     Binding="{Binding IsActive}"
+                                                     Value="True">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource MobilePrimary}" />
+                                            <Setter Property="TextColor"        Value="{StaticResource PrimaryDarkText}" />
+                                            <Setter Property="FontFamily"       Value="OpenSansSemibold" />
+                                            <Setter Property="FontSize"         Value="14" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="chips:SfChip"
+                                                     Binding="{Binding IsActive}"
+                                                     Value="False">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource MobileChipBg}" />
+                                            <Setter Property="TextColor"        Value="{StaticResource PrimaryDarkText}" />
+                                            <Setter Property="FontFamily"       Value="OpenSansSemibold" />
+                                            <Setter Property="FontSize"         Value="14" />
+                                        </DataTrigger>
+                                    </chips:SfChip.Triggers>
+                                </chips:SfChip>
+                            </DataTemplate>
+                        </chips:SfChipGroup.ItemTemplate>
+                    </chips:SfChipGroup>
+                </HorizontalStackLayout>
+            </ScrollView>
+        </VerticalStackLayout>
+
+        <!-- =================== LIST =================== -->
+        <list:SfListView Grid.Row="1"
+                         ItemsSource="{Binding VisibleBookings}"
+                         ItemSpacing="0"
+                         SelectionMode="None"
+                         BackgroundColor="Transparent"
+                         AutoFitMode="Height"
+                         IsScrollingEnabled="False"
+                         Padding="14,0,14,10">
+
+            <!-- Empty view -->
+            <list:SfListView.EmptyView>
+                <VerticalStackLayout Padding="40,40,40,40" Spacing="6" HorizontalOptions="Center">
+                    <Label FontFamily="OpenSansSemibold"
+                           FontSize="16"
+                           TextColor="{StaticResource MobileTextMuted}"
+                           HorizontalTextAlignment="Center"
+                           Text="No bookings match your filters" />
+                    <Label Style="{StaticResource MobileKpiCaption}"
+                           HorizontalTextAlignment="Center"
+                           Text="Try a wider chip selection or clear your search." />
+                </VerticalStackLayout>
+            </list:SfListView.EmptyView>
+
+            <list:SfListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Booking">
+                        <Border Margin="0,6"
+                            BackgroundColor="White"
+                            Stroke="{StaticResource MobileDivider}"
+                            StrokeThickness="1.25"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="14,12">
+                            <VerticalStackLayout Spacing="10">
+
+                            <!-- Row 1: avatar + name + status pill -->
+                            <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="12">
+                                <Border Grid.Column="0"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 26"
+                                        BackgroundColor="{Binding Guest, Converter={StaticResource AvatarBg}}">
+                                    <Label FontFamily="OpenSansSemibold"
+                                           FontSize="14"
+                                           TextColor="{Binding Guest, Converter={StaticResource AvatarFg}}"
+                                           Text="{Binding ., Converter={StaticResource GuestInitials}}"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label FontFamily="OpenSansSemibold"
+                                           FontSize="16"
+                                           TextColor="{StaticResource MobileText}"
+                                           Text="{Binding Guest}" />
+                                    <Label Style="{StaticResource MobileKpiCaption}"
+                                           Text="{Binding Reference}" />
+                                </VerticalStackLayout>
+                                <Border Grid.Column="2"
+                                        BackgroundColor="{Binding Status, Converter={StaticResource StatusPillBg}}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 14"
+                                        Padding="10,4"
+                                        VerticalOptions="Center">
+                                    <Label FontFamily="OpenSansSemibold"
+                                           FontSize="10"
+                                           CharacterSpacing="1"
+                                           TextColor="{Binding Status, Converter={StaticResource StatusPillFg}}"
+                                           Text="{Binding Status}" />
+                                </Border>
+                            </Grid>
+
+                            <!-- Row 2: room meta line -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" Padding="0,3,0,0">
+                                <Image Grid.Column="0"
+                                       Source="bed.png"
+                                       HeightRequest="16"
+                                       WidthRequest="16"/>
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                    <Label FontFamily="OpenSansSemibold"
+                                           FontSize="14"
+                                           TextColor="{StaticResource MobileText}"
+                                           Text="{Binding Room}" />
+                                    <Label Style="{StaticResource MobileKpiCaption}"
+                                           FontSize="12"
+                                           VerticalTextAlignment="Center"
+                                           Text="{Binding RoomType, StringFormat='- {0}'}" />
+                                </HorizontalStackLayout>
+                                <Label Grid.Column="2"
+                                       Style="{StaticResource MobileKpiCaption}"
+                                       VerticalTextAlignment="Center"
+                                       TextColor="{StaticResource MobileTextMuted}"
+                                       Text="{Binding RoomSegment, StringFormat='{0}'}" />
+                            </Grid>
+
+                            <!-- Row 3: dates + nights -->
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="10" Padding="0,2,0,0">
+                                    <Label Grid.Column="0"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="{StaticResource MobilePrimary}"
+                                           Text="&#xe71d;"
+                                           VerticalTextAlignment="Center" />
+
+                                    <Label Grid.Column="1"
+                                           Style="{StaticResource MobileBody}"
+                                           TextColor="{StaticResource MobileText}"
+                                           Text="{Binding CheckIn, StringFormat='Sept {0:dd}  -'}" />
+                                    
+                                    <Label Grid.Column="2"
+                                       Style="{StaticResource MobileBody}"
+                                       TextColor="{StaticResource MobileText}"
+                                       Text="{Binding CheckOut, StringFormat='Sept {0:dd}'}" />
+                                    
+                                    <Border Grid.Column="3"
+                                        BackgroundColor="{StaticResource MobilePrimaryLight}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 14"
+                                        Padding="7,2"
+                                        VerticalOptions="Center">
+                                        <Label Style="{StaticResource MobilePillLabel}"
+                                           FontSize="11"
+                                           TextColor="{StaticResource MobilePrimary}"
+                                           Text="{Binding Nights, StringFormat='{0} Nights'}" />
+                                    </Border>
+                                </Grid>
+
+                                <!-- Row 5: payment row -->
+                            <Grid ColumnDefinitions="Auto,*" Padding="0,4,0,0" ColumnSpacing="6">
+                                <Image Grid.Column="0"
+                                       Source="cash.png"
+                                       HeightRequest="14"
+                                       WidthRequest="14"/>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource MobileKpiCaption}"
+                                       Text="{Binding FollowUp}"
+                                       VerticalTextAlignment="Center" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </list:SfListView.ItemTemplate>
+        </list:SfListView>
+    </Grid>
+    </ScrollView>
+</ContentView>

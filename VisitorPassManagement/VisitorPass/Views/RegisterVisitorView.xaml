@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="VisitorPass.Views.RegisterVisitorView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:VisitorPass.Controls;assembly=VisitorPass"
+    xmlns:textInputLayout="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
+    xmlns:picker="clr-namespace:Syncfusion.Maui.Toolkit.Picker;assembly=Syncfusion.Maui.Toolkit"
+    xmlns:vm="clr-namespace:VisitorPass.ViewModels;assembly=VisitorPass"
+    x:DataType="vm:RegisterVisitorViewModel">
+
+    <Border
+        BackgroundColor="{StaticResource Surface}"
+        Stroke="{StaticResource Border}"
+        StrokeShape="RoundRectangle 16"
+        Padding="0">
+
+        <Grid RowDefinitions="Auto,Auto,Auto">
+
+            <!-- HEADER -->
+
+            <Grid
+                Grid.Row="0"
+                Padding="{OnIdiom Default='24,20', Phone='16,16'}"
+                ColumnDefinitions="*,Auto">
+
+                <HorizontalStackLayout
+                    Spacing="12"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="{x:Static controls:IconKeys.Badge}"
+                        FontFamily="MauiMaterialAssets"
+                        FontSize="18"
+                        TextColor="{StaticResource Primary}" />
+
+                    <Label
+                        Text="Visitor Information"
+                        Style="{StaticResource SectionTitle}" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- CONTENT -->
+
+            <ScrollView Grid.Row="1">
+
+                <VerticalStackLayout
+                    Padding="24,0,24,24"
+                    Spacing="12">
+
+                    <!-- VISITOR INFORMATION -->
+
+                    <Grid
+                        ColumnDefinitions="{OnIdiom Default='*,*', Phone='*'}"
+                        RowDefinitions="{OnIdiom Default='Auto,Auto', Phone='Auto,Auto,Auto,Auto'}"
+                        ColumnSpacing="18"
+                        RowSpacing="14">
+
+                        <!-- Visitor Name -->
+
+                        <VerticalStackLayout
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Spacing="6">
+
+                            <Label
+                                Text="Visitor Name"
+                                Style="{StaticResource SectionEyebrow}" />
+
+                            <textInputLayout:SfTextInputLayout
+                                Hint="Visitor Name"
+                                ErrorText="Visitor Name is mandatory"
+                                HeightRequest="70"
+                                HasError="{Binding HasVisitorNameError}"
+                                InputViewPadding="{OnIdiom Default='12,5,0,5', Phone='12,10,0,0'}"
+                                ContainerType="Outlined">
+
+                                <textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+                                    <textInputLayout:LabelStyle TextColor="Red" />
+                                </textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+
+                                <controls:SfEntry
+                                    Text="{Binding VisitorName}"
+                                    Placeholder="Enter Visitor Name" />
+
+                            </textInputLayout:SfTextInputLayout>
+
+                        </VerticalStackLayout>
+
+                        <!-- Contact Number -->
+
+                        <VerticalStackLayout
+                            Grid.Row="{OnIdiom Default=0, Phone=1}"
+                            Grid.Column="{OnIdiom Default=1, Phone=0}"
+                            Spacing="6">
+
+                            <Label
+                                Text="Contact Number"
+                                Style="{StaticResource SectionEyebrow}" />
+
+                            <textInputLayout:SfTextInputLayout
+                                    Hint="Contact Number"
+                                    HeightRequest="70"
+                                    HasError="{Binding HasContactNumberError}"
+                                    InputViewPadding="{OnIdiom Default='12,5,0,5', Phone='12,10,0,0'}"
+                                    ErrorText="Enter valid contact number"
+                                    ContainerType="Outlined">
+
+                                <textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+                                    <textInputLayout:LabelStyle TextColor="Red" />
+                                </textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+                                <controls:SfEntry
+                                    Text="{Binding ContactNumber}"
+                                    Keyboard="Telephone"
+                                    Placeholder="Enter Contact Number" />
+
+                            </textInputLayout:SfTextInputLayout>
+
+                        </VerticalStackLayout>
+
+                        <!-- Host -->
+
+                        <VerticalStackLayout
+                            Grid.Row="{OnIdiom Default=1, Phone=2}"
+                            Grid.Column="0"
+                            Spacing="6">
+
+                            <Label
+                                Text="Host Employee Escort"
+                                Style="{StaticResource SectionEyebrow}" />
+
+                            <textInputLayout:SfTextInputLayout
+                                 Hint="Host Employee Escort"
+                                 HeightRequest="70"
+                                 HasError="{Binding HasHostError}"
+                                 ErrorText="Select a host employee"
+                                 InputViewPadding="{OnIdiom Default='12,5,0,5', Phone='12,10,0,0'}"
+                                 ContainerType="Outlined">
+
+                                <textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+                                    <textInputLayout:LabelStyle TextColor="Red" />
+                                </textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+
+                                <Picker
+                                    HeightRequest="44"
+                                    ItemsSource="{Binding HostOptions}"
+                                    SelectedItem="{Binding Host}" />
+
+                            </textInputLayout:SfTextInputLayout>
+
+                        </VerticalStackLayout>
+
+                        <!-- Purpose -->
+
+                        <VerticalStackLayout
+                            Grid.Row="{OnIdiom Default=1, Phone=3}"
+                            Grid.Column="{OnIdiom Default=1, Phone=0}"
+                            Spacing="6">
+
+                            <Label
+                                Text="Visit Purpose"
+                                Style="{StaticResource SectionEyebrow}" />
+
+                            <textInputLayout:SfTextInputLayout
+                                 Hint="Visit Purpose"
+                                 HeightRequest="70"
+                                 HasError="{Binding HasPurposeError}"
+                                 ErrorText="Select a visit purpose"
+                                 InputViewPadding="{OnIdiom Default='12,5,0,5', Phone='12,10,0,0'}"
+                                 ContainerType="Outlined">
+
+                                <textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+                                    <textInputLayout:LabelStyle TextColor="Red" />
+                                </textInputLayout:SfTextInputLayout.ErrorLabelStyle>
+
+                                <Picker
+                                    HeightRequest="44"
+                                    ItemsSource="{Binding PurposeOptions}"
+                                    SelectedItem="{Binding Purpose}" />
+
+                            </textInputLayout:SfTextInputLayout>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                    <!-- SCHEDULE HEADER -->
+
+                    <Grid
+                        ColumnDefinitions="{OnIdiom Default='*,*', Phone='*,*'}"
+                        RowDefinitions="{OnIdiom Default='Auto', Phone='Auto,Auto'}"
+                        ColumnSpacing="12"
+                        RowSpacing="16">
+
+                        <Grid
+                            ColumnDefinitions="*"
+                            Margin="0,4,0,0">
+
+                            <HorizontalStackLayout
+                                Spacing="10"
+                                VerticalOptions="Center">
+
+                                <Label
+                                    Text="{x:Static controls:IconKeys.Event}"
+                                    FontFamily="MauiMaterialAssets"
+                                    TextColor="{StaticResource Primary}" />
+
+                                <Label
+                                    VerticalOptions="Center"
+                                    Text="Schedule &amp; Authorization"
+                                    Style="{StaticResource SectionTitle}" />
+
+                            </HorizontalStackLayout>
+
+                        </Grid>
+
+                    </Grid>
+
+                    <!-- SCHEDULE -->
+
+                    <Grid ColumnDefinitions="{OnIdiom Default='Auto,*,Auto', Phone='*,*'}"
+                          RowDefinitions="{OnIdiom Default='Auto', Phone='Auto,Auto'}"
+                          ColumnSpacing="6"
+                          RowSpacing="12">
+
+                        <!-- Date -->
+
+                        <VerticalStackLayout>
+                            <Label Text="Visit Date"
+                                   Style="{StaticResource SectionEyebrow}" />
+
+                            <Grid WidthRequest="{OnIdiom Default=200, Phone=140}">
+                                <picker:SfDatePicker
+                                    x:Name="datePicker"
+                                    SelectedDate="{Binding VisitDate}"
+                                    Mode="Dialog"
+                                    SelectionChanged="datePicker_SelectionChanged"
+                                    HeightRequest="42"
+                                    BackgroundColor="{StaticResource SurfaceAlt}">
+                                    <picker:SfDatePicker.FooterView>
+                                        <picker:PickerFooterView Height="45"/>
+                                    </picker:SfDatePicker.FooterView>
+
+                                    <picker:SfDatePicker.SelectionView >
+                                        <picker:PickerSelectionView CornerRadius="10" Stroke="#36454F" Padding="10, 5, 10, 5" Background="{StaticResource Primary}" />
+                                    </picker:SfDatePicker.SelectionView>
+                                    <picker:SfDatePicker.ColumnHeaderView >
+                                        <picker:DatePickerColumnHeaderView Background="{StaticResource SurfaceAlt}">
+                                            <picker:DatePickerColumnHeaderView.TextStyle >
+                                                <picker:PickerTextStyle FontSize="15" TextColor="Black" />
+                                            </picker:DatePickerColumnHeaderView.TextStyle>
+                                        </picker:DatePickerColumnHeaderView>
+                                    </picker:SfDatePicker.ColumnHeaderView>
+                                </picker:SfDatePicker>
+
+                                <Button x:Name="datePickerButton" Text="{Binding VisitDateDisplay, StringFormat='Select Date'}" Background="Transparent" TextColor="Black" Clicked="datePickerButton_Clicked"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <!-- Time -->
+
+                        <VerticalStackLayout
+                                Grid.Column="{OnIdiom Default=1, Phone=1}">
+
+                            <Label Text="Expected Time"
+                                   Style="{StaticResource SectionEyebrow}" />
+
+                            <Grid WidthRequest="{OnIdiom Default=200, Phone=140}" HorizontalOptions="Start">
+                                <picker:SfTimePicker
+                                    x:Name="timePicker"
+                                    SelectedTime="{Binding VisitTime}"
+                                    SelectionChanged="timePicker_SelectionChanged"
+                                    Mode="Dialog"
+                                    HeightRequest="42"
+                                    BackgroundColor="{StaticResource SurfaceAlt}">
+                                    <picker:SfTimePicker.FooterView>
+                                        <picker:PickerFooterView Height="45"/>
+                                    </picker:SfTimePicker.FooterView>
+                                    <picker:SfTimePicker.SelectionView >
+                                        <picker:PickerSelectionView CornerRadius="10" Stroke="#36454F" Padding="10, 5, 10, 5" Background="{StaticResource Primary}" />
+                                    </picker:SfTimePicker.SelectionView>
+
+                                    <picker:SfTimePicker.ColumnHeaderView >
+                                        <picker:TimePickerColumnHeaderView Background="{StaticResource SurfaceAlt}">
+                                            <picker:TimePickerColumnHeaderView.TextStyle >
+                                                <picker:PickerTextStyle FontSize="15" TextColor="Black" />
+                                            </picker:TimePickerColumnHeaderView.TextStyle>
+                                        </picker:TimePickerColumnHeaderView>
+                                    </picker:SfTimePicker.ColumnHeaderView>
+                                </picker:SfTimePicker>
+
+                                <Button x:Name="timePickerButton" Text="{Binding VisitTimeDisplay, StringFormat='Select Time'}" Background="Transparent" TextColor="Black" Clicked="timePickerButton_Clicked"/>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <!-- Duration -->
+
+                        <VerticalStackLayout
+                            Grid.Column="{OnIdiom Default=2, Phone=0}"
+                            Grid.Row="{OnIdiom Default=0, Phone=1}">
+
+                            <Label Text="Pass Duration"
+                                   HorizontalOptions="Start"
+                                   Style="{StaticResource SectionEyebrow}" />
+
+                            <Picker
+                                HeightRequest="42" WidthRequest="160"
+                                ItemsSource="{Binding DurationPresets}"
+                                SelectedItem="{Binding ExpectedDurationMinutes}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- FOOTER -->
+
+            <Grid
+                Grid.Row="2"
+                BackgroundColor="{StaticResource SurfaceAlt}"
+                Padding="16"
+                ColumnDefinitions="{OnIdiom Default='*,Auto,Auto', Phone='*,*'}"
+                RowDefinitions="{OnIdiom Default='Auto', Phone='Auto'}"
+                ColumnSpacing="12">
+
+                <Button
+                    Grid.Column="{OnIdiom Default=1, Phone=0}"
+                    HeightRequest="44"
+                    Text="Cancel"
+                    Command="{Binding RequestCancelCommand}"
+                    Style="{StaticResource ActionSecondaryButton}" />
+
+                <Button
+                    Grid.Column="{OnIdiom Default=2, Phone=1}"
+                    HeightRequest="44"
+                    Text="Generate Visitor Pass"
+                    Command="{Binding SubmitCommand}"
+                    Style="{StaticResource ActionPrimaryButton}" />
+
+            </Grid>
+        </Grid>
+    </Border>
+</ContentView>

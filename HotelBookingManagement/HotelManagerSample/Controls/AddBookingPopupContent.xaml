@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:models="clr-namespace:HotelManagerSample;assembly=HotelManagerSample"
+             xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
+             xmlns:controls="clr-namespace:HotelManagerSample.Controls;assembly=HotelManagerSample"
+             xmlns:chips="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:conv="clr-namespace:HotelManagerSample.Converters;assembly=HotelManagerSample"
+             x:Class="HotelManagerSample.Controls.AddBookingPopupContent"
+             x:DataType="vm:AddBookingViewModel"
+             BackgroundColor="Transparent">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <conv:FloorChipBgConverter x:Key="FloorChipBg" />
+            <conv:FloorChipFgConverter x:Key="FloorChipFg" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Border BackgroundColor="White"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 14"
+            MinimumWidthRequest="580"
+            MaximumWidthRequest="640">
+        <VerticalStackLayout Spacing="0">
+
+            <!-- ============== HEADER STRIP ============== -->
+            <Grid ColumnDefinitions="Auto,*,Auto" Padding="22,20,18,18" ColumnSpacing="12">
+                <Border Grid.Column="0"
+                        BackgroundColor="#EEF2FF"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        WidthRequest="40" HeightRequest="40"
+                        VerticalOptions="Center">
+                    <Image Source="calender.png"
+                           HeightRequest="20" 
+                           WidthRequest="20"
+                           Aspect="AspectFit"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" Margin="12,0,0,0">
+                    <Label Text="New Booking"
+                           FontSize="9"
+                           CharacterSpacing="1.5"
+                           FontFamily="OpenSansSemibold"
+                           TextColor="#7A879B" />
+                    <Label Text="Add a reservation"
+                           FontSize="18"
+                           FontFamily="OpenSansSemibold"
+                           TextColor="#17243A" />
+                </VerticalStackLayout>
+
+                <Border Grid.Column="2"
+                        WidthRequest="28" HeightRequest="28"
+                        BackgroundColor="Transparent"
+                        StrokeThickness="0"
+                        VerticalOptions="Start">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer x:Name="CloseTap" Tapped="OnCloseTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#xe5cd;"
+                           FontFamily="MaterialAssets"
+                           FontSize="18"
+                           TextColor="#7A879B"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" />
+                </Border>
+            </Grid>
+
+            <BoxView HeightRequest="1" Color="#EEF2F7" />
+
+            <!-- ============== FORM BODY ============== -->
+            <ScrollView MaximumHeightRequest="500" VerticalScrollBarVisibility="Never">
+                <VerticalStackLayout Padding="22,18,22,10" Spacing="16">
+
+                    <!-- ─────────── SELECT FLOOR ─────────── -->
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label Text="Select Floor*"
+                               FontSize="9"
+                               CharacterSpacing="1"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="#7A879B"/>
+
+                        <chips:SfChipGroup
+                                ItemsSource="{Binding FloorOptions}"
+                                SelectionChanged="SfChipGroup_SelectionChanged"
+                                DisplayMemberPath="Display"
+                                ChipType="Choice">
+                            <chips:SfChipGroup.ItemTemplate>
+                                <DataTemplate x:DataType="models:FloorOption">
+                                    <chips:SfChip
+                                            FontFamily="OpenSansSemibold"
+                                            FontSize="11"
+                                            Text="{Binding Display}">
+                                    </chips:SfChip>
+                                </DataTemplate>
+                            </chips:SfChipGroup.ItemTemplate>
+                        </chips:SfChipGroup>
+                    </VerticalStackLayout>
+
+                    <!-- ─────────── AVAILABLE ROOMS ─────────── -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Available Rooms*"
+                               FontSize="9"
+                               CharacterSpacing="1"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="#7A879B" />
+
+                        <inputs:SfComboBox x:Name="RoomComboBox"
+                                               ItemsSource="{Binding AvailableRooms}"
+                                               SelectedItem="{Binding SelectedRoom, Mode=TwoWay}"
+                                               DisplayMemberPath="DisplayLabel"
+                                               TextMemberPath="DisplayLabel"
+                                               Placeholder="Choose an available room"
+                                               TextColor="#1B2435"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="9"
+                                               DropDownItemFontSize="11"
+                                               DropDownBackground="White"
+                                               BackgroundColor="Transparent"
+                                               HeightRequest="42" />
+
+                        <Label x:Name="EmptyRoomHint"
+                               Text="No rooms available on this floor - try another floor."
+                               FontSize="10"
+                               TextColor="#B86A11"
+                               IsVisible="{Binding HasNoAvailableRooms}" />
+                    </VerticalStackLayout>
+
+                    <!-- ─────────── GUEST NAME + EMAIL ─────────── -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                        <VerticalStackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="Guest Name*"
+                                   FontSize="9"
+                                   CharacterSpacing="1"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="#7A879B" />
+                            <Border BackgroundColor="#F4F6FB"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="12,0"
+                                    HeightRequest="42">
+                                <Grid ColumnDefinitions="16,*" ColumnSpacing="10" VerticalOptions="Center">
+                                    <Label Grid.Column="0"
+                                           Text="&#xe71b;"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="#526075"
+                                           VerticalTextAlignment="Center" />
+                                    <controls:SfEntry Grid.Column="1"
+                                                      Text="{Binding GuestName, Mode=TwoWay}"
+                                                      Placeholder="Liam Vance"
+                                                      PlaceholderColor="#9AA3B7"
+                                                      FontFamily="OpenSansRegular"
+                                                      FontSize="11"
+                                                      TextColor="#1B2435"
+                                                      BackgroundColor="Transparent"
+                                                      VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Email Address*"
+                                   FontSize="9"
+                                   CharacterSpacing="1"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="#7A879B" />
+                            <Border BackgroundColor="#F4F6FB"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="12,0"
+                                    HeightRequest="42">
+                                <Grid ColumnDefinitions="16,*" ColumnSpacing="10" VerticalOptions="Center">
+                                    <Label Grid.Column="0"
+                                           Text="&#xe717;"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="#526075"
+                                           VerticalTextAlignment="Center" />
+                                    <controls:SfEntry Grid.Column="1"
+                                                      x:Name="EmailEntry"
+                                                      Text="{Binding GuestEmail, Mode=TwoWay}"
+                                                      Placeholder="liam@example.com"
+                                                      PlaceholderColor="#9AA3B7"
+                                                      Keyboard="Email"
+                                                      FontFamily="OpenSansRegular"
+                                                      FontSize="11"
+                                                      TextColor="#1B2435"
+                                                      BackgroundColor="Transparent"
+                                                      VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- ─────────── PHONE + ADULTS + CHILDREN ─────────── -->
+                    <Grid ColumnDefinitions="*,1.05*,1.05*" ColumnSpacing="14">
+                        <VerticalStackLayout Grid.Column="0" Spacing="6">
+                            <Label Text="Phone Number*"
+                                   FontSize="9"
+                                   CharacterSpacing="1"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="#7A879B" />
+                            <Border BackgroundColor="#F4F6FB"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="12,0"
+                                    HeightRequest="42">
+                                <Grid ColumnDefinitions="16,*" ColumnSpacing="10" VerticalOptions="Center">
+                                    <Label Grid.Column="0"
+                                           Text="&#xe718;"
+                                           FontFamily="MaterialAssets"
+                                           FontSize="14"
+                                           TextColor="#526075"
+                                           VerticalTextAlignment="Center" />
+                                    <controls:SfEntry Grid.Column="1"
+                                                      x:Name="PhoneEntry"
+                                                      Text="{Binding Phone, Mode=TwoWay}"
+                                                      Placeholder="+1 9876543210"
+                                                      PlaceholderColor="#9AA3B7"
+                                                      Keyboard="Telephone"
+                                                      MaxLength="10"
+                                                      FontFamily="OpenSansRegular"
+                                                      FontSize="11"
+                                                      TextColor="#1B2435"
+                                                      BackgroundColor="Transparent"
+                                                      VerticalOptions="Center"
+                                                      TextChanged="OnPhoneValueChanged" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Adults"
+                                   FontSize="9"
+                                   CharacterSpacing="1"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="#7A879B" />
+                            <Border BackgroundColor="#F4F6FB"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="6,0"
+                                    HeightRequest="42">
+                                <Grid ColumnDefinitions="36,*,36">
+                                    <Border Grid.Column="0"
+                                            WidthRequest="32" HeightRequest="32"
+                                            BackgroundColor="#EEF2FF"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnAdultMinusTapped" />
+                                        </Border.GestureRecognizers>
+                                        <Label Text="&#xe72b;"
+                                               FontFamily="MaterialAssets"
+                                               FontSize="16"
+                                               TextColor="#4A43E6"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Adults}"
+                                           FontSize="13"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="#17243A"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                    <Border Grid.Column="2"
+                                            WidthRequest="32" HeightRequest="32"
+                                            BackgroundColor="#5146E5"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnAdultPlusTapped" />
+                                        </Border.GestureRecognizers>
+                                        <Label Text="&#xe70d;"
+                                               FontFamily="MaterialAssets"
+                                               FontSize="16"
+                                               TextColor="White"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="2" Spacing="6">
+                            <Label Text="Children"
+                                   FontSize="9"
+                                   CharacterSpacing="1"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="#7A879B" />
+                            <Border BackgroundColor="#F4F6FB"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="6,0"
+                                    HeightRequest="42">
+                                <Grid ColumnDefinitions="36,*,36">
+                                    <Border Grid.Column="0"
+                                            WidthRequest="32" HeightRequest="32"
+                                            BackgroundColor="#EEF2FF"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnChildMinusTapped" />
+                                        </Border.GestureRecognizers>
+                                        <Label Text="&#xe72b;"
+                                               FontFamily="MaterialAssets"
+                                               FontSize="16"
+                                               TextColor="#4A43E6"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Children}"
+                                           FontSize="13"
+                                           FontFamily="OpenSansSemibold"
+                                           TextColor="#17243A"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                    <Border Grid.Column="2"
+                                            WidthRequest="32" HeightRequest="32"
+                                            BackgroundColor="#5146E5"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnChildPlusTapped" />
+                                        </Border.GestureRecognizers>
+                                        <Label Text="&#xe70d;"
+                                               FontFamily="MaterialAssets"
+                                               FontSize="16"
+                                               TextColor="White"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- ─────────── STAY DATES ─────────── -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Stay Dates*"
+                               FontSize="9"
+                               CharacterSpacing="1"
+                               FontFamily="OpenSansSemibold"
+                               TextColor="#7A879B" />
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+
+                            <Border BackgroundColor="#F4F6FB"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="14,0"
+                                    HeightRequest="42">
+                                <Grid ColumnDefinitions="*, Auto">
+                                <Label FontSize="11"
+                                       FontFamily="OpenSansRegular"
+                                       TextColor="#1B2435"
+                                       VerticalTextAlignment="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding CheckIn, StringFormat='{0:ddd, MMM d, yyyy}'}" />
+                                            <Span Text="   –   " TextColor="#526075" />
+                                            <Span Text="{Binding CheckOut, StringFormat='{0:ddd, MMM d, yyyy}'}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Border Grid.Column="1"
+                                         BackgroundColor="Transparent"
+                                         Stroke="Transparent"
+                                         StrokeThickness="1"
+                                         StrokeShape="RoundRectangle 21"
+                                         WidthRequest="42" HeightRequest="42"
+                                         VerticalOptions="Center">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCalendarToggleTapped" />
+                                    </Border.GestureRecognizers>
+                                    <Image Source="calender.png"
+                                            HeightRequest="16" WidthRequest="16"
+                                            Aspect="AspectFit"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Center" />
+                                </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <calendar:SfCalendar x:Name="DateRangeCalendar"
+                                             SelectionMode="Range"
+                                             SelectedDateRange="{Binding SelectedDateRange, Mode=TwoWay}"
+                                             HeightRequest="280"
+                                             SelectionChanged="Calendar_SelectionChanged"
+                                             BackgroundColor="White"
+                                             IsVisible="{Binding IsCalendarOpen}" />
+                    </VerticalStackLayout>
+
+                    <!-- ─────────── INFO / ERROR STRIPS ─────────── -->
+                    <VerticalStackLayout Spacing="8">
+                        <Border BackgroundColor="#FDEEF3"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="9"
+                                IsVisible="{Binding HasErrorMessage}">
+                            <Grid ColumnDefinitions="20,*" ColumnSpacing="6">
+                                <Label Grid.Column="0"
+                                       Text="&#xe790;"
+                                       FontFamily="MaterialAssets"
+                                       FontSize="14"
+                                       TextColor="#B0233E"
+                                       VerticalTextAlignment="Center" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding ErrorMessage}"
+                                       FontSize="11"
+                                       TextColor="#B0233E"
+                                       VerticalTextAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <BoxView HeightRequest="1" Color="#EEF2F7" />
+
+            <!-- ============== FOOTER ============== -->
+            <Grid ColumnDefinitions="*,Auto,Auto"
+                  Padding="22,14,22,18"
+                  ColumnSpacing="14"
+                  HorizontalOptions="Fill">
+                <VerticalStackLayout Grid.Column="0" Spacing="0" VerticalOptions="Center">
+                    <Label Text="TOTAL" FontSize="9" CharacterSpacing="1.5"
+                           FontFamily="OpenSansSemibold" TextColor="#7A879B" />
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Label Text="{Binding ComputedTotal, StringFormat='${0:N0}'}"
+                               FontSize="17" FontFamily="OpenSansSemibold" TextColor="#17243A"
+                               VerticalTextAlignment="Center" />
+                        <Label Text="{Binding TotalFootnote}"
+                               FontSize="10" TextColor="#526075"
+                               VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <Button Grid.Column="1"
+                        BackgroundColor="Transparent"
+                        BorderColor="#E2E8F2" 
+                        BorderWidth="1" 
+                        CornerRadius="8"
+                        Padding="22,11" 
+                        VerticalOptions="Center" 
+                        Text="Cancel" 
+                        FontSize="11"
+                        FontFamily="OpenSansSemibold" TextColor="#526075" Clicked="OnCloseTapped">
+                </Button>
+
+                <Button Grid.Column="2"
+                        BackgroundColor="#5146E5" 
+                        BorderWidth="0" 
+                        CornerRadius="8"
+                        Padding="22,11" VerticalOptions="Center"
+                        Clicked="OnAddBookingTapped"
+                        Text="Add Booking" FontSize="11"
+                        FontFamily="OpenSansSemibold" TextColor="White">
+                </Button>
+            </Grid>
+
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

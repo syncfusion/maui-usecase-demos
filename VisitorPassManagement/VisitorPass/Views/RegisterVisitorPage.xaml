@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    VP-071..074 — Registration surface page.
+
+    Thin ContentPage wrapper that hosts the shared
+    RegisterVisitorView ContentView so the form layout exists
+    exactly once. The same ContentView is reused directly by the
+    Dashboard's OnIdiom containers (SfPopup on desktop/tablet,
+    phone overlay on phone) — this standalone page exists for any
+    future Navigation.PushModalAsync slide-up use.
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:VisitorPass.ViewModels;assembly=VisitorPass"
+             xmlns:views="clr-namespace:VisitorPass.Views;assembly=VisitorPass"
+             x:Class="VisitorPass.Views.RegisterVisitorPage"
+             x:DataType="vm:RegisterVisitorViewModel"
+             Title="Register Visitor"
+             BackgroundColor="{StaticResource SurfaceAlt}">
+
+    <views:RegisterVisitorView />
+</ContentPage>
