@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Syncfusion.Maui.Picker;
 using Todo.Features.EditNote.ViewModels;
 using Todo.Features.Notes.Views;
@@ -24,14 +23,11 @@ public partial class EditNotePage : ContentPage
         {
             _viewModel.IsDueDatePickerVisible = false;
             _viewModel.IsReminderPickerVisible = false;
-        }
-
-        BindingContext = viewModel;
-        if (_usesSchedulingPopups)
-        {
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             UpdateSchedulingEditors();
         }
+
+        BindingContext = viewModel;
     }
 
     protected override void OnDisappearing()
@@ -41,7 +37,7 @@ public partial class EditNotePage : ContentPage
             _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
-    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(EditNoteViewModel.IsDueDatePickerVisible)
             or nameof(EditNoteViewModel.IsReminderPickerVisible))
