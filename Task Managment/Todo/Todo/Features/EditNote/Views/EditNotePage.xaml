@@ -32,7 +32,7 @@
 
             <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
                 <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                    <Label x:Name="PageTitleLabel" Text="{Binding DialogTitle}"
+                    <Label Text="{Binding Target.Title}"
                            FontFamily="{StaticResource FontFamilySemibold}"
                            FontSize="18"
                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
@@ -47,7 +47,7 @@
                             <PointerGestureRecognizer PointerEntered="OnPointerEntered"
                                                       PointerExited="OnPointerExited" />
                         </Border.GestureRecognizers>
-                        <buttons:SfButton x:Name="CloseButton" Text="&#xe5cd;"
+                        <buttons:SfButton Text="&#xe5c4;"
                                           FontFamily="MaterialIconRegular"
                                           WidthRequest="40"
                                           HeightRequest="40"
