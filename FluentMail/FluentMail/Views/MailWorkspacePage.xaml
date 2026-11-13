@@ -11,14 +11,13 @@
              xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:FluentMail.Views.Controls"
              xmlns:models="clr-namespace:FluentMail.Models"
-             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
-             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:dsext="clr-namespace:Syncfusion.Maui.DataSource.Extensions;assembly=Syncfusion.Maui.DataSource"
              xmlns:data="clr-namespace:Syncfusion.Maui.DataSource;assembly=Syncfusion.Maui.DataSource"
              x:Class="FluentMail.Views.MailWorkspacePage"
              x:Name="MailWorkspaceRoot"
              x:DataType="vm:MailWorkspaceViewModel"
              Title="Mail"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1E1E1E}">
     <ContentPage.Resources>
         <DataTemplate x:Key="ContactSuggestionTemplate" x:DataType="models:Contact">
@@ -102,9 +101,6 @@
         </DataTemplate>
         <DataTemplate x:Key="MobileArchiveSwipeTemplate" x:DataType="models:MailMessage">
             <Grid BackgroundColor="#2E7D32">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.ArchiveMessageCommand}" CommandParameter="{Binding .}" />
-                </Grid.GestureRecognizers>
                 <VerticalStackLayout HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,28,0" Spacing="4">
                     <Image Source="archieve.png" WidthRequest="26" HeightRequest="26" />
                     <Label Text="Archive" TextColor="White" FontSize="13" HorizontalOptions="Center" />
@@ -113,9 +109,6 @@
         </DataTemplate>
         <DataTemplate x:Key="MobileDeleteSwipeTemplate" x:DataType="models:MailMessage">
             <Grid BackgroundColor="#D13438">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.DeleteMessageCommand}" CommandParameter="{Binding .}" />
-                </Grid.GestureRecognizers>
                 <Label Text="Delete" TextColor="White" FontSize="15" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center" Margin="28,0,0,0" />
             </Grid>
         </DataTemplate>
@@ -511,65 +504,68 @@
         <controls:MobileHeader Title="{Binding MobileTitle}" FilterCommand="{Binding SelectMobileFolderCommand}" />
 
         <Grid Grid.Row="1" RowDefinitions="Auto,*">
-            <Border HorizontalOptions="End" Margin="0,0,16,4" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0">
-                <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" IsClearButtonVisible="False" TextColor="#3C3C3C" />
-            </Border>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="16,4,16,0" IsVisible="{Binding IsMobileInbox}">
+                        <Border StrokeThickness="0" BackgroundColor="#F1EDEB" Padding="6" StrokeShape="RoundRectangle 28">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                                <Border StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding IsFocusedTab}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="White" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowFocusedCommand}" /></Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="Focused" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsFocusedTab}" Value="True">
+                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Border StrokeThickness="0" BackgroundColor="#0F5DB5" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                                            <Label Text="{Binding FocusedUnread}" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </Border>
+                                <Border Grid.Column="1" StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding IsOtherTab}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="White" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowOtherCommand}" /></Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                                        <Label Text="Other" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsOtherTab}" Value="True">
+                                                    <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Border StrokeThickness="0" BackgroundColor="#E4E0DE" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
+                                            <Label Text="{Binding OtherUnread}" TextColor="#4A4A4A" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0" VerticalOptions="Center">
+                            <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" IsClearButtonVisible="False" TextColor="#3C3C3C" />
+                        </Border>
+                    </Grid>
 
-            <tabView:SfTabView Grid.Row="1" IsVisible="{Binding IsMobileInbox}" TabBarPlacement="Top" TabWidthMode="Default"
-                               TabBarBackground="#FCF7F5" IndicatorBackground="#0F5DB5" IndicatorPlacement="Bottom" EnableSwiping="False">
-                <tabView:SfTabView.Items>
-                    <tabView:SfTabItem Header="Focused" TextColor="#0F5DB5" BadgeText="{Binding FocusedUnread}">
-                        <tabView:SfTabItem.BadgeSettings>
-                            <core:BadgeSettings Type="Primary" />
-                        </tabView:SfTabItem.BadgeSettings>
-                        <tabView:SfTabItem.Content>
-                            <listview:SfListView ItemsSource="{Binding FocusedMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
-                                             StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
-                                             AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
-                                <listview:SfListView.DataSource>
-                                    <data:DataSource>
-                                        <data:DataSource.GroupDescriptors>
-                                            <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
-                                        </data:DataSource.GroupDescriptors>
-                                    </data:DataSource>
-                                </listview:SfListView.DataSource>
-                            </listview:SfListView>
-                        </tabView:SfTabItem.Content>
-                    </tabView:SfTabItem>
-                    <tabView:SfTabItem Header="Other" TextColor="#0F5DB5" BadgeText="{Binding OtherUnread}">
-                        <tabView:SfTabItem.BadgeSettings>
-                            <core:BadgeSettings Type="Secondary" />
-                        </tabView:SfTabItem.BadgeSettings>
-                        <tabView:SfTabItem.Content>
-                            <listview:SfListView ItemsSource="{Binding OtherMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
-                                             StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
-                                             AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
-                                <listview:SfListView.DataSource>
-                                    <data:DataSource>
-                                        <data:DataSource.GroupDescriptors>
-                                            <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
-                                        </data:DataSource.GroupDescriptors>
-                                    </data:DataSource>
-                                </listview:SfListView.DataSource>
-                            </listview:SfListView>
-                        </tabView:SfTabItem.Content>
-                    </tabView:SfTabItem>
-                </tabView:SfTabView.Items>
-            </tabView:SfTabView>
-
-            <Grid Grid.Row="1" IsVisible="{Binding IsMobileInbox, Converter={StaticResource BooleanNegationConverter}}">
-                <listview:SfListView ItemsSource="{Binding FolderMessagesMobile}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
-                                    StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
-                                    AllowSwiping="True" SwipeOffset="110" SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
-                    <listview:SfListView.DataSource>
-                        <data:DataSource>
-                            <data:DataSource.GroupDescriptors>
-                                <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
-                            </data:DataSource.GroupDescriptors>
-                        </data:DataSource>
-                    </listview:SfListView.DataSource>
-                </listview:SfListView>
-            </Grid>
+            <listview:SfListView Grid.Row="1" x:Name="MobileMailList" ItemsSource="{Binding MobileMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
+                                 StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
+                                 AllowSwiping="True" SwipeOffset="360" SwipeThreshold="30" SwipeEnded="OnMobileSwipeEnded"
+                                 SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
+                <listview:SfListView.DataSource>
+                    <data:DataSource>
+                        <data:DataSource.GroupDescriptors>
+                            <data:GroupDescriptor PropertyName="ReceivedDate" Comparer="{StaticResource NewestFirstGroupComparer}" />
+                        </data:DataSource.GroupDescriptors>
+                    </data:DataSource>
+                </listview:SfListView.DataSource>
+            </listview:SfListView>
 
             <Border Grid.Row="1" WidthRequest="64" HeightRequest="64" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,24">
                 <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding NewMailCommand}" /></Border.GestureRecognizers>

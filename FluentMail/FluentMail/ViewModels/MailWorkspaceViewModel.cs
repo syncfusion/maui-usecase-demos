@@ -63,13 +63,13 @@ public partial class MailWorkspaceViewModel : ObservableObject
     private string selectedSort = "Unread first";
 
     [ObservableProperty]
-    private ObservableCollection<MailMessage> focusedMessages = [];
+    [NotifyPropertyChangedFor(nameof(IsOtherTab))]
+    private bool isFocusedTab = true;
+
+    public bool IsOtherTab => !IsFocusedTab;
 
     [ObservableProperty]
-    private ObservableCollection<MailMessage> otherMessages = [];
-
-    [ObservableProperty]
-    private ObservableCollection<MailMessage> folderMessagesMobile = [];
+    private ObservableCollection<MailMessage> mobileMessages = [];
 
     [ObservableProperty]
     private int focusedUnread;
@@ -86,8 +86,15 @@ public partial class MailWorkspaceViewModel : ObservableObject
     [ObservableProperty]
     private bool isMessageOpen;
 
+    partial void OnIsFocusedTabChanged(bool value) => RefreshMobile();
     partial void OnSelectedSortChanged(string value) => RefreshMobile();
     partial void OnSelectedMobileFolderChanged(string value) => RefreshMobile();
+
+    [RelayCommand]
+    void ShowFocused() => IsFocusedTab = true;
+
+    [RelayCommand]
+    void ShowOther() => IsFocusedTab = false;
 
     [RelayCommand]
     void SelectMobileFolder(string? folder)
@@ -117,15 +124,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
         TotalUnread = FocusedUnread + OtherUnread;
 
         IsMobileInbox = SelectedMobileFolder == "Inbox";
-        if (IsMobileInbox)
-        {
-            FocusedMessages = Order(focused);
-            OtherMessages = Order(other);
-        }
-        else
-        {
-            FolderMessagesMobile = Order(mailbox.GetMessages(SelectedMobileFolder));
-        }
+        MobileMessages = Order(IsMobileInbox ? (IsFocusedTab ? focused : other) : mailbox.GetMessages(SelectedMobileFolder));
     }
 
     ObservableCollection<MailMessage> Order(IEnumerable<MailMessage> source) => new(SelectedSort == "Unread first"
