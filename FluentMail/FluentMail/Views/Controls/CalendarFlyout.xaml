@@ -14,7 +14,7 @@
         </Grid>
         <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout>
-                <calendar:SfCalendar x:Name="FlyoutCalendar" View="Month" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectionBackground="#0F5DB5" ShowTrailingAndLeadingDates="True" Background="White" HeightRequest="330" Margin="12,0" />
+                <calendar:SfCalendar x:Name="FlyoutCalendar" View="Month" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectionBackground="#106EBE" ShowTrailingAndLeadingDates="True" Background="White" HeightRequest="330" Margin="12,0" />
         
                 <listview:SfListView ItemsSource="{Binding AgendaGroups}" Padding="16,0" IsScrollingEnabled="False" SelectionBackground="Transparent" SelectionMode="None" AutoFitMode="DynamicHeight">
                     <listview:SfListView.ItemTemplate>

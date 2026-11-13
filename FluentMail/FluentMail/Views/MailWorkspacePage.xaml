@@ -500,13 +500,13 @@
         </Grid>
     </Grid>
 
-    <Grid IsVisible="{OnIdiom Default=False, Phone=True}" RowDefinitions="Auto,*,Auto" BackgroundColor="#FCF7F5">
+        <Grid IsVisible="{OnIdiom Default=False, Phone=True}" RowDefinitions="Auto,*,Auto" BackgroundColor="#F3F3F3">
         <controls:MobileHeader Title="{Binding MobileTitle}" FilterCommand="{Binding SelectMobileFolderCommand}" />
 
         <Grid Grid.Row="1" RowDefinitions="Auto,*">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="16,4,16,0" IsVisible="{Binding IsMobileInbox}">
                         <Border StrokeThickness="0" BackgroundColor="#F1EDEB" Padding="6" StrokeShape="RoundRectangle 28">
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="2">
                                 <Border StrokeThickness="0" Padding="12,10" StrokeShape="RoundRectangle 22" BackgroundColor="Transparent">
                                     <Border.Triggers>
                                         <DataTrigger TargetType="Border" Binding="{Binding IsFocusedTab}" Value="True">
@@ -514,16 +514,16 @@
                                         </DataTrigger>
                                     </Border.Triggers>
                                     <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding ShowFocusedCommand}" /></Border.GestureRecognizers>
-                                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                                        <Label Text="Focused" FontSize="17" TextColor="#4A4A4A" VerticalOptions="Center">
+                                    <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                                        <Label Text="Focused" FontSize="14" TextColor="#4A4A4A" VerticalOptions="Center">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsFocusedTab}" Value="True">
                                                     <Setter Property="TextColor" Value="#0F5DB5" /><Setter Property="FontAttributes" Value="Bold" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
-                                        <Border StrokeThickness="0" BackgroundColor="#0F5DB5" StrokeShape="Ellipse" WidthRequest="22" HeightRequest="22" VerticalOptions="Center">
-                                            <Label Text="{Binding FocusedUnread}" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        <Border StrokeThickness="0" BackgroundColor="#0F5DB5" StrokeShape="Ellipse" WidthRequest="18" HeightRequest="18" VerticalOptions="Center">
+                                            <Label Text="{Binding FocusedUnread}" TextColor="White" FontSize="10" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
                                         </Border>
                                     </HorizontalStackLayout>
                                 </Border>
@@ -550,14 +550,14 @@
                             </Grid>
                         </Border>
                         <Border Grid.Column="1" StrokeThickness="0" BackgroundColor="#F1EDEB" StrokeShape="RoundRectangle 18" Padding="10,0" VerticalOptions="Center">
-                            <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" IsClearButtonVisible="False" TextColor="#3C3C3C" />
+                        <inputs:SfComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" WidthRequest="130" ShowBorder="False" DropDownBackground="White" SelectedDropDownItemBackground="#D7E8FB" IsClearButtonVisible="False" TextColor="#3C3C3C" />
                         </Border>
                     </Grid>
 
             <listview:SfListView Grid.Row="1" x:Name="MobileMailList" ItemsSource="{Binding MobileMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
                                  StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
                                  AllowSwiping="True" SwipeOffset="360" SwipeThreshold="30" SwipeEnded="OnMobileSwipeEnded"
-                                 SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="Transparent">
+                                 SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="#F3F3F3">
                 <listview:SfListView.DataSource>
                     <data:DataSource>
                         <data:DataSource.GroupDescriptors>

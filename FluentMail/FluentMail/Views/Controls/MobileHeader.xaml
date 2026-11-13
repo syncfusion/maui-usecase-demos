@@ -4,7 +4,7 @@
              xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
              x:Class="FluentMail.Views.Controls.MobileHeader"
              x:Name="Root">
-    <Grid Padding="16,8" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="14" BackgroundColor="#FCF7F5">
+    <Grid Padding="16,8" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="14" HeightRequest="70" BackgroundColor="#F3F3F3">
         <Label Text="{Binding Title, Source={x:Reference Root}}" FontSize="26" FontAttributes="Bold" TextColor="#1B1B1B" VerticalOptions="Center" />
         <Image x:Name="FilterIcon" Grid.Column="1" Source="ic_filter.svg" WidthRequest="24" HeightRequest="24" VerticalOptions="Center"
                IsVisible="{Binding HasFilter, Source={x:Reference Root}}" SemanticProperties.Description="Filter mail folders">
