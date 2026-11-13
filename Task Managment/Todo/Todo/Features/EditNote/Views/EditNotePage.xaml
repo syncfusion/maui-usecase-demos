@@ -15,9 +15,6 @@
           VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
           HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}">
         <Border
-                WidthRequest="{OnIdiom Phone=-1, Default=330}"
-                HeightRequest="{OnIdiom Phone=-1, Default=-1}"
-                MaximumHeightRequest="{OnIdiom Phone=-1, Default=560}"
                 Margin="{OnIdiom Phone=0, Default=0}"
                 HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
                 VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
@@ -32,7 +29,7 @@
 
             <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
                 <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                    <Label Text="{Binding Target.Title}"
+                    <Label Text="{Binding Title}"
                            FontFamily="{StaticResource FontFamilySemibold}"
                            FontSize="18"
                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
