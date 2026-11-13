@@ -290,7 +290,7 @@ public partial class QueueSessionViewModel : ObservableObject
     public partial string ActiveCounterName { get; set; } = "Counter 1";
 
     [ObservableProperty]
-    public partial string StatusFilter { get; set; } = "All Tokens";
+    public partial string StatusFilter { get; set; } = "Serving";
 
     [ObservableProperty]
     public partial string SearchText { get; set; } = string.Empty;

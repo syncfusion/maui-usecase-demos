@@ -79,9 +79,7 @@ public partial class TokensPage : ContentView
         if (_isMobileLayout != mobile)
         {
             _isMobileLayout = mobile;
-            BindableLayout.SetItemsSource(
-                MobileTokenList,
-                mobile ? _viewModel.VisibleTokenRows : null);
+            MobileTokenList.ItemsSource = mobile ? _viewModel.VisibleTokenRows : null;
         }
 
         MetricGrid.ColumnDefinitions = wide

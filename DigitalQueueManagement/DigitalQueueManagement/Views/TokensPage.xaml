@@ -572,10 +572,13 @@
                             </VerticalStackLayout>
                         </Grid>
                         <Grid x:Name="MobileTokenContent" IsVisible="False">
-                            <VerticalStackLayout x:Name="MobileTokenList"
-                                                 IsVisible="{Binding HasVisibleTokens}"
-                                                 Spacing="18">
-                            <BindableLayout.ItemTemplate>
+                            <listview:SfListView x:Name="MobileTokenList"
+                                                 ItemSize="132"
+                                                 ItemSpacing="0,0,0,18"
+                                                 HeightRequest="520"
+                                                 SelectionMode="None"
+                                                 IsVisible="{Binding HasVisibleTokens}">
+                            <listview:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:QueueTokenListItem">
                                     <Border Padding="18,16"
                                             BackgroundColor="White"
@@ -670,8 +673,8 @@
                                         </VerticalStackLayout>
                                     </Border>
                                 </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                            </listview:SfListView.ItemTemplate>
+                            </listview:SfListView>
                             <VerticalStackLayout x:Name="MobileTokenEmptyState"
                                              IsVisible="{Binding HasNoVisibleTokens}"
                                              Spacing="5"
