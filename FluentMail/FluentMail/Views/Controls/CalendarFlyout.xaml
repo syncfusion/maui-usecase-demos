@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
+             xmlns:vm="clr-namespace:FluentMail.ViewModels"
+             xmlns:models="clr-namespace:FluentMail.Models"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             x:Class="FluentMail.Views.Controls.CalendarFlyout"
+             x:DataType="vm:CalendarViewModel">
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="White" Padding="0">
+        <Grid Padding="24,16,16,8" ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="24">
+            <Label Text="Calendar" FontSize="18" FontAttributes="Bold" TextColor="#0F5DB5" VerticalOptions="Center" />
+            <Button Grid.Column="3" Text="✕" BorderWidth="0" FontSize="18" BackgroundColor="Transparent" TextColor="#3C3C3C" Padding="8,0" Clicked="OnCloseClicked" />
+        </Grid>
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout>
+                <calendar:SfCalendar x:Name="FlyoutCalendar" View="Month" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectionBackground="#106EBE" ShowTrailingAndLeadingDates="True" Background="White" HeightRequest="330" Margin="12,0" />
+        
+                <listview:SfListView ItemsSource="{Binding AgendaGroups}" Padding="16,0" IsScrollingEnabled="False" SelectionBackground="Transparent" SelectionMode="None" AutoFitMode="DynamicHeight">
+                    <listview:SfListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:AgendaGroup">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" Padding="0,14,0,2" />
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="8">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:CalendarEntry">
+                                        <Border StrokeThickness="0" BackgroundColor="#F8F8F8" Padding="0">
+                                            <Grid ColumnDefinitions="5,*,Auto">
+                                                <BoxView Color="{Binding Accent}" />
+                                                <VerticalStackLayout Grid.Column="1" Padding="14,10" Spacing="2">
+                                                    <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" TextColor="{Binding Accent}" LineBreakMode="TailTruncation" />
+                                                    <Label Text="{Binding TimeText}" FontSize="13" TextColor="#5A5A5A" />
+                                                    <Label Text="{Binding Location}" IsVisible="{Binding HasLocation}" FontSize="13" TextColor="#5A5A5A" />
+                                                </VerticalStackLayout>
+                                                <Button Grid.Column="2" Text="✕" FontSize="12" BackgroundColor="Transparent" TextColor="#8A8886" Padding="8,0" VerticalOptions="Start"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarViewModel}}, Path=DeleteEntryCommand}" CommandParameter="{Binding .}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </listview:SfListView.ItemTemplate>
+            </listview:SfListView>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button Grid.Row="2" Text="New Event" Command="{Binding OpenAddCommand}" BackgroundColor="Transparent" TextColor="#0F5DB5" FontSize="16" HorizontalOptions="Start" Margin="12,4,0,8" />
+        <Grid Grid.RowSpan="3" IsVisible="{Binding IsAddOpen}" BackgroundColor="#80000000">
+            <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 12" Padding="20" WidthRequest="300" VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Add to calendar" FontSize="18" FontAttributes="Bold" />
+                    <Entry Placeholder="Title" Text="{Binding NewTitle}" />
+                    <Grid ColumnDefinitions="*,Auto"><Label Text="Reminder only" VerticalOptions="Center" /><Switch Grid.Column="1" IsToggled="{Binding NewIsReminder}" /></Grid>
+                    <TimePicker Time="{Binding NewTime}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="Cancel" Command="{Binding CancelAddCommand}" BackgroundColor="#EEEEEE" TextColor="Black" />
+                        <Button Grid.Column="1" Text="Save" Command="{Binding SaveEntryCommand}" BackgroundColor="#0F5DB5" TextColor="White" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentView>

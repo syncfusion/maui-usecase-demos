@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FluentMail.Views.Controls.MobileTabBar"
+             x:Name="Root">
+    <Grid ColumnDefinitions="*,*,*" Padding="0,8,0,10" BackgroundColor="#FCF7F5">
+        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GoCommand, Source={x:Reference Root}}" CommandParameter="MailPage" />
+            </VerticalStackLayout.GestureRecognizers>
+            <Grid HorizontalOptions="Center">
+                <Image Source="ic_mail.svg" WidthRequest="26" HeightRequest="26">
+                    <Image.Triggers>
+                        <DataTrigger TargetType="Image" Binding="{Binding Selected, Source={x:Reference Root}}" Value="Mail">
+                            <Setter Property="Source" Value="ic_mail_b.svg" />
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
+                <Border IsVisible="{Binding HasBadge, Source={x:Reference Root}}" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#0F5DB5" WidthRequest="20" HeightRequest="20" HorizontalOptions="End" VerticalOptions="Start" Margin="0,-8,-12,0">
+                    <Label Text="{Binding Badge, Source={x:Reference Root}}" TextColor="White" FontSize="11" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+            </Grid>
+            <Label Text="Mail" FontSize="14" HorizontalOptions="Center" TextColor="#3C3C3C">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding Selected, Source={x:Reference Root}}" Value="Mail">
+                        <Setter Property="TextColor" Value="#0F5DB5" />
+                        <Setter Property="FontAttributes" Value="Bold" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GoCommand, Source={x:Reference Root}}" CommandParameter="SearchPage" />
+            </VerticalStackLayout.GestureRecognizers>
+            <Image Source="ic_search.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center">
+                <Image.Triggers>
+                    <DataTrigger TargetType="Image" Binding="{Binding Selected, Source={x:Reference Root}}" Value="Search">
+                        <Setter Property="Source" Value="ic_search_b.svg" />
+                    </DataTrigger>
+                </Image.Triggers>
+            </Image>
+            <Label Text="Search" FontSize="14" HorizontalOptions="Center" TextColor="#3C3C3C">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding Selected, Source={x:Reference Root}}" Value="Search">
+                        <Setter Property="TextColor" Value="#0F5DB5" />
+                        <Setter Property="FontAttributes" Value="Bold" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GoCommand, Source={x:Reference Root}}" CommandParameter="CalendarPage" />
+            </VerticalStackLayout.GestureRecognizers>
+            <Image Source="ic_calendar.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center">
+                <Image.Triggers>
+                    <DataTrigger TargetType="Image" Binding="{Binding Selected, Source={x:Reference Root}}" Value="Calendar">
+                        <Setter Property="Source" Value="ic_calendar_b.svg" />
+                    </DataTrigger>
+                </Image.Triggers>
+            </Image>
+            <Label Text="Calendar" FontSize="14" HorizontalOptions="Center" TextColor="#3C3C3C">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding Selected, Source={x:Reference Root}}" Value="Calendar">
+                        <Setter Property="TextColor" Value="#0F5DB5" />
+                        <Setter Property="FontAttributes" Value="Bold" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>
