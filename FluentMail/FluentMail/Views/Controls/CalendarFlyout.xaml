@@ -45,7 +45,7 @@
             </listview:SfListView>
             </VerticalStackLayout>
         </ScrollView>
-        <Button Grid.Row="2" Text="＋ New event" Command="{Binding OpenAddCommand}" BackgroundColor="Transparent" TextColor="#0F5DB5" FontSize="16" HorizontalOptions="Start" Margin="12,4,0,8" />
+        <Button Grid.Row="2" Text="New Event" Command="{Binding OpenAddCommand}" BackgroundColor="Transparent" TextColor="#0F5DB5" FontSize="16" HorizontalOptions="Start" Margin="12,4,0,8" />
         <Grid Grid.RowSpan="3" IsVisible="{Binding IsAddOpen}" BackgroundColor="#80000000">
             <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 12" Padding="20" WidthRequest="300" VerticalOptions="Center" HorizontalOptions="Center">
                 <VerticalStackLayout Spacing="12">
