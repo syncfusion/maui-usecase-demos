@@ -19,4 +19,10 @@ public partial class MailWorkspacePage : ContentPage
         command.Execute(message);
         MobileMailList.ResetSwipeItem();
     }
+
+    void OnMobileItemTapped(object? sender, Syncfusion.Maui.ListView.ItemTappedEventArgs e)
+    {
+        if (e.DataItem is MailMessage message && BindingContext is MailWorkspaceViewModel viewModel)
+            viewModel.OpenMessageCommand.Execute(message);
+    }
 }

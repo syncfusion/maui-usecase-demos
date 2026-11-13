@@ -40,9 +40,6 @@
             <Grid BackgroundColor="#FCF7F5" Padding="16,0">
                 <VerticalStackLayout>
                     <Grid ColumnDefinitions="14,52,*" ColumnSpacing="10" Padding="0,14,0,12">
-                        <!--<Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference MailWorkspaceRoot}, Path=BindingContext.OpenMessageCommand}" CommandParameter="{Binding .}" />
-                        </Grid.GestureRecognizers>-->
                         <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#0F5DB5" VerticalOptions="Start" Margin="0,22,0,0" IsVisible="{Binding IsUnread}" />
                         <Border Grid.Column="1" WidthRequest="52" HeightRequest="52" StrokeThickness="0" StrokeShape="Ellipse" BackgroundColor="#D7E8FB" VerticalOptions="Start">
                             <Label Text="{Binding Sender, Converter={StaticResource InitialsConverter}}" FontSize="17" FontAttributes="Bold" TextColor="#1B1B1B" HorizontalOptions="Center" VerticalOptions="Center" />
@@ -555,7 +552,7 @@
 
             <listview:SfListView Grid.Row="1" x:Name="MobileMailList" ItemsSource="{Binding MobileMessages}" ItemTemplate="{StaticResource MobileMailItemTemplate}" GroupHeaderTemplate="{StaticResource MobileGroupHeaderTemplate}"
                                  StartSwipeTemplate="{StaticResource MobileDeleteSwipeTemplate}" EndSwipeTemplate="{StaticResource MobileArchiveSwipeTemplate}"
-                                 AllowSwiping="True" SwipeOffset="100" SwipeThreshold="30" SwipeEnded="OnMobileSwipeEnded"
+                                 AllowSwiping="True" SwipeOffset="100" SwipeThreshold="30" SwipeEnded="OnMobileSwipeEnded" ItemTapped="OnMobileItemTapped"
                                  SelectionMode="None" AutoFitMode="DynamicHeight" GroupHeaderSize="44" ItemSpacing="0" ScrollBarVisibility="Never" BackgroundColor="#F3F3F3">
                 <listview:SfListView.DataSource>
                     <data:DataSource>
