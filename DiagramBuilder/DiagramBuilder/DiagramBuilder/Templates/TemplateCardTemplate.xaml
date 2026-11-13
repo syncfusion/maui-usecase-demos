@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  TemplateCardTemplate: visual for one predefined diagram card shown in the
+  Create Diagram dialog. Bound to DiagramTemplate (Title, Description,
+  AccentColorKey, NodesCount, IsBlank, ThumbnailKey).
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+                    x:Class="DiagramBuilder.Templates.TemplateCardTemplate">
+
+    <DataTemplate x:Key="TemplateCardTemplate">
+        <Border Stroke="{DynamicResource PanelBorderBrush}"
+                StrokeThickness="1"
+                Padding="16"
+                Margin="6"
+                BackgroundColor="{DynamicResource CanvasBackground}">
+            <Border.StrokeShape>
+                <shapes:RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                  ColumnDefinitions="72,*"
+                  ColumnSpacing="12"
+                  RowSpacing="4">
+                <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
+                        StrokeThickness="0"
+                        WidthRequest="64" HeightRequest="64"
+                        VerticalOptions="Start"
+                        BackgroundColor="{Binding AccentColorKey, Converter={StaticResource ColorToBrushConverter}}">
+                    <Border.StrokeShape>
+                        <shapes:RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                </Border>
+                <Label Grid.Row="0" Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource TextPrimary}" />
+                <Label Grid.Row="1" Grid.Column="1"
+                       Text="{Binding Description}"
+                       FontSize="12"
+                       TextColor="{DynamicResource TextSecondary}" />
+                <Label Grid.Row="2" Grid.Column="1"
+                       Text="{Binding Nodes.Count, StringFormat='{0} shapes'}"
+                       FontSize="11"
+                       TextColor="{DynamicResource TextSecondary}" />
+            </Grid>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

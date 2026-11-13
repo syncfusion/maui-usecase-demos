@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             xmlns:constants="clr-namespace:DiagramBuilder.Constants"
+             xmlns:vm="clr-namespace:DiagramBuilder.ViewModels"
+             xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             x:Class="DiagramBuilder.Views.Dialogs.PrintDialog"
+             x:DataType="vm:PrintSettingsViewModel">
+    <Border Stroke="{DynamicResource PanelBorderBrush}"
+            StrokeThickness="1"
+            Padding="24"
+            WidthRequest="480"
+            Background="{DynamicResource CanvasBackground}">
+        <Border.StrokeShape>
+            <shapes:RoundRectangle CornerRadius="4" />
+        </Border.StrokeShape>
+        <VerticalStackLayout Spacing="10">
+            <Label Text="{x:Static constants:AppStrings.PrintDialogTitle}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource TextPrimary}" />
+
+            <Label Text="{x:Static constants:AppStrings.PrintRegionLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <inputs:SfComboBox ItemsSource="{Binding RegionLabels}"
+                                SelectedItem="{Binding Region, Mode=TwoWay}"
+                                IsEditable="False"
+                                IsClearButtonVisible="False"
+                                ShowBorder="True"
+                                HeightRequest="40"
+                                TextColor="{DynamicResource TextPrimary}"
+                                Background="{DynamicResource CanvasBackground}"
+                                AutomationId="print_region" />
+
+            <Label Text="{x:Static constants:AppStrings.PrintPaperSizeLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <inputs:SfComboBox ItemsSource="{Binding PaperSizeLabels}"
+                                SelectedItem="{Binding PaperSize, Mode=TwoWay}"
+                                IsEditable="False"
+                                IsClearButtonVisible="False"
+                                ShowBorder="True"
+                                HeightRequest="40"
+                                TextColor="{DynamicResource TextPrimary}"
+                                Background="{DynamicResource CanvasBackground}"
+                                AutomationId="print_paper_size" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10"
+                  IsVisible="{Binding IsCustomPaperSize}">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="{x:Static constants:AppStrings.PrintWidthLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource TextSecondary}" />
+                    <Entry Text="{Binding CustomWidth, Mode=TwoWay}"
+                           Keyboard="Numeric"
+                           AutomationId="print_custom_width" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="{x:Static constants:AppStrings.PrintHeightLabel}"
+                           FontSize="12"
+                           TextColor="{DynamicResource TextSecondary}" />
+                    <Entry Text="{Binding CustomHeight, Mode=TwoWay}"
+                           Keyboard="Numeric"
+                           AutomationId="print_custom_height" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <Label Text="{x:Static constants:AppStrings.PrintOrientationLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <inputs:SfComboBox ItemsSource="{Binding OrientationLabels}"
+                                SelectedItem="{Binding Orientation, Mode=TwoWay}"
+                                IsEditable="False"
+                                IsClearButtonVisible="False"
+                                ShowBorder="True"
+                                HeightRequest="40"
+                                TextColor="{DynamicResource TextPrimary}"
+                                Background="{DynamicResource CanvasBackground}"
+                                AutomationId="print_orientation" />
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="{x:Static constants:AppStrings.PrintScaleToFit}"
+                       VerticalOptions="Center"
+                       TextColor="{DynamicResource TextPrimary}" />
+                <Switch IsToggled="{Binding ScaleToFit, Mode=TwoWay}"
+                        AutomationId="print_scale_to_fit" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Spacing="8" Margin="0,10,0,0">
+                <Button Text="{x:Static constants:AppStrings.PrintAction}"
+                        Command="{Binding PrintDocumentCommand}"
+                        IsEnabled="{Binding IsPrinting, Converter={StaticResource InvertBoolConverter}}"
+                        AutomationId="print_confirm" />
+                <Button Text="{x:Static constants:AppStrings.PrintCancel}"
+                        Command="{Binding CancelCommand}"
+                        IsEnabled="{Binding IsPrinting, Converter={StaticResource InvertBoolConverter}}"
+                        AutomationId="print_cancel" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

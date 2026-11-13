@@ -1,0 +1,118 @@
+using DiagramBuilder.Constants;
+using DiagramBuilder.Models;
+
+namespace DiagramBuilder.Services;
+
+/// <summary>
+/// In-memory <see cref="IDiagramService"/> implementation.
+/// </summary>
+public class DiagramService : IDiagramService
+{
+    private readonly ITemplateService _templateService;
+    private readonly SemaphoreSlim _gate = new(1, 1);
+
+    public DiagramService(ITemplateService templateService)
+    {
+        _templateService = templateService;
+    }
+
+    public DiagramDocument? CurrentDocument { get; private set; }
+
+    public event EventHandler<string>? StatusChanged;
+
+    public event EventHandler<DiagramDocument>? DocumentLoaded;
+
+    public async Task<DiagramDocument> CreateDocumentAsync(DiagramTemplate template)
+    {
+        await _gate.WaitAsync();
+        try
+        {
+            var doc = new DiagramDocument
+            {
+                Id = "doc-" + Guid.NewGuid().ToString("N"),
+                Title = template.IsBlank ? AppStrings.UntitledDocument : template.Title,
+                Category = template.Category,
+                IsDirty = false,
+            };
+
+            foreach (var node in template.Nodes)
+            {
+                doc.Items.Add(new ShapeItem
+                {
+                    Id = node.Id,
+                    Text = node.Text,
+                    ShapeType = node.ShapeType,
+                    PositionX = node.X,
+                    PositionY = node.Y,
+                    Width = node.Width,
+                    Height = node.Height,
+                    FillColorKey = node.FillColorKey,
+                });
+            }
+
+            foreach (var connector in template.Connectors)
+            {
+                doc.Connectors.Add(new ConnectorItem
+                {
+                    Id = connector.Id,
+                    Text = connector.Text,
+                    SourceId = connector.SourceId,
+                    TargetId = connector.TargetId,
+                    ConnectorKind = connector.Kind,
+                    StrokeColorKey = connector.StrokeColorKey,
+                    StrokeThickness = connector.StrokeThickness,
+                    SourceX = connector.SourceX,
+                    SourceY = connector.SourceY,
+                    TargetX = connector.TargetX,
+                    TargetY = connector.TargetY,
+                });
+            }
+
+            CurrentDocument = doc;
+            DocumentLoaded?.Invoke(this, doc);
+            return doc;
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public Task LoadDocumentAsync(DiagramDocument document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        CurrentDocument = document;
+        DocumentLoaded?.Invoke(this, document);
+        RaiseStatus(string.Format(AppStrings.StatusOpenedFormat, document.Title));
+        return Task.CompletedTask;
+    }
+
+    public Task SaveAsync(DiagramDocument snapshot, string fileName)
+    {
+        snapshot.Title = fileName;
+        snapshot.IsDirty = false;
+        CurrentDocument = snapshot;
+        RaiseStatus(string.Format(AppStrings.StatusSavedFormat, fileName));
+        return Task.CompletedTask;
+    }
+
+    public Task SaveAsAsync(DiagramDocument snapshot, string title)
+    {
+        snapshot.Title = title;
+        snapshot.IsDirty = false;
+        CurrentDocument = snapshot;
+        RaiseStatus(string.Format(AppStrings.StatusSavedFormat, title));
+        return Task.CompletedTask;
+    }
+
+    public void SetDirty()
+    {
+        if (CurrentDocument is not null)
+        {
+            CurrentDocument.IsDirty = true;
+        }
+    }
+
+    private void RaiseStatus(string message) =>
+        StatusChanged?.Invoke(this, message);
+}

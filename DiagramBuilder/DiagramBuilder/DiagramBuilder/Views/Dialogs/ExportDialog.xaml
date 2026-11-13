@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             xmlns:constants="clr-namespace:DiagramBuilder.Constants"
+             xmlns:vm="clr-namespace:DiagramBuilder.ViewModels"
+             xmlns:inputs="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             x:Class="DiagramBuilder.Views.Dialogs.ExportDialog"
+             x:DataType="vm:ExportViewModel">
+    <Border Stroke="{DynamicResource PanelBorderBrush}"
+            StrokeThickness="1"
+            Padding="24"
+            WidthRequest="480"
+            Background="{DynamicResource CanvasBackground}">
+        <Border.StrokeShape>
+            <shapes:RoundRectangle CornerRadius="4" />
+        </Border.StrokeShape>
+        <VerticalStackLayout Spacing="14">
+            <Label Text="{x:Static constants:AppStrings.ExportDialogTitle}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource TextPrimary}" />
+
+            <Label Text="{x:Static constants:AppStrings.ExportFormatLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <inputs:SfComboBox ItemsSource="{Binding FormatLabels}"
+                                SelectedItem="{Binding SelectedFormatLabel, Mode=TwoWay}"
+                                IsEditable="False"
+                                IsClearButtonVisible="False"
+                                ShowBorder="True"
+                                HeightRequest="42"
+                                TextColor="{DynamicResource TextPrimary}"
+                                Background="{DynamicResource CanvasBackground}"
+                                AutomationId="export_format" />
+
+            <Label Text="{x:Static constants:AppStrings.ExportRegionLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <inputs:SfComboBox ItemsSource="{Binding RegionLabels}"
+                                SelectedItem="{Binding Region, Mode=TwoWay}"
+                                IsEditable="False"
+                                IsClearButtonVisible="False"
+                                ShowBorder="True"
+                                HeightRequest="42"
+                                TextColor="{DynamicResource TextPrimary}"
+                                Background="{DynamicResource CanvasBackground}"
+                                AutomationId="export_region" />
+
+            <Label Text="{x:Static constants:AppStrings.ExportFileNameLabel}"
+                   FontSize="13"
+                   TextColor="{DynamicResource TextSecondary}" />
+            <Entry Text="{Binding FileName, Mode=TwoWay}"
+                   Style="{StaticResource PropertyEntryStyle}"
+                   AutomationId="export_file_name" />
+
+            <HorizontalStackLayout Spacing="8" Margin="0,12,0,0">
+                <Button Text="{x:Static constants:AppStrings.ExportAction}"
+                        Command="{Binding ExportCommand}"
+                        IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}"
+                        AutomationId="export_confirm" />
+                <Button Text="{x:Static constants:AppStrings.ExportCancel}"
+                        Command="{Binding CancelCommand}"
+                        IsEnabled="{Binding IsExporting, Converter={StaticResource InvertBoolConverter}}"
+                        AutomationId="export_cancel" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>
