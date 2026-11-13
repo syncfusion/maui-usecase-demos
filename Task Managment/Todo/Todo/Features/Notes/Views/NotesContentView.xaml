@@ -776,7 +776,16 @@
                                       Background="#1C1B1F1F"
                                       TextColor="#1C1B1F61"
                                       Command="{Binding AddNoteCommand}"
-                                      SemanticProperties.Description="Save task" />
+                                      SemanticProperties.Description="Save task">
+                        <buttons:SfButton.Triggers>
+                            <DataTrigger TargetType="buttons:SfButton"
+                                         Binding="{Binding NewNoteTitle, Converter={StaticResource StringNotEmptyToBoolConverter}}"
+                                         Value="True">
+                                <Setter Property="Background" Value="#6750A4" />
+                                <Setter Property="TextColor" Value="White" />
+                            </DataTrigger>
+                        </buttons:SfButton.Triggers>
+                    </buttons:SfButton>
                     </Grid>
                     <ScrollView Grid.Row="2"
                                 Orientation="Horizontal"

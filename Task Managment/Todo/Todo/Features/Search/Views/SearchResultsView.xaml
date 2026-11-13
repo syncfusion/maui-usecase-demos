@@ -38,7 +38,7 @@
                 <Setter Property="BackgroundColor" Value="Transparent" />
             </DataTrigger>
         </Border.Triggers>
-        <Grid RowDefinitions="Auto,*,Auto"
+        <Grid RowDefinitions="Auto,*"
               BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}">
             <Grid.Triggers>
                 <DataTrigger TargetType="Grid"
@@ -264,9 +264,6 @@
                         </syncfusion:SfListView>
             </Grid>
 
-            <BoxView Grid.Row="2"
-                     HeightRequest="16"
-                     Color="Transparent" />
             <noteViews:NoteActionFlyout x:Name="ActionFlyout"
                                         Grid.RowSpan="3"
                                         WidthRequest="0"
