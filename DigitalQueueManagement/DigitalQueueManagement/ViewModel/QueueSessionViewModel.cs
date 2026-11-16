@@ -5,7 +5,7 @@ using DigitalQueueManagement.Model;
 
 namespace DigitalQueueManagement.ViewModel;
 
-public partial class QueueSessionViewModel : ObservableObject
+public partial class QueueSessionViewModel : ObservableObject, IDisposable
 {
     private const double CounterCardBottomClearance = 32;
     private readonly QueueStore _store;
@@ -520,6 +520,8 @@ public partial class QueueSessionViewModel : ObservableObject
         SetTokenListPriorityFilter("All");
         _store.Reset();
     }
+
+    public void Dispose() => _store.Changed -= OnStoreChanged;
 
     private void OnStoreChanged(object? sender, EventArgs e)
     {

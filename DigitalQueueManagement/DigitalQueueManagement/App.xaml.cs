@@ -1,21 +1,18 @@
 using DigitalQueueManagement.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DigitalQueueManagement;
 
 public partial class App : Application
 {
-	public App()
-	{
-		InitializeComponent();
-	}
+    private readonly IServiceProvider _services;
 
-	protected override Window CreateWindow(IActivationState? activationState)
-	{
-		return new Window(new MainPage())
-		{
-			Title = "Digital Queue Management",
-			Width = 1440,
-			Height = 1000
-		};
-	}
+    public App(IServiceProvider services)
+    {
+        InitializeComponent();
+        _services = services;
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState) =>
+        new(_services.GetRequiredService<MainPage>()) { Title = "Digital Queue Management" };
 }

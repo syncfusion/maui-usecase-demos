@@ -1,3 +1,6 @@
+using DigitalQueueManagement.Model;
+using DigitalQueueManagement.ViewModel;
+using DigitalQueueManagement.Views;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 using Syncfusion.Licensing;
@@ -33,6 +36,14 @@ public static class MauiProgram
 #if MAUI_DEVFLOW
 		builder.AddMauiDevFlowAgent();
 #endif
+
+		builder.Services.AddSingleton<QueueStore>();
+		builder.Services.AddSingleton<QueueSessionViewModel>();
+		builder.Services.AddTransient<AppShellViewModel>();
+		builder.Services.AddTransient<QueueOverviewViewModel>();
+		builder.Services.AddTransient<TokenManagementViewModel>();
+		builder.Services.AddTransient<CounterOperationsViewModel>();
+		builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

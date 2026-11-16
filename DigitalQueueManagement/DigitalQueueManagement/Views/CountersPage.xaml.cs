@@ -10,9 +10,9 @@ public partial class CountersPage : ContentView
     private readonly QueueSessionViewModel _viewModel;
     private readonly Action _manageCounters;
     private readonly Action<QueueToken> _openToken;
-    private readonly Action<Func<QueueToken?>> _runTokenAction;
-    private readonly Action<Func<bool>> _runBooleanAction;
-    private readonly Action<string> _openTransfer;
+    private readonly Func<Func<QueueToken?>, Task> _runTokenAction;
+    private readonly Func<Func<bool>, Task> _runBooleanAction;
+    private readonly Func<string, Task> _openTransfer;
     private readonly IDispatcherTimer _servingDurationTimer;
     private bool _completeServiceSucceeded;
 
@@ -20,9 +20,9 @@ public partial class CountersPage : ContentView
         CounterOperationsViewModel viewModel,
         Action manageCounters,
         Action<QueueToken> openToken,
-        Action<Func<QueueToken?>> runTokenAction,
-        Action<Func<bool>> runBooleanAction,
-        Action<string> openTransfer)
+        Func<Func<QueueToken?>, Task> runTokenAction,
+        Func<Func<bool>, Task> runBooleanAction,
+        Func<string, Task> openTransfer)
     {
         BindingContext = viewModel;
         InitializeComponent();
@@ -86,52 +86,52 @@ public partial class CountersPage : ContentView
         }
     }
 
-    private void OnCallNextClicked(object? sender, EventArgs e)
+    private async void OnCallNextClicked(object? sender, EventArgs e)
     {
         ResetCompleteServiceFeedback();
         if (_viewModel.SelectedCounter is { } counter)
         {
-            _runTokenAction(() => _viewModel.CallNext(counter.Name));
+            await _runTokenAction(() => _viewModel.CallNext(counter.Name));
         }
     }
 
-    private void OnCompleteClicked(object? sender, EventArgs e)
+    private async void OnCompleteClicked(object? sender, EventArgs e)
     {
         _completeServiceSucceeded = false;
         UpdateCompleteButtonState();
         if (_viewModel.SelectedCounter is { } counter)
         {
             var completed = false;
-            _runBooleanAction(() => completed = _viewModel.CompleteCurrent(counter.Name));
+            await _runBooleanAction(() => completed = _viewModel.CompleteCurrent(counter.Name));
             _completeServiceSucceeded = completed;
             UpdateCompleteButtonState();
         }
     }
 
-    private void OnSkipClicked(object? sender, EventArgs e)
+    private async void OnSkipClicked(object? sender, EventArgs e)
     {
         ResetCompleteServiceFeedback();
         if (_viewModel.SelectedCounter is { } counter)
         {
-            _runBooleanAction(() => _viewModel.SkipCurrent(counter.Name));
+            await _runBooleanAction(() => _viewModel.SkipCurrent(counter.Name));
         }
     }
 
-    private void OnRecallClicked(object? sender, EventArgs e)
+    private async void OnRecallClicked(object? sender, EventArgs e)
     {
         ResetCompleteServiceFeedback();
         if (_viewModel.SelectedCounter is { } counter)
         {
-            _runBooleanAction(() => _viewModel.RecallCurrent(counter.Name));
+            await _runBooleanAction(() => _viewModel.RecallCurrent(counter.Name));
         }
     }
 
-    private void OnTransferClicked(object? sender, EventArgs e)
+    private async void OnTransferClicked(object? sender, EventArgs e)
     {
         ResetCompleteServiceFeedback();
         if (_viewModel.SelectedCounter is { } counter)
         {
-            _openTransfer(counter.Name);
+            await _openTransfer(counter.Name);
         }
     }
 

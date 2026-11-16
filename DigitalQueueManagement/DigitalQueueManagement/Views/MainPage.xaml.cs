@@ -8,7 +8,7 @@ namespace DigitalQueueManagement.Views;
 
 public partial class MainPage : ContentPage
 {
-    private const double MinimumCaptionFontSize = 11;
+    private const double MinimumCaptionFontSize = 12;
 
     private static readonly Color Cobalt = Color.FromArgb("#183E91");
     private static readonly Color Slate50 = Color.FromArgb("#F8FAFC");
@@ -21,8 +21,11 @@ public partial class MainPage : ContentPage
     private static readonly Color Amber = Color.FromArgb("#D18A16");
     private static readonly Color Rose = Color.FromArgb("#DC6670");
 
-    private readonly QueueSessionViewModel _viewModel = new(new QueueStore());
+    private readonly QueueSessionViewModel _viewModel;
     private readonly AppShellViewModel _shellViewModel;
+    private readonly QueueOverviewViewModel _overviewViewModel;
+    private readonly TokenManagementViewModel _tokenManagementViewModel;
+    private readonly CounterOperationsViewModel _counterOperationsViewModel;
     private IReadOnlyList<SfSegmentItem> _headerTabItems = Array.Empty<SfSegmentItem>();
     private OverviewPage? _overviewPage;
     private TokensPage? _tokensPage;
@@ -32,10 +35,19 @@ public partial class MainPage : ContentPage
     private bool? _lastWideLayout;
     private bool? _lastMobileLayout;
 
-    public MainPage()
+    public MainPage(
+        QueueSessionViewModel viewModel,
+        AppShellViewModel shellViewModel,
+        QueueOverviewViewModel overviewViewModel,
+        TokenManagementViewModel tokenManagementViewModel,
+        CounterOperationsViewModel counterOperationsViewModel)
     {
         InitializeComponent();
-        _shellViewModel = new AppShellViewModel(_viewModel);
+        _viewModel = viewModel;
+        _shellViewModel = shellViewModel;
+        _overviewViewModel = overviewViewModel;
+        _tokenManagementViewModel = tokenManagementViewModel;
+        _counterOperationsViewModel = counterOperationsViewModel;
         BindingContext = _shellViewModel;
         _headerTabItems = BuildHeaderTabItems();
         HeaderTabs.ItemsSource = _headerTabItems;
@@ -219,7 +231,7 @@ public partial class MainPage : ContentPage
         var page = _viewModel.ActiveHeaderTab switch
         {
             "Overview" => _overviewPage ??= new OverviewPage(
-                new QueueOverviewViewModel(_viewModel)),
+                _overviewViewModel),
             "Counters" => GetCountersPage(),
             _ => GetTokensPage()
         };
@@ -233,7 +245,7 @@ public partial class MainPage : ContentPage
     private View GetTokensPage()
     {
         _tokensPage ??= new TokensPage(
-            new TokenManagementViewModel(_viewModel),
+            _tokenManagementViewModel,
             ShowTokenDetails);
         return _tokensScrollHost ??= new ScrollView { Content = _tokensPage };
     }
@@ -241,12 +253,12 @@ public partial class MainPage : ContentPage
     private View GetCountersPage()
     {
         _countersPage ??= new CountersPage(
-            new CounterOperationsViewModel(_viewModel),
+            _counterOperationsViewModel,
             ShowCounterManagement,
             ShowTokenDetails,
-            action => RunCounterAction(action),
-            action => RunCounterAction(action),
-            ShowTokenPickerForTransfer);
+            async action => await RunCounterActionAsync(action),
+            async action => await RunCounterActionAsync(action),
+            ShowTokenPickerForTransferAsync);
         return _countersScrollHost ??= new ScrollView { Content = _countersPage };
     }
 
@@ -282,7 +294,7 @@ public partial class MainPage : ContentPage
         }, 0, 0);
         heading.Add(TextLabel("Token Details", 16, Slate900, FontAttributes.Bold), 1, 0);
         heading.Add(DialogIconButton("edit", () => ShowTokenForm(token), Slate500), 2, 0);
-        heading.Add(DialogIconButton("delete", () => DeleteToken(token), Rose), 3, 0);
+        heading.Add(DialogIconButton("delete", async () => await DeleteTokenAsync(token), Rose), 3, 0);
         heading.Add(DialogIconButton("close", HideModal, Slate500), 4, 0);
         content.Add(heading);
 
@@ -366,7 +378,7 @@ public partial class MainPage : ContentPage
         };
         if (token.Status == TokenStatus.Skipped)
         {
-            actions.Add(DialogButton("Recall Token", () => RunQueueAction(() => _viewModel.RecallToken(token.Id)), Color.FromArgb("#EEF4FF"), Cobalt, Colors.Transparent), 0, 0);
+            actions.Add(DialogButton("Recall Token", async () => await RunQueueActionAsync(() => _viewModel.RecallToken(token.Id)), Color.FromArgb("#EEF4FF"), Cobalt, Colors.Transparent), 0, 0);
         }
         else if (token.Status == TokenStatus.Serving)
         {
@@ -431,7 +443,7 @@ public partial class MainPage : ContentPage
         ShowModal(form);
     }
 
-    private async void DeleteToken(QueueToken token)
+    private async Task DeleteTokenAsync(QueueToken token)
     {
         if (!await DisplayAlertAsync($"Delete {token.Id}?", "This removes the token from the local queue.", "Delete", "Cancel"))
         {
@@ -441,6 +453,7 @@ public partial class MainPage : ContentPage
         if (!_viewModel.DeleteToken(token.Id))
         {
             await DisplayAlertAsync("Token not found", "The token has already been removed.", "OK");
+            return;
         }
 
         HideModal();
@@ -572,12 +585,12 @@ public partial class MainPage : ContentPage
             StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(8) },
             Content = TextLabel("The selected token will continue waiting at the destination counter.", 9, Slate700)
         };
-        var confirm = DialogButton("Confirm Transfer", () =>
+        var confirm = DialogButton("Confirm Transfer", async () =>
         {
             var transferred = _viewModel.TransferToken(token.Id, selectedDestination);
             if (transferred is null)
             {
-                _ = DisplayAlertAsync("Transfer unavailable", "The token or destination is no longer available.", "OK");
+                await DisplayAlertAsync("Transfer unavailable", "The token or destination is no longer available.", "OK");
                 return;
             }
 
@@ -615,7 +628,7 @@ public partial class MainPage : ContentPage
         ShowModal(content);
     }
 
-    private void RunQueueAction(Action action)
+    private async Task RunQueueActionAsync(Action action)
     {
         try
         {
@@ -625,11 +638,11 @@ public partial class MainPage : ContentPage
         }
         catch (ArgumentException exception)
         {
-            _ = DisplayAlertAsync("Queue action unavailable", exception.Message, "OK");
+            await DisplayAlertAsync("Queue action unavailable", exception.Message, "OK");
         }
         catch (InvalidOperationException exception)
         {
-            _ = DisplayAlertAsync("Queue action unavailable", exception.Message, "OK");
+            await DisplayAlertAsync("Queue action unavailable", exception.Message, "OK");
         }
     }
 
@@ -738,12 +751,24 @@ public partial class MainPage : ContentPage
         Action action,
         Color background,
         Color foreground,
+        Color border) =>
+        DialogButton(text, () =>
+        {
+            action();
+            return Task.CompletedTask;
+        }, background, foreground, border);
+
+    private static Button DialogButton(
+        string text,
+        Func<Task> action,
+        Color background,
+        Color foreground,
         Color border)
     {
         var button = new Button
         {
             Text = text,
-            FontFamily = "Segoe UI",
+            FontFamily = "OpenSansRegular",
             FontSize = 11,
             FontAttributes = FontAttributes.Bold,
             TextColor = foreground,
@@ -755,11 +780,18 @@ public partial class MainPage : ContentPage
             MinimumHeightRequest = 40,
             HorizontalOptions = LayoutOptions.Fill
         };
-        button.Clicked += (_, _) => action();
+        button.Clicked += async (_, _) => await action();
         return button;
     }
 
-    private static Button DialogIconButton(string icon, Action action, Color color)
+    private static Button DialogIconButton(string icon, Action action, Color color) =>
+        DialogIconButton(icon, () =>
+        {
+            action();
+            return Task.CompletedTask;
+        }, color);
+
+    private static Button DialogIconButton(string icon, Func<Task> action, Color color)
     {
         var button = new Button
         {
@@ -882,14 +914,14 @@ public partial class MainPage : ContentPage
 
         var complete = DialogButton(
             "Complete Service",
-            () => RunCounterAction(() => _viewModel.CompleteCurrent(counter.Name)),
+            async () => await RunCounterActionAsync(() => _viewModel.CompleteCurrent(counter.Name)),
             _viewModel.CanCompleteCurrent ? Teal : Color.FromArgb("#94A3B8"),
             Colors.White,
             Colors.Transparent);
         complete.IsEnabled = _viewModel.CanCompleteCurrent;
         var callNext = DialogButton(
             "Call Next",
-            () => RunCounterAction(() => _viewModel.CallNext(counter.Name)),
+            async () => await RunCounterActionAsync(() => _viewModel.CallNext(counter.Name)),
             Cobalt,
             Colors.White,
             Colors.Transparent);
@@ -933,11 +965,11 @@ public partial class MainPage : ContentPage
             },
             ColumnSpacing = 8
         };
-        var skip = DialogButton("Skip", () => RunCounterAction(() => _viewModel.SkipCurrent(counter.Name)), Slate50, Slate700, Slate200);
+        var skip = DialogButton("Skip", async () => await RunCounterActionAsync(() => _viewModel.SkipCurrent(counter.Name)), Slate50, Slate700, Slate200);
         skip.IsEnabled = _viewModel.CanSkipCurrent;
-        var recall = DialogButton("Recall", () => RunCounterAction(() => _viewModel.RecallCurrent(counter.Name)), Slate50, Slate700, Slate200);
+        var recall = DialogButton("Recall", async () => await RunCounterActionAsync(() => _viewModel.RecallCurrent(counter.Name)), Slate50, Slate700, Slate200);
         recall.IsEnabled = _viewModel.CanRecallCurrent;
-        var transfer = DialogButton("Transfer", () =>
+        var transfer = DialogButton("Transfer", async () =>
         {
             if (token is not null)
             {
@@ -945,7 +977,7 @@ public partial class MainPage : ContentPage
             }
             else
             {
-                _ = DisplayAlertAsync("No serving token", "Call a token before transferring it.", "OK");
+                await DisplayAlertAsync("No serving token", "Call a token before transferring it.", "OK");
             }
         }, Slate50, Cobalt, Slate200);
         transfer.IsEnabled = _viewModel.CanTransferCurrent;
@@ -974,7 +1006,7 @@ public partial class MainPage : ContentPage
         ShowModal(content);
     }
 
-    private void RunCounterAction(Func<QueueToken?> action)
+    private async Task RunCounterActionAsync(Func<QueueToken?> action)
     {
         try
         {
@@ -986,20 +1018,20 @@ public partial class MainPage : ContentPage
 
             if (result is null)
             {
-                _ = DisplayAlertAsync("No token in queue", "There is no waiting token available for this counter.", "OK");
+                await DisplayAlertAsync("No token in queue", "There is no waiting token available for this counter.", "OK");
             }
         }
         catch (ArgumentException exception)
         {
-            _ = DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
+            await DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
         }
         catch (InvalidOperationException exception)
         {
-            _ = DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
+            await DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
         }
     }
 
-    private void RunCounterAction(Func<bool> action)
+    private async Task RunCounterActionAsync(Func<bool> action)
     {
         try
         {
@@ -1011,16 +1043,16 @@ public partial class MainPage : ContentPage
 
             if (!changed)
             {
-                _ = DisplayAlertAsync("No active token", "This action is not available for the selected counter.", "OK");
+                await DisplayAlertAsync("No active token", "This action is not available for the selected counter.", "OK");
             }
         }
         catch (ArgumentException exception)
         {
-            _ = DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
+            await DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
         }
         catch (InvalidOperationException exception)
         {
-            _ = DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
+            await DisplayAlertAsync("Counter action unavailable", exception.Message, "OK");
         }
     }
 
@@ -1033,7 +1065,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void ShowTokenPickerForTransfer(string counterName)
+    private async Task ShowTokenPickerForTransferAsync(string counterName)
     {
         var serving = _viewModel.Tokens.FirstOrDefault(token =>
             token.CounterName == counterName && token.Status == TokenStatus.Serving);
@@ -1043,7 +1075,7 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        _ = DisplayAlertAsync("No serving token", "Call a token before transferring it.", "OK");
+        await DisplayAlertAsync("No serving token", "Call a token before transferring it.", "OK");
     }
 
     private void ShowCounterManagement()
@@ -1102,7 +1134,7 @@ public partial class MainPage : ContentPage
             var edit = DialogIconButton("edit", () => ShowCounterForm(counter), Cobalt);
             edit.HorizontalOptions = LayoutOptions.Center;
             row.Add(edit, 2, 0);
-            var delete = DialogIconButton("delete", () => ShowDeleteCounterForm(counter), Rose);
+            var delete = DialogIconButton("delete", async () => await ShowDeleteCounterFormAsync(counter), Rose);
             delete.IsEnabled = _viewModel.Counters.Count > 1;
             row.Add(delete, 3, 0);
             content.Add(new Border
@@ -1183,11 +1215,11 @@ public partial class MainPage : ContentPage
         ShowModal(form);
     }
 
-    private void ShowDeleteCounterForm(QueueCounter counter)
+    private async Task ShowDeleteCounterFormAsync(QueueCounter counter)
     {
         if (_viewModel.Counters.Count <= 1)
         {
-            _ = DisplayAlertAsync("Counter required", "At least one counter must remain.", "OK");
+            await DisplayAlertAsync("Counter required", "At least one counter must remain.", "OK");
             return;
         }
 
@@ -1197,7 +1229,7 @@ public partial class MainPage : ContentPage
             .ToArray();
         if (destinations.Length == 0)
         {
-            _ = DisplayAlertAsync("No destination available", "Enable another counter before deleting this one.", "OK");
+            await DisplayAlertAsync("No destination available", "Enable another counter before deleting this one.", "OK");
             return;
         }
 
@@ -1305,7 +1337,7 @@ public partial class MainPage : ContentPage
         new()
         {
             Text = text,
-            FontFamily = "Segoe UI",
+            FontFamily = "OpenSansRegular",
             FontSize = Math.Max(fontSize, MinimumCaptionFontSize),
             TextColor = color ?? Slate900,
             FontAttributes = attributes,
@@ -1317,7 +1349,7 @@ public partial class MainPage : ContentPage
         var button = new Button
         {
             Text = text,
-            FontFamily = "Segoe UI",
+            FontFamily = "OpenSansRegular",
             FontSize = 12,
             FontAttributes = primary ? FontAttributes.Bold : FontAttributes.None,
             TextColor = primary ? Colors.White : Slate500,
