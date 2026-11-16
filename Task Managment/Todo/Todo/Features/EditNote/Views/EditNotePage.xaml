@@ -9,35 +9,49 @@
              x:DataType="vm:EditNoteViewModel"
              Shell.NavBarIsVisible="False"
              Shell.PresentationMode="ModalNotAnimated"
-             BackgroundColor="#80000000">
+             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}, Default=#80000000}">
 
     <Grid Padding="{OnIdiom Phone=0, Default=24}"
           VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
           HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}">
         <Border
-                WidthRequest="{OnIdiom Phone=320, Default=330}"
-                HeightRequest="{OnIdiom Desktop=560, Default=-1}"
-                MaximumHeightRequest="{OnIdiom Phone=600, Default=560}"
+                WidthRequest="{OnIdiom Phone=-1, Default=330}"
+                HeightRequest="{OnIdiom Phone=-1, Desktop=560, Default=-1}"
+                MaximumHeightRequest="{OnIdiom Phone=100000, Default=560}"
                 Margin="{OnIdiom Phone=0, Default=0}"
                 HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
-                VerticalOptions="Center"
+                VerticalOptions="{OnIdiom Phone=Fill, Default=Center}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
-                StrokeThickness="{OnIdiom Phone=1, Default=0}"
-                StrokeShape="RoundRectangle 27"
-                Padding="{OnIdiom Phone='14,12,14,0', Default='18,16,18,0'}">
+                StrokeThickness="0"
+                StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 27'}"
+                Padding="{OnIdiom Phone='16,12,16,0', Default='18,16,18,0'}">
             <Border.Shadow>
                 <Shadow Brush="#4D000000" Radius="6" Offset="0,2" Opacity="1" />
             </Border.Shadow>
 
             <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
-                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
-                    <Label Text="{Binding DialogTitle}"
+                <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                    <buttons:SfButton Text="&#xe5c4;"
+                                      FontFamily="MaterialIconRegular"
+                                      IsVisible="{OnIdiom Phone=True, Default=False}"
+                                      WidthRequest="40"
+                                      HeightRequest="40"
+                                      Padding="0"
+                                      CornerRadius="20"
+                                      Background="Transparent"
+                                      TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                      FontSize="22"
+                                      Command="{Binding CancelCommand}"
+                                      SemanticProperties.Description="Back" />
+                    <Label Grid.Column="1"
+                           Text="{Binding DialogTitle}"
                            FontFamily="{StaticResource FontFamilySemibold}"
                            FontSize="18"
                            TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
                            VerticalOptions="Center" />
-                    <Border Grid.Column="1"
+                    <Border Grid.Column="2"
+                            IsVisible="{OnIdiom Phone=False, Default=True}"
                             WidthRequest="40"
                             HeightRequest="40"
                             BackgroundColor="Transparent"
@@ -97,6 +111,7 @@
                                        BackgroundColor="Transparent"
                                        VerticalTextAlignment="Center"
                                        HeightRequest="44"
+                                       TextDecorations="{Binding Target.IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}"
                                        TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
                             </syncfusionCore:SfTextInputLayout>
                             <buttons:SfButton Grid.Column="2"
@@ -372,10 +387,10 @@
                 <BoxView Grid.Row="3"
                          HeightRequest="1"
                          Color="{AppThemeBinding Light=#E9E5EE, Dark=#494650}"
-                         Margin="{OnIdiom Phone='-14,4,-14,4', Default='-18,4,-18,4'}" />
+                         Margin="{OnIdiom Phone='-16,4,-16,4', Default='-18,4,-18,4'}" />
 
                 <Grid Grid.Row="4" HeightRequest="56"
-                      ColumnDefinitions="Auto,*,Auto,Auto"
+                      ColumnDefinitions="Auto,*,Auto,Auto,Auto"
                       ColumnSpacing="8"
                       VerticalOptions="Center">
                     
@@ -385,6 +400,19 @@
                            FontSize="12"
                            TextColor="{AppThemeBinding Light={StaticResource PopupTextSecondaryColor}, Dark={StaticResource PopupTextSecondaryDarkColor}}"
                            VerticalOptions="Center" />
+                    <buttons:SfButton Grid.Column="4"
+                                      Text="&#xe872;"
+                                      FontFamily="MaterialIconRegular"
+                                      IsVisible="{Binding HasCreatedInfo}"
+                                      WidthRequest="40"
+                                      HeightRequest="40"
+                                      Padding="0"
+                                      CornerRadius="20"
+                                      Background="Transparent"
+                                      TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
+                                      FontSize="22"
+                                      Command="{Binding DeleteCommand}"
+                                      SemanticProperties.Description="Delete note" />
                     <buttons:SfButton Grid.Column="1"
                                       Text="Cancel"
                                       Background="Transparent"
