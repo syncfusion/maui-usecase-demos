@@ -68,10 +68,10 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-		<PackageReference Include="Syncfusion.Maui.DataGrid" Version="32.2.9" />
+		<PackageReference Include="Syncfusion.Maui.DataGrid" Version="*" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 		<PackageReference Include="CsvHelper" Version="33.0.1" />
-		<PackageReference Include="Syncfusion.Maui.DataGridExport" Version="32.2.9" />
+		<PackageReference Include="Syncfusion.Maui.DataGridExport" Version="*" />
 	</ItemGroup>
 
 </Project>
