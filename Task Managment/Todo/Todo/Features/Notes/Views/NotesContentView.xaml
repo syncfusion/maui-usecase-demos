@@ -184,7 +184,7 @@
                             <Grid Margin="{OnIdiom Phone='16,6', Default='0'}" >
                                 <Border InputTransparent="True"
                                         IsVisible="{OnIdiom Phone=True, Default=False}"
-                                        StrokeThickness="0" 
+                                        StrokeThickness="0"
                                         StrokeShape="RoundRectangle 10">
                                     <Border.Shadow>
                                         <Shadow Brush="#26000000"
@@ -194,7 +194,7 @@
                                     </Border.Shadow>
                                 </Border>
                                 <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
-                                    Padding="14,10" 
+                                    Padding="14,10"
                                     BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
@@ -215,7 +215,7 @@
                                          handle their own gestures and
                                          don't bubble up. -->
                                     <TapGestureRecognizer
-                                        Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.EditNoteCommand}"
+                                        Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.OpenNoteCommand}"
                                         CommandParameter="{Binding .}" />
                                     <TapGestureRecognizer Buttons="Secondary"
                                                           Tapped="OnNoteSecondaryTapped" />
@@ -367,7 +367,7 @@
                                         <buttons:SfButton Text="&#8943;"
                                                           FontAttributes="Bold"
                                                           FontSize="20"
-                                                          Rotation="90" 
+                                                          Rotation="90"
                                                           Background="Transparent"
                                                           TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                                           WidthRequest="40"
@@ -456,7 +456,7 @@
                                                        TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}">
                                                     <Label.GestureRecognizers>
                                                         <TapGestureRecognizer
-                                                            Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.EditNoteCommand}"
+                                                            Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.OpenNoteCommand}"
                                                             CommandParameter="{Binding .}" />
                                                     </Label.GestureRecognizers>
                                                 </Label>

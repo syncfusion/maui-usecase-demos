@@ -1112,8 +1112,22 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Tapping a note card opens the EditNote dialog pre-filled with
-    /// that note's values.
+    /// Tapping a note card opens the edit view on non-phone devices.
+    /// On phones, the note is only editable from the More menu.
+    /// </summary>
+    [RelayCommand]
+    private async Task OpenNoteAsync(Note? note)
+    {
+        if (note is null) return;
+        if (note.DeletedAt is not null) return;
+        if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone) return;
+
+        var page = new EditNotePage(new EditNoteViewModel(_noteService, _navigation, note));
+        await _navigation.PushModalAsync(page);
+    }
+
+    /// <summary>
+    /// Opens the EditNote view from the note action menu.
     /// </summary>
     [RelayCommand]
     private async Task EditNoteAsync(Note? note)
