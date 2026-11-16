@@ -17,7 +17,7 @@
                 Grid.RowSpan="{OnIdiom Phone=2, Default=1}"
                 Grid.Column="{OnIdiom Phone=0, Default=1}"
                 Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}"
-                Margin="{OnIdiom Phone=0, Default='8,4,12,12'}"
+                Margin="{OnIdiom Phone=0, Default='12'}"
                 Padding="0"
                 StrokeThickness="0"
                 StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 14'}"
@@ -51,7 +51,7 @@
         <ContentView x:Name="MainContent"
                      Grid.Row="1"
                      Grid.Column="1"
-                     Margin="{OnIdiom Phone=0, Default='8,4,12,12'}" />
+                     Margin="{OnIdiom Phone=0, Default='12'}" />
 
     </Grid>
 

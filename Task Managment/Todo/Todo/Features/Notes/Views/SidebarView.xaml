@@ -128,6 +128,7 @@
                                           VerticalOptions="Fill">
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="OnCustomListRowTapped" />
+                                            <TapGestureRecognizer Buttons="Secondary" Tapped="OnCustomListSecondaryTapped" />
                                         </Grid.GestureRecognizers>
                                         <Image Grid.Column="0" Source="notesicon.png" WidthRequest="20"
                                                HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center"
@@ -143,10 +144,15 @@
                                                    LineBreakMode="TailTruncation" />
                                             <Label Text="{Binding NoteCountText}"
                                                    Style="{StaticResource SidebarItemLabelStyle}"
-                                                   IsVisible="{Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}" />
+                                                   IsVisible="{OnIdiom Phone={Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}, Default=False}" />
                                         </HorizontalStackLayout>
                                     </Grid>
+                                    <Label Grid.Column="2" Text="{Binding NoteCountText}"
+                                           Style="{StaticResource SidebarItemLabelStyle}"
+                                           HorizontalOptions="End" VerticalOptions="Center"
+                                           IsVisible="{OnIdiom Phone=False, Default={Binding NoteCountText, Converter={StaticResource NotNullToBoolConverter}}}" />
                                     <Border Grid.Column="2" WidthRequest="32" HeightRequest="32"
+                                            IsVisible="{OnIdiom Phone=True, Default=False}"
                                             BackgroundColor="Transparent" StrokeThickness="0"
                                             StrokeShape="RoundRectangle 16">
                                         <Border.GestureRecognizers>

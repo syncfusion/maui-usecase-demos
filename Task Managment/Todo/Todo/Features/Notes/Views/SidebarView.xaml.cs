@@ -113,6 +113,15 @@ public partial class SidebarView : ContentView
         vm.NavigateToListCommand.Execute(list.Id);
     }
 
+    private void OnCustomListSecondaryTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is not View { BindingContext: NoteList list } anchor
+            || BindingContext is not NotesListViewModel vm)
+            return;
+
+        CustomListOptionsFlyout.ShowFor(anchor, list, vm);
+    }
+
     private void OnCustomListMoreClicked(object? sender, EventArgs e)
     {
         if (sender is not View anchor || anchor.BindingContext is not NoteList list

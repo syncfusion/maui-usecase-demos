@@ -195,8 +195,11 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(AccentColorKey));
         OnPropertyChanged(nameof(BackgroundImage));
         OnPropertyChanged(nameof(HasBackgroundImage));
+        OnPropertyChanged(nameof(HasDesktopBackgroundImage));
+        OnPropertyChanged(nameof(DesktopForegroundColor));
         OnPropertyChanged(nameof(ListBackgroundColor));
         OnPropertyChanged(nameof(HeaderForegroundColor));
+        OnPropertyChanged(nameof(DesktopForegroundColor));
         OnPropertyChanged(nameof(MobileHeaderForegroundColor));
         OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
         OnPropertyChanged(nameof(CanShowMobileAddNoteButton));
@@ -224,8 +227,11 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(AccentColorKey));
         OnPropertyChanged(nameof(BackgroundImage));
         OnPropertyChanged(nameof(HasBackgroundImage));
+        OnPropertyChanged(nameof(HasDesktopBackgroundImage));
+        OnPropertyChanged(nameof(DesktopForegroundColor));
         OnPropertyChanged(nameof(ListBackgroundColor));
         OnPropertyChanged(nameof(HeaderForegroundColor));
+        OnPropertyChanged(nameof(DesktopForegroundColor));
         OnPropertyChanged(nameof(MobileHeaderForegroundColor));
         OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
         OnPropertyChanged(nameof(CanShowMobileAddNoteButton));
@@ -282,6 +288,12 @@ public partial class NotesListViewModel : ViewModelBase
             return luminance < 0.5 ? Colors.White : Color.FromArgb("#29272F");
         }
     }
+
+    public Color DesktopForegroundColor
+        => HasBackgroundImage ? Colors.White : HeaderForegroundColor;
+
+    public bool HasDesktopBackgroundImage
+        => HasBackgroundImage && DeviceInfo.Current.Idiom != DeviceIdiom.Phone;
 
     public Color MobileHeaderForegroundColor
         => HasBackgroundImage ? Colors.White : HeaderForegroundColor;
@@ -453,8 +465,11 @@ public partial class NotesListViewModel : ViewModelBase
         TryDeleteStoredBackgroundImage(imageSource);
         OnPropertyChanged(nameof(BackgroundImage));
         OnPropertyChanged(nameof(HasBackgroundImage));
+        OnPropertyChanged(nameof(HasDesktopBackgroundImage));
+        OnPropertyChanged(nameof(DesktopForegroundColor));
         OnPropertyChanged(nameof(ListBackgroundColor));
         OnPropertyChanged(nameof(HeaderForegroundColor));
+        OnPropertyChanged(nameof(DesktopForegroundColor));
         OnPropertyChanged(nameof(MobileHeaderForegroundColor));
         OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
     }
@@ -516,8 +531,11 @@ public partial class NotesListViewModel : ViewModelBase
         {
             OnPropertyChanged(nameof(BackgroundImage));
             OnPropertyChanged(nameof(HasBackgroundImage));
+            OnPropertyChanged(nameof(HasDesktopBackgroundImage));
+            OnPropertyChanged(nameof(DesktopForegroundColor));
             OnPropertyChanged(nameof(ListBackgroundColor));
             OnPropertyChanged(nameof(HeaderForegroundColor));
+            OnPropertyChanged(nameof(DesktopForegroundColor));
             OnPropertyChanged(nameof(MobileHeaderForegroundColor));
             OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
         }
@@ -1300,8 +1318,11 @@ public partial class NotesListViewModel : ViewModelBase
             OnPropertyChanged(nameof(EmptyStateTitle));
             OnPropertyChanged(nameof(BackgroundImage));
             OnPropertyChanged(nameof(HasBackgroundImage));
+            OnPropertyChanged(nameof(HasDesktopBackgroundImage));
+            OnPropertyChanged(nameof(DesktopForegroundColor));
             OnPropertyChanged(nameof(ListBackgroundColor));
             OnPropertyChanged(nameof(HeaderForegroundColor));
+            OnPropertyChanged(nameof(DesktopForegroundColor));
             OnPropertyChanged(nameof(MobileHeaderForegroundColor));
             OnPropertyChanged(nameof(ContentSurfaceBackgroundColor));
             if (e.PropertyName == nameof(Todo.Features.CustomLists.Models.NoteList.SortOrder)
