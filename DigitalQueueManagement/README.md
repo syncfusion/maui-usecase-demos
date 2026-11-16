@@ -73,7 +73,7 @@ The project also targets Android, iOS, and Mac Catalyst. Build or run with `net1
 
 ## Output
 
-The app opens to Overview; Overview, Tokens, and Counters are its three main sections. They provide overview cards and analytics, token lists and service actions, and counter operations. The sample does not currently include an application screenshot. The app icon and splash screen use a shared queue-ticket design with a blue background, a white ticket card, and blue and teal queue lines. .NET MAUI generates the platform-specific assets from the SVG files in `DigitalQueueManagement/Resources/AppIcon/` and `DigitalQueueManagement/Resources/Splash/` during the build.
+![Digital Queue Management running on Windows](DigitalQueueManagement_Windows.gif)
 
 ## Project Structure
 
