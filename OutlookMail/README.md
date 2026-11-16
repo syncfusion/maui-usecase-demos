@@ -57,7 +57,6 @@ This sample does not use AI.
 - A Syncfusion license key if your environment requires one
 
 ## AI Configuration
-
 No AI configuration is required.
 
 ### Default Behavior
@@ -131,7 +130,3 @@ Fix: Check the relevant ViewModel and XAML binding paths.
 ## License
 
 This repository is intended for demonstration and learning purposes. Follow the repository license and any applicable Syncfusion licensing terms before distributing or reusing the sample.
-
-- The sample uses local mock data only.
-- There is no authentication or cloud sync.
-- There is no backend API.
