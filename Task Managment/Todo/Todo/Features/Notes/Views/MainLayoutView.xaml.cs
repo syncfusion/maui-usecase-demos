@@ -169,9 +169,7 @@ public partial class MainLayoutView : ContentView
     private void UpdateHeaderDivider()
     {
         var hasSharedBackground = _viewModel.HasBackgroundImage && MainContent.IsVisible;
-        HeaderDivider.IsVisible = !hasSharedBackground && (_isDesktop
-            ? false
-            : !_isPhone
+        HeaderDivider.IsVisible = _isDesktop || !hasSharedBackground && (!_isPhone
               || !_viewModel.IsSidebarCollapsed
               || _viewModel.IsSearchActive);
     }

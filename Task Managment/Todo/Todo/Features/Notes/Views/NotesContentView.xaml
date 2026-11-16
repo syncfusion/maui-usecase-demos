@@ -190,7 +190,7 @@
                             <Grid Margin="{OnIdiom Phone='16,3', Default='0'}" >
                                 <Border InputTransparent="True"
                                         Margin="{OnIdiom Phone='0', Default='16,3'}"
-                                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                                        BackgroundColor="Transparent"
                                         StrokeThickness="0" 
                                         StrokeShape="RoundRectangle 10">
                                     <Border.Shadow>
@@ -441,7 +441,7 @@
                                     <Grid Margin="{OnIdiom Phone='16,3', Default='0'}">
                                         <Border InputTransparent="True"
                                                 Margin="{OnIdiom Phone='0', Default='16,3'}"
-                                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                                                BackgroundColor="Transparent"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 10">
                                             <Border.Shadow>
@@ -605,13 +605,9 @@
                     IsVisible="{OnIdiom Phone={Binding IsAddNotePanelOpen}, Default=True}"
                     Margin="{OnIdiom Phone='16,4,16,8', Default='16,8,16,12'}"
                     Padding="{OnIdiom Phone=4, Default='8,4'}"
-                    Background="{OnIdiom Phone={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}, Default={AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}}"
+                    Background="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
-                <Border.GestureRecognizers>
-                    <PointerGestureRecognizer PointerEntered="OnAddNotePointerEntered"
-                                              PointerExited="OnAddNotePointerExited" />
-                </Border.GestureRecognizers>
                 <Border.Shadow>
                     <Shadow Brush="#4D000000" Radius="2" Offset="0,1" Opacity="1" />
                 </Border.Shadow>

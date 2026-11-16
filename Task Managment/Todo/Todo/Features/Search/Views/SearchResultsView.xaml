@@ -118,7 +118,7 @@
                                 <DataTemplate x:DataType="models:Note">
                                     <Grid Margin="16,3">
                                         <Border InputTransparent="True"
-                                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                                                BackgroundColor="Transparent"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 10">
                                             <Border.Shadow>
@@ -138,6 +138,16 @@
                                                         Offset="0,1"
                                                         Opacity="1" />
                                             </Border.Shadow>
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="PointerOver">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5FFFFFF, Dark=#F51E1E1E}" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
                                             <Border.GestureRecognizers>
                                                 <TapGestureRecognizer
                                 Command="{Binding Source={x:Reference SearchRoot}, Path=BindingContext.OpenNoteCommand}"

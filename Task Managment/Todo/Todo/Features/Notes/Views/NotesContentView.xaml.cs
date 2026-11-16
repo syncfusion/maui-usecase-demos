@@ -76,16 +76,6 @@ public partial class NotesContentView : ContentView
         }
     }
 
-    private void OnAddNotePointerEntered(object? sender, PointerEventArgs e)
-        => AddNotePanel.Background = new SolidColorBrush(Application.Current?.RequestedTheme == AppTheme.Dark
-            ? Color.FromArgb("#F51E1E1E")
-            : Color.FromArgb("#F5FFFFFF"));
-
-    private void OnAddNotePointerExited(object? sender, PointerEventArgs e)
-        => AddNotePanel.Background = new SolidColorBrush(Application.Current?.RequestedTheme == AppTheme.Dark
-            ? Color.FromArgb("#E61E1E1E")
-            : Color.FromArgb("#E6FFFFFF"));
-
     private async void OnAddNoteClicked(object? sender, EventArgs e)
     {
         if (BindingContext is not NotesListViewModel viewModel)

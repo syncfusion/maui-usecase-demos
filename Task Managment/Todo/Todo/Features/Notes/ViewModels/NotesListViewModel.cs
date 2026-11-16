@@ -809,8 +809,8 @@ public partial class NotesListViewModel : ViewModelBase
     public bool CanShowMobileAddNoteButton
         => (IsCustomListSelected || SelectedCategory != NotesListCategory.Bin) && !IsAddNotePanelOpen;
 
-    public string DraftDueDateText => DraftDueDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
-    public string DraftReminderDateText => DraftReminderDate?.ToString("dd_MMM_yyyy, HH:mm") ?? string.Empty;
+    public string DraftDueDateText => DraftDueDate?.ToString("ddd dd MMM, HH:mm") ?? string.Empty;
+    public string DraftReminderDateText => DraftReminderDate?.ToString("ddd dd MMM, HH:mm") ?? string.Empty;
     public string DraftRepeatText => DraftRepeatFrequency == NoteRepeatFrequency.Never ? string.Empty : DraftRepeatFrequency.ToString();
     public string DraftDueDateOptionText => DraftDueDate?.ToString("ddd dd MMM, HH:mm") ?? "Due date/time";
     public string DraftReminderOptionText => DraftReminderDate?.ToString("ddd dd MMM, HH:mm") ?? "Reminder";
