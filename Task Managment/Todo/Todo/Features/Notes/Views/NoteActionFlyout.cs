@@ -174,11 +174,11 @@ public sealed class NoteActionFlyout : ContentView
             HeightRequest = 40,
             ColumnDefinitions = new ColumnDefinitionCollection
             {
-                new(isDesktop ? 40 : 32),
+                new(isPhone ? 32 : isDesktop ? 24 : 22),
                 new(GridLength.Star)
             },
-            ColumnSpacing = 4,
-            Padding = isPhone ? new Thickness(12, 0) : Thickness.Zero
+            ColumnSpacing = isDesktop ? 8 : 4,
+            Padding = new Thickness(12, 0)
         };
         _selectAllCheckBox = new CheckBox
         {
