@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Todo.Common;
+using Todo.Features.CustomLists.Models;
 using Todo.Features.CustomLists.Services;
 
 namespace Todo.Features.CustomLists.ViewModels;
@@ -24,6 +25,28 @@ public partial class CreateListDialogViewModel : ViewModelBase
     /// </summary>
     [ObservableProperty]
     private string? errorMessage;
+
+    public List<ListIconOption> Icons { get; } = ListIconOption.CreateAll(null);
+
+    [ObservableProperty]
+    private string? selectedIcon;
+
+    public bool HasSelectedIcon => !string.IsNullOrEmpty(SelectedIcon);
+    public bool HasNoSelectedIcon => string.IsNullOrEmpty(SelectedIcon);
+
+    partial void OnSelectedIconChanged(string? value)
+    {
+        foreach (var icon in Icons)
+            icon.IsSelected = icon.Glyph == value;
+        OnPropertyChanged(nameof(HasSelectedIcon));
+        OnPropertyChanged(nameof(HasNoSelectedIcon));
+    }
+
+    [RelayCommand]
+    private void SelectIcon(ListIconOption? option)
+    {
+        if (option is not null) SelectedIcon = option.Glyph;
+    }
 
     public string DialogTitle => "Create new list";
     public string PrimaryButtonText => "Create";
@@ -60,7 +83,7 @@ public partial class CreateListDialogViewModel : ViewModelBase
 
         try
         {
-            var list = await _listService.CreateAsync(trimmed);
+            var list = await _listService.CreateAsync(trimmed, SelectedIcon);
             await _navigation.PopModalAsync(list.Id);
         }
         catch (ArgumentException ex)

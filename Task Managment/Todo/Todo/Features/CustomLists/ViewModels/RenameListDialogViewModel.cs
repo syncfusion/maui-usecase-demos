@@ -24,6 +24,28 @@ public partial class RenameListDialogViewModel : ViewModelBase
     [ObservableProperty]
     private string? errorMessage;
 
+    public List<ListIconOption> Icons { get; }
+
+    [ObservableProperty]
+    private string? selectedIcon;
+
+    public bool HasSelectedIcon => !string.IsNullOrEmpty(SelectedIcon);
+    public bool HasNoSelectedIcon => string.IsNullOrEmpty(SelectedIcon);
+
+    partial void OnSelectedIconChanged(string? value)
+    {
+        foreach (var icon in Icons)
+            icon.IsSelected = icon.Glyph == value;
+        OnPropertyChanged(nameof(HasSelectedIcon));
+        OnPropertyChanged(nameof(HasNoSelectedIcon));
+    }
+
+    [RelayCommand]
+    private void SelectIcon(ListIconOption? option)
+    {
+        if (option is not null) SelectedIcon = option.Glyph;
+    }
+
     public string DialogTitle => "Rename list";
     public string PrimaryButtonText => "Rename";
 
@@ -39,6 +61,8 @@ public partial class RenameListDialogViewModel : ViewModelBase
         // Set the observable property so source-gen OnListNameChanged
         // fires once during construction (clears any default value).
         ListName = target?.Name ?? string.Empty;
+        Icons = ListIconOption.CreateAll(target?.IconGlyph);
+        SelectedIcon = target?.IconGlyph;
     }
 
     partial void OnListNameChanged(string value)
@@ -59,7 +83,7 @@ public partial class RenameListDialogViewModel : ViewModelBase
         }
 
         // Allow saving the same name (no-op rename).
-        if (string.Equals(trimmed, _target.Name, StringComparison.Ordinal))
+        if (string.Equals(trimmed, _target.Name, StringComparison.Ordinal) && SelectedIcon == _target.IconGlyph)
         {
             await _navigation.PopModalAsync(true);
             return;
@@ -73,7 +97,7 @@ public partial class RenameListDialogViewModel : ViewModelBase
 
         try
         {
-            await _listService.RenameAsync(_target.Id, trimmed);
+            await _listService.RenameAsync(_target.Id, trimmed, SelectedIcon);
             await _navigation.PopModalAsync(true);
         }
         catch (ArgumentException ex)

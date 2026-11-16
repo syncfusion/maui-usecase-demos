@@ -15,17 +15,55 @@ public partial class NotesContentView : ContentView
             NotesContentSurface.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(0) };
 
         ActionFlyout.ActionRequested += OnNoteActionRequested;
+
+        // Desktop only: pack the Completed section right under the active
+        // tasks instead of pinning it to the bottom of the panel.
+        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
+        {
+            NotesBodyGrid.RowDefinitions[0].Height = GridLength.Auto;
+            NotesBodyGrid.RowDefinitions[1].Height = GridLength.Star;
+            NotesBodyGrid.SizeChanged += (_, _) => UpdateActiveListHeight();
+        }
+    }
+
+    private const double CardHeight = 72;       // 40 row + 20 padding + 12 margin
+    private const double MetadataRowHeight = 24;
+    private const double CompletedHeaderHeight = 48;
+
+    private void UpdateActiveListHeight()
+    {
+        if (BindingContext is not NotesListViewModel vm || NotesBodyGrid.Height <= 0)
+            return;
+
+        var estimate = vm.ActiveNotes.Sum(n => CardHeight + (n.HasMetadata ? MetadataRowHeight : 0));
+        var reserved = vm.HasCompletedNotes ? CompletedHeaderHeight : 0;
+        var available = Math.Max(0, NotesBodyGrid.Height - reserved);
+        ActiveNotesList.HeightRequest = Math.Min(estimate, available);
     }
 
     protected override void OnBindingContextChanged()
     {
         if (BindingContext is NotesListViewModel previousViewModel)
+        {
             previousViewModel.PropertyChanged -= OnNotesViewModelPropertyChanged;
+            previousViewModel.ActiveNotes.CollectionChanged -= OnActiveNotesChanged;
+        }
 
         base.OnBindingContextChanged();
 
         if (BindingContext is NotesListViewModel viewModel)
+        {
             viewModel.PropertyChanged += OnNotesViewModelPropertyChanged;
+            viewModel.ActiveNotes.CollectionChanged += OnActiveNotesChanged;
+            if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
+                UpdateActiveListHeight();
+        }
+    }
+
+    private void OnActiveNotesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
+            Dispatcher.Dispatch(UpdateActiveListHeight);
     }
 
     private void OnNotesViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

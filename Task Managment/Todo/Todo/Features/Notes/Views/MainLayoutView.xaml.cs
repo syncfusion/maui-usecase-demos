@@ -30,8 +30,8 @@ public partial class MainLayoutView : ContentView
 
         UpdateSidebarColumn(viewModel.IsSidebarCollapsed);
         UpdatePageBackgroundImage();
-        if (!_isPhone && !_isDesktop)
-            viewModel.PropertyChanged += OnViewModelPropertyChanged;
+        viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        viewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     public void Activate()
@@ -100,8 +100,12 @@ public partial class MainLayoutView : ContentView
         if (_isPhone)
             return;
 
-        _viewModel.ToggleSidebarCommand.Execute(null);
+        // Single source of truth: flip the shared state, then always
+        // re-apply it so every page restores the sidebar column the
+        // same way (the Search page already behaved correctly).
+        _viewModel.IsSidebarCollapsed = !_viewModel.IsSidebarCollapsed;
         UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
+        UpdatePageBackgroundImage();
     }
 
     private void UpdateMainContent()
@@ -153,10 +157,12 @@ public partial class MainLayoutView : ContentView
             RootGrid.ColumnDefinitions[0].Width = isCollapsed
                 ? new GridLength(0)
                 : new GridLength(ExpandedSidebarWidth);
+            RootGrid.ColumnDefinitions[1].Width = GridLength.Star;
             MainContent.IsVisible = true;
         }
 
         Sidebar.IsVisible = !isCollapsed;
+        RootGrid.InvalidateMeasure();
     }
 
     private void UpdateHeaderDivider()

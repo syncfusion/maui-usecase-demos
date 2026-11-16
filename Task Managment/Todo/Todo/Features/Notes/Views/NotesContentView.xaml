@@ -13,7 +13,7 @@
              x:Class="Todo.Features.Notes.Views.NotesContentView"
              x:Name="NotesContentRoot"
              x:DataType="vm:NotesListViewModel"
-             Padding="{OnIdiom Phone=0, Default=16}">
+             Padding="0">
 
     <ContentView.Resources>
         <ResourceDictionary>
@@ -26,7 +26,7 @@
     <Border x:Name="NotesContentSurface"
             BackgroundColor="{Binding ContentSurfaceBackgroundColor}"
             StrokeThickness="0"
-            StrokeShape="RoundRectangle 14">
+            StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 14'}">
         <Grid RowDefinitions="Auto,*,Auto">
 
             <!-- Page title bar inside the content area -->
@@ -71,7 +71,13 @@
                                WidthRequest="20"
                                HeightRequest="20"
                                Aspect="AspectFit"
-                               IsVisible="{Binding IsCustomListSelected}" />
+                               IsVisible="{Binding ShowDefaultListIcon}" />
+                        <Label Text="{Binding SelectedListIconGlyph}"
+                               FontSize="18"
+                               WidthRequest="20"
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"
+                               IsVisible="{Binding HasSelectedListIcon}" />
                         <Label Text="{Binding HeaderTitle}"
                                FontSize="20"
                                FontAttributes="Bold"
@@ -170,9 +176,9 @@
                 </Border>
 
                 <!-- Notes list (Syncfusion SfListView) -->
-                    <Grid RowDefinitions="*,Auto"
+                    <Grid x:Name="NotesBodyGrid" RowDefinitions="*,Auto"
                         IsVisible="{Binding IsEmpty, Converter={StaticResource InvertedBoolConverter}}">
-                    <syncfusion:SfListView Grid.Row="0" ItemsSource="{Binding ActiveNotes}"
+                    <syncfusion:SfListView x:Name="ActiveNotesList" Grid.Row="0" ItemsSource="{Binding ActiveNotes}"
                                    IsVisible="{Binding HasActiveNotes}"
                                    ItemSpacing="0"
                                    AutoFitMode="DynamicHeight"
@@ -233,7 +239,7 @@
                                         <VisualState x:Name="Normal" />
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Property="Opacity" Value="0.88" />
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5FFFFFF, Dark=#F51E1E1E}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -283,7 +289,7 @@
                                                     Stroke="{StaticResource ChipStrokeColor}"
                                                     StrokeThickness="0"
                                                     StrokeShape="RoundRectangle 12"
-                                                        BackgroundColor="{OnIdiom Phone=Transparent, Default={StaticResource ChipBackgroundColor}}">
+                                                        BackgroundColor="Transparent">
                                                     <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                                             <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=12}" TextColor="{OnIdiom Phone=#B3261E, Default={AppThemeBinding Light=#49454F, Dark=#E6E1E5}}" WidthRequest="{OnIdiom Phone=18, Default=12}" HeightRequest="{OnIdiom Phone=18, Default=12}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                             <Label Text="{Binding DueDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}" FontSize="10" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
@@ -299,7 +305,7 @@
                                                         Stroke="{StaticResource ChipStrokeColor}"
                                                         StrokeThickness="0"
                                                         StrokeShape="RoundRectangle 12"
-                                                        BackgroundColor="{OnIdiom Phone=Transparent, Default={StaticResource ChipBackgroundColor}}">
+                                                        BackgroundColor="Transparent">
                                                         <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                                             <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=12}" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" WidthRequest="{OnIdiom Phone=18, Default=12}" HeightRequest="{OnIdiom Phone=18, Default=12}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                             <Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
@@ -315,7 +321,7 @@
                                                         Stroke="{StaticResource ChipStrokeColor}"
                                                         StrokeThickness="0"
                                                         StrokeShape="RoundRectangle 12"
-                                                        BackgroundColor="{OnIdiom Phone=Transparent, Default={StaticResource ChipBackgroundColor}}">
+                                                        BackgroundColor="Transparent">
                                                         <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                                             <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=12}" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" WidthRequest="{OnIdiom Phone=18, Default=12}" HeightRequest="{OnIdiom Phone=18, Default=12}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                             <Label Text="{Binding ReminderDate, Converter={StaticResource DateTimeFormatConverter}, ConverterParameter=display}" FontSize="10" LineBreakMode="NoWrap" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalTextAlignment="Center" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />
@@ -431,6 +437,16 @@
                                             <TapGestureRecognizer Buttons="Secondary"
                                                                   Tapped="OnNoteSecondaryTapped" />
                                         </Border.GestureRecognizers>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal" />
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5FFFFFF, Dark=#F51E1E1E}" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
                                         <Grid ColumnDefinitions="{OnIdiom Desktop='40,*,40,40', Default='44,*,40,40'}"
                                               RowDefinitions="40,Auto"
                                               ColumnSpacing="8"
@@ -495,7 +511,7 @@
                                                                 Stroke="#E1DDED"
                                                                 StrokeThickness="0"
                                                                 StrokeShape="RoundRectangle 12"
-                                                                BackgroundColor="{OnIdiom Phone=Transparent, Default=#FAF9FC}">
+                                                                BackgroundColor="Transparent">
                                                         <HorizontalStackLayout Spacing="4">
                                                             <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="{OnIdiom Phone=16, Default=12}" TextColor="#2667A3" WidthRequest="{OnIdiom Phone=18, Default=12}" HeightRequest="{OnIdiom Phone=18, Default=12}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                                                             <Label Text="{Binding RepeatFrequency}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" IsVisible="{OnIdiom Phone=False, Tablet=False, Default=True}" />

@@ -126,7 +126,7 @@
                                    TextDecorations="Strikethrough"
                                    LineBreakMode="TailTruncation"
                                    FontSize="14"
-                                   Margin="16,0"
+                                   Margin="16,4,16,0"
                                    HeightRequest="44"
                                    VerticalOptions="Center"
                                    VerticalTextAlignment="Center"

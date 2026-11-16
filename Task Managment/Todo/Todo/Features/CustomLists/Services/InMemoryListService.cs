@@ -43,6 +43,7 @@ public sealed class InMemoryListService : IListService
                 Id = stored.Id,
                 Name = stored.Name,
                 IsSystem = false,
+            IconGlyph = iconGlyph,
                 DisplayOrder = stored.DisplayOrder,
                 SortOrder = stored.SortOrder,
                 BackgroundColorHex = backgroundColorHex,
@@ -74,7 +75,7 @@ public sealed class InMemoryListService : IListService
 
     public ReadOnlyObservableCollection<NoteList> Lists { get; }
 
-    public Task<NoteList> CreateAsync(string name)
+    public Task<NoteList> CreateAsync(string name, string? iconGlyph = null)
     {
         var trimmed = (name ?? string.Empty).Trim();
         if (string.IsNullOrEmpty(trimmed))
@@ -96,7 +97,7 @@ public sealed class InMemoryListService : IListService
         return Task.FromResult(list);
     }
 
-    public Task RenameAsync(string id, string newName)
+    public Task RenameAsync(string id, string newName, string? iconGlyph = null)
     {
         var trimmed = (newName ?? string.Empty).Trim();
         if (string.IsNullOrEmpty(trimmed))
@@ -109,6 +110,8 @@ public sealed class InMemoryListService : IListService
             throw new ArgumentException($"A list named '{trimmed}' already exists.", nameof(newName));
 
         existing.Name = trimmed;
+        if (iconGlyph is not null)
+            existing.IconGlyph = iconGlyph;
         return Task.CompletedTask;
     }
 

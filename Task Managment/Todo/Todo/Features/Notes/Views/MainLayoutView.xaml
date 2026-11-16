@@ -20,7 +20,7 @@
                 Margin="{OnIdiom Phone=0, Default='8,4,12,12'}"
                 Padding="0"
                 StrokeThickness="0"
-                StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 12'}"
+                StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 14'}"
                 IsVisible="{Binding Source={x:Reference PageBackgroundImage}, Path=IsVisible}"
                 InputTransparent="True">
             <Image x:Name="PageBackgroundImage"

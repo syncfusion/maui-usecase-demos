@@ -29,6 +29,19 @@ public partial class NoteList : ObservableObject
     [ObservableProperty]
     private bool isSystem;
 
+    /// <summary>Optional emoji chosen in the create / rename dialog.</summary>
+    [ObservableProperty]
+    private string? iconGlyph;
+
+    public bool HasIcon => !string.IsNullOrEmpty(IconGlyph);
+    public bool HasNoIcon => string.IsNullOrEmpty(IconGlyph);
+
+    partial void OnIconGlyphChanged(string? value)
+    {
+        OnPropertyChanged(nameof(HasIcon));
+        OnPropertyChanged(nameof(HasNoIcon));
+    }
+
     [ObservableProperty]
     private int displayOrder;
 

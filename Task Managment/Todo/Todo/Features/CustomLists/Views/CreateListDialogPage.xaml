@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Todo.Features.CustomLists.Models"
              xmlns:vm="clr-namespace:Todo.Features.CustomLists.ViewModels"
              xmlns:syncfusionCore="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
@@ -15,7 +16,7 @@
           HorizontalOptions="Center">
 
         <Border MaximumWidthRequest="420"
-                WidthRequest="{OnIdiom Phone=300, Default=360}"
+                WidthRequest="{OnIdiom Phone=320, Default=380}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="1"
@@ -28,84 +29,84 @@
                         Opacity="1" />
             </Border.Shadow>
             <VerticalStackLayout Spacing="16">
-
-                <!-- Dialog title (matches createnewlist.png) -->
                 <Label Text="{Binding DialogTitle}"
-                       FontSize="20"
-                       FontAttributes="Bold"
+                       FontSize="22"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}" />
 
-                <!-- List-name input (matches the header search layout without the icon) -->
-                <syncfusionCore:SfTextInputLayout Hint="List name"
-                                                  ContainerType="Outlined"
-                                                  ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
-                                                  OutlineCornerRadius="8"
-                                                  FocusedStrokeThickness="1"
-                                                  UnfocusedStrokeThickness="1"
-                                                  ReserveSpaceForAssistiveLabels="False"
-                                                  InputViewPadding="16,0"
-                                                  EnableFloating="False"
-                                                  Margin="0"
-                                                  ShowHelperText="False"
-                                                  ShowHint="True"
-                                                  Stroke="Transparent"
-                                                  HorizontalOptions="Fill">
-                    <Entry Text="{Binding ListName, Mode=TwoWay}"
-                           Placeholder=""
-                           FontFamily="{StaticResource FontFamilyRegular}"
-                           FontSize="14"
-                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
-                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
-                           VerticalTextAlignment="Center"
-                           HeightRequest="44"
-                           BackgroundColor="Transparent"
-                           Margin="0" />
-                </syncfusionCore:SfTextInputLayout>
+                <!-- Selected icon preview + name input -->
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                    <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0"
+                            VerticalOptions="Center"
+                            StrokeShape="RoundRectangle 20"
+                            BackgroundColor="{AppThemeBinding Light=#ECE6F0, Dark=#36343B}">
+                        <Grid>
+                            <Label Text="{Binding SelectedIcon}" FontSize="20"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   IsVisible="{Binding HasSelectedIcon}" />
+                            <Image Source="notesicon.png" WidthRequest="20" HeightRequest="20"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   IsVisible="{Binding HasNoSelectedIcon}" />
+                        </Grid>
+                    </Border>
+                    <syncfusionCore:SfTextInputLayout Grid.Column="1"
+                                                      Hint="List name"
+                                                      ContainerType="Outlined"
+                                                      ContainerBackground="Transparent"
+                                                      OutlineCornerRadius="4"
+                                                      FocusedStrokeThickness="1"
+                                                      UnfocusedStrokeThickness="1"
+                                                      ReserveSpaceForAssistiveLabels="False"
+                                                      InputViewPadding="12,0"
+                                                      EnableFloating="False"
+                                                      ShowHelperText="False"
+                                                      ShowHint="True"
+                                                      HorizontalOptions="Fill">
+                        <Entry Text="{Binding ListName, Mode=TwoWay}"
+                               Placeholder=""
+                               FontFamily="{StaticResource FontFamilyRegular}"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
+                               VerticalTextAlignment="Center"
+                               HeightRequest="44"
+                               BackgroundColor="Transparent" />
+                    </syncfusionCore:SfTextInputLayout>
+                </Grid>
 
-                <!-- Inline validation message (only visible when set) -->
+                <!-- Icon picker -->
+                <FlexLayout Wrap="Wrap" Direction="Row" JustifyContent="Start"
+                            BindableLayout.ItemsSource="{Binding Icons}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:ListIconOption">
+                            <Border WidthRequest="40" HeightRequest="40" Margin="0,0,10,8"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                                    BackgroundColor="Transparent">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E8DEF8, Dark=#4A4458}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CreateListDialogViewModel}}, Path=SelectIconCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <Label Text="{Binding Glyph}" FontSize="20"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
                 <Label Text="{Binding ErrorMessage}"
                        FontSize="12"
                        TextColor="{StaticResource ErrorColor}"
                        IsVisible="{Binding ErrorMessage, Converter={StaticResource NotNullToBoolConverter}}" />
 
-                <!-- Action buttons -->
-                <Grid ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12"
-                      HorizontalOptions="End"
-                      Margin="0,8,0,0">
-                    <buttons:SfButton Grid.Column="1"
-                            Text="Cancel"
-                            Background="Transparent"
-                            TextColor="#6750A4"
-                            Command="{Binding CancelCommand}"
-                            HeightRequest="36"
-                            MinimumWidthRequest="72"
-                            CornerRadius="8" />
-                    <buttons:SfButton Grid.Column="2"
-                            Text="{Binding PrimaryButtonText}"
-                            Background="Transparent"
-                            TextColor="#6750A4"
-                            Command="{Binding CreateCommand}"
-                            HeightRequest="36"
-                            MinimumWidthRequest="72"
-                            CornerRadius="8">
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal" />
-                                    <VisualState x:Name="PointerOver" />
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#7633DA, Dark=#8D4CF5}" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                    </buttons:SfButton>
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" Margin="0,8,0,0">
+                    <buttons:SfButton Grid.Column="1" Text="Cancel" Background="Transparent" TextColor="#6750A4"
+                                      Command="{Binding CancelCommand}" HeightRequest="36" MinimumWidthRequest="72" CornerRadius="8" />
+                    <buttons:SfButton Grid.Column="2" Text="{Binding PrimaryButtonText}" Background="Transparent" TextColor="#6750A4"
+                                      Command="{Binding CreateCommand}" HeightRequest="36" MinimumWidthRequest="72" CornerRadius="8" />
                 </Grid>
-
             </VerticalStackLayout>
         </Border>
     </Grid>

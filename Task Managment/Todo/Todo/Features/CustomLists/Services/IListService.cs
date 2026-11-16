@@ -25,7 +25,7 @@ public interface IListService
     /// <see cref="ArgumentException"/> when the name is empty or
     /// already taken by an existing list (case-insensitive match).
     /// </summary>
-    Task<NoteList> CreateAsync(string name);
+    Task<NoteList> CreateAsync(string name, string? iconGlyph = null);
 
     /// <summary>
     /// Renames an existing list to <paramref name="newName"/>. Throws
@@ -33,7 +33,7 @@ public interface IListService
     /// <paramref name="id"/>, or <see cref="ArgumentException"/> when
     /// the new name is empty or already used by another list.
     /// </summary>
-    Task RenameAsync(string id, string newName);
+    Task RenameAsync(string id, string newName, string? iconGlyph = null);
 
     /// <summary>
     /// Removes a list from the in-memory store. Notes that were in

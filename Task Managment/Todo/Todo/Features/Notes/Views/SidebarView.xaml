@@ -130,7 +130,11 @@
                                             <TapGestureRecognizer Tapped="OnCustomListRowTapped" />
                                         </Grid.GestureRecognizers>
                                         <Image Grid.Column="0" Source="notesicon.png" WidthRequest="20"
-                                               HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center" />
+                                               HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center"
+                                               IsVisible="{Binding HasNoIcon}" />
+                                        <Label Grid.Column="0" Text="{Binding IconGlyph}" FontSize="16" WidthRequest="20"
+                                               HorizontalTextAlignment="Center" VerticalOptions="Center"
+                                               IsVisible="{Binding HasIcon}" />
                                         <HorizontalStackLayout Grid.Column="1" Spacing="4"
                                                                VerticalOptions="Center"
                                                                IsVisible="{Binding Source={x:Reference SidebarRoot}, Path=BindingContext.IsSidebarCollapsed, Converter={StaticResource InvertedBoolConverter}}">

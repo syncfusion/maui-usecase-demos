@@ -60,21 +60,24 @@ public partial class SearchResultsView : ContentView
             PointerHoverSurface.Reset(border);
     }
 
+    private static Color ResultCardColor(bool hovered)
+    {
+        var dark = Application.Current?.RequestedTheme == AppTheme.Dark;
+        return Color.FromArgb(dark
+            ? (hovered ? "#F51E1E1E" : "#E61E1E1E")
+            : (hovered ? "#F5FFFFFF" : "#E6FFFFFF"));
+    }
+
     private void OnResultPointerEntered(object? sender, PointerEventArgs e)
     {
         if (sender is Border border)
-            PointerHoverSurface.SetHovered(border);
+            border.BackgroundColor = ResultCardColor(true);
     }
 
     private static void OnResultPointerExited(object? sender, PointerEventArgs e)
     {
         if (sender is Border border)
-        {
-            var backgroundColor = Application.Current?.RequestedTheme == AppTheme.Dark
-                ? Color.FromArgb("#1E1E1E")
-                : Colors.White;
-            PointerHoverSurface.Reset(border, backgroundColor);
-        }
+            border.BackgroundColor = ResultCardColor(false);
     }
 
     private void OnNoteMenuClicked(object? sender, EventArgs e)

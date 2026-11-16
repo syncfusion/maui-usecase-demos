@@ -166,6 +166,19 @@ public partial class NotesListViewModel : ViewModelBase
     /// (rather than a built-in category). Drives header copy and
     /// theme selection.
     /// </summary>
+    partial void OnSelectedCustomListChanged(NoteList? value) => RefreshListIconState();
+
+    private void RefreshListIconState()
+    {
+        OnPropertyChanged(nameof(SelectedListIconGlyph));
+        OnPropertyChanged(nameof(HasSelectedListIcon));
+        OnPropertyChanged(nameof(ShowDefaultListIcon));
+    }
+
+    public string? SelectedListIconGlyph => SelectedCustomList?.IconGlyph;
+    public bool HasSelectedListIcon => IsCustomListSelected && !string.IsNullOrEmpty(SelectedListIconGlyph);
+    public bool ShowDefaultListIcon => IsCustomListSelected && !HasSelectedListIcon;
+
     public bool IsCustomListSelected => !string.IsNullOrEmpty(SelectedListId);
 
     partial void OnSelectedCategoryChanged(NotesListCategory value)
@@ -207,6 +220,7 @@ public partial class NotesListViewModel : ViewModelBase
         OnPropertyChanged(nameof(EmptyStateTitle));
         OnPropertyChanged(nameof(EmptyStateMessage));
         OnPropertyChanged(nameof(IsCustomListSelected));
+        RefreshListIconState();
         OnPropertyChanged(nameof(AccentColorKey));
         OnPropertyChanged(nameof(BackgroundImage));
         OnPropertyChanged(nameof(HasBackgroundImage));
@@ -638,6 +652,7 @@ public partial class NotesListViewModel : ViewModelBase
         var vm = new Todo.Features.CustomLists.ViewModels.RenameListDialogViewModel(_listService, _navigation, list);
         var page = new Todo.Features.CustomLists.Views.RenameListDialogPage(vm);
         await _navigation.PushModalAsync(page);
+        RefreshListIconState();
     }
 
     /// <summary>

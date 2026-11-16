@@ -10,7 +10,7 @@
              x:Class="Todo.Features.Search.Views.SearchResultsView"
              x:Name="SearchRoot"
              x:DataType="vm:SearchResultsViewModel"
-             Padding="{OnIdiom Phone=0, Default=16}"
+             Padding="0"
              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
 
     <ContentView.Resources>
@@ -30,7 +30,7 @@
     <Border x:Name="SearchSurface"
             BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}"
             StrokeThickness="0"
-            StrokeShape="RoundRectangle 14">
+            StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 14'}">
         <Border.Triggers>
             <DataTrigger TargetType="Border"
                          Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
