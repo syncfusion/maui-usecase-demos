@@ -388,21 +388,11 @@ public sealed class NoteActionFlyout : ContentView
     {
         if (_destinationsLayout is null) return;
         _destinationsLayout.Children.Clear();
-        var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
-        var isDesktop = DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
-        _destinationsLayout.Children.Add(CreateButton(
-            isDesktop ? "Move To" : "Move notes to",
-            HideDestinations,
-            iconGlyph: "\ue5c4",
-            iconColor: "#49454F"));
-        var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(-8, 4) };
-        separator.Color = Color.FromArgb("#CAC4D0");
-        _destinationsLayout.Children.Add(separator);
         foreach (var destination in _destinations)
             _destinationsLayout.Children.Add(CreateButton(
                 destination.Name,
                 () => RaiseAction(NoteActionKind.Move, destination.Key),
-                reserveIconColumn: isDesktop));
+                iconGlyph: GetDestinationIcon(destination.Key)));
 
         if (_destinationsSurface is not null)
             _destinationsSurface.HeightRequest = GetDestinationsPopupHeight();
@@ -492,8 +482,15 @@ public sealed class NoteActionFlyout : ContentView
         _destinationsPopup.ShowRelativeToView(_moveButton, PopupRelativePosition.AlignToRightOf);
     }
 
+    private static string GetDestinationIcon(string key)
+        => key == NotesListViewModel.EncodeDropTarget(NotesListCategory.MyNotes) ? "\ue88a"
+         : key == NotesListViewModel.EncodeDropTarget(NotesListCategory.Important) ? "\ue838"
+         : key == NotesListViewModel.EncodeDropTarget(NotesListCategory.Reminder) ? "\ue7f5"
+         : key == NotesListViewModel.EncodeDropTarget(NotesListCategory.Bin) ? "\ue872"
+         : "\ue896";
+
     private double GetDestinationsPopupHeight()
-        => ((_destinations.Count + 1) * 40) + 9 + 16 + 20;
+        => (_destinations.Count * 40) + 16 + 20;
 
     private void HideDestinations()
     {
