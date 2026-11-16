@@ -60,6 +60,11 @@ public partial class HeaderView : ContentView
     /// <summary>
     /// Activates inline search when the user focuses the shared header entry.
     /// </summary>
+    private void OnSearchEntryTextChanged(object? sender, TextChangedEventArgs e)
+        => SearchInputLayout.Stroke = string.IsNullOrEmpty(e.NewTextValue)
+            ? Colors.Transparent
+            : Color.FromArgb("#CAC4D0");
+
     private void OnSearchEntryFocused(object? sender, FocusEventArgs e)
     {
         if (BindingContext is NotesListViewModel vm && !vm.IsSearchActive)

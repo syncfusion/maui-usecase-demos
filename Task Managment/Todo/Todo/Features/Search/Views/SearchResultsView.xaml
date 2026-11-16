@@ -19,34 +19,12 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <ContentView.Triggers>
-        <DataTrigger TargetType="ContentView"
-                     Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
-                     Value="True">
-            <Setter Property="BackgroundColor" Value="Transparent" />
-        </DataTrigger>
-    </ContentView.Triggers>
-
     <Border x:Name="SearchSurface"
-            BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}"
+            BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light=#FFFBFE, Dark={StaticResource SurfaceDarkColor}}}"
             StrokeThickness="0"
             StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 14'}">
-        <Border.Triggers>
-            <DataTrigger TargetType="Border"
-                         Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
-                         Value="True">
-                <Setter Property="BackgroundColor" Value="Transparent" />
-            </DataTrigger>
-        </Border.Triggers>
         <Grid RowDefinitions="Auto,*"
-              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}}">
-            <Grid.Triggers>
-                <DataTrigger TargetType="Grid"
-                             Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
-                             Value="True">
-                    <Setter Property="BackgroundColor" Value="Transparent" />
-                </DataTrigger>
-            </Grid.Triggers>
+              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}, Default={AppThemeBinding Light=#FFFBFE, Dark={StaticResource SurfaceDarkColor}}}">
 
             <VerticalStackLayout Grid.Row="0"
                                  Padding="{OnIdiom Phone='16,16,16,12', Default='24,20,24,12'}"
@@ -56,14 +34,6 @@
                        FontAttributes="Bold"
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
                        SemanticProperties.HeadingLevel="Level1">
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label"
-                                     Binding="{Binding Source={x:Reference SearchRoot}, Path=HasListBackgroundImage}"
-                                     Value="True">
-                            <Setter Property="TextColor"
-                                    Value="{OnIdiom Phone=White, Default={AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}}" />
-                        </DataTrigger>
-                    </Label.Triggers>
                 </Label>
                 <Label Text="{Binding ResultsDescription}"
                        IsVisible="{Binding IsQueryEmpty, Converter={StaticResource InvertedBoolConverter}}"
@@ -129,7 +99,7 @@
                                             </Border.Shadow>
                                         </Border>
                                         <Border Padding="12,6"
-                                                BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
+                                                BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 10">
                                             <Border.Shadow>
@@ -143,7 +113,7 @@
                                                     <VisualState x:Name="Normal" />
                                                     <VisualState x:Name="PointerOver">
                                                         <VisualState.Setters>
-                                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5FFFFFF, Dark=#F51E1E1E}" />
+                                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}" />
                                                         </VisualState.Setters>
                                                     </VisualState>
                                                 </VisualStateGroup>

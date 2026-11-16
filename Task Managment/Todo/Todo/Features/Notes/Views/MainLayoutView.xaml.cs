@@ -136,7 +136,7 @@ public partial class MainLayoutView : ContentView
 
     private void UpdatePageBackgroundImage()
     {
-        PageBackgroundImage.IsVisible = _viewModel.HasBackgroundImage && MainContent.IsVisible;
+        PageBackgroundImage.IsVisible = _viewModel.HasBackgroundImage && MainContent.IsVisible && !_viewModel.IsSearchActive;
     }
 
     private void UpdateSidebarColumn(bool isCollapsed)

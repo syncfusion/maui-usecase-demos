@@ -1008,8 +1008,17 @@ public partial class NotesListViewModel : ViewModelBase
         var ordered = ActiveNotes.ToList();
         var moved = request.Note ?? (request.OldIndex >= 0 && request.OldIndex < ordered.Count ? ordered[request.OldIndex] : null);
         if (moved is null) return;
-        ordered.RemoveAll(n => n.Id == moved.Id);
-        ordered.Insert(Math.Clamp(request.NewIndex, 0, ordered.Count), moved);
+        // The list control may or may not have moved the item already; either way
+        // rebuild the order explicitly from the old/new indexes.
+        if (ordered.IndexOf(moved) == request.NewIndex && request.OldIndex != request.NewIndex)
+        {
+            // already moved by the control
+        }
+        else
+        {
+            ordered.RemoveAll(n => n.Id == moved.Id);
+            ordered.Insert(Math.Clamp(request.NewIndex, 0, ordered.Count), moved);
+        }
 
         _isReordering = true;
         try { _noteService.ReorderAsync(ordered.Select(n => n.Id).ToList()); }
@@ -1023,30 +1032,92 @@ public partial class NotesListViewModel : ViewModelBase
     /// Module-07 task 7-2.
     /// </summary>
     [RelayCommand]
-    private async Task MoveNoteToTargetAsync(DropTargetRequest? request)
+    private Task MoveNoteToTargetAsync(DropTargetRequest? request)
     {
-        if (request is null || string.IsNullOrEmpty(request.NoteId)) return;
-        var note = _noteService.Notes.FirstOrDefault(n => n.Id == request.NoteId);
-        if (note is null || note.DeletedAt is not null) return;
+        if (request is null || string.IsNullOrEmpty(request.NoteId)) return Task.CompletedTask;
+        return MoveNotesToTargetAsync(new[] { request.NoteId }, request.TargetKey);
+    }
 
-        var targetCategory = TryDecodeCategoryKey(request.TargetKey);
-        if (request.TargetKey == "my")
-            targetCategory = NotesListCategory.MyNotes;
+    // ---------------------------------------------------------------
+    //  Multi-selection (Ctrl / Shift click)
+    // ---------------------------------------------------------------
+    private Note? _selectionAnchor;
 
-        if (targetCategory.HasValue)
+    public int SelectedCount => FilteredNotes.Count(n => n.IsSelected);
+
+    public void ClearSelection()
+    {
+        foreach (var n in _noteService.Notes.Where(n => n.IsSelected)) n.IsSelected = false;
+        _selectionAnchor = null;
+    }
+
+    /// <summary>Applies Ctrl (toggle) or Shift (range) selection.</summary>
+    public void SelectNote(Note note, bool ctrl, bool shift)
+    {
+        if (shift && _selectionAnchor is not null && FilteredNotes.Contains(_selectionAnchor))
         {
-            await _noteService.MoveToCategoryAsync(note.Id, targetCategory.Value);
-            NavigateToCategoryCommand.Execute(targetCategory.Value);
+            var from = FilteredNotes.IndexOf(_selectionAnchor);
+            var to = FilteredNotes.IndexOf(note);
+            if (to < 0) return;
+            if (!ctrl)
+                foreach (var n in FilteredNotes) n.IsSelected = false;
+            for (var i = Math.Min(from, to); i <= Math.Max(from, to); i++)
+                FilteredNotes[i].IsSelected = true;
             return;
         }
 
-        var targetListId = DecodeDropTargetKey(request.TargetKey);
-        if (targetListId is null || note.ListId == targetListId) return;
+        if (!ctrl)
+            foreach (var n in FilteredNotes) n.IsSelected = false;
+        note.IsSelected = ctrl ? !note.IsSelected : true;
+        _selectionAnchor = note;
+    }
 
-        await _noteService.MoveToListAsync(request.NoteId, targetListId);
+    /// <summary>Notes an action should apply to: the whole selection when the note is part of it.</summary>
+    public IReadOnlyList<Note> GetActionTargets(Note note)
+    {
+        if (note.IsSelected)
+        {
+            var selected = FilteredNotes.Where(n => n.IsSelected).ToList();
+            if (selected.Count > 0) return selected;
+        }
+        ClearSelection();
+        return new[] { note };
+    }
 
-        if (SelectedListId != targetListId)
+    public async Task DeleteNotesAsync(IEnumerable<Note> notes)
+    {
+        foreach (var note in notes.ToList())
+            await _noteService.SoftDeleteAsync(note.Id);
+        ClearSelection();
+    }
+
+    public async Task MoveNotesToTargetAsync(IReadOnlyList<string> noteIds, string targetKey)
+    {
+        var moved = 0;
+        NotesListCategory? targetCategory = TryDecodeCategoryKey(targetKey);
+        if (targetKey == "my") targetCategory = NotesListCategory.MyNotes;
+        var targetListId = targetCategory.HasValue ? null : DecodeDropTargetKey(targetKey);
+
+        foreach (var id in noteIds)
+        {
+            var note = _noteService.Notes.FirstOrDefault(n => n.Id == id);
+            if (note is null || note.DeletedAt is not null) continue;
+            if (targetCategory.HasValue)
+                await _noteService.MoveToCategoryAsync(id, targetCategory.Value);
+            else if (targetListId is not null && note.ListId != targetListId)
+                await _noteService.MoveToListAsync(id, targetListId);
+            else
+                continue;
+            moved++;
+        }
+
+        if (moved == 0) return;
+        ClearSelection();
+        if (targetCategory.HasValue)
+            NavigateToCategoryCommand.Execute(targetCategory.Value);
+        else if (SelectedListId != targetListId)
             SelectedListId = targetListId;
+        await ShowToastAsync(moved == 1 ? "1 task moved" : $"{moved} tasks moved");
     }
 
     /// <summary>

@@ -51,7 +51,7 @@ public sealed class CustomListOptionsFlyout : ContentView
                 HasShadow = true,
                 Stroke = Colors.Transparent,
                 StrokeThickness = 0,
-                CornerRadius = 27
+                CornerRadius = 8
             },
             ContentTemplate = new DataTemplate(CreateSurface)
         };
@@ -82,7 +82,7 @@ public sealed class CustomListOptionsFlyout : ContentView
             HeightRequest = MenuItemHeight * 2 + 20,
             Padding = new Thickness(1),
             StrokeThickness = 1,
-            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(27) },
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) },
             Content = actions
         };
         surface.SetAppTheme<Brush>(

@@ -30,6 +30,8 @@ public sealed class NoteActionFlyout : ContentView
     private SfButton? _restoreButton;
     private SfButton? _deleteButton;
     private BoxView? _deleteSeparator;
+    private int _selectedCount = 1;
+    private bool _showSelectAll;
     private bool _closeAnimationRunning;
     private bool _allowPopupClose;
     private bool _isUpdatingSelectAll;
@@ -59,7 +61,7 @@ public sealed class NoteActionFlyout : ContentView
                 HasShadow = true,
                 Stroke = Colors.Transparent,
                 StrokeThickness = 0,
-                CornerRadius = 27
+                CornerRadius = 8
             },
             ContentTemplate = new DataTemplate(CreateMenuSurface)
         };
@@ -81,7 +83,7 @@ public sealed class NoteActionFlyout : ContentView
                 HasShadow = true,
                 Stroke = Colors.Transparent,
                 StrokeThickness = 0,
-                CornerRadius = 27
+                CornerRadius = 8
             }
         };
         _destinationsPopup.ContentTemplate = new DataTemplate(CreateDestinationsSurface);
@@ -132,9 +134,11 @@ public sealed class NoteActionFlyout : ContentView
         Content = new Grid { Children = { _popup, _destinationsPopup } };
     }
 
-    public void ShowFor(View anchor, Note note, IEnumerable<NoteList> customLists, IEnumerable<Note> visibleNotes)
+    public void ShowFor(View anchor, Note note, IEnumerable<NoteList> customLists, IEnumerable<Note> visibleNotes, int selectedCount = 1, bool showSelectAll = false)
     {
         _selectedNote = note;
+        _selectedCount = Math.Max(1, selectedCount);
+        _showSelectAll = showSelectAll;
         _hasMainPopupPosition = false;
         _popup.StaysOpen = false;
         var wasClosingFlyoutsTogether = _closingFlyoutsTogether;
@@ -211,14 +215,14 @@ public sealed class NoteActionFlyout : ContentView
         _selectAllRow.Children.Add(selectAllLabel);
         _selectAllSurface = PointerHoverSurface.Wrap(_selectAllRow, 8, Thickness.Zero);
 
-        _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(-8, 4) };
         _selectAllSeparator.Color = Color.FromArgb("#CAC4D0");
 
         _completionButton = CreateButton("Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion), iconGlyph: "\ue876");
         _editButton = CreateButton("Edit note", () => RaiseAction(NoteActionKind.Edit), iconGlyph: "\ue150");
         _moveButton = CreateButton("Move notes to", ShowDestinations, iconGlyph: "\ue5c4");
         _restoreButton = CreateButton("Restore note", () => RaiseAction(NoteActionKind.Restore), iconGlyph: "\ue5d5");
-        _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(-8, 4) };
         _deleteSeparator.Color = Color.FromArgb("#CAC4D0");
         _deleteButton = CreateButton("Delete task", () =>
         {
@@ -237,7 +241,7 @@ public sealed class NoteActionFlyout : ContentView
             WidthRequest = 220,
             Padding = 8,
             StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(27) },
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(8) },
             Content = stage
         };
         _surface.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
@@ -266,7 +270,7 @@ public sealed class NoteActionFlyout : ContentView
             WidthRequest = 220,
             Padding = 8,
             StrokeThickness = 1,
-            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(27) },
+            StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(8) },
             Content = _destinationsLayout
         };
         _destinationsSurface.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
@@ -391,7 +395,7 @@ public sealed class NoteActionFlyout : ContentView
             HideDestinations,
             iconGlyph: "\ue5c4",
             iconColor: "#49454F"));
-        var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(-8, 4) };
         separator.Color = Color.FromArgb("#CAC4D0");
         _destinationsLayout.Children.Add(separator);
         foreach (var destination in _destinations)
@@ -411,16 +415,19 @@ public sealed class NoteActionFlyout : ContentView
             || _restoreButton is null || _deleteButton is null || _deleteSeparator is null || _actionsLayout is null) return;
         var isDeleted = _selectedNote.DeletedAt is not null;
         UpdateActionLayout(isDeleted);
-        var canSelectAll = !isDeleted && _visibleNotes.Count > 0;
+        var canSelectAll = !isDeleted && _showSelectAll && _visibleNotes.Count > 0;
         _selectAllRow.IsVisible = canSelectAll;
         _selectAllSeparator.IsVisible = canSelectAll;
         UpdateSelectAllState();
         _completionButton.IsVisible = !isDeleted;
-        _editButton.IsVisible = !isDeleted;
+        _editButton.IsVisible = !isDeleted && _selectedCount <= 1;
         _moveButton.IsVisible = !isDeleted;
         _restoreButton.IsVisible = isDeleted;
-        _deleteSeparator.IsVisible = isDeleted;
-        _deleteButton.Text = isDeleted ? "Delete permanently" : "Delete task";
+        _deleteSeparator.IsVisible = true;
+        var multiple = _selectedCount > 1;
+        _moveButton.Text = "Move notes to";
+        _completionButton.Text = multiple ? "Mark as completed" : "Mark as completed";
+        _deleteButton.Text = isDeleted ? "Delete permanently" : multiple ? "Delete notes" : "Delete note";
     }
 
     private void UpdateActionLayout(bool isDeleted)
@@ -510,8 +517,10 @@ public sealed class NoteActionFlyout : ContentView
         }
         else
         {
-            // Select-all row, separator, and the four note actions.
-            contentHeight = 40 + 9 + (4 * 40) + (5 * 5);
+            // [select-all row + separator], mark complete, [edit], move, separator, delete.
+            var buttons = _selectedCount > 1 ? 2 : 3;
+            var children = buttons + 2 + (_showSelectAll ? 2 : 0);
+            contentHeight = (_showSelectAll ? 40 + 9 : 0) + (buttons * 40) + 9 + 40 + ((children - 1) * 5);
         }
 
         _popup.AutoSizeMode = useContentSizedPopup ? PopupAutoSizeMode.Height : PopupAutoSizeMode.None;

@@ -1,4 +1,4 @@
-﻿<maui:MauiWinUIApplication
+<maui:MauiWinUIApplication
     x:Class="Todo.WinUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,9 +7,21 @@
 
     <maui:MauiWinUIApplication.Resources>
         <ResourceDictionary>
-            <SolidColorBrush x:Key="ToolTipBackground" Color="#000000" />
+            <SolidColorBrush x:Key="ToolTipBackground" Color="#322F35" />
             <SolidColorBrush x:Key="ToolTipForeground" Color="#FFFFFF" />
-            <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#000000" />
+            <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#322F35" />
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="ToolTipBackground" Color="#322F35" />
+                    <SolidColorBrush x:Key="ToolTipForeground" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#322F35" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="ToolTipBackground" Color="#322F35" />
+                    <SolidColorBrush x:Key="ToolTipForeground" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#322F35" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </maui:MauiWinUIApplication.Resources>
 

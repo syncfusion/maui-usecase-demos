@@ -162,6 +162,22 @@ public partial class NotesContentView : ContentView
         ListOptionsFlyout.ShowFor(anchor, vm.SelectedCategory, vm);
     }
 
+    private void OnNoteTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is not BindableObject { BindingContext: Note note } || BindingContext is not NotesListViewModel vm)
+            return;
+
+        var (ctrl, shift) = KeyModifierState.Get();
+        if (ctrl || shift)
+        {
+            vm.SelectNote(note, ctrl, shift);
+            return;
+        }
+
+        vm.ClearSelection();
+        vm.EditNoteCommand.Execute(note);
+    }
+
     private void OnNoteSecondaryTapped(object? sender, TappedEventArgs e)
     {
         if (sender is View anchor)
@@ -171,7 +187,11 @@ public partial class NotesContentView : ContentView
     private void ShowNoteActions(View anchor)
     {
         if (BindingContext is NotesListViewModel vm && anchor.BindingContext is Note note)
-            ActionFlyout.ShowFor(anchor, note, vm.CustomLists, vm.FilteredNotes);
+        {
+            var targets = vm.GetActionTargets(note);
+            var showSelectAll = !string.IsNullOrEmpty(vm.SelectedListId);
+            ActionFlyout.ShowFor(anchor, note, vm.CustomLists, vm.FilteredNotes, targets.Count, showSelectAll);
+        }
     }
 
     private void OnNoteActionRequested(object? sender, NoteActionRequestedEventArgs e)
@@ -182,8 +202,18 @@ public partial class NotesContentView : ContentView
         switch (e.Action)
         {
             case NoteActionKind.ToggleCompletion:
-                vm.ToggleCompleteCommand.Execute(e.Note);
+            {
+                var targets = vm.GetActionTargets(e.Note);
+                if (targets.Count > 1)
+                {
+                    var complete = targets.Any(n => !n.IsCompleted);
+                    vm.SetNotesCompletionCommand.Execute(new SetNotesCompletionRequest(targets.Select(n => n.Id).ToArray(), complete));
+                    vm.ClearSelection();
+                }
+                else
+                    vm.ToggleCompleteCommand.Execute(e.Note);
                 break;
+            }
             case NoteActionKind.SetVisibleCompletion when e.IsCompleted.HasValue && e.NoteIds is not null:
                 vm.SetNotesCompletionCommand.Execute(new SetNotesCompletionRequest(e.NoteIds, e.IsCompleted.Value));
                 break;
@@ -191,13 +221,13 @@ public partial class NotesContentView : ContentView
                 vm.EditNoteCommand.Execute(e.Note);
                 break;
             case NoteActionKind.Move when e.TargetKey is not null:
-                vm.MoveNoteToTargetCommand.Execute(new DropTargetRequest(e.Note.Id, e.TargetKey));
+                _ = vm.MoveNotesToTargetAsync(vm.GetActionTargets(e.Note).Select(n => n.Id).ToArray(), e.TargetKey);
                 break;
             case NoteActionKind.Restore:
                 vm.RestoreCommand.Execute(e.Note);
                 break;
             case NoteActionKind.Delete:
-                vm.DeleteCommand.Execute(e.Note);
+                _ = vm.DeleteNotesAsync(vm.GetActionTargets(e.Note));
                 break;
             case NoteActionKind.DeletePermanently:
                 if (e.Note.DeletedAt is not null)
@@ -322,7 +352,7 @@ public partial class NotesContentView : ContentView
                 // we just need to re-author DisplayOrder so the new
                 // order survives re-filtering.
                 var request = new DragReorderRequest(e.OldIndex, e.NewIndex, e.DataItem as Note);
-                vm.ReorderNoteCommand.Execute(request);
+                Dispatcher.Dispatch(() => vm.ReorderNoteCommand.Execute(request));
 
                 // Gesture finished — clear the in-flight state so
                 // the lifted card visual and the gap highlight

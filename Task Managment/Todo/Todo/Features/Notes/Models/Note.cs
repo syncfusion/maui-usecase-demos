@@ -38,6 +38,10 @@ public partial class Note : ObservableObject
     [ObservableProperty]
     private bool isImportant;
 
+    /// <summary>UI-only multi-selection flag.</summary>
+    [ObservableProperty]
+    private bool isSelected;
+
     [ObservableProperty]
     private bool isCompleted;
 

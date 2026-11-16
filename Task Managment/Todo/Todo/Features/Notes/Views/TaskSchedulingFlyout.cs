@@ -18,13 +18,15 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     public TaskSchedulingFlyout()
     {
-        _datePopup = CreatePopup(240, 280, CreateDateSurface);
+        _datePopup = CreatePopup(IsDesktop ? 282 : 240, IsDesktop ? 473 : 280, CreateDateSurface);
         _repeatPopup = CreatePopup(210, 332, CreateRepeatSurface);
         _customPopup = CreatePopup(300, 224, CreateCustomSurface);
         foreach (var popup in new[] { _datePopup, _repeatPopup, _customPopup })
             popup.PositionChanging += ClampPosition;
         Content = new Grid { Children = { _datePopup, _repeatPopup, _customPopup } };
     }
+
+    private static bool IsDesktop => DeviceInfo.Current.Idiom == DeviceIdiom.Desktop;
 
     private static SfPopup CreatePopup(double width, double height, Func<View> factory) => new()
     {
@@ -45,7 +47,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             HasShadow = true,
             Stroke = Colors.Transparent,
             StrokeThickness = 0,
-            CornerRadius = 27
+            CornerRadius = 8
         },
         ContentTemplate = new DataTemplate(factory)
     };
@@ -88,7 +90,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         var picker = new SfDateTimePicker
         {
             SelectedDate = _selectedDateTime,
-            HeightRequest = 220,
+            HeightRequest = IsDesktop ? -1 : 220,
             Background = Brush.Transparent,
             DateFormat = PickerDateFormat.MMM_dd_yyyy,
             HeaderView = new DateTimePickerHeaderView
@@ -125,7 +127,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         {
             RowDefinitions = new RowDefinitionCollection
             {
-                new(220),
+                IsDesktop ? new(GridLength.Star) : new(220),
                 new(GridLength.Auto),
                 new(GridLength.Auto)
             },
@@ -159,7 +161,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         content.Children.Add(buttons);
         Grid.SetRow(buttons, 2);
 
-        return CreateBorder(240, 280, content);
+        return IsDesktop ? CreateBorder(282, 473, content) : CreateBorder(240, 280, content);
     }
 
     private View CreateRepeatSurface()
@@ -187,7 +189,7 @@ public sealed class TaskSchedulingFlyout : ContentView
                 () => { _viewModel?.SetDraftRepeatFrequency(option); _repeatPopup.Dismiss(); }));
         }
 
-        var repeatDivider = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
+        var repeatDivider = new BoxView { HeightRequest = 1, Margin = new Thickness(-8, 4) };
         repeatDivider.Color = Color.FromArgb("#CAC4D0");
         content.Children.Add(repeatDivider);
         var customButton = CreateMenuButton("Custom", _viewModel?.DraftRepeatFrequency == NoteRepeatFrequency.Custom,
@@ -480,7 +482,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             Padding = 0,
             Stroke = Colors.Transparent,
             StrokeThickness = 0,
-            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 27 },
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
             Content = content
         };
         border.SetAppTheme<Brush>(VisualElement.BackgroundProperty,

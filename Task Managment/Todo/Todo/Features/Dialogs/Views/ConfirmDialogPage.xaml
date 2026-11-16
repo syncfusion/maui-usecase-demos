@@ -14,7 +14,7 @@
                 BackgroundColor="{AppThemeBinding Light={StaticResource PopupSurfaceColor}, Dark={StaticResource PopupSurfaceDarkColor}}"
                 Stroke="{AppThemeBinding Light={StaticResource PopupStrokeColor}, Dark={StaticResource PopupStrokeDarkColor}}"
                 StrokeThickness="1"
-                StrokeShape="RoundRectangle 27"
+                StrokeShape="RoundRectangle 8"
                 Padding="20">
             <Border.Shadow>
                 <Shadow Brush="#4D000000" Radius="6" Offset="0,2" Opacity="1" />

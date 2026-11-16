@@ -14,7 +14,7 @@
              BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=White, Dark=#1C1B1F}, Default={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}}">
 
     <Grid RowDefinitions="192,Auto,*,Auto" Padding="0,12,0,16">
-        <syncfusion:SfListView x:Name="SidebarCategoriesView" Grid.Row="0"
+        <syncfusion:SfListView x:Name="SidebarCategoriesView" ScrollBarVisibility="Never" Grid.Row="0"
                                 ItemSize="45"
                                 ItemsSource="{Binding AvailableCategories}"
                                 SelectionMode="Single" SelectionBackground="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}"
@@ -99,7 +99,7 @@
                            HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
-                <syncfusion:SfListView x:Name="CustomListsView" ItemsSource="{Binding CustomLists}"
+                <syncfusion:SfListView x:Name="CustomListsView" ScrollBarVisibility="Never" ItemsSource="{Binding CustomLists}"
                                 SelectionMode="Single" BackgroundColor="Transparent" ItemSize="45" SelectionBackground="{AppThemeBinding Light=#EADDFF, Dark=#4A4458}"
                                 SelectedItem="{Binding SelectedCustomList, Mode=OneWay}"
                                 SelectionChanged="OnCustomListSelectionChanged">

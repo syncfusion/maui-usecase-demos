@@ -146,7 +146,7 @@ public sealed class ListOptionsFlyout : ContentView
                 HasShadow = true,
                 Stroke = Colors.Transparent,
                 StrokeThickness = 0,
-                CornerRadius = 27
+                CornerRadius = 8
             },
             ContentTemplate = new DataTemplate(contentFactory)
         };
@@ -257,7 +257,7 @@ public sealed class ListOptionsFlyout : ContentView
             var separator = new BoxView
             {
                 HeightRequest = 1,
-                Margin = new Thickness(12, 4),
+                Margin = new Thickness(DeviceInfo.Current.Idiom == DeviceIdiom.Desktop ? -8 : DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? -1 : -11, 4),
                 Color = Color.FromArgb("#CAC4D0")
             };
             
@@ -630,7 +630,7 @@ public sealed class ListOptionsFlyout : ContentView
                 ? new Thickness(8)
                 : new Thickness(1),
             StrokeThickness = 1,
-            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(27) },
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) },
             Content = new ScrollView
             {
                 Content = content,

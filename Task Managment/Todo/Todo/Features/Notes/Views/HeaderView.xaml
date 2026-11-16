@@ -30,7 +30,7 @@
                     HeightRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
                     Margin="{OnIdiom Phone='0,0,8,0', Desktop='0,0,8,0', Default='10,0'}"
                     CornerRadius="{OnIdiom Phone=20, Desktop=20, Default=0}"
-                    Padding="0" ImageSource="humburger.png" Background="Transparent"    
+                    Padding="0" ImageSource="humburger.png" Background="Transparent" VerticalOptions="Center"
                     Clicked="OnDesktopNavigationClicked"
                     SemanticProperties.Description="Toggle navigation menu">
                 <buttons:SfButton.Content>
@@ -106,9 +106,9 @@
         <!-- Search pill -->
         <Border x:Name="SearchPill"
                 Grid.Column="1"
-                WidthRequest="{OnIdiom Phone=0, Default=-1}"
-                MaximumWidthRequest="{OnIdiom Phone=0, Default=900}"
-                Margin="0,8"
+                WidthRequest="{OnIdiom Phone=0, Default=640}"
+                MaximumWidthRequest="{OnIdiom Phone=0, Default=640}"
+                Margin="0"
                 Padding="0"
                 HorizontalOptions="{OnIdiom Phone=Fill, Default=Start}"
                 VerticalOptions="Center"
@@ -116,7 +116,7 @@
                 BackgroundColor="Transparent"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 8">
-            <syncfusionCore:SfTextInputLayout Hint="Search"
+            <syncfusionCore:SfTextInputLayout x:Name="SearchInputLayout" Hint="Search"
                                               ContainerType="Outlined"
                                               ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
                                               OutlineCornerRadius="8"
@@ -136,7 +136,7 @@
                            WidthRequest="18"
                            HeightRequest="18"
                            VerticalOptions="Center"
-                           Margin="0,5,0,0"
+                           Margin="0"
                            SemanticProperties.Description="Search notes" />
                 </syncfusionCore:SfTextInputLayout.TrailingView>
                 <syncfusionCore:SfTextInputLayout.HintLabelStyle>
@@ -146,6 +146,7 @@
                 </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                 <Entry x:Name="SearchEntry"
                        Text="{Binding SearchViewModel.Query, Mode=TwoWay}"
+                       TextChanged="OnSearchEntryTextChanged"
                        Focused="OnSearchEntryFocused"
                        Unfocused="OnSearchEntryUnfocused"
                        FontFamily="{StaticResource FontFamilyRegular}"

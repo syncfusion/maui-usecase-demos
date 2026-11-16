@@ -183,7 +183,9 @@
                                    ItemSpacing="0"
                                    AutoFitMode="DynamicHeight"
                                    Background="Transparent"
-                                   SelectionMode="{OnIdiom Phone=None, Default=SingleDeselect}"
+                                   SelectionMode="None"
+                                   DragStartMode="OnHold"
+                                   ScrollBarVisibility="Never"
                                    ItemDragging="OnItemDragging">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Note">
@@ -218,25 +220,25 @@
                                      parent ViewModel's DraggingNoteId
                                      and a DragStateColorConverter to
                                      pick the right color. -->
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E8DEF8, Dark=#4A4458}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
                                 <Border.GestureRecognizers>
                                     <!-- Tap on the card body opens the
                                          EditNote dialog. The inner
                                          CheckBox / Star / more button
                                          handle their own gestures and
                                          don't bubble up. -->
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={x:Reference NotesContentRoot}, Path=BindingContext.EditNoteCommand}"
-                                        CommandParameter="{Binding .}" />
+                                    <TapGestureRecognizer Tapped="OnNoteTapped" />
                                     <TapGestureRecognizer Buttons="Secondary"
                                                           Tapped="OnNoteSecondaryTapped" />
                                     <!-- Module-07 task 7-2: a long-press
                                          starts a MAUI drag so the card can
                                          be dropped on a sidebar entry to
                                          move it to another list. -->
-                                    <DragGestureRecognizer
-                                        CanDrag="{Binding IsActive}"
-                                        DragStarting="OnNoteDragStarting"
-                                        DropCompleted="OnNoteDropCompleted" />
+                                    
                                 </Border.GestureRecognizers>
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
@@ -431,7 +433,7 @@
                         </Grid>
                     </expander:SfExpander.Header>
                     <expander:SfExpander.Content>
-                        <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}"
+                        <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}" ScrollBarVisibility="Never"
                                                ItemSpacing="0"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
@@ -605,8 +607,9 @@
                     IsVisible="{OnIdiom Phone={Binding IsAddNotePanelOpen}, Default=True}"
                     Margin="{OnIdiom Phone='16,4,16,8', Default='16,8,16,12'}"
                     Padding="{OnIdiom Phone=4, Default='8,4'}"
-                    Background="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
-                    StrokeThickness="0"
+                    Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
+                    Stroke="{AppThemeBinding Light=#79747E, Dark=#938F99}"
+                    StrokeThickness="1"
                     StrokeShape="RoundRectangle 12">
                 <Border.Shadow>
                     <Shadow Brush="#4D000000" Radius="2" Offset="0,1" Opacity="1" />
@@ -640,7 +643,7 @@
                                   WidthRequest="{OnIdiom Phone=150, Desktop=144, Default=150}"
                                   Margin="{OnIdiom Phone=0, Desktop=0, Default='0,8,0,0'}">
                                 <Border Grid.Column="0" WidthRequest="36" HeightRequest="36"
-                                        IsVisible="{OnIdiom Phone=False, Default=True}"
+                                        IsVisible="{OnIdiom Phone=False, Default={Binding HasDraftDueDate, Converter={StaticResource InvertedBoolConverter}}}"
                                         BackgroundColor="Transparent" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 18">
                                     <Border.GestureRecognizers>
@@ -670,7 +673,7 @@
                                     </buttons:SfButton>
                                 </Border>
                                 <Border Grid.Column="1" WidthRequest="36" HeightRequest="36"
-                                        IsVisible="{OnIdiom Phone=False, Default=True}"
+                                        IsVisible="{OnIdiom Phone=False, Default={Binding HasDraftRepeat, Converter={StaticResource InvertedBoolConverter}}}"
                                         BackgroundColor="Transparent" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 18">
                                     <Border.GestureRecognizers>
@@ -700,7 +703,7 @@
                                     </buttons:SfButton>
                                 </Border>
                                 <Border Grid.Column="2" WidthRequest="36" HeightRequest="36"
-                                        IsVisible="{OnIdiom Phone=False, Default=True}"
+                                        IsVisible="{OnIdiom Phone=False, Default={Binding HasDraftReminder, Converter={StaticResource InvertedBoolConverter}}}"
                                         BackgroundColor="Transparent" StrokeThickness="0"
                                         StrokeShape="RoundRectangle 18">
                                     <Border.GestureRecognizers>
