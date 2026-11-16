@@ -49,4 +49,3 @@ The sample is designed for both desktop and mobile layouts. Desktop screens use 
 - The sample uses local mock data only.
 - There is no authentication or cloud sync.
 - There is no backend API.
-- The current sandbox does not include the Android SDK, so a full Android build cannot be verified here.

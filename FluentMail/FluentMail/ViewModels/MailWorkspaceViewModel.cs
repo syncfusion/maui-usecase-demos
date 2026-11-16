@@ -48,7 +48,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public IReadOnlyList<string> SortOptions { get; } = ["Unread first", "Newest first"];
 
-    public IReadOnlyList<string> MobileFolderOptions { get; } = ["Inbox", "Sent Items", "Archive", "Deleted Items"];
+    public IReadOnlyList<string> MobileFolderOptions { get; } = ["Inbox", "Sent Items", "Drafts", "Archive", "Deleted Items"];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MobileTitle))]

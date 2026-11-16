@@ -15,25 +15,22 @@
         <Border Grid.Column="2" WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse">
             <Image Source="profile.png" Aspect="AspectFill" />
         </Border>
-        <popup:SfPopup x:Name="FilterPopup" ShowHeader="False" ShowFooter="False" BackgroundColor="Transparent" ShowCloseButton="False" WidthRequest="210" HeightRequest="200">
+        <popup:SfPopup x:Name="FilterPopup" ShowHeader="False" ShowFooter="False" BackgroundColor="Transparent" ShowCloseButton="False" WidthRequest="210" HeightRequest="250">
             <popup:SfPopup.PopupStyle>
                 <popup:PopupStyle CornerRadius="12" PopupBackground="White" OverlayColor="Transparent" />
             </popup:SfPopup.PopupStyle>
             <popup:SfPopup.ContentTemplate>
                 <DataTemplate>
-                    <VerticalStackLayout Padding="6">
-                        <Label Text="Inbox" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
-                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Inbox" /></Label.GestureRecognizers>
-                        </Label>
-                        <Label Text="Sent items" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
-                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Sent Items" /></Label.GestureRecognizers>
-                        </Label>
-                        <Label Text="Archived" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
-                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Archive" /></Label.GestureRecognizers>
-                        </Label>
-                        <Label Text="Deleted mails" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
-                            <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="Deleted Items" /></Label.GestureRecognizers>
-                        </Label>
+                    <VerticalStackLayout Padding="6" BindableLayout.ItemsSource="{Binding Options, Source={x:Reference Root}}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding .}" FontSize="17" TextColor="#1B1B1B" Padding="14,0" HeightRequest="48" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnFilterOptionTapped" CommandParameter="{Binding .}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                 </DataTemplate>
             </popup:SfPopup.ContentTemplate>

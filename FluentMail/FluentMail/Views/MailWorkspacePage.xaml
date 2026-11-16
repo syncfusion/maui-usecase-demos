@@ -497,7 +497,7 @@
     </Grid>
 
         <Grid IsVisible="{OnIdiom Default=False, Phone=True}" RowDefinitions="Auto,*,Auto" BackgroundColor="#F3F3F3">
-        <controls:MobileHeader Title="{Binding MobileTitle}" FilterCommand="{Binding SelectMobileFolderCommand}" />
+        <controls:MobileHeader Title="{Binding MobileTitle}" FilterCommand="{Binding SelectMobileFolderCommand}" Options="{Binding MobileFolderOptions}" />
 
         <Grid Grid.Row="1" RowDefinitions="Auto,*">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="16,4,16,0" IsVisible="{Binding IsMobileInbox}">
