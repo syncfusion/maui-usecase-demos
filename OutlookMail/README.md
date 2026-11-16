@@ -131,3 +131,7 @@ Fix: Check the relevant ViewModel and XAML binding paths.
 ## License
 
 This repository is intended for demonstration and learning purposes. Follow the repository license and any applicable Syncfusion licensing terms before distributing or reusing the sample.
+
+- The sample uses local mock data only.
+- There is no authentication or cloud sync.
+- There is no backend API.
