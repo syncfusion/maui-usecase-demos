@@ -1,5 +1,6 @@
 using DigitalQueueManagement.Model;
 using DigitalQueueManagement.ViewModel;
+using Syncfusion.Maui.Buttons;
 using Syncfusion.Maui.Cards;
 
 namespace DigitalQueueManagement.Views;
@@ -69,9 +70,10 @@ public partial class CountersPage : ContentView
                 }
             }
 
-            if (index >= 0)
+            var itemsLayout = CounterListView?.ItemsLayout;
+            if (index >= 0 && itemsLayout is not null)
             {
-                CounterListView.ItemsLayout.ScrollToRowIndex(index, ScrollToPosition.End, false);
+                itemsLayout.ScrollToRowIndex(index, ScrollToPosition.End, false);
             }
         });
     }
@@ -198,29 +200,34 @@ public partial class CountersPage : ContentView
         WorkspaceGrid.SetRow(OperationsPanel, wide ? 0 : 1);
         WorkspaceGrid.SetColumn(QueueStatusPanel, threeColumn ? 2 : wide ? 1 : 0);
         WorkspaceGrid.SetRow(QueueStatusPanel, threeColumn ? 0 : wide ? 1 : compact ? 3 : 2);
+        var workspaceCardMinimumHeight = compact ? -1 : 450;
+        CounterListPanel.MinimumHeightRequest = workspaceCardMinimumHeight;
+        OperationsPanel.MinimumHeightRequest = workspaceCardMinimumHeight;
+        QueueStatusPanel.MinimumHeightRequest = workspaceCardMinimumHeight;
+
         PageContentLayout.Spacing = compact ? 14 : 18;
         PageContentLayout.Padding = compact
             ? new Thickness(16, 16, 16, 24)
             : new Thickness(wide ? 28 : 18, 22, wide ? 28 : 18, 36);
         OperationsPanel.Padding = compact ? 0 : 18;
         OperationsPanel.BackgroundColor = compact ? Colors.Transparent : Colors.White;
-        OperationsPanel.StrokeThickness = compact ? 0 : 1;
+        //OperationsPanel.BorderWidth = compact ? 0 : 1;
         MobileCurrentTokenPanel.Padding = compact ? 16 : 0;
         MobileCurrentTokenPanel.BackgroundColor = compact ? Colors.White : Colors.Transparent;
-        MobileCurrentTokenPanel.Stroke = compact ? Color.FromArgb("#DCE7F5") : Colors.Transparent;
-        MobileCurrentTokenPanel.StrokeThickness = compact ? 1 : 0;
+        //MobileCurrentTokenPanel.BorderColor = compact ? Color.FromArgb("#DCE7F5") : Colors.Transparent;
+        //MobileCurrentTokenPanel.BorderWidth = compact ? 1 : 0;
         MobileCounterActionsPanel.Padding = compact ? 14 : 0;
         MobileCounterActionsPanel.BackgroundColor = compact ? Colors.White : Colors.Transparent;
-        MobileCounterActionsPanel.Stroke = compact ? Color.FromArgb("#DCE7F5") : Colors.Transparent;
-        MobileCounterActionsPanel.StrokeThickness = compact ? 1 : 0;
+        //MobileCounterActionsPanel.BorderColor = compact ? Color.FromArgb("#DCE7F5") : Colors.Transparent;
+        //MobileCounterActionsPanel.BorderWidth = compact ? 1 : 0;
         CounterActionsDivider.IsVisible = compact;
         SelectedTokenIdLabel.TextColor = compact ? Color.FromArgb("#102A8C") : Color.FromArgb("#0F172A");
         SelectedTokenIdLabel.FontSize = 58;
-        InitialWaitLabel.Text = compact ? _viewModel.SelectedCounterTokenWait : "3m 12s";
+
         CallNextButton.Text = compact ? "Call Next" : "Call next";
         CallNextButton.FontSize = 16;
         CallNextButton.MinimumHeightRequest = compact ? 76 : 50;
-        CallNextButton.BackgroundColor = compact ? Color.FromArgb("#102A8C") : Color.FromArgb("#153F9A");
+        CallNextButton.SetDynamicResource(SfButton.BackgroundProperty, compact ? "ActionPrimaryMobileBrush" : "ActionPrimaryBrush");
         CallNextButton.ImageSource = new FontImageSource
         {
             Glyph = compact ? "volume_up" : "north_east",
@@ -228,10 +235,11 @@ public partial class CountersPage : ContentView
             Color = Colors.White,
             Size = compact ? 18 : 16
         };
+        //CallNextButton.ShowIcon = true;
+        //CallNextButton.ImageSize = compact ? 18 : 16;
         CompleteButton.Text = compact ? "Complete\nService" : "Complete service";
         CompleteButton.FontSize = 16;
         CompleteButton.MinimumHeightRequest = compact ? 76 : 50;
-        CompleteButton.BackgroundColor = Color.FromArgb("#153F9A");
         CompleteButton.ImageSource = new FontImageSource
         {
             Glyph = compact ? "check_circle" : "verified_user",
@@ -239,21 +247,26 @@ public partial class CountersPage : ContentView
             Color = Colors.White,
             Size = compact ? 18 : 16
         };
+        //CompleteButton.ShowIcon = true;
+        //CompleteButton.ImageSize = compact ? 18 : 16;
         SkipButton.Text = compact ? "Skip Token" : "Skip token";
         RecallButton.Text = compact ? "Recall Token" : "Recall token";
         TransferButton.Text = compact ? "Transfer Token" : "Transfer token";
         SkipButton.FontSize = compact ? 12 : 14;
         RecallButton.FontSize = compact ? 12 : 14;
         TransferButton.FontSize = compact ? 12 : 14;
-        SkipButton.ImageSource = compact
-            ? new FontImageSource { Glyph = "fast_forward", FontFamily = "MaterialIcons", Color = Color.FromArgb("#C62828"), Size = 16 }
-            : null;
-        RecallButton.ImageSource = compact
-            ? new FontImageSource { Glyph = "campaign", FontFamily = "MaterialIcons", Color = Color.FromArgb("#183E91"), Size = 16 }
-            : null;
-        TransferButton.ImageSource = compact
-            ? new FontImageSource { Glyph = "swap_horiz", FontFamily = "MaterialIcons", Color = Color.FromArgb("#9A5A00"), Size = 16 }
-            : null;
+        if (compact)
+        {
+            SkipButton.ImageSource = new FontImageSource { Glyph = "fast_forward", FontFamily = "MaterialIcons", Color = Color.FromArgb("#C62828"), Size = 16 };
+            RecallButton.ImageSource = new FontImageSource { Glyph = "campaign", FontFamily = "MaterialIcons", Color = Color.FromArgb("#183E91"), Size = 16 };
+            TransferButton.ImageSource = new FontImageSource { Glyph = "swap_horiz", FontFamily = "MaterialIcons", Color = Color.FromArgb("#9A5A00"), Size = 16 };
+        }
+        //SkipButton.ShowIcon = compact;
+        //SkipButton.ImageSize = 16;
+        //RecallButton.ShowIcon = compact;
+        //RecallButton.ImageSize = 16;
+        //TransferButton.ShowIcon = compact;
+        //TransferButton.ImageSize = 16;
         QueueStatusPanel.Padding = compact ? 14 : 16;
         UpdateCompleteButtonState();
     }
@@ -283,9 +296,8 @@ public partial class CountersPage : ContentView
             : Width < 768
                 ? "Complete\nService"
                 : "Complete service";
-        CompleteButton.TextColor = Colors.White;
-        CompleteButton.BackgroundColor = _completeServiceSucceeded
-            ? Color.FromArgb("#16A34A")
-            : Color.FromArgb("#153F9A");
+        CompleteButton.SetDynamicResource(
+            SfButton.BackgroundProperty,
+            _completeServiceSucceeded ? "ActionSuccessBrush" : "ActionPrimaryBrush");
     }
 }

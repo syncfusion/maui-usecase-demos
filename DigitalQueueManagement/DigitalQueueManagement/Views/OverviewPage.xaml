@@ -6,6 +6,7 @@
              xmlns:chips="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:progress="clr-namespace:Syncfusion.Maui.ProgressBar;assembly=Syncfusion.Maui.ProgressBar"
              xmlns:cards="clr-namespace:Syncfusion.Maui.Cards;assembly=Syncfusion.Maui.Cards"
+             xmlns:listview="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:controls="clr-namespace:DigitalQueueManagement.Controls"
              x:Class="DigitalQueueManagement.Views.OverviewPage"
@@ -48,15 +49,13 @@
               RowDefinitions="Auto"
               ColumnSpacing="12"
               RowSpacing="12">
-            <cards:SfCardView Grid.Column="0" Padding="0" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="14">
+            <controls:SummaryCardView Grid.Column="0" Padding="0" CornerRadius="14">
                 <Grid RowDefinitions="4,*">
                     <BoxView Grid.Row="0" Color="#3478F6" />
                     <Grid Grid.Row="1" Padding="20,14,18,16" RowDefinitions="Auto,*,Auto" RowSpacing="3">
                         <Grid ColumnDefinitions="*,38">
                             <Label Text="Total Tokens" FontSize="14" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="38" HeightRequest="38" BackgroundColor="#EEF4FF" Stroke="#D5E5FF" StrokeThickness="1" StrokeShape="RoundRectangle 12">
-                                <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="19" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="confirmation_number" TintColor="#EEF4FF" IconColor="#183E91" />
                         </Grid>
                         <HorizontalStackLayout Grid.Row="1" Spacing="7" VerticalOptions="Center">
                             <Label Text="{Binding TotalTokenCount}" FontSize="38" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
@@ -68,16 +67,14 @@
                         </HorizontalStackLayout>
                     </Grid>
                 </Grid>
-            </cards:SfCardView>
-            <cards:SfCardView Grid.Column="1" Padding="0" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="14">
+            </controls:SummaryCardView>
+            <controls:SummaryCardView Grid.Column="1" Padding="0" CornerRadius="14">
                 <Grid RowDefinitions="4,*">
                     <BoxView Grid.Row="0" Color="#0DBB9C" />
                     <Grid Grid.Row="1" Padding="20,14,18,16" RowDefinitions="Auto,*,Auto" RowSpacing="3">
                         <Grid ColumnDefinitions="*,38">
                             <Label Text="Completed Tokens" FontSize="13" FontAttributes="Bold" TextColor="#64748B" LineBreakMode="TailTruncation" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="38" HeightRequest="38" BackgroundColor="#E9FBF7" Stroke="#C7F5EB" StrokeThickness="1" StrokeShape="RoundRectangle 12">
-                                <Label Text="check_circle_outline" FontFamily="MaterialIcons" FontSize="20" TextColor="#008F7A" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="check_circle_outline" TintColor="#E9FBF4" IconColor="#159B85" />
                         </Grid>
                         <HorizontalStackLayout Grid.Row="1" Spacing="7" VerticalOptions="Center">
                             <Label Text="{Binding CompletedTokenCount}" FontSize="36" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
@@ -89,16 +86,14 @@
                         </HorizontalStackLayout>
                     </Grid>
                 </Grid>
-            </cards:SfCardView>
-            <cards:SfCardView Grid.Column="2" Padding="0" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="14">
+            </controls:SummaryCardView>
+            <controls:SummaryCardView Grid.Column="2" Padding="0" CornerRadius="14">
                 <Grid RowDefinitions="4,*">
                     <BoxView Grid.Row="0" Color="#F5A000" />
                     <Grid Grid.Row="1" Padding="20,14,18,16" RowDefinitions="Auto,*,Auto" RowSpacing="3">
                         <Grid ColumnDefinitions="*,38">
                             <Label Text="Waiting Tokens" FontSize="13" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="38" HeightRequest="38" BackgroundColor="#FFF7E8" Stroke="#FDE7B3" StrokeThickness="1" StrokeShape="RoundRectangle 12">
-                                <Label Text="monitor_heart" FontFamily="MaterialIcons" FontSize="19" TextColor="#C77700" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="monitor_heart" TintColor="#FFF7E6" IconColor="#D18A16" />
                         </Grid>
                         <HorizontalStackLayout Grid.Row="1" Spacing="7" VerticalOptions="Center">
                             <Label Text="{Binding WaitingTokenCount}" FontSize="36" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
@@ -110,16 +105,14 @@
                         </HorizontalStackLayout>
                     </Grid>
                 </Grid>
-            </cards:SfCardView>
-            <cards:SfCardView Grid.Column="3" Padding="0" BackgroundColor="White" BorderColor="#E2E8F0" BorderWidth="1" CornerRadius="14">
+            </controls:SummaryCardView>
+            <controls:SummaryCardView Grid.Column="3" Padding="0" CornerRadius="14">
                 <Grid RowDefinitions="4,*">
                     <BoxView Grid.Row="0" Color="#3478F6" />
                     <Grid Grid.Row="1" Padding="20,14,18,16" RowDefinitions="Auto,*,Auto" RowSpacing="3">
                         <Grid ColumnDefinitions="*,38">
                             <Label Text="Estimated Wait" FontSize="13" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="38" HeightRequest="38" BackgroundColor="#EEF4FF" Stroke="#D5E5FF" StrokeThickness="1" StrokeShape="RoundRectangle 12">
-                                <Label Text="schedule" FontFamily="MaterialIcons" FontSize="19" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="schedule" TintColor="#EEF4FF" IconColor="#183E91" />
                         </Grid>
                         <Label Grid.Row="1" Text="{Binding EstimatedWaitText}" FontSize="36" FontAttributes="Bold" TextColor="#0F172A" VerticalOptions="Center" />
                         <HorizontalStackLayout Grid.Row="2" Spacing="7" VerticalOptions="Center">
@@ -128,7 +121,7 @@
                         </HorizontalStackLayout>
                     </Grid>
                 </Grid>
-            </cards:SfCardView>
+            </controls:SummaryCardView>
         </Grid>
         <!-- SHARED RESPONSIVE VIEW: analytics cards adapt their layout to the available width. -->
         <Grid x:Name="ChartGrid"
@@ -251,9 +244,14 @@
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 14">
                         <VerticalStackLayout Spacing="14" VerticalOptions="Center">
-                            <VerticalStackLayout Spacing="16"
-                                                 BindableLayout.ItemsSource="{Binding AverageWaitAnalytics}">
-                                <BindableLayout.ItemTemplate>
+                            <listview:SfListView ItemsSource="{Binding AverageWaitAnalytics}"
+                                                 ItemSpacing="0,0,0,16"
+                                                 AutoFitMode="Height"
+                                                 IsScrollingEnabled="False"
+                                                 InputTransparent="True"
+                                                 SelectionMode="None"
+                                                 SelectionBackground="Transparent">
+                                <listview:SfListView.ItemTemplate>
                                     <DataTemplate x:DataType="models:QueueAnalyticsPoint">
                                         <VerticalStackLayout Spacing="8">
                                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
@@ -281,8 +279,8 @@
                                                                           HeightRequest="12" />
                                         </VerticalStackLayout>
                                     </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                                </listview:SfListView.ItemTemplate>
+                            </listview:SfListView>
                             <Grid ColumnDefinitions="*,*,*,*,*,*,*" Margin="0,-4,0,0">
                                 <Label Text="0m" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#94A3B8" />
                                 <Label Grid.Column="2" Text="20m" FontSize="{StaticResource OverviewCaptionFontSize}" TextColor="#94A3B8" HorizontalTextAlignment="Center" />
@@ -324,10 +322,15 @@
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 14">
                         <Grid>
-                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding CounterSummaries}"
-                                                 Spacing="24"
+                            <listview:SfListView ItemsSource="{Binding CounterSummaries}"
+                                                 ItemSpacing="0,0,0,24"
+                                                 AutoFitMode="Height"
+                                                 IsScrollingEnabled="False"
+                                                 InputTransparent="True"
+                                                 SelectionMode="None"
+                                                 SelectionBackground="Transparent"
                                                  IsVisible="{Binding HasCounters}">
-                                <BindableLayout.ItemTemplate>
+                                <listview:SfListView.ItemTemplate>
                                     <DataTemplate x:DataType="models:QueueCounterSummary">
                                         <Grid ColumnDefinitions="*,Auto"
                                               RowDefinitions="Auto,Auto,Auto"
@@ -381,8 +384,8 @@
                                             </Grid>
                                         </Grid>
                                     </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                                </listview:SfListView.ItemTemplate>
+                            </listview:SfListView>
                             <Label Text="No counters are configured."
                                    FontSize="12"
                                    TextColor="#64748B"
@@ -422,10 +425,15 @@
                                                          SelectedIndex="{Binding UpcomingFilterIndex, Mode=TwoWay}"
                                                          VerticalOptions="Center" />
                             </Grid>
-                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding UpcomingTokens}"
-                                                 Spacing="10"
+                            <listview:SfListView ItemsSource="{Binding UpcomingTokens}"
+                                                 ItemSpacing="0,0,0,10"
+                                                 AutoFitMode="Height"
+                                                 IsScrollingEnabled="False"
+                                                 InputTransparent="True"
+                                                 SelectionMode="None"
+                                                 SelectionBackground="Transparent"
                                                  IsVisible="{Binding HasUpcomingTokens}">
-                                <BindableLayout.ItemTemplate>
+                                <listview:SfListView.ItemTemplate>
                                     <DataTemplate x:DataType="models:QueueToken">
                                         <Border Padding="12,12"
                                                 MinimumHeightRequest="64"
@@ -487,8 +495,8 @@
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                                </listview:SfListView.ItemTemplate>
+                            </listview:SfListView>
                             <Label Text="No tokens are waiting."
                                    FontSize="{StaticResource CaptionFontSize}"
                                    TextColor="#64748B"
@@ -537,10 +545,15 @@
                                            TextColor="#183E91" />
                                 </Border>
                             </Grid>
-                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding CounterSummaries}"
-                                                 Spacing="12"
+                            <listview:SfListView ItemsSource="{Binding CounterSummaries}"
+                                                 ItemSpacing="0,0,0,12"
+                                                 AutoFitMode="Height"
+                                                 IsScrollingEnabled="False"
+                                                 InputTransparent="True"
+                                                 SelectionMode="None"
+                                                 SelectionBackground="Transparent"
                                                  IsVisible="{Binding HasCounters}">
-                                <BindableLayout.ItemTemplate>
+                                <listview:SfListView.ItemTemplate>
                                     <DataTemplate x:DataType="models:QueueCounterSummary">
                                         <Border Padding="14,12"
                                                 MinimumHeightRequest="96"
@@ -596,8 +609,8 @@
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                                </listview:SfListView.ItemTemplate>
+                            </listview:SfListView>
                             <Label Text="No counters are configured."
                                    FontSize="{StaticResource CaptionFontSize}"
                                    TextColor="#64748B"

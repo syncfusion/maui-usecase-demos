@@ -7,6 +7,7 @@ namespace DigitalQueueManagement.ViewModel;
 
 public partial class QueueSessionViewModel : ObservableObject
 {
+    private const double CounterCardBottomClearance = 32;
     private readonly QueueStore _store;
     private readonly Dictionary<string, string> _completedTokenByCounter = new(StringComparer.Ordinal);
 
@@ -122,9 +123,11 @@ public partial class QueueSessionViewModel : ObservableObject
 
     public bool HasNoCounters => !HasCounters;
 
-    public double CounterPerformanceCardHeight => Math.Max(420, 196 + CounterSummaries.Count * 94);
+    public double CounterPerformanceCardHeight =>
+        Math.Max(420, 196 + CounterSummaries.Count * 94) + CounterCardBottomClearance;
 
-    public double CounterStatusCardHeight => Math.Max(430, 110 + CounterSummaries.Count * 108);
+    public double CounterStatusCardHeight =>
+        Math.Max(430, 110 + CounterSummaries.Count * 108) + CounterCardBottomClearance;
 
     public string SelectedCounterDisplayName => SelectedCounter?.Name ?? "No counter selected";
 

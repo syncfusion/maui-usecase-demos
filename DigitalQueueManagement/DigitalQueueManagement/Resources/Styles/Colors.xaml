@@ -8,6 +8,12 @@
     <Color x:Key="Primary">#183E91</Color>
     <Color x:Key="PrimaryDark">#123272</Color>
     <Color x:Key="PrimaryDarkText">#173D8E</Color>
+    <Color x:Key="ActionPrimary">#1D4ED8</Color>
+    <Color x:Key="ActionPrimaryMuted">#8FA2DB</Color>
+    <Color x:Key="ActionPrimaryMobile">#102A8C</Color>
+    <Color x:Key="ActionSuccess">#16A34A</Color>
+    <Color x:Key="ActionBorder">#E5E7EB</Color>
+    <Color x:Key="ActionSubtleSurface">#EEF4FF</Color>
     <Color x:Key="Secondary">#EAF1FC</Color>
     <Color x:Key="SecondaryDarkText">#536987</Color>
     <Color x:Key="Tertiary">#159B85</Color>
@@ -41,6 +47,11 @@
     <Color x:Key="Gray950">#141414</Color>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="ActionPrimaryBrush" Color="{StaticResource ActionPrimary}"/>
+    <SolidColorBrush x:Key="ActionPrimaryMutedBrush" Color="{StaticResource ActionPrimaryMuted}"/>
+    <SolidColorBrush x:Key="ActionPrimaryMobileBrush" Color="{StaticResource ActionPrimaryMobile}"/>
+    <SolidColorBrush x:Key="ActionSuccessBrush" Color="{StaticResource ActionSuccess}"/>
+    <SolidColorBrush x:Key="ActionSubtleSurfaceBrush" Color="{StaticResource ActionSubtleSurface}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>

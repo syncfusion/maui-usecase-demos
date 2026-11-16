@@ -63,13 +63,11 @@
                   RowDefinitions="Auto"
                   ColumnSpacing="12"
                   RowSpacing="12">
-                <Border Grid.Column="0" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                <controls:SummaryCardView Grid.Column="0">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="TOTAL TOKENS" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#EEF4FF" StrokeThickness="0" StrokeShape="RoundRectangle 9">
-                                <Label Text="confirmation_number" FontFamily="MaterialIcons" FontSize="17" TextColor="#183E91" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="confirmation_number" TintColor="#EEF4FF" IconColor="#183E91" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
                             <Label Text="{Binding TotalTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
@@ -77,14 +75,12 @@
                         </Grid>
                         <Label Grid.Row="2" Text="●  All services combined" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#183E91" />
                     </Grid>
-                </Border>
-                <Border Grid.Column="1" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                </controls:SummaryCardView>
+                <controls:SummaryCardView Grid.Column="1">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="WAITING" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#FFF7E6" StrokeThickness="0" StrokeShape="RoundRectangle 9">
-                                <Label Text="schedule" FontFamily="MaterialIcons" FontSize="17" TextColor="#D18A16" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="schedule" TintColor="#FFF7E6" IconColor="#D18A16" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
                             <Label Text="{Binding WaitingTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
@@ -92,14 +88,12 @@
                         </Grid>
                         <Label Grid.Row="2" Text="●  Queue estimate updates live" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#D18A16" />
                     </Grid>
-                </Border>
-                <Border Grid.Column="2" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                </controls:SummaryCardView>
+                <controls:SummaryCardView Grid.Column="2">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="SERVING NOW" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#E9FBF4" StrokeThickness="0" StrokeShape="RoundRectangle 9">
-                                <Label Text="shield" FontFamily="MaterialIcons" FontSize="17" TextColor="#159B85" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="shield" TintColor="#E9FBF4" IconColor="#159B85" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
                             <Label Text="{Binding ServingTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
@@ -107,14 +101,12 @@
                         </Grid>
                         <Label Grid.Row="2" Text="{Binding OnlineCounterCount, StringFormat='●  Across {0} counters'}" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#159B85" />
                     </Grid>
-                </Border>
-                <Border Grid.Column="3" Padding="16" BackgroundColor="White" Stroke="#E2E8F0" StrokeThickness="1" StrokeShape="RoundRectangle 12">
+                </controls:SummaryCardView>
+                <controls:SummaryCardView Grid.Column="3">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Text="SKIPPED / ON HOLD" FontSize="{StaticResource TokenMetricLabelFontSize}" FontAttributes="Bold" TextColor="#64748B" VerticalOptions="Center" />
-                            <Border Grid.Column="1" WidthRequest="30" HeightRequest="30" BackgroundColor="#FFF1F2" StrokeThickness="0" StrokeShape="RoundRectangle 9">
-                                <Label Text="monitor_heart" FontFamily="MaterialIcons" FontSize="17" TextColor="#DC6670" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                            </Border>
+                            <controls:SummaryCardIcon Grid.Column="1" IconName="monitor_heart" TintColor="#FFF1F2" IconColor="#DC6670" />
                         </Grid>
                         <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
                             <Label Text="{Binding SkippedTokenCount}" FontSize="{StaticResource TokenMetricValueFontSize}" FontAttributes="Bold" TextColor="#0F172A" />
@@ -122,7 +114,7 @@
                         </Grid>
                         <Label Grid.Row="2" Text="●  Recallable on request" FontSize="{StaticResource TokenDetailFontSize}" TextColor="#DC6670" />
                     </Grid>
-                </Border>
+                </controls:SummaryCardView>
             </Grid>
 
             <Grid x:Name="DirectoryGrid"
