@@ -638,11 +638,10 @@
                                                        TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
                         </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                         <syncfusionCore:SfTextInputLayout.TrailingView>
-                            <Grid ColumnDefinitions="36,36,36,Auto,36"
+                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
                                   IsVisible="{OnIdiom Phone=False, Default=True}"
                                   VerticalOptions="Center"
-                                  HorizontalOptions="Fill"
-                                  WidthRequest="{OnIdiom Phone=150, Desktop=160, Default=160}"
+                                  HorizontalOptions="End"
                                   Margin="{OnIdiom Phone=0, Desktop=0, Default='0,8,0,0'}">
                                 <Border Grid.Column="0" WidthRequest="36" HeightRequest="36"
                                         IsVisible="{OnIdiom Phone=False, Default={Binding HasDraftDueDate, Converter={StaticResource InvertedBoolConverter}}}"
@@ -792,9 +791,9 @@
                                 StrokeShape="RoundRectangle 12"
                                 BackgroundColor="Transparent">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#6750A4" />
-                                <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
+                                <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#6750A4" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                                <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" VerticalOptions="Center" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
                             </HorizontalStackLayout>
                         </Border>
                         <Border Margin="0"
@@ -805,9 +804,9 @@
                                 StrokeShape="RoundRectangle 12"
                                 BackgroundColor="Transparent">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#6750A4" />
-                                <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
+                                <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#6750A4" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                                <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" VerticalOptions="Center" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
                             </HorizontalStackLayout>
                         </Border>
                         <Border Margin="0"
@@ -818,9 +817,9 @@
                                 StrokeShape="RoundRectangle 12"
                                 BackgroundColor="Transparent">
                             <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#6750A4" />
-                                <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftReminderCommand}" />
+                                <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#6750A4" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                                <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" VerticalOptions="Center" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftReminderCommand}" />
                             </HorizontalStackLayout>
                         </Border>
                     </HorizontalStackLayout>
