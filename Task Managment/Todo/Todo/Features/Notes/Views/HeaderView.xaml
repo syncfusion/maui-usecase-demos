@@ -116,7 +116,7 @@
                 BackgroundColor="Transparent"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 8">
-            <syncfusionCore:SfTextInputLayout x:Name="SearchInputLayout" Hint="Search"
+            <syncfusionCore:SfTextInputLayout x:Name="SearchInputLayout" Hint="Search" HeightRequest="40"
                                               ContainerType="Outlined"
                                               ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
                                               OutlineCornerRadius="8"
@@ -154,7 +154,7 @@
                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryColor}, Dark={StaticResource TextPrimaryDarkColor}}"
                        Placeholder=""
                        VerticalTextAlignment="Center"
-                       HeightRequest="44"
+                       HeightRequest="40"
                        BackgroundColor="Transparent"
                        Margin="0" />
             </syncfusionCore:SfTextInputLayout>

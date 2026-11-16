@@ -176,8 +176,9 @@
                 </Border>
 
                 <!-- Notes list (Syncfusion SfListView) -->
-                    <Grid x:Name="NotesBodyGrid" RowDefinitions="*,Auto"
+                    <ScrollView VerticalScrollBarVisibility="Never"
                         IsVisible="{Binding IsEmpty, Converter={StaticResource InvertedBoolConverter}}">
+                    <Grid x:Name="NotesBodyGrid" RowDefinitions="Auto,Auto">
                     <syncfusion:SfListView x:Name="ActiveNotesList" Grid.Row="0" ItemsSource="{Binding ActiveNotes}"
                                    IsVisible="{Binding HasActiveNotes}"
                                    ItemSpacing="0"
@@ -433,7 +434,7 @@
                         </Grid>
                     </expander:SfExpander.Header>
                     <expander:SfExpander.Content>
-                        <syncfusion:SfListView ItemsSource="{Binding CompletedNotes}" ScrollBarVisibility="Never"
+                        <syncfusion:SfListView x:Name="CompletedNotesList" ItemsSource="{Binding CompletedNotes}" ScrollBarVisibility="Never"
                                                ItemSpacing="0"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
@@ -598,6 +599,7 @@
                     </expander:SfExpander.Content>
                 </expander:SfExpander>
                 </Grid>
+                    </ScrollView>
             </Grid>
 
             <!-- Bottom input bar -->
@@ -608,11 +610,11 @@
                     Margin="{OnIdiom Phone='16,4,16,8', Default='16,8,16,12'}"
                     Padding="{OnIdiom Phone=4, Default='8,4'}"
                     Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                    Stroke="{AppThemeBinding Light=#79747E, Dark=#938F99}"
-                    StrokeThickness="1"
+                    Stroke="Transparent"
+                    StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
                 <Border.Shadow>
-                    <Shadow Brush="#4D000000" Radius="2" Offset="0,1" Opacity="1" />
+                    <Shadow Brush="#26000000" Radius="3" Offset="0,1" Opacity="1" />
                 </Border.Shadow>
                 <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" RowSpacing="0" VerticalOptions="Center">
                     
@@ -621,14 +623,14 @@
                                                      Hint="{OnIdiom Phone='Add task', Default='Add a note'}"
                                                      ContainerType="Outlined"
                                                      OutlineCornerRadius="28"
-                                                     FocusedStrokeThickness="1"
+                                                     FocusedStrokeThickness="0"
                                                      Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
-                                                     UnfocusedStrokeThickness="1"
+                                                     UnfocusedStrokeThickness="0"
                                                      ShowHint="True"
                                                      Stroke="Transparent"
                                                      EnableFloating="False"
                                                      ReserveSpaceForAssistiveLabels="False"
-                                                     InputViewPadding="{OnIdiom Phone='14,0,14,0', Default='14,0,150,0'}"
+                                                     InputViewPadding="{OnIdiom Phone='14,0,14,0', Default='14,0,170,0'}"
                                                      VerticalOptions="Center">
                         <syncfusionCore:SfTextInputLayout.HintLabelStyle>
                             <syncfusionCore:LabelStyle FontSize="14"
@@ -636,11 +638,11 @@
                                                        TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}" />
                         </syncfusionCore:SfTextInputLayout.HintLabelStyle>
                         <syncfusionCore:SfTextInputLayout.TrailingView>
-                            <Grid ColumnDefinitions="36,36,36,36"
+                            <Grid ColumnDefinitions="36,36,36,Auto,36"
                                   IsVisible="{OnIdiom Phone=False, Default=True}"
                                   VerticalOptions="Center"
                                   HorizontalOptions="Fill"
-                                  WidthRequest="{OnIdiom Phone=150, Desktop=144, Default=150}"
+                                  WidthRequest="{OnIdiom Phone=150, Desktop=160, Default=160}"
                                   Margin="{OnIdiom Phone=0, Desktop=0, Default='0,8,0,0'}">
                                 <Border Grid.Column="0" WidthRequest="36" HeightRequest="36"
                                         IsVisible="{OnIdiom Phone=False, Default={Binding HasDraftDueDate, Converter={StaticResource InvertedBoolConverter}}}"
@@ -732,7 +734,11 @@
                                     </VisualStateManager.VisualStateGroups>
                                     </buttons:SfButton>
                                 </Border>
-                                <buttons:SfButton Grid.Column="3" WidthRequest="36" HeightRequest="36" Padding="0" Margin="{OnIdiom Phone='0,0,0,5', Desktop=0, Default='0,0,0,5'}"
+                                <BoxView Grid.Column="3" WidthRequest="1" HeightRequest="20" Margin="6,0"
+                                         Color="#79747E" VerticalOptions="Center"
+                                         IsVisible="{OnIdiom Phone=False, Default=True}" />
+                                <buttons:SfButton Grid.Column="4" WidthRequest="36" HeightRequest="36" Padding="0" Margin="0"
+                                                  VerticalOptions="Center"
                                                   IsVisible="{OnIdiom Phone=False, Default=True}"
                                                   Background="Transparent" Command="{Binding AddNoteCommand}"
                                                   TextColor="White"
@@ -775,7 +781,7 @@
                     <ScrollView Grid.Column="0"
                                 Orientation="Horizontal"
                                 HorizontalScrollBarVisibility="Never"
-                                Margin="0,0,156,0" MaximumWidthRequest="420" HorizontalOptions="End" VerticalOptions="Center" ZIndex="2"
+                                Margin="0,0,176,0" MaximumWidthRequest="420" HorizontalOptions="End" VerticalOptions="Center" ZIndex="2"
                                 IsVisible="{OnIdiom Phone=False, Default=True}">
                         <HorizontalStackLayout Spacing="8">
                         <Border Margin="0"

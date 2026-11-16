@@ -16,29 +16,20 @@ public partial class NotesContentView : ContentView
 
         ActionFlyout.ActionRequested += OnNoteActionRequested;
 
-        // Desktop only: pack the Completed section right under the active
-        // tasks instead of pinning it to the bottom of the panel.
-        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
-        {
-            NotesBodyGrid.RowDefinitions[0].Height = GridLength.Auto;
-            NotesBodyGrid.RowDefinitions[1].Height = GridLength.Star;
-            NotesBodyGrid.SizeChanged += (_, _) => UpdateActiveListHeight();
-        }
+        NotesBodyGrid.SizeChanged += (_, _) => UpdateActiveListHeight();
     }
 
     private const double CardHeight = 54;       // 36 row + 12 padding + 6 margin
     private const double MetadataRowHeight = 24;
-    private const double CompletedHeaderHeight = 48;
 
     private void UpdateActiveListHeight()
     {
-        if (BindingContext is not NotesListViewModel vm || NotesBodyGrid.Height <= 0)
+        if (BindingContext is not NotesListViewModel vm)
             return;
 
-        var estimate = vm.ActiveNotes.Sum(n => CardHeight + (n.HasMetadata ? MetadataRowHeight : 0));
-        var reserved = vm.HasCompletedNotes ? CompletedHeaderHeight : 0;
-        var available = Math.Max(0, NotesBodyGrid.Height - reserved);
-        ActiveNotesList.HeightRequest = Math.Min(estimate, available);
+        // Size lists to their content; the page ScrollView handles scrolling.
+        ActiveNotesList.HeightRequest = vm.ActiveNotes.Sum(n => CardHeight + (n.HasMetadata ? MetadataRowHeight : 0));
+        CompletedNotesList.HeightRequest = vm.CompletedNotes.Sum(n => CardHeight + (n.HasMetadata ? MetadataRowHeight : 0));
     }
 
     protected override void OnBindingContextChanged()
@@ -47,6 +38,7 @@ public partial class NotesContentView : ContentView
         {
             previousViewModel.PropertyChanged -= OnNotesViewModelPropertyChanged;
             previousViewModel.ActiveNotes.CollectionChanged -= OnActiveNotesChanged;
+            previousViewModel.CompletedNotes.CollectionChanged -= OnActiveNotesChanged;
         }
 
         base.OnBindingContextChanged();
@@ -55,15 +47,14 @@ public partial class NotesContentView : ContentView
         {
             viewModel.PropertyChanged += OnNotesViewModelPropertyChanged;
             viewModel.ActiveNotes.CollectionChanged += OnActiveNotesChanged;
-            if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
-                UpdateActiveListHeight();
+            viewModel.CompletedNotes.CollectionChanged += OnActiveNotesChanged;
+            UpdateActiveListHeight();
         }
     }
 
     private void OnActiveNotesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
-            Dispatcher.Dispatch(UpdateActiveListHeight);
+        Dispatcher.Dispatch(UpdateActiveListHeight);
     }
 
     private void OnNotesViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
