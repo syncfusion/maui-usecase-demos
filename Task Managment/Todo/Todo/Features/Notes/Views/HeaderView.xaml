@@ -18,6 +18,7 @@
 
         <HorizontalStackLayout x:Name="DesktopHeaderContent"
                                Grid.Column="0"
+                               WidthRequest="{OnIdiom Phone=-1, Default=220}"
                                Spacing="4"
                                VerticalOptions="Center"
                                IsVisible="{OnIdiom Phone=False, Default=True}">
@@ -108,7 +109,7 @@
                 WidthRequest="{OnIdiom Phone=0, Default=460}"
                 Margin="0,8"
                 Padding="0"
-                HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}"
+                HorizontalOptions="{OnIdiom Phone=Fill, Default=Start}"
                 VerticalOptions="Center"
                 IsVisible="{OnIdiom Phone=False, Default=True}"
                 BackgroundColor="Transparent"

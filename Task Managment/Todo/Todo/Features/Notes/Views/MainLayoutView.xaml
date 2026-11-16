@@ -12,14 +12,23 @@
           ColumnDefinitions="{OnIdiom Phone='0,*', Default='220,*'}"
           Background="{OnIdiom Phone={AppThemeBinding Light=White, Dark={StaticResource BackgroundDarkColor}}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
 
-        <Image x:Name="PageBackgroundImage"
-               Grid.Row="{OnIdiom Phone=0, Default=1}"
-               Grid.RowSpan="{OnIdiom Phone=2, Default=1}"
-               Grid.ColumnSpan="2"
-               Source="{Binding BackgroundImage}"
-               IsVisible="False"
-               Aspect="AspectFill"
-               InputTransparent="True" />
+        <Border x:Name="PageBackgroundHost"
+                Grid.Row="{OnIdiom Phone=0, Default=1}"
+                Grid.RowSpan="{OnIdiom Phone=2, Default=1}"
+                Grid.Column="{OnIdiom Phone=0, Default=1}"
+                Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}"
+                Margin="{OnIdiom Phone=0, Default='8,4,12,12'}"
+                Padding="0"
+                StrokeThickness="0"
+                StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 12'}"
+                IsVisible="{Binding Source={x:Reference PageBackgroundImage}, Path=IsVisible}"
+                InputTransparent="True">
+            <Image x:Name="PageBackgroundImage"
+                   Source="{Binding BackgroundImage}"
+                   IsVisible="False"
+                   Aspect="AspectFill"
+                   InputTransparent="True" />
+        </Border>
 
         <!-- Shared application header (spans both columns) -->
         <views:HeaderView x:Name="Header"
@@ -41,7 +50,8 @@
         <!-- Main content area (consumes the freed space when sidebar collapses) -->
         <ContentView x:Name="MainContent"
                      Grid.Row="1"
-                     Grid.Column="1" />
+                     Grid.Column="1"
+                     Margin="{OnIdiom Phone=0, Default='8,4,12,12'}" />
 
     </Grid>
 

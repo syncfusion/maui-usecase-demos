@@ -92,7 +92,7 @@
                             <syncfusionCore:SfTextInputLayout Grid.Column="1"
                                                               Hint="Add a note"
                                                               ContainerType="Outlined"
-                                                              ContainerBackground="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}"
+                                                              ContainerBackground="{OnIdiom Desktop=Transparent, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource InputPillBackgroundDarkColor}}}"
                                                               OutlineCornerRadius="8"
                                                               FocusedStrokeThickness="1"
                                                               UnfocusedStrokeThickness="1"
@@ -127,7 +127,9 @@
                                    LineBreakMode="TailTruncation"
                                    FontSize="14"
                                    Margin="16,0"
+                                   HeightRequest="44"
                                    VerticalOptions="Center"
+                                   VerticalTextAlignment="Center"
                                    TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
                             <buttons:SfButton Grid.Column="2"
                                               Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
