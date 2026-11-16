@@ -43,7 +43,7 @@ public sealed class InMemoryListService : IListService
                 Id = stored.Id,
                 Name = stored.Name,
                 IsSystem = false,
-            IconGlyph = iconGlyph,
+            IconGlyph = stored.IconGlyph,
                 DisplayOrder = stored.DisplayOrder,
                 SortOrder = stored.SortOrder,
                 BackgroundColorHex = backgroundColorHex,
@@ -89,6 +89,7 @@ public sealed class InMemoryListService : IListService
             Id = Guid.NewGuid().ToString(),
             Name = trimmed,
             IsSystem = false,
+            IconGlyph = iconGlyph,
             DisplayOrder = nextOrder,
             BackgroundColorHex = NoteListThemePalette.GetRandomThemeColor(),
             CreatedAt = DateTime.Now
@@ -187,7 +188,8 @@ public sealed class InMemoryListService : IListService
             or nameof(NoteList.DisplayOrder)
             or nameof(NoteList.SortOrder)
             or nameof(NoteList.BackgroundImageSource)
-            or nameof(NoteList.BackgroundColorHex))
+            or nameof(NoteList.BackgroundColorHex)
+            or nameof(NoteList.IconGlyph))
             PersistLists();
     }
 
@@ -204,7 +206,8 @@ public sealed class InMemoryListService : IListService
             list.BackgroundColorHex,
             list.CreatedAt,
             list.BackgroundImageSource,
-            list.CustomBackgroundImageSources.ToList())).ToList();
+            list.CustomBackgroundImageSources.ToList(),
+            list.IconGlyph)).ToList();
         Preferences.Default.Set(PersistedListsKey, JsonSerializer.Serialize(storedLists));
     }
 
@@ -216,5 +219,6 @@ public sealed class InMemoryListService : IListService
         string? BackgroundColorHex,
         DateTime CreatedAt,
         string? BackgroundImageSource = null,
-        List<string>? CustomBackgroundImageSources = null);
+        List<string>? CustomBackgroundImageSources = null,
+        string? IconGlyph = null);
 }
