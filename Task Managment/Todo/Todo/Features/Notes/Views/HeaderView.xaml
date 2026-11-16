@@ -11,7 +11,7 @@
           HeightRequest="{OnIdiom Phone=56, Default={StaticResource HeaderHeight}}"
           Padding="{OnIdiom Phone='5,0,10,0', Default='8,0,16,0'}"
           ColumnDefinitions="{OnIdiom Phone='Auto,*,Auto,Auto', Default='Auto,*,Auto'}"
-          BackgroundColor="{OnIdiom Phone={AppThemeBinding Light=White, Dark=#1C1B1F}, Desktop=Transparent, Default={AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}}">
+          BackgroundColor="{AppThemeBinding Light=#FFFBFE, Dark=#1C1B1F}">
         <Grid.Shadow>
             <Shadow Brush="#10000000" Radius="4" Offset="0,1" Opacity="{OnIdiom Phone=0, Desktop=0, Default=0.10}" />
         </Grid.Shadow>

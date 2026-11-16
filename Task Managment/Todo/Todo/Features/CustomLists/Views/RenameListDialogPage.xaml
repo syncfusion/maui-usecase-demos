@@ -90,7 +90,7 @@
                                         <VisualState x:Name="Normal" />
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E7E0EC, Dark=#4A4458}" />
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#D0BCFF, Dark=#5A5470}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
@@ -98,8 +98,6 @@
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E8DEF8, Dark=#4A4458}" />
-                                        <Setter Property="Stroke" Value="#6750A4" />
-                                        <Setter Property="StrokeThickness" Value="2" />
                                     </DataTrigger>
                                 </Border.Triggers>
                                 <Border.GestureRecognizers>

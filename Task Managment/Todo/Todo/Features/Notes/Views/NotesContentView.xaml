@@ -189,7 +189,8 @@
                         <DataTemplate x:DataType="models:Note">
                             <Grid Margin="{OnIdiom Phone='16,3', Default='0'}" >
                                 <Border InputTransparent="True"
-                                        IsVisible="{OnIdiom Phone=True, Default=False}"
+                                        Margin="{OnIdiom Phone='0', Default='16,3'}"
+                                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                         StrokeThickness="0" 
                                         StrokeShape="RoundRectangle 10">
                                     <Border.Shadow>
@@ -204,7 +205,10 @@
                                     BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
-                                    Shadow="{StaticResource Elevation1}">
+                                    >
+                                <Border.Shadow>
+                                    <Shadow Brush="#4D000000" Radius="2" Offset="0,1" Opacity="1" />
+                                </Border.Shadow>
                                 <!-- Module-07 task 7-1 (draganddrop.png):
                                      when this card is the one being
                                      dragged, apply a stronger tint to
@@ -418,7 +422,8 @@
                                 <DataTemplate x:DataType="models:Note">
                                     <Grid Margin="{OnIdiom Phone='16,3', Default='0'}">
                                         <Border InputTransparent="True"
-                                                IsVisible="{OnIdiom Phone=True, Default=False}"
+                                                Margin="{OnIdiom Phone='0', Default='16,3'}"
+                                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 10">
                                             <Border.Shadow>
@@ -432,7 +437,10 @@
                                             Padding="12,6"
                                             BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                             StrokeThickness="0" StrokeShape="RoundRectangle 10"
-                                            Shadow="{StaticResource Elevation1}">
+                                            >
+                                <Border.Shadow>
+                                    <Shadow Brush="#4D000000" Radius="2" Offset="0,1" Opacity="1" />
+                                </Border.Shadow>
                                         <Border.GestureRecognizers>
                                             <TapGestureRecognizer Buttons="Secondary"
                                                                   Tapped="OnNoteSecondaryTapped" />
@@ -577,59 +585,16 @@
                     x:Name="AddNotePanel"
                     ZIndex="4"
                     IsVisible="{OnIdiom Phone={Binding IsAddNotePanelOpen}, Default=True}"
-                    Margin="{OnIdiom Phone='16,4,16,8', Default='16,12,16,16'}"
-                    Padding="{OnIdiom Phone=4, Default=8}"
+                    Margin="{OnIdiom Phone='16,4,16,8', Default='16,8,16,12'}"
+                    Padding="{OnIdiom Phone=4, Default='8,4'}"
                     Background="{AppThemeBinding Light={StaticResource SurfaceColor}, Dark={StaticResource SurfaceDarkColor}}"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
-                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" RowSpacing="{OnIdiom Phone=8, Desktop=0, Default=8}" VerticalOptions="Center">
-                    <ScrollView Grid.Row="0"
-                                Orientation="Horizontal"
-                                HorizontalScrollBarVisibility="Never"
-                                Margin="0,0,0,6"
-                                IsVisible="{OnIdiom Phone=False, Default=True}">
-                        <HorizontalStackLayout Spacing="8">
-                        <Border Margin="0"
-                                IsVisible="{Binding HasDraftDueDate}"
-                                Padding="10,6"
-                                Stroke="{StaticResource ChipStrokeColor}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 12"
-                                BackgroundColor="{StaticResource ChipBackgroundColor}">
-                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" />
-                                <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
-                            </HorizontalStackLayout>
-                        </Border>
-                        <Border Margin="0"
-                                IsVisible="{Binding HasDraftRepeat}"
-                                Padding="10,6"
-                                Stroke="{StaticResource ChipStrokeColor}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 12"
-                                BackgroundColor="{StaticResource ChipBackgroundColor}">
-                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" />
-                                <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
-                            </HorizontalStackLayout>
-                        </Border>
-                        <Border Margin="0"
-                                IsVisible="{Binding HasDraftReminder}"
-                                Padding="10,6"
-                                Stroke="{StaticResource ChipStrokeColor}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 12"
-                                BackgroundColor="{StaticResource ChipBackgroundColor}">
-                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" />
-                                <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
-                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftReminderCommand}" />
-                            </HorizontalStackLayout>
-                        </Border>
-                    </HorizontalStackLayout>
-                    </ScrollView>
+                <Border.Shadow>
+                    <Shadow Brush="#4D000000" Radius="2" Offset="0,1" Opacity="1" />
+                </Border.Shadow>
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" RowSpacing="0" VerticalOptions="Center">
+                    
                     <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
                     <syncfusionCore:SfTextInputLayout Grid.Column="0"
                                                      Hint="{OnIdiom Phone='Add task', Default='Add a note'}"
@@ -775,12 +740,61 @@
                             </Grid>
                         </syncfusionCore:SfTextInputLayout.TrailingView>
                         <Entry x:Name="NewNoteEntry"
+                               HeightRequest="36"
+                               MinimumHeightRequest="36"
                                Text="{Binding NewNoteTitle, Mode=TwoWay}"
                                Style="{StaticResource InputPillEntryStyle}"
                                BackgroundColor="Transparent"
                                Margin="0"
                                ReturnCommand="{Binding AddNoteCommand}" />
                     </syncfusionCore:SfTextInputLayout>
+                    <ScrollView Grid.Column="0"
+                                Orientation="Horizontal"
+                                HorizontalScrollBarVisibility="Never"
+                                Margin="0,0,156,0" MaximumWidthRequest="420" HorizontalOptions="End" VerticalOptions="Center" ZIndex="2"
+                                IsVisible="{OnIdiom Phone=False, Default=True}">
+                        <HorizontalStackLayout Spacing="8">
+                        <Border Margin="0"
+                                IsVisible="{Binding HasDraftDueDate}"
+                                Padding="10,6"
+                                Stroke="{StaticResource ChipStrokeColor}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{StaticResource ChipBackgroundColor}">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="&#xe24f;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#0D7D12" />
+                                <Label Text="{Binding DraftDueDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border Margin="0"
+                                IsVisible="{Binding HasDraftRepeat}"
+                                Padding="10,6"
+                                Stroke="{StaticResource ChipStrokeColor}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{StaticResource ChipBackgroundColor}">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="&#xe040;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#2667A3" />
+                                <Label Text="{Binding DraftRepeatText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Border Margin="0"
+                                IsVisible="{Binding HasDraftReminder}"
+                                Padding="10,6"
+                                Stroke="{StaticResource ChipStrokeColor}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{StaticResource ChipBackgroundColor}">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="&#xe7f5;" FontFamily="MaterialIconRegular" FontSize="12" TextColor="#7D5294" />
+                                <Label Text="{Binding DraftReminderDateText}" FontSize="10" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                                <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftReminderCommand}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </HorizontalStackLayout>
+                    </ScrollView>
                     <buttons:SfButton Grid.Column="1"
                                       IsVisible="{OnIdiom Phone={Binding IsAddNotePanelOpen}, Default=False}"
                                       Text="&#xe876;"
