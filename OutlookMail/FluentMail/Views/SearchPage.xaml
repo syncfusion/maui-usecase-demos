@@ -17,7 +17,7 @@
                 <Border StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 8" Padding="16,0">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                         <Image Source="ic_search_b.svg" WidthRequest="24" HeightRequest="24" />
-                        <controls:SfEntry Grid.Column="1" Text="{Binding Query}" Placeholder="Search mail, files, contacts and calendar" FontSize="16" />
+                        <controls:SfEntry Grid.Column="1" Text="{Binding Query}" Placeholder="Search mail and contacts" FontSize="16" />
                     </Grid>
                 </Border>
 

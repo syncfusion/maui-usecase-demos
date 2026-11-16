@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Windows.Input;
 using Syncfusion.Maui.Popup;
 
@@ -7,9 +8,11 @@ public partial class MobileHeader : ContentView
 {
     public static readonly BindableProperty TitleProperty = BindableProperty.Create(nameof(Title), typeof(string), typeof(MobileHeader), string.Empty);
     public static readonly BindableProperty FilterCommandProperty = BindableProperty.Create(nameof(FilterCommand), typeof(ICommand), typeof(MobileHeader), null, propertyChanged: (b, _, _) => ((MobileHeader)b).OnPropertyChanged(nameof(HasFilter)));
+    public static readonly BindableProperty OptionsProperty = BindableProperty.Create(nameof(Options), typeof(IEnumerable), typeof(MobileHeader), null);
 
     public string Title { get => (string)GetValue(TitleProperty); set => SetValue(TitleProperty, value); }
     public ICommand? FilterCommand { get => (ICommand?)GetValue(FilterCommandProperty); set => SetValue(FilterCommandProperty, value); }
+    public IEnumerable? Options { get => (IEnumerable?)GetValue(OptionsProperty); set => SetValue(OptionsProperty, value); }
     public bool HasFilter => FilterCommand is not null;
 
     public MobileHeader() => InitializeComponent();
