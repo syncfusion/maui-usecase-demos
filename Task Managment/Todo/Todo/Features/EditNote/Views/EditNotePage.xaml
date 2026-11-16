@@ -111,9 +111,24 @@
                                        BackgroundColor="Transparent"
                                        VerticalTextAlignment="Center"
                                        HeightRequest="44"
-                                       TextDecorations="{Binding Target.IsCompleted, Converter={StaticResource BoolToTextDecorationConverter}}"
-                                       TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
+                                       TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}">
+                                    <Entry.Triggers>
+                                        <DataTrigger TargetType="Entry" Binding="{Binding Target.IsCompleted}" Value="True">
+                                            <Setter Property="TextColor" Value="Transparent" />
+                                        </DataTrigger>
+                                    </Entry.Triggers>
+                                </Entry>
                             </syncfusionCore:SfTextInputLayout>
+                            <Label Grid.Column="1"
+                                   Text="{Binding Title}"
+                                   InputTransparent="True"
+                                   IsVisible="{Binding Target.IsCompleted}"
+                                   TextDecorations="Strikethrough"
+                                   LineBreakMode="TailTruncation"
+                                   FontSize="14"
+                                   Margin="16,0"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
                             <buttons:SfButton Grid.Column="2"
                                               Text="{Binding IsImportant, Converter={StaticResource BoolToStarGlyphConverter}}"
                                               TextColor="{Binding IsImportant, Converter={StaticResource BoolToStarColorConverter}}"
