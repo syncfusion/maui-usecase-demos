@@ -40,10 +40,18 @@ public partial class RenameListDialogViewModel : ViewModelBase
         OnPropertyChanged(nameof(HasNoSelectedIcon));
     }
 
+    [ObservableProperty]
+    private bool isIconPickerOpen;
+
+    [RelayCommand]
+    private void ToggleIconPicker() => IsIconPickerOpen = !IsIconPickerOpen;
+
     [RelayCommand]
     private void SelectIcon(ListIconOption? option)
     {
-        if (option is not null) SelectedIcon = option.Glyph;
+        if (option is null) return;
+        SelectedIcon = option.Glyph;
+        IsIconPickerOpen = false;
     }
 
     public string DialogTitle => "Rename list";

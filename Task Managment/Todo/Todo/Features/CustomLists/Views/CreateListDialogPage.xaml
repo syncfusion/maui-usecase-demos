@@ -38,7 +38,11 @@
                     <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0"
                             VerticalOptions="Center"
                             StrokeShape="RoundRectangle 20"
-                            BackgroundColor="{AppThemeBinding Light=#ECE6F0, Dark=#36343B}">
+                            BackgroundColor="{AppThemeBinding Light=#ECE6F0, Dark=#36343B}"
+                            SemanticProperties.Description="Choose list icon">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleIconPickerCommand}" />
+                        </Border.GestureRecognizers>
                         <Grid>
                             <Label Text="{Binding SelectedIcon}" FontSize="20"
                                    HorizontalOptions="Center" VerticalOptions="Center"
@@ -74,15 +78,28 @@
 
                 <!-- Icon picker -->
                 <FlexLayout Wrap="Wrap" Direction="Row" JustifyContent="Start"
+                            IsVisible="{Binding IsIconPickerOpen}"
                             BindableLayout.ItemsSource="{Binding Icons}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:ListIconOption">
                             <Border WidthRequest="40" HeightRequest="40" Margin="0,0,10,8"
                                     StrokeThickness="0" StrokeShape="RoundRectangle 20"
                                     BackgroundColor="Transparent">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E7E0EC, Dark=#4A4458}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E8DEF8, Dark=#4A4458}" />
+                                        <Setter Property="Stroke" Value="#6750A4" />
+                                        <Setter Property="StrokeThickness" Value="2" />
                                     </DataTrigger>
                                 </Border.Triggers>
                                 <Border.GestureRecognizers>

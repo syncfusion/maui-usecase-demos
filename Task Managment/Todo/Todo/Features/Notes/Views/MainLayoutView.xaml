@@ -10,7 +10,7 @@
           Margin="{OnIdiom Phone=0, Default='0,10,0,0'}"
           RowDefinitions="{OnIdiom Phone='56,*', Default='60,*'}"
           ColumnDefinitions="{OnIdiom Phone='0,*', Default='220,*'}"
-          Background="{OnIdiom Phone={AppThemeBinding Light=White, Dark={StaticResource BackgroundDarkColor}}, Default={AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}}">
+          Background="{AppThemeBinding Light=#F7F2FB, Dark={StaticResource BackgroundDarkColor}}">
 
         <Border x:Name="PageBackgroundHost"
                 Grid.Row="{OnIdiom Phone=0, Default=1}"
@@ -40,7 +40,7 @@
                  Grid.ColumnSpan="2"
                  HeightRequest="1"
                  VerticalOptions="End"
-                 Color="{AppThemeBinding Light={StaticResource DividerColor}, Dark={StaticResource DividerDarkColor}}" />
+                 Color="#CAC4D0" />
 
         <!-- Sidebar (hides on Phone per collapsed.png) -->
         <views:SidebarView x:Name="Sidebar"

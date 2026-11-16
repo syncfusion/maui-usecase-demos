@@ -987,8 +987,16 @@ public partial class NotesListViewModel : ViewModelBase
     private void ReorderNote(DragReorderRequest? request)
     {
         if (request is null) return;
-        var scope = !string.IsNullOrEmpty(SelectedListId) ? SelectedListId : string.Empty;
-        _noteService.ReorderAsync(scope ?? string.Empty, request.OldIndex, request.NewIndex);
+        var ordered = ActiveNotes.ToList();
+        var moved = request.Note ?? (request.OldIndex >= 0 && request.OldIndex < ordered.Count ? ordered[request.OldIndex] : null);
+        if (moved is null) return;
+        ordered.RemoveAll(n => n.Id == moved.Id);
+        ordered.Insert(Math.Clamp(request.NewIndex, 0, ordered.Count), moved);
+
+        _isReordering = true;
+        try { _noteService.ReorderAsync(ordered.Select(n => n.Id).ToList()); }
+        finally { _isReordering = false; }
+        ApplyFilter();
     }
 
     /// <summary>
@@ -1223,8 +1231,11 @@ public partial class NotesListViewModel : ViewModelBase
         ApplyFilter();
     }
 
+    private bool _isReordering;
+
     private void OnNotePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (_isReordering) return;
         // Re-evaluate the filter when the IsImportant / IsCompleted /
         // DeletedAt / ReminderDate / ListId of any note changes.
         if (e.PropertyName is nameof(Note.IsImportant)
@@ -1319,7 +1330,7 @@ public partial class NotesListViewModel : ViewModelBase
 /// the source and destination indices as observed on the rendered
 /// list so the service can re-author <c>DisplayOrder</c> values.
 /// </summary>
-public sealed record DragReorderRequest(int OldIndex, int NewIndex);
+public sealed record DragReorderRequest(int OldIndex, int NewIndex, Note? Note = null);
 
 public sealed record ListReorderRequest(int OldIndex, int NewIndex);
 

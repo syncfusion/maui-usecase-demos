@@ -187,7 +187,7 @@
                                    ItemDragging="OnItemDragging">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Note">
-                            <Grid Margin="{OnIdiom Phone='16,6', Default='0'}" >
+                            <Grid Margin="{OnIdiom Phone='16,3', Default='0'}" >
                                 <Border InputTransparent="True"
                                         IsVisible="{OnIdiom Phone=True, Default=False}"
                                         StrokeThickness="0" 
@@ -199,8 +199,8 @@
                                                 Opacity="1" />
                                     </Border.Shadow>
                                 </Border>
-                                <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
-                                    Padding="14,10" 
+                                <Border Margin="{OnIdiom Phone='0', Default='16,3'}"
+                                    Padding="12,6" 
                                     BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10"
@@ -246,7 +246,7 @@
                                 </VisualStateManager.VisualStateGroups>
 
                                 <Grid ColumnDefinitions="40,*,40,40"
-                                      RowDefinitions="40,Auto"
+                                      RowDefinitions="36,Auto"
                                       ColumnSpacing="8"
                                       BackgroundColor="Transparent"
                                       VerticalOptions="Start">
@@ -416,7 +416,7 @@
                                                SelectionMode="{OnIdiom Phone=None, Default=SingleDeselect}">
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
-                                    <Grid Margin="{OnIdiom Phone='16,6', Default='0'}">
+                                    <Grid Margin="{OnIdiom Phone='16,3', Default='0'}">
                                         <Border InputTransparent="True"
                                                 IsVisible="{OnIdiom Phone=True, Default=False}"
                                                 StrokeThickness="0"
@@ -428,8 +428,8 @@
                                                         Opacity="1" />
                                             </Border.Shadow>
                                         </Border>
-                                        <Border Margin="{OnIdiom Phone='0', Default='16,6'}"
-                                            Padding="14,10"
+                                        <Border Margin="{OnIdiom Phone='0', Default='16,3'}"
+                                            Padding="12,6"
                                             BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                             StrokeThickness="0" StrokeShape="RoundRectangle 10"
                                             Shadow="{StaticResource Elevation1}">
@@ -448,7 +448,7 @@
                                             </VisualStateGroup>
                                         </VisualStateManager.VisualStateGroups>
                                         <Grid ColumnDefinitions="{OnIdiom Desktop='40,*,40,40', Default='44,*,40,40'}"
-                                              RowDefinitions="40,Auto"
+                                              RowDefinitions="36,Auto"
                                               ColumnSpacing="8"
                                               VerticalOptions="Start">
                                             <CheckBox Grid.Column="0"
@@ -583,13 +583,13 @@
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12">
                 <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" RowSpacing="{OnIdiom Phone=8, Desktop=0, Default=8}" VerticalOptions="Center">
-                    <FlexLayout Grid.Row="0"
-                                Direction="Row"
-                                Wrap="Wrap"
-                                AlignItems="Start"
-                                JustifyContent="Start"
+                    <ScrollView Grid.Row="0"
+                                Orientation="Horizontal"
+                                HorizontalScrollBarVisibility="Never"
+                                Margin="0,0,0,6"
                                 IsVisible="{OnIdiom Phone=False, Default=True}">
-                        <Border Margin="{OnIdiom Desktop='0,0,8,0', Default='0,0,8,8'}"
+                        <HorizontalStackLayout Spacing="8">
+                        <Border Margin="0"
                                 IsVisible="{Binding HasDraftDueDate}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
@@ -602,7 +602,7 @@
                                 <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftDueDateCommand}" />
                             </HorizontalStackLayout>
                         </Border>
-                        <Border Margin="{OnIdiom Desktop='0,0,8,0', Default='0,0,8,8'}"
+                        <Border Margin="0"
                                 IsVisible="{Binding HasDraftRepeat}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
@@ -615,7 +615,7 @@
                                 <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftRepeatCommand}" />
                             </HorizontalStackLayout>
                         </Border>
-                        <Border Margin="{OnIdiom Desktop='0,0,8,0', Default='0,0,8,8'}"
+                        <Border Margin="0"
                                 IsVisible="{Binding HasDraftReminder}"
                                 Padding="10,6"
                                 Stroke="{StaticResource ChipStrokeColor}"
@@ -628,7 +628,8 @@
                                 <buttons:SfButton Text="&#xe5cd;" FontFamily="MaterialIconRegular" FontSize="10" WidthRequest="18" HeightRequest="18" Padding="0" Background="Transparent" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" Command="{Binding RemoveDraftReminderCommand}" />
                             </HorizontalStackLayout>
                         </Border>
-                    </FlexLayout>
+                    </HorizontalStackLayout>
+                    </ScrollView>
                     <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
                     <syncfusionCore:SfTextInputLayout Grid.Column="0"
                                                      Hint="{OnIdiom Phone='Add task', Default='Add a note'}"

@@ -116,7 +116,7 @@
                                        SelectionMode="None">
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
-                                    <Grid Margin="16,6">
+                                    <Grid Margin="16,3">
                                         <Border InputTransparent="True"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 10">
@@ -127,7 +127,7 @@
                                                         Opacity="1" />
                                             </Border.Shadow>
                                         </Border>
-                                        <Border Padding="14,10"
+                                        <Border Padding="12,6"
                                                 BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
                                                 StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 10">
@@ -148,7 +148,7 @@
                                             </Border.GestureRecognizers>
 
                                             <Grid ColumnDefinitions="{OnIdiom Desktop='40,*,40,40', Default='44,*,40,40'}"
-                                                  RowDefinitions="40,Auto"
+                                                  RowDefinitions="36,Auto"
                                                   ColumnSpacing="8"
                                                   VerticalOptions="Center">
 

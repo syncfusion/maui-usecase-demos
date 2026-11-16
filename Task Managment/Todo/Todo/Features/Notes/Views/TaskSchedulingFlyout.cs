@@ -141,10 +141,7 @@ public sealed class TaskSchedulingFlyout : ContentView
             HeightRequest = 1,
             HorizontalOptions = LayoutOptions.Fill
         };
-        pickerDivider.SetAppThemeColor(
-            BoxView.ColorProperty,
-            Color.FromArgb("#E9E5EE"),
-            Color.FromArgb("#494650"));
+        pickerDivider.Color = Color.FromArgb("#CAC4D0");
         content.Children.Add(pickerDivider);
         Grid.SetRow(pickerDivider, 1);
 
@@ -191,7 +188,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         }
 
         var repeatDivider = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
-        repeatDivider.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
+        repeatDivider.Color = Color.FromArgb("#CAC4D0");
         content.Children.Add(repeatDivider);
         var customButton = CreateMenuButton("Custom", _viewModel?.DraftRepeatFrequency == NoteRepeatFrequency.Custom,
             ShowCustomRepeatPopup,

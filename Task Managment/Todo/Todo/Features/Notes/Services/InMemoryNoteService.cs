@@ -206,6 +206,23 @@ public sealed class InMemoryNoteService : INoteService
         return Task.CompletedTask;
     }
 
+    public Task ReorderAsync(IReadOnlyList<string> orderedNoteIds)
+    {
+        var notes = orderedNoteIds
+            .Select(id => _notes.FirstOrDefault(n => n.Id == id))
+            .Where(n => n is not null)
+            .Cast<Note>()
+            .ToList();
+        var slots = notes.Select(n => n.DisplayOrder).OrderBy(o => o).ToList();
+        for (var i = 0; i < notes.Count; i++)
+        {
+            notes[i].DisplayOrder = slots[i];
+            notes[i].UpdatedAt = DateTime.Now;
+        }
+        PersistNotes();
+        return Task.CompletedTask;
+    }
+
     public Task MoveToListAsync(string noteId, string? targetListId)
     {
         RemoveExpiredDeletedNotes();

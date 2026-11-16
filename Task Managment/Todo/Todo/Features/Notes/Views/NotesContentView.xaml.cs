@@ -26,7 +26,7 @@ public partial class NotesContentView : ContentView
         }
     }
 
-    private const double CardHeight = 72;       // 40 row + 20 padding + 12 margin
+    private const double CardHeight = 54;       // 36 row + 12 padding + 6 margin
     private const double MetadataRowHeight = 24;
     private const double CompletedHeaderHeight = 48;
 
@@ -321,7 +321,7 @@ public partial class NotesContentView : ContentView
                 // already moved the item in the source collection;
                 // we just need to re-author DisplayOrder so the new
                 // order survives re-filtering.
-                var request = new DragReorderRequest(e.OldIndex, e.NewIndex);
+                var request = new DragReorderRequest(e.OldIndex, e.NewIndex, e.DataItem as Note);
                 vm.ReorderNoteCommand.Execute(request);
 
                 // Gesture finished — clear the in-flight state so

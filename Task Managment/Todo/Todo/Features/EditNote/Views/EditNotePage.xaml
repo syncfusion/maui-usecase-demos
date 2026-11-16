@@ -235,7 +235,7 @@
                             </Border>
                             <BoxView HeightRequest="1"
                                      Margin="42,4,0,4"
-                                     BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
+                                     BackgroundColor="#CAC4D0" />
 
                             <Border Padding="0"
                                     StrokeThickness="0"
@@ -296,7 +296,7 @@
                                     TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" />
                             <BoxView HeightRequest="1"
                                      Margin="42,4,0,4"
-                                     BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
+                                     BackgroundColor="#CAC4D0" />
 
                             <Border Padding="0"
                                     StrokeThickness="0"
@@ -348,7 +348,7 @@
                             </Border>
                             <BoxView HeightRequest="1"
                                      Margin="42,4,0,4"
-                                     BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
+                                     BackgroundColor="#CAC4D0" />
                             <Border x:Name="ReminderInlineEditor"
                                     IsVisible="{Binding IsReminderPickerVisible}"
                                     Padding="12"
@@ -403,7 +403,7 @@
 
                 <BoxView Grid.Row="3"
                          HeightRequest="1"
-                         Color="{AppThemeBinding Light=#E9E5EE, Dark=#494650}"
+                         Color="#CAC4D0"
                          Margin="{OnIdiom Phone='-16,4,-16,4', Default='-18,4,-18,4'}" />
 
                 <Grid Grid.Row="4" HeightRequest="56"
@@ -511,7 +511,7 @@
                     </picker:SfDateTimePicker>
                     <BoxView Grid.Row="1"
                              HeightRequest="1"
-                             BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
+                             BackgroundColor="#CAC4D0" />
                     <Grid Grid.Row="2"
                           ColumnDefinitions="*,Auto,Auto"
                           ColumnSpacing="8"
@@ -585,7 +585,7 @@
                     </picker:SfDateTimePicker>
                     <BoxView Grid.Row="1"
                              HeightRequest="1"
-                             BackgroundColor="{AppThemeBinding Light=#E9E5EE, Dark=#494650}" />
+                             BackgroundColor="#CAC4D0" />
                     <Grid Grid.Row="2"
                           ColumnDefinitions="*,Auto,Auto"
                           ColumnSpacing="8"

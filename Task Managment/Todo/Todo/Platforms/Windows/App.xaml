@@ -5,4 +5,12 @@
     xmlns:maui="using:Microsoft.Maui"
     xmlns:local="using:Todo.WinUI">
 
+    <maui:MauiWinUIApplication.Resources>
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="ToolTipBackground" Color="#000000" />
+            <SolidColorBrush x:Key="ToolTipForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#000000" />
+        </ResourceDictionary>
+    </maui:MauiWinUIApplication.Resources>
+
 </maui:MauiWinUIApplication>

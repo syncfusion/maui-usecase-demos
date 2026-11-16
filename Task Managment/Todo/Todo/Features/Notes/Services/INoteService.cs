@@ -83,6 +83,13 @@ public interface INoteService
     Task ReorderAsync(string targetListId, int oldIndex, int newIndex);
 
     /// <summary>
+    /// Applies a new relative order to the given notes (ids in their new
+    /// display order). The notes reuse the DisplayOrder slots they already
+    /// occupied so other notes keep their position.
+    /// </summary>
+    Task ReorderAsync(IReadOnlyList<string> orderedNoteIds);
+
+    /// <summary>
     /// Moves the note identified by <paramref name="noteId"/> to the
     /// target list (<paramref name="targetListId"/>) and appends it
     /// to the bottom of that list. Module-07 task 7-2 sidebar drop.

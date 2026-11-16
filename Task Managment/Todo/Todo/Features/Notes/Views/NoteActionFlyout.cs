@@ -212,14 +212,14 @@ public sealed class NoteActionFlyout : ContentView
         _selectAllSurface = PointerHoverSurface.Wrap(_selectAllRow, 8, Thickness.Zero);
 
         _selectAllSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
-        _selectAllSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
+        _selectAllSeparator.Color = Color.FromArgb("#CAC4D0");
 
         _completionButton = CreateButton("Mark as completed", () => RaiseAction(NoteActionKind.ToggleCompletion), iconGlyph: "\ue876");
         _editButton = CreateButton("Edit note", () => RaiseAction(NoteActionKind.Edit), iconGlyph: "\ue150");
         _moveButton = CreateButton("Move notes to", ShowDestinations, iconGlyph: "\ue5c4");
         _restoreButton = CreateButton("Restore note", () => RaiseAction(NoteActionKind.Restore), iconGlyph: "\ue5d5");
         _deleteSeparator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
-        _deleteSeparator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
+        _deleteSeparator.Color = Color.FromArgb("#CAC4D0");
         _deleteButton = CreateButton("Delete task", () =>
         {
             if (_selectedNote?.DeletedAt is not null)
@@ -392,7 +392,7 @@ public sealed class NoteActionFlyout : ContentView
             iconGlyph: "\ue5c4",
             iconColor: "#49454F"));
         var separator = new BoxView { HeightRequest = 1, Margin = new Thickness(0, 4) };
-        separator.SetAppThemeColor(BoxView.ColorProperty, Color.FromArgb("#E9E5EE"), Color.FromArgb("#494650"));
+        separator.Color = Color.FromArgb("#CAC4D0");
         _destinationsLayout.Children.Add(separator);
         foreach (var destination in _destinations)
             _destinationsLayout.Children.Add(CreateButton(

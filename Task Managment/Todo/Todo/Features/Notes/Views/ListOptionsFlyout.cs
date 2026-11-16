@@ -258,12 +258,9 @@ public sealed class ListOptionsFlyout : ContentView
             {
                 HeightRequest = 1,
                 Margin = new Thickness(12, 4),
-                Color = Color.FromArgb("#E9E5EE")
+                Color = Color.FromArgb("#CAC4D0")
             };
-            separator.SetAppThemeColor(
-                BoxView.ColorProperty,
-                Color.FromArgb("#E9E5EE"),
-                Color.FromArgb("#494650"));
+            
             _menuActions.Children.Add(separator);
             var deleteButton = CreateMenuButton("Delete list", DeleteList, destructive: true, iconGlyph: "\ue92e", iconColor: "#B3261E");
             if (!isPhone)

@@ -103,8 +103,9 @@ public partial class MainLayoutView : ContentView
         // Single source of truth: flip the shared state, then always
         // re-apply it so every page restores the sidebar column the
         // same way (the Search page already behaved correctly).
-        _viewModel.IsSidebarCollapsed = !_viewModel.IsSidebarCollapsed;
-        UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
+        var isOpen = Sidebar.IsVisible && RootGrid.ColumnDefinitions[0].Width.Value > 0;
+        _viewModel.IsSidebarCollapsed = isOpen;
+        UpdateSidebarColumn(isOpen);
         UpdatePageBackgroundImage();
     }
 
