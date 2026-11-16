@@ -28,7 +28,7 @@
                     x:Name="DesktopNavigationButton"
                     WidthRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
                     HeightRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
-                    Margin="{OnIdiom Phone='0,0,8,0', Desktop='0,0,8,0', Default='10,0'}"
+                    Margin="{OnIdiom Phone='0,0,8,0', Desktop='0,8,8,0', Default='10,0'}"
                     CornerRadius="{OnIdiom Phone=20, Desktop=20, Default=0}"
                     Padding="0" ImageSource="humburger.png" Background="Transparent" VerticalOptions="Center"
                     Clicked="OnDesktopNavigationClicked"
