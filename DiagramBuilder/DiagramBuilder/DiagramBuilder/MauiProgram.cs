@@ -12,12 +12,14 @@ namespace DiagramBuilder
 {
     public static class MauiProgram
     {
-        public static IServiceProvider? ServiceProvider { get; private set; }
-
         public static MauiApp CreateMauiApp()
         {
-
-            SyncfusionLicenseProvider.RegisterLicense("SYNCFUSION_LICENSE_KEY");
+            var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
+            if (!string.IsNullOrWhiteSpace(licenseKey)
+                && !string.Equals(licenseKey, "SYNCFUSION_LICENSE_KEY", StringComparison.Ordinal))
+            {
+                SyncfusionLicenseProvider.RegisterLicense(licenseKey);
+            }
 
             var builder = MauiApp.CreateBuilder();
             builder
@@ -60,9 +62,7 @@ namespace DiagramBuilder
             builder.Logging.AddDebug();
 #endif
 
-            var app = builder.Build();
-            ServiceProvider = app.Services;
-            return app;
+            return builder.Build();
         }
     }
 }

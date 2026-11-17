@@ -22,6 +22,10 @@ public partial class DiagramDesignerPage : ContentPage
     private readonly SfPopup _savePopup;
     private readonly SfPopup _printPopup;
     private readonly System.ComponentModel.PropertyChangedEventHandler _zoomSubscription;
+    private readonly PropertyChangedEventHandler _zoomGridSubscription;
+    private readonly PropertyChangedEventHandler _viewModelSubscription;
+    private readonly NotifyCollectionChangedEventHandler _paletteGroupsSubscription;
+    private bool _persistentSubscriptionsAttached;
     private Button? _propertyPanelToggleButton;
     private bool _dialogShown;
     private bool? _isCompactLayout;
@@ -41,7 +45,7 @@ public partial class DiagramDesignerPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
         SizeChanged += OnDesignerSizeChanged;
-        WorkspaceHost.SizeChanged += (_, _) => UpdateMobilePropertyPanelHeight();
+        WorkspaceHost.SizeChanged += OnWorkspaceHostSizeChanged;
         MobilePropertyScrim.GestureRecognizers.Add(new TapGestureRecognizer
         {
             Command = viewModel.TogglePropertiesCommand,
@@ -70,27 +74,11 @@ public partial class DiagramDesignerPage : ContentPage
         // the workspace control's DiagramGrid alongside the SfDiagram, so palette
         // discovery succeeds regardless of how the host page is laid out.
         WireWorkspace(Workspace);
-
-        // Template-loaded wiring is constructor-scoped (never torn down): pushing
-        // the Create-Diagram modal fires this page's OnDisappearing immediately
-        // after OnAppearing, which would unsubscribe the handler below before the
-        // user ever picks a template. With no listener, PropertyService.Track is
-        // never called, every Read() returns no rows and the property panel
-        // renders empty sections. The page is transient, so the subscription is
-        // released with the page itself (same lifetime policy as DocumentLoaded).
-        Workspace.TemplateLoaded += OnTemplateLoaded;
-
-        // Live element changes (palette drop, delete, duplicate) keep the property
-        // service's tracked set in step with the diagram. Without this, a shape
-        // dropped from the palette is never tracked, so selecting it yields no
-        // property rows and the panel renders empty sections.
-        Workspace.ElementAdded += OnElementChanged;
-        Workspace.ElementsReset += OnElementsReset;
+        Toolbar.PropertyService = propertyService;
 
         // Page settings: the canvas background is the only drawing-area property
         // the MAUI Diagram control supports at runtime (format/orientation have
         // no API), so it is the only one exposed. Applied whenever it changes…
-        _pageSettings.Changed += OnPageSettingsChanged;
         // …and once here so the canvas matches the service's seed.
         Workspace.ApplyPageSettings(_pageSettings.BackgroundColorKey);
 
@@ -101,8 +89,7 @@ public partial class DiagramDesignerPage : ContentPage
         // Syncfusion diagram-sdk MAUI getting-started docs.
         var paletteGroups = viewModel.Stencil.PaletteGroups;
         Workspace.ShapesPalette.Palettes = paletteGroups;
-        ((INotifyCollectionChanged)paletteGroups).CollectionChanged +=
-            (_, _) => Workspace.ShapesPalette.Palettes = paletteGroups;
+        _paletteGroupsSubscription = OnPaletteGroupsChanged;
 
         // The property panel gets an explicit collapse button in the trailing slot
         // so the header uses a clearer close/collapse affordance than the default
@@ -138,24 +125,8 @@ public partial class DiagramDesignerPage : ContentPage
 
         // View / Window menu state → live diagram. Grid and snap are EJ2 snapSettings;
         // the stencil is the palette div inside the diagram's web page.
-        viewModel.Zoom.PropertyChanged += (_, args) =>
-        {
-            if (args.PropertyName is nameof(ZoomViewModel.ShowGrid) or nameof(ZoomViewModel.SnapToGrid))
-            {
-                _ = Workspace.ApplyGridSettingsAsync(viewModel.Zoom.ShowGrid, viewModel.Zoom.SnapToGrid);
-            }
-        };
-        viewModel.PropertyChanged += (_, args) =>
-        {
-            if (args.PropertyName == nameof(DiagramDesignerViewModel.ShowStencil))
-            {
-                _ = Workspace.ApplyStencilVisibilityAsync(viewModel.ShowStencil);
-            }
-            else if (args.PropertyName == nameof(DiagramDesignerViewModel.ShowProperties))
-            {
-                MobilePropertyScrim.IsVisible = _isCompactLayout == true && viewModel.ShowProperties;
-            }
-        };
+        _zoomGridSubscription = OnZoomGridPropertyChanged;
+        _viewModelSubscription = OnViewModelPropertyChanged;
         _ = Workspace.ApplyGridSettingsAsync(viewModel.Zoom.ShowGrid, viewModel.Zoom.SnapToGrid);
 
         _zoomSubscription = OnZoomPropertyChanged;
@@ -163,6 +134,31 @@ public partial class DiagramDesignerPage : ContentPage
 
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
+    }
+
+    private void OnWorkspaceHostSizeChanged(object? sender, EventArgs e) => UpdateMobilePropertyPanelHeight();
+
+    private void OnPaletteGroupsChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
+        Workspace.ShapesPalette.Palettes = _viewModel.Stencil.PaletteGroups;
+
+    private void OnZoomGridPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(ZoomViewModel.ShowGrid) or nameof(ZoomViewModel.SnapToGrid))
+        {
+            _ = Workspace.ApplyGridSettingsAsync(_viewModel.Zoom.ShowGrid, _viewModel.Zoom.SnapToGrid);
+        }
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(DiagramDesignerViewModel.ShowStencil))
+        {
+            _ = Workspace.ApplyStencilVisibilityAsync(_viewModel.ShowStencil);
+        }
+        else if (e.PropertyName == nameof(DiagramDesignerViewModel.ShowProperties))
+        {
+            MobilePropertyScrim.IsVisible = _isCompactLayout == true && _viewModel.ShowProperties;
+        }
     }
 
     private void OnDesignerSizeChanged(object? sender, EventArgs e)
@@ -466,14 +462,24 @@ public partial class DiagramDesignerPage : ContentPage
         // the CreateDiagram modal. Pushing the modal triggers OnDisappearing on
         // this page (per MAUI Shell modal lifecycle), which would tear the
         // subscription down before the user picks a template — leaving the event
-        // with no listener. We keep the service-level subscription alive for the
-        // lifetime of the page (the page is transient so the handler is GC'd with
-        // it), and only re-establish the page-scoped UI subscriptions each time.
+        // with no listener. The persistent subscriptions below are therefore
+        // constructor-scoped (attached once, released with the page).
+        if (!_persistentSubscriptionsAttached)
+        {
+            _diagramService.DocumentLoaded += OnDocumentLoaded;
+            Workspace.TemplateLoaded += OnTemplateLoaded;
+            Workspace.ElementAdded += OnElementChanged;
+            Workspace.ElementsReset += OnElementsReset;
+            _pageSettings.Changed += OnPageSettingsChanged;
+            _viewModel.Zoom.PropertyChanged += _zoomGridSubscription;
+            _viewModel.PropertyChanged += _viewModelSubscription;
+            ((INotifyCollectionChanged)_viewModel.Stencil.PaletteGroups).CollectionChanged += _paletteGroupsSubscription;
+            WorkspaceHost.SizeChanged += OnWorkspaceHostSizeChanged;
+            _persistentSubscriptionsAttached = true;
+        }
+
         // Idempotent subscribe: -= first, then += to avoid double-subscription
         // when OnAppearing fires multiple times (e.g. after a modal pops).
-        _diagramService.DocumentLoaded -= OnDocumentLoaded;
-        _diagramService.DocumentLoaded += OnDocumentLoaded;
-
         _viewModel.ExportDialogRequested -= OnExportDialogRequested;
         _viewModel.ExportDialogRequested += OnExportDialogRequested;
         _viewModel.SaveAsDialogRequested -= OnSaveAsDialogRequested;
@@ -511,11 +517,10 @@ public partial class DiagramDesignerPage : ContentPage
 
     private void OnDisappearing(object? sender, EventArgs e)
     {
-        // Symmetric teardown for page-scoped UI subscriptions only. Service-level
-        // subscriptions are kept (see OnAppearing for the rationale) so a
-        // DocumentLoaded event fired while the modal is up still reaches the page.
-        // TemplateLoaded is likewise constructor-scoped (see the ctor) — a template
-        // load must reach PropertyService.Track even while the modal is up.
+        // Symmetric teardown for page-scoped UI subscriptions only. The persistent
+        // subscriptions (document/template/settings) are kept — see OnAppearing
+        // for the rationale — so events fired while the create-diagram modal is
+        // up still reach this page.
         _viewModel.Zoom.PropertyChanged -= _zoomSubscription;
         _viewModel.ExportDialogRequested -= OnExportDialogRequested;
         _viewModel.SaveAsDialogRequested -= OnSaveAsDialogRequested;
