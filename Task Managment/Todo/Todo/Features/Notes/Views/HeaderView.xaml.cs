@@ -208,7 +208,7 @@ public partial class HeaderView : ContentView
         }
         else
         {
-            HeaderGrid.SetAppThemeColor(Grid.BackgroundColorProperty, Color.FromArgb("#FFFBFE"), Color.FromArgb("#1C1B1F"));
+            HeaderGrid.SetAppThemeColor(Grid.BackgroundColorProperty, Colors.White, Color.FromArgb("#1C1B1F"));
             MobileAppTitle.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
             MobileSearchButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
             MobileNavigationButton.SetAppThemeColor(SfButton.TextColorProperty, Color.FromArgb("#29272F"), Color.FromArgb("#E6E1E5"));
