@@ -538,6 +538,25 @@ public partial class DiagramWorkspaceControl : ContentView
                 return;
             }
 
+            // EvaluateJavaScriptAsync returns the script result as a JSON value:
+            // since the script returns a string, that arrives JSON-encoded — a
+            // quoted literal with escaped inner quotes ("\"{\\\"nodes\\\":...}\"").
+            // Unwrap it before parsing (plain un-quoted results pass through).
+            if (json.Length > 0 && json[0] == '"')
+            {
+                using var wrapper = System.Text.Json.JsonDocument.Parse(json);
+                if (wrapper.RootElement.ValueKind != System.Text.Json.JsonValueKind.String)
+                {
+                    return;
+                }
+
+                json = wrapper.RootElement.GetString();
+                if (string.IsNullOrEmpty(json))
+                {
+                    return;
+                }
+            }
+
             // Suppress EJ2 history logging while the native model is updated: the
             // wrapper flushes each native property write back to the WebView, and
             // those echoes must not become new undo entries.
@@ -556,7 +575,7 @@ public partial class DiagramWorkspaceControl : ContentView
             // reflects the post-undo state instead of the stale one.
             SyncedFromDiagram?.Invoke(this, EventArgs.Empty);
         }
-        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or ObjectDisposedException or OperationCanceledException)
+        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or ObjectDisposedException or OperationCanceledException or System.Text.Json.JsonException)
         {
             Debug.WriteLine($"Unable to {operationName} and resynchronize the diagram model: {exception}");
         }
