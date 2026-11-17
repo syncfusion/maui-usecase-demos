@@ -5,6 +5,7 @@ using DiagramBuilder.Constants;
 using DiagramBuilder.Models;
 using DiagramBuilder.Behaviors;
 using DiagramBuilder.Services;
+using Microsoft.Maui.ApplicationModel;
 using Syncfusion.Maui.Diagram;
 
 namespace DiagramBuilder.Controls;
@@ -521,54 +522,63 @@ public partial class DiagramWorkspaceControl : ContentView
     {
         try
         {
+            // The script returns a plain OBJECT, not JSON.stringify(...) of one.
+            // That matters: MAUI's HybridWebView.EvaluateJavaScriptAsync wraps the
+            // script result differently per platform (Android returns the raw
+            // JSON-encoded value, Windows/iOS wrap it in eval/JSON.stringify) and
+            // then trims surrounding quotes. A JS *string* comes back with its inner
+            // quotes still escaped ("{\"nodes\":...}"), which is not parseable JSON;
+            // an object comes back as clean JSON text on every platform.
             var json = await EvaluateDiagramScriptAsync(
                 "var o={nodes:[],connectors:[]};" +
                 "var s=inst.nodes||[];" +
                 "for(var i=0;i<s.length;i++){var n=s[i];" +
                 "o.nodes.push({id:n.id,x:n.offsetX,y:n.offsetY,w:n.width,h:n.height,r:n.rotateAngle," +
-                "fill:n.style&&n.style.fill,stroke:n.style&&n.style.stroke,sw:n.style&&n.style.strokeWidth,dash:n.style&&n.style.strokeDashArray,op:n.style&&n.style.opacity," +
+                "fill:n.style&&n.style.fill,stroke:n.style&&n.style.strokeColor,sw:n.style&&n.style.strokeWidth,dash:n.style&&n.style.strokeDashArray,op:n.style&&n.style.opacity," +
                 "annotations:(n.annotations||[]).map(function(a){return{content:a.content,ff:a.style&&a.style.fontFamily,fs:a.style&&a.style.fontSize,b:a.style&&a.style.bold,it:a.style&&a.style.italic,c:a.style&&a.style.color,ha:a.horizontalAlignment,va:a.verticalAlignment};})});}" +
                 "var c=inst.connectors||[];" +
                 "for(var j=0;j<c.length;j++){var k=c[j];" +
-                "o.connectors.push({id:k.id,type:k.type,sw:k.style&&k.style.strokeWidth,dash:k.style&&k.style.strokeDashArray,stroke:k.style&&k.style.stroke,op:k.style&&k.style.opacity," +
+                "o.connectors.push({id:k.id,type:k.type,sw:k.style&&k.style.strokeWidth,dash:k.style&&k.style.strokeDashArray,stroke:k.style&&k.style.strokeColor,op:k.style&&k.style.opacity," +
                 "annotations:(k.annotations||[]).map(function(a){return{content:a.content};})});}" +
-                "return JSON.stringify(o);");
-            if (json is null)
+                "return o;");
+            if (string.IsNullOrWhiteSpace(json))
             {
                 return;
             }
 
-            // EvaluateJavaScriptAsync returns the script result as a JSON value:
-            // since the script returns a string, that arrives JSON-encoded — a
-            // quoted literal with escaped inner quotes ("\"{\\\"nodes\\\":...}\"").
-            // Unwrap it before parsing (plain un-quoted results pass through).
-            if (json.Length > 0 && json[0] == '"')
+            // Belt and braces: a platform that still hands back a quoted/escaped
+            // literal is unwrapped here rather than fed to the parser as-is.
+            json = UnwrapJsonPayload(json);
+            if (string.IsNullOrWhiteSpace(json))
             {
-                using var wrapper = System.Text.Json.JsonDocument.Parse(json);
-                if (wrapper.RootElement.ValueKind != System.Text.Json.JsonValueKind.String)
-                {
-                    return;
-                }
-
-                json = wrapper.RootElement.GetString();
-                if (string.IsNullOrEmpty(json))
-                {
-                    return;
-                }
+                return;
             }
 
             // Suppress EJ2 history logging while the native model is updated: the
             // wrapper flushes each native property write back to the WebView, and
             // those echoes must not become new undo entries.
-            await ExecuteDiagramScriptAsync("inst.historyManager.canLog=function(){return false;};");
+            //
+            // EJ2 calls historyManager.canLog(transaction) and checks the result's
+            // 'cancel' flag (canLog(t).cancel === true aborts the history entry),
+            // so the override must return an OBJECT — returning a boolean leaves
+            // .cancel undefined and the entry is still logged.
+            await ExecuteDiagramScriptAsync(
+                "inst.historyManager.canLog=function(){return {cancel:true};};");
             try
             {
                 ApplyPulledState(json);
             }
             finally
             {
-                await ExecuteDiagramScriptAsync(
-                    "inst.historyManager.canLog=undefined;delete inst.historyManager.canLog;inst.dataBind&&inst.dataBind();");
+                // The wrapper flushes native model changes back to EJ2 on the NEXT
+                // dispatcher turn (DiagramManager coalesces a burst of property
+                // writes into one full-state patch per element, scheduled through
+                // MainThread.BeginInvokeOnMainThread). Restoring the history hook
+                // has to happen AFTER that flush, otherwise the resync's own echo
+                // lands on EJ2's undo stack and the user's next undo would revert
+                // the resync instead of their own last action. Queueing the restore
+                // on the same dispatcher puts it behind the already-queued flush.
+                MainThread.BeginInvokeOnMainThread(() => _ = RestoreHistoryLoggingAsync());
             }
 
             // The property panel reads the native model; re-read it so the panel
@@ -578,6 +588,52 @@ public partial class DiagramWorkspaceControl : ContentView
         catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or ObjectDisposedException or OperationCanceledException or System.Text.Json.JsonException)
         {
             Debug.WriteLine($"Unable to {operationName} and resynchronize the diagram model: {exception}");
+        }
+    }
+
+    /// <summary>
+    /// Re-enables EJ2's undo/redo history logging once the resync's own echo has
+    /// been flushed to the WebView.
+    /// </summary>
+    private async Task RestoreHistoryLoggingAsync()
+    {
+        await ExecuteDiagramScriptAsync(
+            "inst.historyManager.canLog=null;inst.dataBind&&inst.dataBind();");
+    }
+
+    /// <summary>
+    /// Normalizes a JavaScript evaluation result into plain JSON text.
+    ///
+    /// MAUI trims surrounding quote characters from the value a script returns, so
+    /// a JSON object arrives as { ... } on every platform. Should a platform hand
+    /// back a quoted JSON literal instead (with the inner quotes escaped), it is
+    /// decoded here so the payload is parseable either way.
+    /// </summary>
+    private static string UnwrapJsonPayload(string payload)
+    {
+        var trimmed = payload.Trim();
+        if (trimmed.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        if (trimmed[0] != '"' && !trimmed.StartsWith("\\\"", StringComparison.Ordinal))
+        {
+            return trimmed;
+        }
+
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(trimmed);
+            return document.RootElement.ValueKind == System.Text.Json.JsonValueKind.String
+                ? document.RootElement.GetString() ?? string.Empty
+                : trimmed;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            // The outer quotes were trimmed away but the inner ones are still
+            // escaped — unescape the payload by hand.
+            return trimmed.Replace("\\\"", "\"").Replace("\\\\", "\\");
         }
     }
 
