@@ -1232,7 +1232,7 @@ public partial class NotesListViewModel : ViewModelBase
     {
         if (note is null) return;
         if (note.DeletedAt is not null) return;
-        var page = new EditNotePage(new EditNoteViewModel(_noteService, _navigation, note));
+        var page = new EditNotePage(new EditNoteViewModel(_noteService, _navigation, note) { MobileSectionTitle = HeaderTitle });
         await _navigation.PushModalAsync(page);
     }
 

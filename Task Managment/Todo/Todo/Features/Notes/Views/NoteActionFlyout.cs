@@ -233,7 +233,7 @@ public sealed class NoteActionFlyout : ContentView
         }, destructive: true, iconGlyph: "\ue92e", iconColor: "#B3261E");
 
         var stage = new Grid();
-        stage.Margin = isPhone ? new Thickness(0, 0, 0, 10) : new Thickness(0,10);
+        stage.Margin = new Thickness(0,10);
         stage.Children.Add(_actionsLayout);
 
         _surface = new Border
@@ -407,6 +407,7 @@ public sealed class NoteActionFlyout : ContentView
         UpdateActionLayout(isDeleted);
         var canSelectAll = !isDeleted && _showSelectAll && _visibleNotes.Count > 0;
         _selectAllRow.IsVisible = canSelectAll;
+        _selectAllSurface.IsVisible = canSelectAll;
         _selectAllSeparator.IsVisible = canSelectAll;
         UpdateSelectAllState();
         _completionButton.IsVisible = !isDeleted;
@@ -520,7 +521,7 @@ public sealed class NoteActionFlyout : ContentView
         }
 
         _popup.AutoSizeMode = useContentSizedPopup ? PopupAutoSizeMode.Height : PopupAutoSizeMode.None;
-        var heightRequest = useContentSizedPopup ? -1 : contentHeight + 16 + (DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 10 : 20);
+        var heightRequest = useContentSizedPopup ? -1 : contentHeight + 16 + 20;
         _popup.HeightRequest = heightRequest;
 
         if (_surface is not null)

@@ -83,7 +83,13 @@ public partial class EditNoteViewModel : ViewModelBase
     [ObservableProperty]
     private bool isImportant;
 
-    public string DialogTitle => IsExisting ? "Edit note" : "Create note";
+    /// <summary>Mobile-only heading override (the current section title).</summary>
+    public string? MobileSectionTitle { get; init; }
+
+    public string DialogTitle =>
+        DeviceInfo.Current.Idiom == DeviceIdiom.Phone && !string.IsNullOrEmpty(MobileSectionTitle)
+            ? MobileSectionTitle
+            : IsExisting ? "Edit note" : "Create note";
     public string PrimaryButtonText => IsExisting ? "Save" : "Create";
     public string CreatedAgeText { get; private set; } = "Created just now";
     public bool HasCreatedInfo => _existing is not null;
