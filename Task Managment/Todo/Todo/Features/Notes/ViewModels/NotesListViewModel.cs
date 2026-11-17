@@ -10,7 +10,6 @@ using Todo.Features.CustomLists.Services;
 using Todo.Features.Dialogs.ViewModels;
 using Todo.Features.Dialogs.Views;
 using Todo.Features.EditNote.ViewModels;
-using Todo.Features.EditNote.Views;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.Services;
 using Todo.Features.Search.Services;
@@ -44,6 +43,7 @@ public partial class NotesListViewModel : ViewModelBase
     private readonly INoteService _noteService;
     private readonly IListService _listService;
     private readonly INavigationService _navigation;
+    private readonly IPageFactory _pageFactory;
 
     public SearchResultsViewModel SearchViewModel { get; }
 
@@ -65,16 +65,18 @@ public partial class NotesListViewModel : ViewModelBase
     [ObservableProperty]
     private bool isCompletedExpanded;
 
-    public NotesListViewModel(INoteService noteService, IListService listService, INavigationService navigation)
+    public NotesListViewModel(INoteService noteService, IListService listService, INavigationService navigation, IPageFactory pageFactory)
     {
         _noteService = noteService;
         _listService = listService;
         _navigation = navigation;
+        _pageFactory = pageFactory;
         SearchViewModel = new SearchResultsViewModel(
             new InMemoryNoteSearchService(_noteService),
             _noteService,
             _listService,
             _navigation,
+            _pageFactory,
             NavigateToSearchResult);
 
         Preferences.Default.Remove("BuiltInBackgroundImage");
@@ -695,6 +697,7 @@ public partial class NotesListViewModel : ViewModelBase
         {
             await _listService.DeleteAsync(list.Id);
             ClearSelectedListIfDeleted(list.Id);
+            NavigateToCategoryCommand.Execute(NotesListCategory.MyNotes);
             await ShowToastAsync("List deleted successfully");
         }
     }
@@ -780,7 +783,7 @@ public partial class NotesListViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenSettingsAsync()
     {
-        await _navigation.PushModalAsync(new Todo.Features.Settings.Views.SettingsPage(new Todo.Features.Settings.ViewModels.SettingsViewModel(_navigation)));
+        await _navigation.PushModalAsync(_pageFactory.CreateSettingsPage(new Todo.Features.Settings.ViewModels.SettingsViewModel(_navigation)));
     }
 
     // ---------------------------------------------------------------
@@ -1218,7 +1221,7 @@ public partial class NotesListViewModel : ViewModelBase
         {
             Title = NewNoteTitle
         };
-        var result = await _navigation.PushModalAsync(new EditNotePage(viewModel));
+        var result = await _navigation.PushModalAsync(_pageFactory.CreateEditNotePage(viewModel));
         if (result is true)
             NewNoteTitle = string.Empty;
     }
@@ -1232,7 +1235,7 @@ public partial class NotesListViewModel : ViewModelBase
     {
         if (note is null) return;
         if (note.DeletedAt is not null) return;
-        var page = new EditNotePage(new EditNoteViewModel(_noteService, _navigation, note) { MobileSectionTitle = HeaderTitle });
+        var page = _pageFactory.CreateEditNotePage(new EditNoteViewModel(_noteService, _navigation, note) { MobileSectionTitle = HeaderTitle });
         await _navigation.PushModalAsync(page);
     }
 

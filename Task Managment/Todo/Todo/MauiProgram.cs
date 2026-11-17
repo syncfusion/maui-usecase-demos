@@ -24,6 +24,7 @@ public static class MauiProgram
 
         // Common infrastructure
         builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
+        builder.Services.AddSingleton<IPageFactory, PageFactory>();
 
         // Services
         builder.Services.AddSingleton<INoteService, InMemoryNoteService>();

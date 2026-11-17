@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using Todo.Common;
 using Todo.Features.CustomLists.Services;
 using Todo.Features.EditNote.ViewModels;
-using Todo.Features.EditNote.Views;
 using Todo.Features.Notes.Models;
 using Todo.Features.Notes.Services;
 using Todo.Features.Notes.ViewModels;
@@ -31,6 +30,7 @@ public partial class SearchResultsViewModel : ViewModelBase
     private readonly INoteService _noteService;
     private readonly IListService _listService;
     private readonly INavigationService _navigation;
+    private readonly IPageFactory _pageFactory;
     private readonly Action<Note>? _navigateToNote;
     private readonly HashSet<string> _trackedNotes = new(StringComparer.Ordinal);
 
@@ -39,12 +39,14 @@ public partial class SearchResultsViewModel : ViewModelBase
         INoteService noteService,
         IListService listService,
         INavigationService navigation,
+        IPageFactory pageFactory,
         Action<Note>? navigateToNote = null)
     {
         _searchService = searchService;
         _noteService = noteService;
         _listService = listService;
         _navigation = navigation;
+        _pageFactory = pageFactory;
         _navigateToNote = navigateToNote;
         Results = new ObservableCollection<Note>();
     }
@@ -197,7 +199,7 @@ public partial class SearchResultsViewModel : ViewModelBase
     {
         if (note is null) return;
         _navigateToNote?.Invoke(note);
-        var page = new EditNotePage(new EditNoteViewModel(_noteService, _navigation, note));
+        var page = _pageFactory.CreateEditNotePage(new EditNoteViewModel(_noteService, _navigation, note));
         await _navigation.PushModalAsync(page);
         RefreshResults();
     }
