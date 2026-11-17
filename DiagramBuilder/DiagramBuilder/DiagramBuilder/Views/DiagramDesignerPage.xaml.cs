@@ -98,8 +98,8 @@ public partial class DiagramDesignerPage : ContentPage
 
         // Wire surface request relays (VM → control, one-way; the VM stays
         // control-agnostic — each delegate only awaits a behavior method).
-        viewModel.UndoRequested = () => Workspace.Behavior.UndoAsync();
-        viewModel.RedoRequested = () => Workspace.Behavior.RedoAsync();
+        viewModel.UndoRequested = () => Workspace.UndoWithResyncAsync();
+        viewModel.RedoRequested = () => Workspace.RedoWithResyncAsync();
         viewModel.CutRequested = () => Workspace.Behavior.CutAsync();
         viewModel.CopyRequested = () => Workspace.Behavior.CopyAsync();
         viewModel.PasteRequested = () => Workspace.Behavior.PasteAsync();
@@ -306,6 +306,16 @@ public partial class DiagramDesignerPage : ContentPage
         _propertyService.Track([], []);
     }
 
+    /// <summary>
+    /// Re-reads the selected element's properties after an undo/redo resync so the
+    /// panel reflects the post-undo model state (stale values would otherwise be
+    /// flushed back to the diagram on the next property edit).
+    /// </summary>
+    private void OnSyncedFromDiagram(object? sender, EventArgs e)
+    {
+        _viewModel.PropertyPanel.Refresh(_viewModel.SelectedElementId);
+    }
+
     /// <summary>Document loaded by service → push to live SfDiagram (template load).</summary>
     private void OnDocumentLoaded(object? sender, Models.DiagramDocument document)
     {
@@ -474,6 +484,10 @@ public partial class DiagramDesignerPage : ContentPage
             _viewModel.PropertyChanged += _viewModelSubscription;
             ((INotifyCollectionChanged)_viewModel.Stencil.PaletteGroups).CollectionChanged += _paletteGroupsSubscription;
             WorkspaceHost.SizeChanged += OnWorkspaceHostSizeChanged;
+            // After an undo/redo the workspace pulls EJ2 state back into the native
+            // model; the property panel must re-read it so it shows post-undo values
+            // instead of the stale pre-undo ones.
+            Workspace.SyncedFromDiagram += OnSyncedFromDiagram;
             _persistentSubscriptionsAttached = true;
         }
 

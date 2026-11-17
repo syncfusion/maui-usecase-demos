@@ -483,6 +483,216 @@ public partial class DiagramWorkspaceControl : ContentView
     }
 
     /// <summary>
+    /// Undoes the last action on the live diagram, then pulls the post-undo state
+    /// back into the MAUI-side model objects.
+    ///
+    /// Why the resync: <see cref="Syncfusion.Maui.Diagram.SfDiagram"/>.Undo() runs
+    /// EJ2's UndoRedo module inside the WebView, and the wrapper echoes back only
+    /// geometry/collection/text events — never style changes. Without pulling the
+    /// state back, the MAUI Node/ShapeStyle objects keep the pre-undo values, so
+    /// the next property write (e.g. Fill Color) would flush the whole stale node
+    /// — resurrecting values the user had just undone (e.g. BorderThickness).
+    /// </summary>
+    public async Task UndoWithResyncAsync()
+    {
+        await Diagram.Undo();
+        await SyncModelFromDiagramAsync("undo");
+    }
+
+    /// <summary>Redo counterpart of <see cref="UndoWithResyncAsync"/>.</summary>
+    public async Task RedoWithResyncAsync()
+    {
+        await Diagram.Redo();
+        await SyncModelFromDiagramAsync("redo");
+    }
+
+    /// <summary>
+    /// Copies the live EJ2 diagram's node/connector state (position, size, rotation
+    /// and styles) into the MAUI-side model objects in
+    /// <see cref="Syncfusion.Maui.Diagram.SfDiagram"/>.Nodes/Connectors, so the two
+    /// sides agree after the WebView has changed state on its own (undo/redo).
+    ///
+    /// The copy runs with EJ2 history logging suppressed via
+    /// <c>historyManager.canLog</c>: the native model writes the wrapper then flushes
+    /// back to EJ2 would otherwise each land on EJ2's undo stack, making the next
+    /// user undo revert the resync instead of the user's own last action.
+    /// </summary>
+    private async Task SyncModelFromDiagramAsync(string operationName)
+    {
+        try
+        {
+            var json = await EvaluateDiagramScriptAsync(
+                "var o={nodes:[],connectors:[]};" +
+                "var s=inst.nodes||[];" +
+                "for(var i=0;i<s.length;i++){var n=s[i];" +
+                "o.nodes.push({id:n.id,x:n.offsetX,y:n.offsetY,w:n.width,h:n.height,r:n.rotateAngle," +
+                "fill:n.style&&n.style.fill,stroke:n.style&&n.style.stroke,sw:n.style&&n.style.strokeWidth,dash:n.style&&n.style.strokeDashArray,op:n.style&&n.style.opacity," +
+                "annotations:(n.annotations||[]).map(function(a){return{content:a.content,ff:a.style&&a.style.fontFamily,fs:a.style&&a.style.fontSize,b:a.style&&a.style.bold,it:a.style&&a.style.italic,c:a.style&&a.style.color,ha:a.horizontalAlignment,va:a.verticalAlignment};})});}" +
+                "var c=inst.connectors||[];" +
+                "for(var j=0;j<c.length;j++){var k=c[j];" +
+                "o.connectors.push({id:k.id,type:k.type,sw:k.style&&k.style.strokeWidth,dash:k.style&&k.style.strokeDashArray,stroke:k.style&&k.style.stroke,op:k.style&&k.style.opacity," +
+                "annotations:(k.annotations||[]).map(function(a){return{content:a.content};})});}" +
+                "return JSON.stringify(o);");
+            if (json is null)
+            {
+                return;
+            }
+
+            // Suppress EJ2 history logging while the native model is updated: the
+            // wrapper flushes each native property write back to the WebView, and
+            // those echoes must not become new undo entries.
+            await ExecuteDiagramScriptAsync("inst.historyManager.canLog=function(){return false;};");
+            try
+            {
+                ApplyPulledState(json);
+            }
+            finally
+            {
+                await ExecuteDiagramScriptAsync(
+                    "inst.historyManager.canLog=undefined;delete inst.historyManager.canLog;inst.dataBind&&inst.dataBind();");
+            }
+
+            // The property panel reads the native model; re-read it so the panel
+            // reflects the post-undo state instead of the stale one.
+            SyncedFromDiagram?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or ObjectDisposedException or OperationCanceledException)
+        {
+            Debug.WriteLine($"Unable to {operationName} and resynchronize the diagram model: {exception}");
+        }
+    }
+
+    /// <summary>Raised after an undo/redo resync so the property panel can re-read the model.</summary>
+    public event EventHandler? SyncedFromDiagram;
+
+    /// <summary>
+    /// Applies a JSON payload of EJ2-side state (as produced by
+    /// <see cref="SyncModelFromDiagramAsync"/>'s script) onto the MAUI-side
+    /// Node/Connector model objects, matching by id.
+    /// </summary>
+    private void ApplyPulledState(string json)
+    {
+        using var document = System.Text.Json.JsonDocument.Parse(json);
+        var root = document.RootElement;
+
+        foreach (var entry in root.GetProperty("nodes").EnumerateArray())
+        {
+            var node = Diagram.Nodes.OfType<Node>().FirstOrDefault(n =>
+                entry.TryGetProperty("id", out var nodeId)
+                && nodeId.ValueKind == System.Text.Json.JsonValueKind.String
+                && string.Equals(n.Id, nodeId.GetString(), StringComparison.Ordinal));
+            if (node is null)
+            {
+                continue;
+            }
+
+            if (entry.TryGetProperty("x", out var x) && x.ValueKind == System.Text.Json.JsonValueKind.Number) node.OffsetX = x.GetDouble();
+            if (entry.TryGetProperty("y", out var y) && y.ValueKind == System.Text.Json.JsonValueKind.Number) node.OffsetY = y.GetDouble();
+            if (entry.TryGetProperty("w", out var w) && w.ValueKind == System.Text.Json.JsonValueKind.Number) node.Width = w.GetDouble();
+            if (entry.TryGetProperty("h", out var h) && h.ValueKind == System.Text.Json.JsonValueKind.Number) node.Height = h.GetDouble();
+            if (entry.TryGetProperty("r", out var r) && r.ValueKind == System.Text.Json.JsonValueKind.Number) node.RotateAngle = r.GetDouble();
+
+            if (node.Style is ShapeStyle style)
+            {
+                if (entry.TryGetProperty("fill", out var fill) && fill.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    style.Fill = ParseEj2Color(fill.GetString());
+                }
+
+                if (entry.TryGetProperty("stroke", out var stroke) && stroke.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    style.StrokeColor = ParseEj2Color(stroke.GetString());
+                }
+
+                if (entry.TryGetProperty("sw", out var sw) && sw.ValueKind == System.Text.Json.JsonValueKind.Number) style.StrokeWidth = sw.GetDouble();
+                if (entry.TryGetProperty("dash", out var dash))
+                {
+                    style.StrokeDashArray = dash.ValueKind == System.Text.Json.JsonValueKind.String ? dash.GetString() : string.Empty;
+                }
+
+                if (entry.TryGetProperty("op", out var op) && op.ValueKind == System.Text.Json.JsonValueKind.Number) style.Opacity = op.GetDouble();
+            }
+
+            var annotation = node.Annotations.OfType<ShapeAnnotation>().FirstOrDefault();
+            if (annotation is not null && entry.TryGetProperty("annotations", out var annotations)
+                && annotations.ValueKind == System.Text.Json.JsonValueKind.Array && annotations.GetArrayLength() > 0)
+            {
+                var first = annotations[0];
+                if (first.TryGetProperty("content", out var content) && content.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    annotation.Content = content.GetString();
+                }
+
+                if (annotation.Style is { } textStyle)
+                {
+                    if (first.TryGetProperty("ff", out var ff) && ff.ValueKind == System.Text.Json.JsonValueKind.String) textStyle.FontFamily = ff.GetString();
+                    if (first.TryGetProperty("fs", out var fs) && fs.ValueKind == System.Text.Json.JsonValueKind.Number) textStyle.FontSize = fs.GetDouble();
+                    if (first.TryGetProperty("b", out var b)) textStyle.Bold = b.ValueKind == System.Text.Json.JsonValueKind.True;
+                    if (first.TryGetProperty("it", out var it)) textStyle.Italic = it.ValueKind == System.Text.Json.JsonValueKind.True;
+                    if (first.TryGetProperty("c", out var c) && c.ValueKind == System.Text.Json.JsonValueKind.String) textStyle.Color = ParseEj2Color(c.GetString());
+                }
+            }
+        }
+
+        foreach (var entry in root.GetProperty("connectors").EnumerateArray())
+        {
+            var connector = Diagram.Connectors.OfType<Connector>().FirstOrDefault(c =>
+                entry.TryGetProperty("id", out var connectorId)
+                && connectorId.ValueKind == System.Text.Json.JsonValueKind.String
+                && string.Equals(c.Id, connectorId.GetString(), StringComparison.Ordinal));
+            if (connector is null)
+            {
+                continue;
+            }
+
+            if (entry.TryGetProperty("type", out var type) && type.ValueKind == System.Text.Json.JsonValueKind.String)
+            {
+                connector.Type = type.GetString() == "Orthogonal" ? ConnectorSegmentType.Orthogonal : ConnectorSegmentType.Straight;
+            }
+
+            if (connector.Style is ShapeStyle style)
+            {
+                if (entry.TryGetProperty("stroke", out var stroke) && stroke.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    style.StrokeColor = ParseEj2Color(stroke.GetString());
+                }
+
+                if (entry.TryGetProperty("sw", out var sw) && sw.ValueKind == System.Text.Json.JsonValueKind.Number) style.StrokeWidth = sw.GetDouble();
+                if (entry.TryGetProperty("op", out var op) && op.ValueKind == System.Text.Json.JsonValueKind.Number) style.Opacity = op.GetDouble();
+            }
+
+            var annotation = connector.Annotations.OfType<PathAnnotation>().FirstOrDefault();
+            if (annotation is not null && entry.TryGetProperty("annotations", out var annotations)
+                && annotations.ValueKind == System.Text.Json.JsonValueKind.Array && annotations.GetArrayLength() > 0)
+            {
+                var first = annotations[0];
+                if (first.TryGetProperty("content", out var content) && content.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    annotation.Content = content.GetString();
+                }
+            }
+        }
+    }
+
+    /// <summary>Parses an EJ2 color string (#rgb, #rrggbb, #rrggbbaa or a css color name) into a MAUI color.</summary>
+    private static Color ParseEj2Color(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return Colors.Transparent;
+        }
+
+        try
+        {
+            return Color.FromArgb(value.StartsWith('#') ? value : "#" + value);
+        }
+        catch (ArgumentException)
+        {
+            return Colors.Transparent;
+        }
+    }
+
+    /// <summary>
     /// Pushes the View-menu grid options into the live EJ2 diagram. SnapConstraints:
     /// ShowLines (3) draws the grid, SnapToLines (12) snaps dragged/resized shapes to it.
     /// The MAUI host page only injects UndoRedo / PrintAndExport / ContextMenu, so the
@@ -534,31 +744,44 @@ public partial class DiagramWorkspaceControl : ContentView
     {
         try
         {
-            for (var i = 0; i < 40 && !SurfaceBehavior.IsReady; i++)
-            {
-                await Task.Delay(25);
-            }
-
-            if (!SurfaceBehavior.IsReady)
-            {
-                return;
-            }
-
-            var webView = FindHostedWebView();
-            if (webView is null)
-            {
-                return;
-            }
-
-            await webView.EvaluateJavaScriptAsync(
-                "(function(){var el=document.getElementById('diagram');var inst=el&&el.ej2_instances&&el.ej2_instances[0];if(!inst){return 'no-instance';}" +
-                script +
-                "return 'ok';})();");
+            await EvaluateDiagramScriptAsync(script);
         }
-        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or OperationCanceledException)
+        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or ObjectDisposedException or OperationCanceledException)
         {
             Debug.WriteLine($"Unable to execute a diagram command: {exception}");
         }
+    }
+
+    /// <summary>
+    /// Evaluates a script against the live EJ2 diagram instance and returns its raw
+    /// JSON result (null when the diagram or WebView is not ready). Unlike
+    /// <see cref="ExecuteDiagramScriptAsync"/>, failures propagate to the caller —
+    /// callers that depend on the result must be able to react to them.
+    /// </summary>
+    private async Task<string?> EvaluateDiagramScriptAsync(string script)
+    {
+        for (var i = 0; i < 40 && !SurfaceBehavior.IsReady; i++)
+        {
+            await Task.Delay(25);
+        }
+
+        if (!SurfaceBehavior.IsReady)
+        {
+            return null;
+        }
+
+        var webView = FindHostedWebView();
+        if (webView is null)
+        {
+            return null;
+        }
+
+        // 'inst' is the live EJ2 diagram instance; scripts build on it directly.
+        var result = await webView.EvaluateJavaScriptAsync(
+            "(function(){var el=document.getElementById('diagram');var inst=el&&el.ej2_instances&&el.ej2_instances[0];if(!inst){return null;}" +
+            script +
+            "})();");
+        return result is null or "null" ? null : result;
     }
 
     /// <summary>
