@@ -130,12 +130,11 @@ public partial class ToolbarControl : ContentView
     private readonly Dictionary<string, Button> _toggleButtons = new();
     private string _fillColorKey = "AccentFlow";
     private string _strokeColorKey = "TextPrimary";
-    private IPropertyService? _propertyService;
+    public IPropertyService? PropertyService { get; set; }
 
     public ToolbarControl()
     {
         InitializeComponent();
-        _propertyService = MauiProgram.ServiceProvider?.GetService<IPropertyService>();
     }
 
     private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
@@ -405,9 +404,9 @@ public partial class ToolbarControl : ContentView
         picker.ColorChanged += (_, value) =>
         {
             _fillColorKey = value;
-            if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
+            if (!string.IsNullOrEmpty(selectedId) && PropertyService is not null)
             {
-                _propertyService.Apply(selectedId, new PropertyModel
+                PropertyService.Apply(selectedId, new PropertyModel
                 {
                     Key = "FillColor",
                     Value = value,
@@ -434,9 +433,9 @@ public partial class ToolbarControl : ContentView
         picker.ColorChanged += (_, value) =>
         {
             _strokeColorKey = value;
-            if (!string.IsNullOrEmpty(selectedId) && _propertyService is not null)
+            if (!string.IsNullOrEmpty(selectedId) && PropertyService is not null)
             {
-                _propertyService.Apply(selectedId, new PropertyModel
+                PropertyService.Apply(selectedId, new PropertyModel
                 {
                     Key = "BorderColor",
                     Value = value,
@@ -455,12 +454,12 @@ public partial class ToolbarControl : ContentView
     private string? ReadSelectedColor(string panelKey, string? selectedId = null)
     {
         selectedId ??= SelectedElementId;
-        if (string.IsNullOrEmpty(selectedId) || _propertyService is null)
+        if (string.IsNullOrEmpty(selectedId) || PropertyService is null)
         {
             return null;
         }
 
-        return _propertyService.Read(selectedId)
+        return PropertyService.Read(selectedId)
             .FirstOrDefault(p => p.Key == panelKey)?.Value as string;
     }
 

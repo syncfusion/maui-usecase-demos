@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using DiagramBuilder.Constants;
 using DiagramBuilder.Models;
@@ -404,10 +405,9 @@ public partial class DiagramWorkspaceControl : ContentView
                 "if(canvas){canvas.style.background=c;}" +
                 "inst.dataBind&&inst.dataBind();");
         }
-        catch
+        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException)
         {
-            // The renderer may not be up yet; the init payload already carries
-            // the colour, so a failure here is not fatal.
+            Debug.WriteLine($"Unable to update the diagram canvas background: {exception}");
         }
     }
 
@@ -555,9 +555,9 @@ public partial class DiagramWorkspaceControl : ContentView
                 script +
                 "return 'ok';})();");
         }
-        catch
+        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or OperationCanceledException)
         {
-            // The bridge may not yet be available; the control can retry later.
+            Debug.WriteLine($"Unable to execute a diagram command: {exception}");
         }
     }
 
@@ -617,9 +617,9 @@ public partial class DiagramWorkspaceControl : ContentView
                 await Diagram.FitToPage();
             }
         }
-        catch
+        catch (Exception exception) when (exception is InvalidOperationException or ObjectDisposedException)
         {
-            // Swallow — the user can still press VIEW ▸ Fit To Screen manually.
+            Debug.WriteLine($"Unable to fit the diagram to the page: {exception}");
         }
     }
 }

@@ -52,12 +52,10 @@
 		<!-- Files whose bindings resolve against App-level resources (cross-dictionary
 		     StaticResource / converters) exceed what the SourceGen inflator can parse
 		     standalone; use classic runtime inflation for them instead. -->
-		<MauiXaml Update="Controls\StencilPanelControl.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Controls\PropertyPanelControl.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Controls\DiagramWorkspaceControl.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Controls\MenuBarControl.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Controls\ToolbarControl.xaml" Inflator="Runtime" />
-		<MauiXaml Update="Templates\StencilItemTemplate.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Templates\TemplateCardTemplate.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Templates\PropertyEditorTemplates.xaml" Inflator="Runtime" />
 		<MauiXaml Update="Views\DiagramDesignerPage.xaml" Inflator="Runtime" />

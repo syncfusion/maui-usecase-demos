@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DiagramBuilder.Constants;
@@ -86,9 +87,9 @@ public class TemplateService : ITemplateService
 
             return template;
         }
-        catch (Exception)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or JsonException or NotSupportedException or InvalidOperationException)
         {
-            // Fallback seed guarantees the UI is never empty.
+            Debug.WriteLine($"Unable to load diagram template '{path}', using the built-in template instead: {exception}");
             return fallback;
         }
     }

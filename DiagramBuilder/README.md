@@ -72,9 +72,7 @@ The project declares target frameworks for Android, iOS, Mac Catalyst, and Windo
 
 ## Configuration and Licensing
 
-The sample requires no API keys, environment variables, or backend configuration.
-
-`MauiProgram.cs` registers the Syncfusion license using the `SYNCFUSION_LICENSE_KEY` placeholder. Replace it with a valid license key for licensed use. Do not commit a real license key to source control. See [Syncfusion MAUI license registration](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+The sample requires no API keys or backend configuration. For licensed Syncfusion use, provide a valid license key through the `SYNCFUSION_LICENSE_KEY` environment variable before launching the app. The app skips license registration when the variable is unset or contains the placeholder. Do not commit a real license key to source control. See [Syncfusion MAUI license registration](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
 
 ## Run
 
@@ -117,7 +115,7 @@ Confirm the .NET 10 SDK and the corresponding .NET MAUI platform workload are in
 Open supports `.json` diagram files in the Diagram Builder document format; arbitrary JSON files are not diagram documents.
 
 **A Syncfusion evaluation notice is displayed.**  
-Register a valid Syncfusion license key in `MauiProgram.cs` as described above.
+Set `SYNCFUSION_LICENSE_KEY` to a valid Syncfusion MAUI license key before launching the app. Confirm the key matches the Syncfusion package version resolved during restore.
 
 ## Security and Privacy Notes
 
