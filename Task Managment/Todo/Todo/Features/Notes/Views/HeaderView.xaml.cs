@@ -74,6 +74,7 @@ public partial class HeaderView : ContentView
     private void OnMobileSearchClicked(object? sender, EventArgs e)
     {
         SearchPill.WidthRequest = -1;
+        SearchPill.MaximumWidthRequest = double.PositiveInfinity;
         SearchPill.IsVisible = true;
         if (BindingContext is NotesListViewModel vm)
             vm.IsSidebarCollapsed = true;
@@ -196,6 +197,7 @@ public partial class HeaderView : ContentView
         if (showingSearchResults)
         {
             SearchPill.WidthRequest = -1;
+            SearchPill.MaximumWidthRequest = double.PositiveInfinity;
             SearchPill.IsVisible = true;
         }
         var showingSearchInput = SearchPill.IsVisible;
