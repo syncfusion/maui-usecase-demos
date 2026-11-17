@@ -405,7 +405,7 @@ public partial class DiagramWorkspaceControl : ContentView
                 "if(canvas){canvas.style.background=c;}" +
                 "inst.dataBind&&inst.dataBind();");
         }
-        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException)
+        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or ObjectDisposedException)
         {
             Debug.WriteLine($"Unable to update the diagram canvas background: {exception}");
         }
