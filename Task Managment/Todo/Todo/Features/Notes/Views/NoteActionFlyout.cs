@@ -505,8 +505,7 @@ public sealed class NoteActionFlyout : ContentView
     {
         double contentHeight;
         var isDeleted = _selectedNote?.DeletedAt is not null;
-        var isMobile = DeviceInfo.Current.Platform == DevicePlatform.Android || DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
-        var useContentSizedPopup = isMobile && (isDeleted || !_showSelectAll);
+        const bool useContentSizedPopup = false;
         if (isDeleted)
         {
             // Restore button, separator, and delete button.

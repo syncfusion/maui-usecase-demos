@@ -122,8 +122,11 @@ public partial class HeaderView : ContentView
         if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
             return;
 
-        SearchPill.IsVisible = false;
-        MobileSearchButton.IsVisible = true;
+        if (_viewModel?.IsSearchActive != true)
+        {
+            SearchPill.IsVisible = false;
+            MobileSearchButton.IsVisible = true;
+        }
         UpdateMobileHeader();
     }
 
@@ -190,6 +193,11 @@ public partial class HeaderView : ContentView
 
         var showingContent = _viewModel?.IsSidebarCollapsed == true;
         var showingSearchResults = _viewModel?.IsSearchActive == true;
+        if (showingSearchResults)
+        {
+            SearchPill.WidthRequest = -1;
+            SearchPill.IsVisible = true;
+        }
         var showingSearchInput = SearchPill.IsVisible;
         var showingListHeader = showingContent && !showingSearchResults && !showingSearchInput;
         MobileAppTitle.IsVisible = !showingContent;
