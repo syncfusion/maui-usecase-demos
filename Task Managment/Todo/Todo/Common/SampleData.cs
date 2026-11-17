@@ -140,6 +140,7 @@ public static class SampleData
                 {
                     Title = "Complete pending design feedback",
                     ListId = SampleCustomListId,
+                    DueDate = DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? new DateTime(2026, 2, 18) : null,
                     DisplayOrder = 9,
                     CreatedAt = now.AddDays(-2),
                     UpdatedAt = now.AddDays(-1)
