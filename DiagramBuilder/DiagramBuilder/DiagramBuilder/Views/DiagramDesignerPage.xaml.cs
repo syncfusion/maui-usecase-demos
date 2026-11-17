@@ -45,7 +45,6 @@ public partial class DiagramDesignerPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
         SizeChanged += OnDesignerSizeChanged;
-        WorkspaceHost.SizeChanged += OnWorkspaceHostSizeChanged;
         MobilePropertyScrim.GestureRecognizers.Add(new TapGestureRecognizer
         {
             Command = viewModel.TogglePropertiesCommand,

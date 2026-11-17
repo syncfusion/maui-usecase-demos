@@ -87,7 +87,7 @@ public class TemplateService : ITemplateService
 
             return template;
         }
-        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or JsonException or NotSupportedException or InvalidOperationException)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or JsonException or NotSupportedException or InvalidOperationException or NullReferenceException)
         {
             Debug.WriteLine($"Unable to load diagram template '{path}', using the built-in template instead: {exception}");
             return fallback;
