@@ -36,9 +36,13 @@ public class PropertyService : IPropertyService
     }
 
     /// <summary>
-    /// Adds a native label only when a text property is edited. Palette shape symbols
-    /// already carry an empty label so tracking a newly dropped node does not trigger a
-    /// second full-state update back to the WebView.
+    /// Makes sure the node/connector has an annotation the property panel can edit.
+    /// Palette-dropped nodes already carry a hidden stencil-typed annotation, so this
+    /// only adds a new visible one when no annotation exists. Reusing the existing
+    /// annotation (rather than always appending a new id-less one) is what stops the
+    /// wrapper's full-state flush from sending multiple annotations with empty ids
+    /// — which the bridge's id-based merge would silently drop, eventually hiding
+    /// the label after an undo.
     /// </summary>
     private static void EnsureAnnotation(NodeBase element)
     {
@@ -47,8 +51,14 @@ public class PropertyService : IPropertyService
             case Node node when !node.Annotations.OfType<ShapeAnnotation>().Any():
                 node.Annotations.Add(new ShapeAnnotation());
                 break;
+            case Node node:
+                _ = node.Annotations.OfType<ShapeAnnotation>().FirstOrDefault();
+                break;
             case Connector connector when !connector.Annotations.OfType<PathAnnotation>().Any():
                 connector.Annotations.Add(new PathAnnotation());
+                break;
+            case Connector connector:
+                _ = connector.Annotations.OfType<PathAnnotation>().FirstOrDefault();
                 break;
         }
     }

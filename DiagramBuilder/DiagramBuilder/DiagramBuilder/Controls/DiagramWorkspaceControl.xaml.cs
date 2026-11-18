@@ -534,12 +534,10 @@ public partial class DiagramWorkspaceControl : ContentView
                 "var s=inst.nodes||[];" +
                 "for(var i=0;i<s.length;i++){var n=s[i];" +
                 "o.nodes.push({id:n.id,x:n.offsetX,y:n.offsetY,w:n.width,h:n.height,r:n.rotateAngle," +
-                "fill:n.style&&n.style.fill,stroke:n.style&&n.style.strokeColor,sw:n.style&&n.style.strokeWidth,dash:n.style&&n.style.strokeDashArray,op:n.style&&n.style.opacity," +
-                "annotations:(n.annotations||[]).map(function(a){return{content:a.content,ff:a.style&&a.style.fontFamily,fs:a.style&&a.style.fontSize,b:a.style&&a.style.bold,it:a.style&&a.style.italic,c:a.style&&a.style.color,ha:a.horizontalAlignment,va:a.verticalAlignment};})});}" +
+                "fill:n.style&&n.style.fill,stroke:n.style&&n.style.strokeColor,sw:n.style&&n.style.strokeWidth,dash:n.style&&n.style.strokeDashArray,op:n.style&&n.style.opacity});}" +
                 "var c=inst.connectors||[];" +
                 "for(var j=0;j<c.length;j++){var k=c[j];" +
-                "o.connectors.push({id:k.id,type:k.type,sw:k.style&&k.style.strokeWidth,dash:k.style&&k.style.strokeDashArray,stroke:k.style&&k.style.strokeColor,op:k.style&&k.style.opacity," +
-                "annotations:(k.annotations||[]).map(function(a){return{content:a.content};})});}" +
+                "o.connectors.push({id:k.id,type:k.type,sw:k.style&&k.style.strokeWidth,dash:k.style&&k.style.strokeDashArray,stroke:k.style&&k.style.strokeColor,op:k.style&&k.style.opacity});}" +
                 "return o;");
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -688,25 +686,15 @@ public partial class DiagramWorkspaceControl : ContentView
                 if (entry.TryGetProperty("op", out var op) && op.ValueKind == System.Text.Json.JsonValueKind.Number) style.Opacity = op.GetDouble();
             }
 
-            var annotation = node.Annotations.OfType<ShapeAnnotation>().FirstOrDefault();
-            if (annotation is not null && entry.TryGetProperty("annotations", out var annotations)
-                && annotations.ValueKind == System.Text.Json.JsonValueKind.Array && annotations.GetArrayLength() > 0)
-            {
-                var first = annotations[0];
-                if (first.TryGetProperty("content", out var content) && content.ValueKind == System.Text.Json.JsonValueKind.String)
-                {
-                    annotation.Content = content.GetString();
-                }
-
-                if (annotation.Style is { } textStyle)
-                {
-                    if (first.TryGetProperty("ff", out var ff) && ff.ValueKind == System.Text.Json.JsonValueKind.String) textStyle.FontFamily = ff.GetString();
-                    if (first.TryGetProperty("fs", out var fs) && fs.ValueKind == System.Text.Json.JsonValueKind.Number) textStyle.FontSize = fs.GetDouble();
-                    if (first.TryGetProperty("b", out var b)) textStyle.Bold = b.ValueKind == System.Text.Json.JsonValueKind.True;
-                    if (first.TryGetProperty("it", out var it)) textStyle.Italic = it.ValueKind == System.Text.Json.JsonValueKind.True;
-                    if (first.TryGetProperty("c", out var c) && c.ValueKind == System.Text.Json.JsonValueKind.String) textStyle.Color = ParseEj2Color(c.GetString());
-                }
-            }
+            // Annotations are intentionally NOT synced: the bridge's textEdit/textChange
+            // event keeps the native annotation content in step with the EJ2 side for
+            // user edits, and the bridge merges annotations by id on full-state flushes,
+            // so an EJ2-restored content value would only be re-applied by another
+            // property edit's wrapper flush anyway. Re-writing annotation content from
+            // the pull has been observed to drop the rendered text in some cases
+            // (the wrapper's flush sends id-less annotations that the bridge ignores,
+            // so the visible label can be lost between an undo and the next user
+            // edit); leaving annotations alone is both correct and idempotent.
         }
 
         foreach (var entry in root.GetProperty("connectors").EnumerateArray())
@@ -734,17 +722,6 @@ public partial class DiagramWorkspaceControl : ContentView
 
                 if (entry.TryGetProperty("sw", out var sw) && sw.ValueKind == System.Text.Json.JsonValueKind.Number) style.StrokeWidth = sw.GetDouble();
                 if (entry.TryGetProperty("op", out var op) && op.ValueKind == System.Text.Json.JsonValueKind.Number) style.Opacity = op.GetDouble();
-            }
-
-            var annotation = connector.Annotations.OfType<PathAnnotation>().FirstOrDefault();
-            if (annotation is not null && entry.TryGetProperty("annotations", out var annotations)
-                && annotations.ValueKind == System.Text.Json.JsonValueKind.Array && annotations.GetArrayLength() > 0)
-            {
-                var first = annotations[0];
-                if (first.TryGetProperty("content", out var content) && content.ValueKind == System.Text.Json.JsonValueKind.String)
-                {
-                    annotation.Content = content.GetString();
-                }
             }
         }
     }
