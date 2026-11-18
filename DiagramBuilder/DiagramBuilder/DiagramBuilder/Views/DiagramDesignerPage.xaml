@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DiagramBuilder.Views.DiagramDesignerPage"
+             xmlns:controls="clr-namespace:DiagramBuilder.Controls;assembly=DiagramBuilder"
+             xmlns:behaviors="clr-namespace:DiagramBuilder.Behaviors;assembly=DiagramBuilder"
+             x:Name="RootPage"
+             BackgroundColor="{DynamicResource WindowBackground}">
+
+    <!--
+      Designer frame per ui-spec.md §1: Canvas | Properties.
+      Rows: blue-chrome(document title+menu) / toolbar / content / status; columns: /* / 320.
+      Panels collapse to 0 width via WINDOW menu toggles.
+
+      The shapes render in the native Syncfusion palette inside the SfDiagram's
+      own webview. Syncfusion discovers the SymbolPalette as an immediate
+      sibling of the SfDiagram — it lives inside DiagramWorkspaceControl's
+      DiagramGrid (hidden, config-only).
+    -->
+    <Grid x:Name="DesignerLayout"
+          RowDefinitions="Auto,Auto,*,Auto"
+          ColumnDefinitions="Auto,*,Auto"
+          Padding="8"
+          ColumnSpacing="8">
+
+        <!-- Row 0: blue chrome — document title on top, menu roots (File/Edit/View/
+             Arrange/Window) on a second line. -->
+        <VerticalStackLayout Grid.Row="0" Grid.ColumnSpan="3"
+                             BackgroundColor="{DynamicResource PrimaryColor}"
+                             Spacing="0">
+            <Grid ColumnDefinitions="*,Auto"
+                  Padding="12,8,12,2"
+                  HeightRequest="30">
+                <Label Grid.Column="0"
+                       Text="{Binding DocumentTitle}"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Menu bar: File / Edit / View / Arrange / Window pills -->
+            <controls:MenuBarControl x:Name="MenuBar"
+                                      ItemsSource="{Binding MenuBar.Roots}"
+                                      MenuCommand="{Binding MenuBar.MenuCommand}" />
+        </VerticalStackLayout>
+
+        <!-- Row 1: toolbar (collapsible) -->
+        <controls:ToolbarControl x:Name="Toolbar"
+                                 Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                                 IsVisible="{Binding ShowToolbar}"
+                                 ItemsSource="{Binding Toolbar.Items}"
+                                 ToolCommand="{Binding Toolbar.ToolCommand}"
+                                 ActiveToolId="{Binding Toolbar.ActiveToolId}"
+                                 HasSingleSelection="{Binding Toolbar.HasSingleSelection}"
+                                 HasAnySelection="{Binding Toolbar.HasAnySelection}"
+                                 SelectedElementId="{Binding SelectedElementId}"
+                                 CurrentZoom="{Binding Zoom.CurrentZoom}"
+                                 ZoomLevels="{Binding Zoom.Levels}"
+                                 SetZoomCommand="{Binding Zoom.SetZoomLevelCommand}"
+                                 ShowPropertiesCommand="{Binding TogglePropertiesCommand}" />
+
+        <!-- Row 2: content area. A single DiagramWorkspaceControl fills the
+             canvas area; the shape palette is discovered by Syncfusion from
+             the SymbolPalette sibling inside the workspace control and renders
+             inside the SfDiagram's own webview. -->
+        <Grid x:Name="WorkspaceHost"
+              Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+              ColumnDefinitions="*">
+            <controls:DiagramWorkspaceControl x:Name="Workspace"
+                                               Margin="0" />
+        </Grid>
+
+        <BoxView x:Name="MobilePropertyScrim"
+                 Grid.Row="2"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="3"
+                 BackgroundColor="#66000000"
+                 IsVisible="False"
+                 ZIndex="1" />
+
+        <!-- Properties (right, 320 px, collapsible) -->
+        <controls:PropertyPanelControl x:Name="PropertyPanel"
+                                       Grid.Row="2" Grid.Column="2"
+                                       BindingContext="{Binding PropertyPanel}"
+                                       WidthRequest="320"
+                                       ZIndex="2"
+                                       IsVisible="{Binding Source={x:Reference RootPage}, Path=BindingContext.ShowProperties}" />
+
+        <!-- Row 3: status bar -->
+        <Border Grid.Row="3" Grid.ColumnSpan="3"
+                Stroke="{DynamicResource PanelBorderBrush}"
+                StrokeThickness="1"
+                BackgroundColor="{DynamicResource PanelBackground}"
+                HeightRequest="26">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Padding="12,4">
+                <Label Grid.Column="0"
+                       Text="{Binding Status}"
+                       FontSize="11"
+                       TextColor="{DynamicResource TextSecondary}"
+                       VerticalOptions="Center" />
+                <controls:ZoomIndicatorControl Grid.Column="1"
+                                                ZoomPercent="{Binding Zoom.CurrentZoomText}"
+                                                ShowGrid="{Binding Zoom.ShowGrid}"
+                                                SnapToGrid="{Binding Zoom.SnapToGrid}" />
+            </Grid>
+        </Border>
+
+    </Grid>
+
+    <ContentPage.Behaviors>
+        <behaviors:DiagramKeyboardBehavior ShortcutCommand="{Binding MenuBar.MenuCommand}" />
+    </ContentPage.Behaviors>
+</ContentPage>
