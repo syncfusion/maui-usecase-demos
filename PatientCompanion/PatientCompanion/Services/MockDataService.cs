@@ -15,12 +15,12 @@ public class MockDataService
         return new Patient
         {
             PatientId = "MF-2094-11",
-            Name = "Natrayan Ramalingam",
+            Name = "Maya Chen",
             Age = 27,
             Gender = "Male",
             BloodGroup = "O+",
             Phone = "+91 9876543210",
-            Email = "natrayan@mediflow.com",
+            Email = "maya@mediflow.com",
             MedicalConditions = new List<string>
         {
             "Mild Hypertension",
