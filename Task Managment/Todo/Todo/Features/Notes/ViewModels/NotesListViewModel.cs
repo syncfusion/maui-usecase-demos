@@ -676,8 +676,8 @@ public partial class NotesListViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Shows a confirmation dialog and removes the list on confirm.
-    /// Notes in the deleted list are returned to My Notes.
+    /// Shows a confirmation dialog and permanently removes the list and
+    /// every task that belongs to it.
     /// </summary>
     [RelayCommand]
     private async Task ConfirmDeleteListAsync(Todo.Features.CustomLists.Models.NoteList? list)

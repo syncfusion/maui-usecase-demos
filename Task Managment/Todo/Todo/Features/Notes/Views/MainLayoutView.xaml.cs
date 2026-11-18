@@ -100,12 +100,13 @@ public partial class MainLayoutView : ContentView
         if (_isPhone)
             return;
 
-        // Single source of truth: flip the shared state, then always
-        // re-apply it so every page restores the sidebar column the
-        // same way (the Search page already behaved correctly).
-        var isOpen = Sidebar.IsVisible && RootGrid.ColumnDefinitions[0].Width.Value > 0;
-        _viewModel.IsSidebarCollapsed = isOpen;
-        UpdateSidebarColumn(isOpen);
+        // Toggle the shared view-model flag and always re-apply it.
+        // Reading the grid column here was unreliable: note pages keep a
+        // layout that was created earlier, and a stale width of 0 made
+        // the second click collapse again instead of restoring 220.
+        // Search looked correct only because it shares this same flag.
+        _viewModel.IsSidebarCollapsed = !_viewModel.IsSidebarCollapsed;
+        UpdateSidebarColumn(_viewModel.IsSidebarCollapsed);
         UpdatePageBackgroundImage();
     }
 

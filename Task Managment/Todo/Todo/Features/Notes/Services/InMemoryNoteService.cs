@@ -114,6 +114,22 @@ public sealed class InMemoryNoteService : INoteService
         return Task.CompletedTask;
     }
 
+    public Task DeleteNotesForListAsync(string listId)
+    {
+        if (string.IsNullOrEmpty(listId))
+            return Task.CompletedTask;
+
+        var owned = _notes.Where(n => n.ListId == listId).ToList();
+        if (owned.Count == 0)
+            return Task.CompletedTask;
+
+        foreach (var note in owned)
+            _notes.Remove(note);
+
+        PersistNotes();
+        return Task.CompletedTask;
+    }
+
     public Task ToggleCompleteAsync(string id)
     {
         RemoveExpiredDeletedNotes();

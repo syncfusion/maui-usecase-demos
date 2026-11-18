@@ -191,18 +191,6 @@
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Note">
                             <Grid Margin="{OnIdiom Phone='16,3', Default='0'}" >
-                                <Border InputTransparent="True"
-                                        Margin="{OnIdiom Phone='0', Default='16,3'}"
-                                        BackgroundColor="Transparent"
-                                        StrokeThickness="0" 
-                                        StrokeShape="RoundRectangle 10">
-                                    <Border.Shadow>
-                                        <Shadow Brush="#26000000"
-                                                Radius="3"
-                                                Offset="0,1"
-                                                Opacity="1" />
-                                    </Border.Shadow>
-                                </Border>
                                 <Border Margin="{OnIdiom Phone='0', Default='16,3'}"
                                     Padding="12,6" 
                                     BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"
@@ -423,6 +411,7 @@
                                 </Label.Triggers>
                             </Label>
                             <Label Grid.Column="2" Text="&#9662;"
+                                   IsVisible="{OnIdiom Phone=True, Desktop=False, Default=False}"
                                    TextColor="{AppThemeBinding Light={StaticResource TextSecondaryColor}, Dark={StaticResource TextSecondaryDarkColor}}"
                                    HorizontalOptions="End" VerticalOptions="Center">
                                 <Label.Triggers>
@@ -442,18 +431,6 @@
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
                                     <Grid Margin="{OnIdiom Phone='16,3', Default='0'}">
-                                        <Border InputTransparent="True"
-                                                Margin="{OnIdiom Phone='0', Default='16,3'}"
-                                                BackgroundColor="Transparent"
-                                                StrokeThickness="0"
-                                                StrokeShape="RoundRectangle 10">
-                                            <Border.Shadow>
-                                                <Shadow Brush="#26000000"
-                                                        Radius="3"
-                                                        Offset="0,1"
-                                                        Opacity="1" />
-                                            </Border.Shadow>
-                                        </Border>
                                         <Border Margin="{OnIdiom Phone='0', Default='16,3'}"
                                             Padding="12,6"
                                             BackgroundColor="{AppThemeBinding Light=#E6FFFFFF, Dark=#E61E1E1E}"

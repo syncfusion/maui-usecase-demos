@@ -99,4 +99,10 @@ public interface INoteService
     Task MoveToListAsync(string noteId, string? targetListId);
 
     Task MoveToCategoryAsync(string noteId, NotesListCategory category);
+
+    /// <summary>
+    /// Permanently removes every note that belongs to the supplied list,
+    /// including notes already sitting in the Bin.
+    /// </summary>
+    Task DeleteNotesForListAsync(string listId);
 }

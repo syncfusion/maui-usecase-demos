@@ -16,20 +16,6 @@ public partial class NotesContentView : ContentView
 
         ActionFlyout.ActionRequested += OnNoteActionRequested;
 
-        NotesBodyGrid.SizeChanged += (_, _) => UpdateActiveListHeight();
-    }
-
-    private const double CardHeight = 54;       // 36 row + 12 padding + 6 margin
-    private const double MetadataRowHeight = 24;
-
-    private void UpdateActiveListHeight()
-    {
-        if (BindingContext is not NotesListViewModel vm)
-            return;
-
-        // Size lists to their content; the page ScrollView handles scrolling.
-        ActiveNotesList.HeightRequest = vm.ActiveNotes.Sum(n => CardHeight + (n.HasMetadata ? MetadataRowHeight : 0));
-        CompletedNotesList.HeightRequest = vm.CompletedNotes.Sum(n => CardHeight + (n.HasMetadata ? MetadataRowHeight : 0));
     }
 
     protected override void OnBindingContextChanged()
@@ -37,8 +23,6 @@ public partial class NotesContentView : ContentView
         if (BindingContext is NotesListViewModel previousViewModel)
         {
             previousViewModel.PropertyChanged -= OnNotesViewModelPropertyChanged;
-            previousViewModel.ActiveNotes.CollectionChanged -= OnActiveNotesChanged;
-            previousViewModel.CompletedNotes.CollectionChanged -= OnActiveNotesChanged;
         }
 
         base.OnBindingContextChanged();
@@ -46,15 +30,7 @@ public partial class NotesContentView : ContentView
         if (BindingContext is NotesListViewModel viewModel)
         {
             viewModel.PropertyChanged += OnNotesViewModelPropertyChanged;
-            viewModel.ActiveNotes.CollectionChanged += OnActiveNotesChanged;
-            viewModel.CompletedNotes.CollectionChanged += OnActiveNotesChanged;
-            UpdateActiveListHeight();
         }
-    }
-
-    private void OnActiveNotesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        Dispatcher.Dispatch(UpdateActiveListHeight);
     }
 
     private void OnNotesViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -85,8 +85,7 @@ public partial class HeaderView : ContentView
 
     private void OnDesktopNavigationClicked(object? sender, EventArgs e)
     {
-        if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-            DesktopNavigationRequested?.Invoke(this, EventArgs.Empty);
+        DesktopNavigationRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnMobileNavigationClicked(object? sender, EventArgs e)
@@ -184,7 +183,7 @@ public partial class HeaderView : ContentView
     {
         var isPhone = DeviceInfo.Current.Idiom == DeviceIdiom.Phone;
         DesktopHeaderContent.IsVisible = !isPhone;
-        DesktopNavigationButton.IsVisible = DeviceInfo.Current.Platform == DevicePlatform.WinUI;
+        DesktopNavigationButton.IsVisible = !isPhone;
         MobileNavigationButton.IsVisible = false;
         MobileSearchButton.IsVisible = isPhone;
         MobileMoreOptionsButton.IsVisible = false;

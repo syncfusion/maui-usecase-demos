@@ -123,14 +123,9 @@ public sealed class InMemoryListService : IListService
 
         _lists.Remove(existing);
 
-        // Re-home any notes that were in this list back to My Notes so
-        // the user doesn't lose them (per spec §7.5: deleting a list
-        // removes the list, not its notes).
-        foreach (var note in _noteService.Notes)
-        {
-            if (note.ListId == id)
-                note.ListId = null;
-        }
+        // Deleting a custom list permanently removes its tasks as well.
+        // Clearing ListId used to orphan them into My Notes.
+        _noteService.DeleteNotesForListAsync(id);
 
         return Task.CompletedTask;
     }
