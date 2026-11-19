@@ -1,101 +1,141 @@
-# Visitor Pass Management — .NET MAUI Sample
+# Visitor Pass Management: .NET MAUI Use Case Sample
 
-A Syncfusion-flavoured .NET MAUI sample that shows how to build a complete
-visitor pass management application for a facility: a real-time dashboard
-with KPIs and charts, a searchable visitor directory, a digital visitor
-pass with barcode, journey timeline, and telemetry, plus a multi-step
-registration surface.
+A cross-platform facility-operations sample for registering visitors and managing their visit lifecycle. The app combines a dashboard, visitor directory, digital pass, and guided registration flow using .NET MAUI and Syncfusion controls.
 
-All data is in-memory / mocked via `VisitorData.cs`; no backend service is
-required.
+## Overview
 
-## Use Case
+The sample is designed around the front-desk workflow:
 
-A facility operations team needs a single app to:
+- **Dashboard**: expected, checked-in, checked-out, and overdue KPIs; visitor-status and visit-purpose charts; today's visitor list.
+- **Directory**: visitor search and status filtering, responsive list/table presentation, and an active visitor preview.
+- **Digital Visitor Pass**: visitor and host details, pass barcode, visit-progress timeline, and Check In, Check Out, or Cancel actions.
+- **Registration**: a three-step wizard for visitor identity, visit scheduling, and pass generation.
+- **Theme**: a light/dark appearance toggle.
 
-1. See today's activity on a dashboard (Expected / Checked-In / Closed /
-   Overdue counts; a status donut chart and a visits-by-purpose column
-   chart; today's visitors list).
-2. Search and filter every visitor in a directory (text search +
-   status chips; an "active dossier" preview).
-3. Open a **Digital Visitor Pass** for any visitor with a barcode,
-   identity card, host block, escort policy, telemetry tiles and a
-   journey timeline. Operators can **Check In**, **Check Out**, or
-   **Cancel** a visit.
-4. Register a new visitor through a three-step wizard
-   (Identity → Schedule → Pass Generated).
+## Key Features
 
-## Screens
+- Search visitors and filter by visit status.
+- Open a visitor record from the Dashboard or Directory.
+- Generate barcode-based passes with a visit timeline.
+- Check in, check out, or cancel a visit; shared-store changes update related screens.
+- Validate visitor and schedule details before generating a new pass.
+- Adapt the registration surface to device idiom: `SfPopup` on desktop/tablet and modal page on phones.
 
-| Screen | Route | File |
-|---|---|---|
-| Dashboard / Command Center | `MainPage` (Shell) | `Views/DashboardPage.xaml` |
-| Visitor Directory | (Navigation.PushAsync from Dashboard) | `Views/DirectoryPage.xaml` |
-| Digital Visitor Pass | (Navigation.PushAsync from Dashboard/Directory) | `Views/VisitorDetailsPage.xaml` |
-| Register Visitor | (SfPopup on Desktop/Tablet; Navigation.PushAsync on Phone) | `Views/RegisterVisitorView.xaml` / `Views/RegisterVisitorPage.xaml` |
+## Data Flow
 
-## Syncfusion Controls Demonstrated
+1. At startup, the DI-registered `VisitorStore` creates fictional seed visitors and assigns pass IDs.
+2. The Dashboard derives KPIs and chart collections from the store; the Directory applies its search and status filters to the same visitor set.
+3. Selecting a visitor opens the Digital Pass with identity, host, schedule, barcode, and journey status.
+4. Check In, Check Out, and Cancel update the visitor in the shared store. Store events trigger dashboard and pass view models to refresh.
+5. Registration validates identity and visit schedule, adds a new Expected visitor, and displays the generated pass.
 
-The sample is built around Syncfusion's MAUI suite. Each control is wired
-to a real view-model so the showcase is meaningful, not decorative.
+Visitor data and theme state are held in the running app only. There is no backend, identity provider, or persistence layer; restarting restores the seed and discards changes.
 
-| Control | Where it appears |
-|---|---|
-| `SfDataGrid` | Dashboard "Today's Visitors" grid, Directory visitor grid |
-| `SfCircularChart` (DoughnutSeries) | Dashboard "Visitor Status Roster" |
-| `SfCartesianChart` (ColumnSeries) | Dashboard "Visits Classified By Purpose" |
-| `SfBarcodeGenerator` (Code128) | Digital Visitor Pass barcode |
-| `SfStepProgressBar` | Digital Pass "Visit Journey Progression" |
-| `SfPopup` | Register Visitor dialog |
-| `SfChipGroup` | Directory status filter chips |
-| `SfBadgeView` | Status badges inside `VisitorStatusBadge` |
-| `SfAvatarView` | Visitor avatar tiles |
-| `SfListView` | Mobile "Today's Visitors" list, Active Dossier card, Journey checkpoints |
-| `SfButton` | Register Visitor header trigger, Check In / Check Out / Cancel |
-| `SfTextInputLayout` | Register form fields |
-| `SfDatePicker`, `SfTimePicker` | Register scheduling step |
-| `SfEntry` | Search Entry in TopNavBar / Directory |
+## Controls Used
 
-## Syncfusion Packages
-
-`Syncfusion.Maui.Core`, `Syncfusion.Maui.Toolkit`, `Syncfusion.Maui.Charts`,
-`Syncfusion.Maui.DataGrid`, `Syncfusion.Maui.Popup`, `Syncfusion.Maui.Barcode`,
-`Syncfusion.Maui.ProgressBar` — all on version `33.2.15`.
-
-The `SyncfusionThemeResourceDictionary` (MaterialLight) is loaded in `App.xaml`
-so all controls get themed brushes automatically; `VisitorPassTheme.xaml`
-loads afterwards to override the Syncfusion palette keys with the visitor-pass
-brand palette.
+- `SfDataGrid`: desktop visitor tables on the Dashboard and Directory.
+- `SfListView`: mobile visitor lists and visit-journey details.
+- `SfCircularChart` / `SfCartesianChart`: visitor-status and visit-purpose summaries.
+- `SfBarcodeGenerator`: digital pass barcode.
+- `SfStepProgressBar`: visit journey progress on the Digital Visitor Pass.
+- `SfPopup`, `SfChipGroup`, `SfTextInputLayout`, `SfDatePicker`, and `SfTimePicker`: registration and filtering.
+- `SfBadgeView`, `SfAvatarView`, and `SfButton`: status presentation, visitor identity, and actions.
 
 ## Architecture
 
-Strict MVVM with `CommunityToolkit.Mvvm` source generators (`[ObservableProperty]`,
-`[RelayCommand]`) over a `BaseViewModel : ObservableObject`.
+The app uses CommunityToolkit.Mvvm and dependency injection:
 
+- **Application root** (`App.xaml.cs`): creates a `NavigationPage`; page navigation uses `Navigation.PushAsync`, not Shell routing.
+- **Views** (`VisitorPass/Views/`): Dashboard, Directory, Visitor Details, and registration surfaces.
+- **View models** (`VisitorPass/ViewModels/`): dashboard aggregates, directory filters, visitor details, and registration validation.
+- **Models** (`VisitorPass/Models/`): visitor, host, status, purpose, timeline, and chart data types.
+- **Services** (`VisitorPass/Services/`): seed data, singleton `VisitorStore`, pass-code generation, and theme state.
+- **Controls and converters** (`VisitorPass/Controls/`, `VisitorPass/Converters/`): navigation, avatar/status presentation, and binding helpers.
+
+## Prerequisites
+
+- .NET 10 SDK and the .NET MAUI workload.
+- A platform workload/device for Android, iOS, Mac Catalyst, or Windows.
+- Visual Studio with MAUI support or VS Code with the .NET MAUI extension.
+- Syncfusion MAUI packages restored from NuGet. A valid Syncfusion license may be needed to remove evaluation watermarks.
+
+## Configuration
+
+No application configuration is required. Visitor records and pass codes are generated locally.
+
+### Default Behavior
+
+- The visitor store seeds fictional sample records at startup.
+- Pass IDs are generated locally; no barcode/pass service is called.
+- Register and lifecycle actions update only the in-memory store.
+
+### Environment Variables / Secrets
+
+None required. The sample does not call an external service or require credentials.
+
+### Notes
+
+- Visitor data and theme changes are not persisted after restart.
+- The registration flow creates a sample facility pass; it is not an access-control integration.
+- Register a Syncfusion license through the documented licensing setup if required; do not commit the key. See [Syncfusion MAUI licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+
+## Run
+
+From the repository root, build for a platform workload installed on your machine:
+
+```bash
+dotnet build VisitorPassManagement/VisitorPass/VisitorPass.csproj -f net10.0-android
 ```
-VisitorPass/
-├── App.xaml(.cs)              # Syncfusion theme + palette + converters
-├── AppShell.xaml(.cs)        # Shell root hosting DashboardPage
-├── MauiProgram.cs             # DI registrations + Syncfusion hosting
-├── Controls/                  # Reusable ContentView controls
-│   ├── TopNavBar.xaml(.cs)    # Title / date / search / theme toggle / avatar
-│   ├── SideNavigation.xaml(.cs)
-│   ├── SfEntry.cs             # Native-chrome-free Entry subclass
-│   ├── VisitorAvatar.xaml(.cs)
-│   └── VisitorStatusBadge.xaml(.cs)
-├── Converters/                # IValueConverter helpers
-├── Models/                    # Visitor, VisitorStatus, VisitPurpose, …
-├── Services/
-│   ├── IVisitorStore.cs       # Single source of truth (singleton)
-│   ├── VisitorStore.cs        # In-memory implementation
-│   ├── VisitorData.cs         # Seeded visitors
-│   ├── PassCodeGenerator.cs   # Per-day visitor pass codes
-│   └── ThemeService.cs        # Light/Dark toggle (singleton)
-├── ViewModels/                # Dashboard, Directory, VisitorDetails, Register
-└── Views/                     # ContentPages + shared RegisterVisitorView
-```
 
-Single source of truth: every page and view-model resolves `IVisitorStore`
-from DI. Mutations raise `VisitorsChanged`; every page re-derives its
-filtered / aggregate collections from the same store.
+Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and `net10.0-windows10.0.19041.0`. You can also open [`VisitorPass.slnx`](VisitorPass.slnx) in Visual Studio or VS Code, choose a target, and deploy to a device or emulator.
 
+## Output
+
+This sample folder does not include a separate demo GIF. Run the app to view the Dashboard, Directory, Digital Pass, and registration workflow.
+
+## Project Structure
+
+- `VisitorPass.slnx`: solution file.
+- `VisitorPass/`: MAUI app project.
+- `VisitorPass/Controls/`: reusable navigation, visitor identity, and status controls.
+- `VisitorPass/Converters/`: XAML value converters.
+- `VisitorPass/Models/`: visitor, host, status, purpose, timeline, and chart models.
+- `VisitorPass/Services/`: visitor seed, store, pass-code generator, and theme service.
+- `VisitorPass/ViewModels/`: Dashboard, Directory, Visitor Details, and registration view models.
+- `VisitorPass/Views/`: Dashboard, Directory, Visitor Details, and registration pages/views.
+
+## Troubleshooting
+
+**A registered visitor disappears after restarting**
+
+This is expected; visitor records are stored in memory only.
+
+**Check In, Check Out, or Cancel is unavailable**
+
+The available actions depend on the visitor's current status. For example, Check Out is available only after Check In.
+
+**Registration does not advance**
+
+Complete the required identity and schedule fields; validation messages are shown in the form.
+
+**Registration appears as a popup or modal page**
+
+This is intentional. The app chooses the registration host based on phone versus desktop/tablet idiom.
+
+**Syncfusion evaluation watermark appears**
+
+Register a valid Syncfusion license; see Configuration → Notes.
+
+## Security and Privacy Notes
+
+- Visitor names, contact details, host names, and visits are fictional sample data.
+- The app has no backend, identity provider, or persistence.
+- Do not use the sample for real facility access or enter real visitor information.
+- Keep any Syncfusion license key out of source control.
+
+## Supported Platforms
+
+- Android
+- iOS
+- Windows
+- macOS (Mac Catalyst)
