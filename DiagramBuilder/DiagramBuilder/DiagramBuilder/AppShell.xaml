@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="DiagramBuilder.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:DiagramBuilder.Views"
+    xmlns:local="clr-namespace:DiagramBuilder"
+    xmlns:constants="clr-namespace:DiagramBuilder.Constants"
+    BackgroundColor="{DynamicResource WindowBackground}"
+    FlyoutBehavior="Disabled"
+    Title="{x:Static constants:AppStrings.AppTitle}">
+
+    <ShellContent
+        Title="{x:Static constants:AppStrings.UntitledDocument}"
+        ContentTemplate="{DataTemplate views:DiagramDesignerPage}"
+        Route="{x:Static constants:AppConstants.RouteDesigner}" />
+
+</Shell>

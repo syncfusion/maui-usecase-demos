@@ -1,141 +1,184 @@
-# Patient Companion (MediFlow): .NET MAUI Use Case Sample
+# Patient Companion (MediFlow)
 
-A cross-platform patient-companion sample built with .NET MAUI and Syncfusion controls. MediFlow demonstrates a patient dashboard, health and medication summaries, visit management, medical records, and a guided appointment-booking flow.
+A cross-platform .NET MAUI patient companion app that demonstrates a realistic healthcare workflow: at-a-glance health status, medication tracking, medical records, visit history, and a guided 4-step appointment booking flow.
 
 ## Overview
 
-The app is organized into five Shell tabs:
+MediFlow Patient Companion models a real-world mobile companion app for a patient managing their day-to-day care. Instead of juggling separate channels for appointments, medication schedules, and health reports, the patient gets a single place to see the next dose, check health trends, browse medical records, and book or reschedule appointments in minutes.
 
-- **Home**: patient greeting, upcoming appointments, care-plan progress, quick actions, and vitals.
-- **Visits**: upcoming and past appointments, booking, cancellation, and rescheduling.
-- **Health**: blood pressure, heart rate, and SpO2 trends with selectable ranges.
-- **Meds**: medication groups, dose status, filters, and next-dose progress.
-- **Help**: medical records and patient profile information.
+- **What the sample does** – Presents a mock patient's dashboard (upcoming appointments, care-plan progress, vitals, quick actions) and walks through the complete appointment-booking journey: specialty → doctor → date & time → review & confirm, including rescheduling an existing visit.
+- **Who it is for** – Developers who want to see how Syncfusion MAUI controls are combined in a full, realistic healthcare scenario, and product/UX teams looking for a reference patient-companion flow.
+- **What it uses** – Syncfusion MAUI controls (cards, charts, carousel, map, progress bars, list, buttons, chips, avatar) in a clean MVVM architecture. No cloud services are involved.
+- **What outcome the user gets** – A complete, self-contained demo app that runs with zero configuration: all patient, doctor, and medical data is generated locally, bookings persist on-device, and the hospital map renders from a bundled offline asset.
 
 ## Key Features
 
-- Home dashboard using local patient and appointment data.
-- Appointment booking by specialty, doctor, future date, time slot, and visit type (Clinic or Video).
-- Appointment review with doctor, clinic, and bundled map details.
-- Existing appointment rescheduling and cancellation.
-- Health trend chart with 7-day, 1-month, and 3-month ranges.
-- Medication list and dose progress, visit history, and medical record summaries.
-- Appointment persistence in MAUI `Preferences` on the device.
+- **Home dashboard** – Welcome header bound to the mock patient, next-appointments collection, care-plan progress bound to the patient's `HealthScore`, quick actions, and a scrolling vitals strip.
+- **Guided appointment booking** – 4-step wizard (Specialty → Doctor → Date & Time → Review & Confirm) with a progress indicator, back navigation, visit-type selection, a location map on the review screen, and confirm/edit actions.
+- **Reschedule flow** – An existing upcoming appointment can be rebooked through the same wizard; changes are applied back to the appointment.
+- **Medication tracking** – Next-dose card with circular dose progress, filter chips, and a grouped medication list.
+- **Health trends** – Metric cards and line charts for Heart Rate / Blood Pressure / SpO2 with a 7D / 1M / 3M range switcher.
+- **Visits & records** – Upcoming/past appointment cards, medical-records list, and patient profile.
 
-## Data Flow
+## Application Flow
 
-1. The Shell opens the Home tab; page view models request patient, doctor, appointment, medication, record, and health sample data from injected services.
-2. Home and Visits observe the shared `AppointmentService` and refresh when its appointment-changed event is raised.
-3. Booking proceeds through Specialty → Doctor → Date & Time → Review. Date/time options exclude dates and times in the past.
-4. Confirmation validates that the appointment is in the future, then saves the booking through `AppointmentService`.
-5. The service serializes appointment fields to MAUI `Preferences`; Visits reloads and displays the saved booking. Rescheduling reuses the date/time and review portion of the flow.
-6. The review map uses the bundled `world-map.json` asset; it does not require a map API.
+The main business workflow is the appointment booking journey:
 
-Patient details, medical records, medication examples, doctor information, and health readings are fictional sample data. Health readings are generated locally; this is not a connected medical record system.
+1. The user taps **Book an appointment** on the Home or Visits screen (or selects *Reschedule* on an existing visit).
+2. The app prepares context: specialties are loaded from the mock data service; for reschedule, the existing appointment is stashed as pending.
+3. Step 1 – the user picks a **specialty**; step 2 – a filtered **doctor list** (with availability, rating, hospital) is shown and a doctor is selected.
+4. Step 3 – the user chooses a **date** and a **time slot** (chip grid) and the **visit type** (Clinic Visit / Video Visit).
+5. Step 4 – the **review screen** summarizes the selection and shows the hospital location on an offline map; the user taps **Confirm**.
+6. The `AppointmentService` validates the booking, marks it *Confirmed*, persists it locally, and raises a change event — all tab pages refresh and the new visit appears on Home and in the Visits list.
+
+### Tab-by-tab walkthrough
+
+<!-- Add visual assets (screenshots / short GIFs) under `media/` and reference them here, e.g.:
+<img src="media/home.png" alt="Home dashboard" width="300"/>
+-->
+
+| Screen | What the user sees |
+|---|---|
+| Home | Greeting with patient avatar, next appointment card, care-plan progress bar, quick-action cards, vitals carousel |
+| Visits | Upcoming and past appointment cards with doctor, date/time, and status; book/reschedule actions |
+| Health | Metric cards plus Heart Rate / Blood Pressure / SpO2 line charts with a range switcher |
+| Medications | Next-dose card with circular progress, filter chips, grouped medication list |
+| Records | Patient profile details and a medical-records list |
+| Booking wizard | Four step views with progress indicator, ending in a review screen with an offline location map |
 
 ## Controls Used
 
-- `SfCardView`: appointment, doctor, medication, metric, quick-action, visit, and vital cards.
-- `SfCartesianChart` / `SfSegmentedControl`: health trends and range selection.
-- `SfCarousel`: Home vitals strip.
-- `SfLinearProgressBar` / `SfCircularProgressBar`: care-plan and dose progress.
-- `SfChipGroup`: appointment time slots and medication filters.
-- `SfMaps`: doctor location preview using the packaged map asset.
-- `SfAvatarView`, `SfButton`, and `SfListView`: patient/doctor visuals, actions, and records list.
+| Syncfusion Control | Used For |
+|---|---|
+| `SfCardView` (Cards) | Appointments, doctors, medications, health metrics, review sections |
+| `SfCartesianChart` (Charts) | Health trend line charts (Heart Rate / Blood Pressure / SpO2) with axes and legends |
+| `SfSegmentedControl` (Buttons) | 7D / 1M / 3M range switcher on the health chart card |
+| `SfButton` (Buttons) | Primary actions (Continue, Confirm, Select Doctor, quick actions) |
+| `SfChipGroup` (Core) | Time-slot selection on the date/time step of the wizard |
+| `SfCarousel` (Carousel) | Vitals strip on the Home screen |
+| `SfAvatarView` (Core) | Doctor and patient avatars |
+| `SfListView` (ListView) | Medical records list |
+| `SfLinearProgressBar` (ProgressBar) | Care-plan progress on Home (bound to the patient's `HealthScore`) |
+| `SfCircularProgressBar` (ProgressBar) | Next-dose progress on the Medications screen |
+| `SfMaps` (Maps) | Hospital location map on the review screen — world-map data is loaded from a bundled Raw asset, no network needed |
+
+> Note: visit-type and specialty selection in the wizard are implemented with `Border` + `DataTrigger` (matching the sample's component language); the time-slot picker is the only `SfChipGroup`.
 
 ## Architecture
 
-The app uses CommunityToolkit.Mvvm, dependency-injected services/view models, and Shell navigation:
+Classic MVVM with dependency injection — data flows one way from local services to the UI and user actions flow back through commands:
 
-- **Views** (`PatientCompanion/Views/`): five tab pages and specialty, doctor, date/time, and review views.
-- **View models** (`PatientCompanion/ViewModels/`): page and appointment-step state.
-- **Models** (`PatientCompanion/Models/`): patient, appointment, doctor, medication, health, and record types.
-- **Services** (`PatientCompanion/Services/`): `MockDataService`, `AppointmentService`, and `WorldMapAssetService`.
-- **Controls** (`PatientCompanion/Controls/`): reusable cards, page layout, and bottom navigation.
-- **Resources**: styles, fonts, images, and `Resources/Raw/world-map.json`.
+- **Views** (`Views/`) – Shell tab pages (Home, Visits, Health, Medications, Records) plus the four appointment-wizard step views. Views are thin: layout and bindings only.
+- **ViewModels** (`ViewModels/`) – `CommunityToolkit.Mvvm` classes (observers, commands, `INotifyPropertyChanged`) that translate service data into UI state. Registered as transient singletons-per-page in DI.
+- **Services** (`Services/`) –
+  - `MockDataService`: generates all demo data in-process (patient, doctors with availability, medications, health metrics/charts, medical records, quick actions).
+  - `AppointmentService`: the central appointment repository — seeds one upcoming and one past visit, handles add/confirm/reschedule, persists to local storage via `JSON`, and raises `OnAppointmentsChanged` so all pages refresh.
+  - `WorldMapAssetService`: loads the bundled `world-map.json` Raw asset for the offline map.
+- **Models** (`Models/`) – Plain POCOs (`Patient`, `Doctor`, `AppointmentBooking`, `Medication`, `HealthChartPoint`, `MedicalRecord`, …) shared by services, ViewModels, and views.
+- **Supporting UI components** (`Controls/`) – Reusable card controls (`AppointmentCardView`, `DoctorsCardView`, `MedicationCardView`, `HealthMetricCardView`, …), `AppPageLayout`, and `BottomNavigationView`.
+- **Converters** (`Converters/`) – XAML value converters (formatting, status colors, visibility).
 
-`AppointmentService` is a singleton so appointment changes are shared among pages. The service stores appointments locally in MAUI Preferences; the other sample datasets are constructed in code.
+DI wiring lives in `MauiProgram.cs`: services are singletons; ViewModels and pages are transient.
 
 ## Prerequisites
 
-- .NET 10 SDK and the .NET MAUI workload.
-- A platform workload/device for Android, iOS, Mac Catalyst, or Windows.
-- Visual Studio with MAUI support or VS Code with the .NET MAUI extension.
-- Syncfusion MAUI packages restored from NuGet. A valid Syncfusion license may be needed to remove evaluation watermarks.
+- .NET 10 SDK
+- .NET MAUI workload (`dotnet workload install maui`)
+- Visual Studio 2022 (17.14+) or VS Code, with the platform toolchain for your target (e.g., Android SDK for Android builds)
+- A Visual Studio device/emulator or a connected device for your target platform
+- Syncfusion MAUI components — no account or credentials are required; a Syncfusion license key is optional (see note below)
 
-## Configuration
+> Syncfusion components run in evaluation mode unless a license key is registered. If your usage requires one, register it in `MauiProgram.cs` via `Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY")`.
 
-No API keys, environment variables, or external endpoints are required. The bundled map and sample data are available locally.
+## Data & Configuration
 
 ### Default Behavior
 
-- Patient, clinician, medication, health, and medical-record examples are generated/loaded locally.
-- Appointment additions, cancellations, and reschedules are serialized to MAUI Preferences on the device.
-- The map is loaded from the app package and requires no map service credentials.
+The sample uses **local/offline logic only**:
+
+- **Mock data** – all patient, doctor, medication, health, and records data is generated locally by `MockDataService`. No backend, no API calls, no accounts.
+- **Local persistence** – confirmed appointments are persisted on-device by `AppointmentService` and restored on next launch.
+- **Offline map** – the review-screen map renders from a bundled `world-map.json` Raw asset; no tiles are fetched.
 
 ### Environment Variables / Secrets
 
-None required. Do not enter real health information; the appointment data saved by this demo is local to the app's Preferences.
+None. The sample requires no configuration, environment variables, or secrets.
 
-### Notes
+- Do not commit a Syncfusion license key to source control — use user secrets or secure storage if you register one.
+- There is no fallback behavior to configure: with zero setup the app runs the full demo out of the box.
+
+## Run
+
+The solution targets `net10.0-android` on all OSes, and adds `net10.0-ios` / `net10.0-maccatalyst` on non-Linux machines and `net10.0-windows10.0.19041.0` on Windows.
+
+```bash
+# Android
+dotnet build PatientCompanion.slnx -f net10.0-android
+
+# iOS / Mac Catalyst (non-Linux hosts)
+dotnet build PatientCompanion.slnx -f net10.0-ios
+dotnet build PatientCompanion.slnx -f net10.0-maccatalyst
+
+# Windows
+dotnet build PatientCompanion.slnx -f net10.0-windows10.0.19041.0
+```
+
+Or open `PatientCompanion/PatientCompanion.slnx` in Visual Studio, select your target platform, and start debugging. No configuration is required.
 
 - Clearing the app's data or uninstalling it removes its locally stored appointments.
 - The appointment store is a demo repository, not a medical scheduling backend.
 - Register a Syncfusion license through the documented licensing setup if required; do not commit the key. See [Syncfusion MAUI licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
 - This app is for demonstration and is not medical advice.
 
-## Run
+## Output
+
+![Patient Companion output](PatientCompanion.gif)
+
+## Project Structure
 
 From the repository root, build for a platform workload installed on your machine:
 
 ```bash
 dotnet build PatientCompanion/PatientCompanion/PatientCompanion.csproj -f net10.0-android
 ```
-
-Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and `net10.0-windows10.0.19041.0`. Alternatively, open [`PatientCompanion.slnx`](PatientCompanion.slnx) in Visual Studio or VS Code, choose a target, and deploy.
-
-## Output
-
-![Patient Companion](PatientCompanion.gif)
-
-## Project Structure
-
-- `PatientCompanion.slnx`: solution file.
-- `PatientCompanion/Views/`: tab pages and appointment flow views.
-- `PatientCompanion/ViewModels/`: page and appointment-flow logic.
-- `PatientCompanion/Models/`: patient, provider, visit, health, medication, and record models.
-- `PatientCompanion/Services/`: mock data, local appointment persistence, and packaged map loading.
-- `PatientCompanion/Controls/`: reusable cards, navigation, and layout controls.
-- `PatientCompanion/Resources/`: styles, fonts, images, and the bundled map asset.
+PatientCompanion/
+├── Controls/     # Reusable UI controls (cards, page layout, bottom navigation)
+├── Converters/   # XAML value converters
+├── Models/       # Domain models (Patient, Doctor, Appointment, Medication, ...)
+├── Resources/    # Colors, styles, fonts, images, bundled Raw assets (world-map.json)
+├── Services/     # MockDataService, AppointmentService, WorldMapAssetService
+├── ViewModels/   # CommunityToolkit.Mvvm ViewModels
+└── Views/        # Shell tab pages + appointment wizard step views
+```
 
 ## Troubleshooting
 
-**Appointments remain after restarting the app**
+**Issue 1: Syncfusion evaluation/trial warnings or license errors at startup**
+Cause: No license key is registered (or the key belongs to a different version/platform).
+Fix: Register a valid key in `MauiProgram.cs` with `SyncfusionLicenseProvider.RegisterLicense(...)`, or run without a key in evaluation mode.
 
-This is expected. `AppointmentService` stores appointments in MAUI Preferences. Clear the app's data to return to the initial appointment seed.
+**Issue 2: Build errors such as "The referenced component 'maui' is not installed" or missing workload**
+Cause: Missing .NET MAUI workload or an incompatible .NET SDK version.
+Fix: Verify the .NET 10 SDK is installed and run `dotnet workload install maui`; on Windows also confirm the Windows 10 SDK is available for the Windows target.
 
-**The review map is blank**
+**Issue 3: App starts but the Visits/Home lists look different than expected**
+Cause: `AppointmentService` persists bookings locally and re-seeds default appointments on first launch, so previously confirmed or rescheduled visits persist across runs.
+Fix: Clear the app's local storage (uninstall/reinstall the app) to reset the demo data.
 
-Confirm `Resources/Raw/world-map.json` is present and included as a MAUI asset in the project.
-
-**No appointment time is available**
-
-The flow hides past time slots for the current day. Select a later date or a future time.
-
-**Syncfusion evaluation watermark appears**
-
-Register a valid Syncfusion license; see Configuration → Notes.
+**Issue 4: Target framework errors for `net10.0-ios` / `net10.0-maccatalyst` / Windows on some machines**
+Cause: Those target frameworks are only added on non-Linux and Windows hosts respectively (see `PatientCompanion.csproj`).
+Fix: Build on a host that supports the target, or build for Android, which is available everywhere.
 
 ## Security and Privacy Notes
 
-- Patient, appointment, medication, and health content is fictional.
-- Appointments are saved locally in Preferences; the sample does not connect to a backend.
-- Do not enter real patient information or use this app for clinical care.
-- Keep any Syncfusion license key out of source control.
+- No API keys or credentials are used anywhere in the sample.
+- All data is mock data generated in-memory; no real patient information is collected, transmitted, or stored.
+- The only data that leaves memory is the local on-device persistence of demo bookings, kept in the app's own storage.
+- If you adapt this sample with real data: do not hard-code secrets, avoid sending unnecessary sensitive health data to any external service, and prefer secure storage for any credentials you introduce.
 
 ## Supported Platforms
 
-- Android
-- iOS
-- Windows
-- macOS (Mac Catalyst)
+- Android (`net10.0-android`)
+- iOS (`net10.0-ios`, non-Linux hosts)
+- Mac Catalyst (`net10.0-maccatalyst`, non-Linux hosts)
+- Windows (`net10.0-windows10.0.19041.0`, Windows hosts)

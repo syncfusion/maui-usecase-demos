@@ -38,7 +38,7 @@ public partial class DoctorsViewModel : BaseViewModel
         foreach (var doctor in mockDataService.GetDoctors()
             .Where(item => string.Equals(
                 item.Specialization,
-                selectedSpeciality,
+                selectedSpecialty,
                 StringComparison.OrdinalIgnoreCase)))
         {
             Doctors.Add(doctor);
