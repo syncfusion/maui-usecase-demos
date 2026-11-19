@@ -9,11 +9,17 @@ public partial class HeaderView : ContentView
     private NotesListViewModel? _viewModel;
     private ListOptionsFlyout? _mobileListOptionsFlyout;
 
+    private DateTime _ignoreSearchFocusUntil;
+
     public event EventHandler? DesktopNavigationRequested;
 
     public HeaderView()
     {
         InitializeComponent();
+
+        // Keep automatic focus traversal from landing in the search box.
+        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone)
+            SearchEntry.IsTabStop = false;
 
         if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
         {
@@ -67,6 +73,14 @@ public partial class HeaderView : ContentView
 
     private void OnSearchEntryFocused(object? sender, FocusEventArgs e)
     {
+        System.Diagnostics.Debug.WriteLine($"[Search] entry focused, ignored={DateTime.UtcNow < _ignoreSearchFocusUntil}");
+        // Focus alone is not user intent: WinUI moves focus into this entry
+        // whenever the focused element (hamburger/sidebar) is collapsed or
+        // the page content is swapped. Only open search for a real click.
+        if (DeviceInfo.Current.Idiom != DeviceIdiom.Phone
+            && DateTime.UtcNow < _ignoreSearchFocusUntil)
+            return;
+
         if (BindingContext is NotesListViewModel vm && !vm.IsSearchActive)
             vm.OpenSearchCommand.Execute(null);
     }
@@ -85,6 +99,8 @@ public partial class HeaderView : ContentView
 
     private void OnDesktopNavigationTapped(object? sender, TappedEventArgs e)
     {
+        System.Diagnostics.Debug.WriteLine($"[Hamburger] tapped, collapsed={_viewModel?.IsSidebarCollapsed}, search={_viewModel?.IsSearchActive}");
+        _ignoreSearchFocusUntil = DateTime.UtcNow.AddMilliseconds(750);
         // Let the pointer gesture finish before the layout changes under it.
         Dispatcher.Dispatch(() => DesktopNavigationRequested?.Invoke(this, EventArgs.Empty));
     }
