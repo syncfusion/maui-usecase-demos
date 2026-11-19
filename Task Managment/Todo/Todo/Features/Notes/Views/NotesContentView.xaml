@@ -20,6 +20,38 @@
             <!-- Module-07 converters used by the drag-and-drop visuals. -->
             <conv:MultiplyByConverter x:Key="MultiplyByConverter" />
             <conv:DragStateColorConverter x:Key="DragStateColorConverter" />
+
+            <!-- SfListView paints its own PointerOver/Pressed/Selected
+                 background around every item template. Neutralise it so only
+                 the task card (inner Border) reacts to hover. -->
+            <Style TargetType="syncfusion:ListViewItem">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </ContentView.Resources>
 
@@ -185,6 +217,7 @@
                                    AutoFitMode="DynamicHeight"
                                    Background="Transparent"
                                    SelectionMode="None"
+                                   IsScrollingEnabled="False"
                                    DragStartMode="OnHold"
                                    ScrollBarVisibility="Never"
                                    ItemDragging="OnItemDragging">
@@ -427,7 +460,8 @@
                                                ItemSpacing="0"
                                                AutoFitMode="DynamicHeight"
                                                BackgroundColor="Transparent"
-                                               SelectionMode="{OnIdiom Phone=None, Default=SingleDeselect}">
+                                               IsScrollingEnabled="False"
+                                               SelectionMode="None">
                             <syncfusion:SfListView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Note">
                                     <Grid Margin="{OnIdiom Phone='16,3', Default='0'}">

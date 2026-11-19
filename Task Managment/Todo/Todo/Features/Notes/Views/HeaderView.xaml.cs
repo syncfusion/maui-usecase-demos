@@ -83,9 +83,10 @@ public partial class HeaderView : ContentView
         SearchEntry.Focus();
     }
 
-    private void OnDesktopNavigationClicked(object? sender, EventArgs e)
+    private void OnDesktopNavigationTapped(object? sender, TappedEventArgs e)
     {
-        DesktopNavigationRequested?.Invoke(this, EventArgs.Empty);
+        // Let the pointer gesture finish before the layout changes under it.
+        Dispatcher.Dispatch(() => DesktopNavigationRequested?.Invoke(this, EventArgs.Empty));
     }
 
     private void OnMobileNavigationClicked(object? sender, EventArgs e)

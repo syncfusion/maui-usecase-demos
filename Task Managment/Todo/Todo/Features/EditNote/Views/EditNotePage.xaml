@@ -454,13 +454,15 @@
             </Grid>
         </Border>
 
-        <Grid x:Name="DueDatePopup"
-              IsVisible="False"
-              ZIndex="10"
-              BackgroundColor="#66000000"
-              Padding="8"
-              HorizontalOptions="Fill"
-              VerticalOptions="Fill">
+        <Border x:Name="DueDatePopup"
+                IsVisible="False"
+                ZIndex="10"
+                BackgroundColor="#66000000"
+                Padding="8"
+                StrokeThickness="0"
+                StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 27'}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
             <Border WidthRequest="240"
                     HeightRequest="280"
                     Padding="0"
@@ -470,6 +472,9 @@
                     Stroke="Transparent"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 27">
+                <Border.Shadow>
+                    <Shadow Brush="#40000000" Radius="12" Offset="0,4" Opacity="0.35" />
+                </Border.Shadow>
                 <Grid RowDefinitions="220,Auto,Auto"
                       Padding="0,0,0,7"
                       RowSpacing="0">
@@ -525,15 +530,17 @@
                     </Grid>
                 </Grid>
             </Border>
-        </Grid>
+        </Border>
 
-        <Grid x:Name="ReminderPopup"
-              IsVisible="False"
-              ZIndex="10"
-              BackgroundColor="#66000000"
-              Padding="8"
-              HorizontalOptions="Fill"
-              VerticalOptions="Fill">
+        <Border x:Name="ReminderPopup"
+                IsVisible="False"
+                ZIndex="10"
+                BackgroundColor="#66000000"
+                Padding="8"
+                StrokeThickness="0"
+                StrokeShape="{OnIdiom Phone='RoundRectangle 0', Default='RoundRectangle 27'}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
             <Border WidthRequest="240"
                     HeightRequest="280"
                     Padding="0"
@@ -543,6 +550,9 @@
                     Stroke="Transparent"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 27">
+                <Border.Shadow>
+                    <Shadow Brush="#40000000" Radius="12" Offset="0,4" Opacity="0.35" />
+                </Border.Shadow>
                 <Grid RowDefinitions="220,Auto,Auto"
                       Padding="0,0,0,7"
                       RowSpacing="0">
@@ -599,6 +609,6 @@
                     </Grid>
                 </Grid>
             </Border>
-        </Grid>
+        </Border>
     </Grid>
 </ContentPage>

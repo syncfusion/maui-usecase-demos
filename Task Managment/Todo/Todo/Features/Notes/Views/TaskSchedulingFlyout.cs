@@ -18,9 +18,9 @@ public sealed class TaskSchedulingFlyout : ContentView
 
     public TaskSchedulingFlyout()
     {
-        _datePopup = CreatePopup(IsDesktop ? 302 : 240, IsDesktop ? 493 : 280, CreateDateSurface);
-        _repeatPopup = CreatePopup(IsDesktop ? 230 : 210, IsDesktop ? 352 : 332, CreateRepeatSurface);
-        _customPopup = CreatePopup(IsDesktop ? 320 : 300, IsDesktop ? 244 : 224, CreateCustomSurface);
+        _datePopup = CreatePopup(IsDesktop ? 282 : 240, IsDesktop ? 473 : 280, CreateDateSurface);
+        _repeatPopup = CreatePopup(210, 332, CreateRepeatSurface);
+        _customPopup = CreatePopup(300, 224, CreateCustomSurface);
         foreach (var popup in new[] { _datePopup, _repeatPopup, _customPopup })
             popup.PositionChanging += ClampPosition;
         Content = new Grid { Children = { _datePopup, _repeatPopup, _customPopup } };
@@ -44,9 +44,7 @@ public sealed class TaskSchedulingFlyout : ContentView
         {
             OverlayColor = Colors.Transparent,
             MessageBackground = Colors.Transparent,
-            // Native popup shadow clips into black squares at rounded
-            // corners. The surface border paints a soft shadow instead.
-            HasShadow = false,
+            HasShadow = true,
             Stroke = Colors.Transparent,
             StrokeThickness = 0,
             CornerRadius = 8
@@ -490,19 +488,6 @@ public sealed class TaskSchedulingFlyout : ContentView
         border.SetAppTheme<Brush>(VisualElement.BackgroundProperty,
             Brush.White,
             new SolidColorBrush(Color.FromArgb("#29272F")));
-        if (IsDesktop)
-        {
-            // Inset the surface so the shadow has room inside the popup
-            // bounds and does not clip into black corner squares.
-            border.Margin = new Thickness(10);
-            border.Shadow = new Shadow
-            {
-                Brush = Color.FromArgb("#40000000"),
-                Radius = 12,
-                Offset = new Point(0, 4),
-                Opacity = 0.35f
-            };
-        }
         return border;
     }
 
