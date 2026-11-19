@@ -24,29 +24,21 @@
                                IsVisible="{OnIdiom Phone=False, Default=True}">
             <!-- Hamburger menu: collapses / expands the sidebar.
                  Module-08 task 8-2: 48x48 touch target per the spec. -->
-            <Border x:Name="DesktopNavigationButton"
-                    WidthRequest="40"
-                    HeightRequest="40"
-                    Margin="0,8,8,0"
-                    Padding="0"
-                    BackgroundColor="Transparent"
-                    StrokeThickness="0"
-                    StrokeShape="RoundRectangle 20"
-                    VerticalOptions="Center"
+            <buttons:SfButton
+                    x:Name="DesktopNavigationButton"
+                    WidthRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
+                    HeightRequest="{OnIdiom Phone=40, Desktop=40, Default=18}"
+                    Margin="{OnIdiom Phone='0,0,8,0', Desktop='0,8,8,0', Default='10,0'}"
+                    CornerRadius="{OnIdiom Phone=20, Desktop=20, Default=0}"
+                    Padding="0" ImageSource="humburger.png" Background="Transparent" VerticalOptions="Center"
+                    Clicked="OnDesktopNavigationClicked"
                     SemanticProperties.Description="Toggle navigation menu">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnDesktopNavigationTapped" />
-                    <PointerGestureRecognizer PointerEntered="OnProfilePointerEntered"
-                                              PointerExited="OnProfilePointerExited" />
-                </Border.GestureRecognizers>
-                <Label Text="&#xe3c7;"
-                       FontSize="18"
-                       FontFamily="MaterialIconRegular"
-                       TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       InputTransparent="True" />
-            </Border>
+                <buttons:SfButton.Content>
+                    <DataTemplate>
+                        <Label Text="&#xe3c7;" HeightRequest="25" WidthRequest="25" FontSize="18" TextColor="{AppThemeBinding Light=#49454F, Dark=#E6E1E5}" FontFamily="MaterialIconRegular"/>
+                    </DataTemplate>
+                </buttons:SfButton.Content>
+            </buttons:SfButton>
             <Label x:Name="HeaderTitle"
                    Text="To-do List"
                    FontSize="17"
