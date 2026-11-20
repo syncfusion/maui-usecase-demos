@@ -89,7 +89,7 @@ Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and 
 
 ## Output
 
-This sample folder does not include a separate demo GIF. Run the app with an internet connection to view current conditions and forecast charts.
+![Weather Forecast Demo](WeatherForecastDemo.gif)
 
 ## Project Structure
 

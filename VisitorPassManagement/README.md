@@ -91,7 +91,7 @@ Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and 
 
 ## Output
 
-This sample folder does not include a separate demo GIF. Run the app to view the Dashboard, Directory, Digital Pass, and registration workflow.
+![Visitor Pass Management Demo](VisitorPassManagementDemo.gif)
 
 ## Project Structure
 

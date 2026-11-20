@@ -85,7 +85,7 @@ Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and 
 
 ## Output
 
-![Home Inventory Manager demo](HomeInventoryDemo.gif)
+![Home Inventory Manager demo](HomeInventoryManagerDemo.gif)
 
 ## Project Structure
 

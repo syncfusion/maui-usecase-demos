@@ -94,7 +94,7 @@ Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and 
 
 ## Output
 
-This sample folder does not include a separate demo GIF. Run the app to view the dashboard, rooms, and booking workflows on the selected platform.
+![Hotel Booking Management Demo](HotelBookingManagementDemo.gif)
 
 ## Project Structure
 
