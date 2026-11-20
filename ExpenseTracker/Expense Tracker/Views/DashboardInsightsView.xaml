@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartExpense.DashboardInsightsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SmartExpense">
+
+        <Grid  x:Name="RootGrid"
+            RowSpacing="12"
+            ColumnSpacing="12"
+            RowDefinitions="Auto,Auto"
+            ColumnDefinitions="*,*">
+        <!-- Balance -->
+        <controls:InsightCard x:Name="BalanceCard" Grid.Row="0" Grid.Column="0" />
+        <!-- Income -->
+        <controls:InsightCard x:Name="IncomeCard" Grid.Row="0" Grid.Column="1" />
+        <!-- Expense -->
+        <controls:InsightCard x:Name="ExpenseCard" Grid.Row="1" Grid.Column="0" />
+        <!-- Savings -->
+        <controls:InsightCard x:Name="SavingsCard" Grid.Row="1" Grid.Column="1" />
+    </Grid>
+</ContentView>

@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+            xmlns:sfList="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+            xmlns:views="clr-namespace:SmartExpense"
+            xmlns:converters="clr-namespace:SmartExpense" NavigationPage.HasNavigationBar="False"
+             x:Class="SmartExpense.MainPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToBackgroundConverter x:Key="BoolToBackgroundConverter"/>
+            <converters:BoolToTextColorConverter x:Key="BoolToTextColorConverter"/>
+            <converters:SelectedIndexToColorConverter x:Key="SelectedIndexToColorConverter"/>
+        </ResourceDictionary>
+
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.Margin>
+            <OnPlatform x:TypeArguments="Thickness">
+                <On Platform="WinUI"
+                    Value="0,0,0,0"/>
+                <On Platform="Android"
+                    Value="0,0,0,0"/>
+                <On Platform="iOS"
+                    Value="0,0,0,0"/>
+                <On Platform="MacCatalyst"
+                    Value="0,0,0,0"/>
+            </OnPlatform>
+        </Grid.Margin>
+
+        <!-- WinUI: Left navigation sidebar + content pane -->
+        <Grid IsVisible="{OnPlatform WinUI=True,Android=False,iOS=False,MacCatalyst=True}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar -->
+            <Border Background="#2F6D86"
+                    Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <!-- App title / logo -->
+                    <HorizontalStackLayout Spacing="8"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Start">
+                        <Label Text="Expense Tracker"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               FontSize="18"
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"
+                               HorizontalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <BoxView HeightRequest="1"
+                             BackgroundColor="#1F92B8"
+                             Margin="0,8,0,0"/>
+
+                    <sfList:SfListView ItemsSource="{Binding NavItems}"
+                                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                                       SelectionMode="Single"
+                                       AutoFitMode="Height"
+                                       ItemBorderRadius="8"
+                                       SelectionBackground="Transparent"
+                                      >
+                        <sfList:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="10"
+                                        Stroke="Transparent"
+                                        BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToBackgroundConverter}}">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="8"/>
+                                    </Border.StrokeShape>
+
+                                    <HorizontalStackLayout Spacing="12">
+                                        <Image Source="{Binding CurrentIcon}"
+                                               WidthRequest="20"
+                                               HeightRequest="20"/>
+
+                                        <Label Text="{Binding Title}"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding IsSelected, Converter={StaticResource BoolToTextColorConverter}}"/>
+                                    </HorizontalStackLayout>
+                                </Border>
+                                
+                            </DataTemplate>
+                        </sfList:SfListView.ItemTemplate>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup>
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="Background"
+                                        Value="Transparent"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </sfList:SfListView>
+                </VerticalStackLayout>
+            </Border>
+            <!-- PAGE CONTENT -->
+            <ContentView x:Name="WindowsContentView"
+                         Grid.Column="1"/>
+
+        </Grid>
+        <!-- Mobile: keep original bottom tab view for Android/iOS/MacCatalyst -->
+        <ContentView IsVisible="{OnPlatform WinUI=False,Android=True,iOS=True,MacCatalyst=False}">
+            <tabView:SfTabView x:Name="MainTabView_Mobile"
+                               TabBarPlacement="Bottom"
+                               EnableSwiping="False"
+                               IndicatorPlacement="Fill"
+                               IndicatorWidthMode="Stretch"
+                               IndicatorCornerRadius="5"
+                               IndicatorBackground="#2F6D86"
+                               IndicatorStrokeThickness="1"
+                               SelectionChanged="OnTabSelectionChanged">
+
+                <tabView:SfTabView.Items>
+                    <tabView:SfTabItem x:Name="DashboardTab_Mobile"
+                                       FontSize="20"
+                                       FontFamily="ExpenseTrackerIcons"
+                                       TextColor="Black"
+                                       Header="&#xE716;">
+
+                    </tabView:SfTabItem>
+
+                    <tabView:SfTabItem x:Name="TransactionsTab_Mobile"
+                                       FontFamily="ExpenseTrackerIcons"
+                                       Header="&#xE738;"
+                                       FontSize="20"
+                                       TextColor="Black">
+
+                    </tabView:SfTabItem>
+                </tabView:SfTabView.Items>
+            </tabView:SfTabView>
+        </ContentView>
+
+
+    </Grid>
+</ContentPage>
+    
+
+
