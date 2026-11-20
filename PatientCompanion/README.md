@@ -125,7 +125,10 @@ dotnet build PatientCompanion.slnx -f net10.0-windows10.0.19041.0
 
 Or open `PatientCompanion/PatientCompanion.slnx` in Visual Studio, select your target platform, and start debugging. No configuration is required.
 
-> Sample data only — not medical advice.
+- Clearing the app's data or uninstalling it removes its locally stored appointments.
+- The appointment store is a demo repository, not a medical scheduling backend.
+- Register a Syncfusion license through the documented licensing setup if required; do not commit the key. See [Syncfusion MAUI licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+- This app is for demonstration and is not medical advice.
 
 ## Output
 
@@ -133,6 +136,10 @@ Or open `PatientCompanion/PatientCompanion.slnx` in Visual Studio, select your t
 
 ## Project Structure
 
+From the repository root, build for a platform workload installed on your machine:
+
+```bash
+dotnet build PatientCompanion/PatientCompanion/PatientCompanion.csproj -f net10.0-android
 ```
 PatientCompanion/
 ├── Controls/     # Reusable UI controls (cards, page layout, bottom navigation)

@@ -8,6 +8,7 @@ namespace TaskManagement
     {
         public static MauiApp CreateMauiApp()
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("LICENSE_KEY");
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()

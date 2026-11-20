@@ -1,0 +1,31 @@
+using MovieBooking.Services;
+using MovieBooking.ViewModels;
+
+namespace MovieBooking.Views;
+
+public partial class PaymentConfirmationView : ContentPage
+{
+    private readonly PaymentConfirmationViewModel _vm;
+    private readonly IBookingRepository _repo;
+
+    public PaymentConfirmationView(PaymentConfirmationViewModel vm, IBookingRepository repo)
+    {
+        InitializeComponent();
+        _vm = vm;
+        _repo = repo;
+        BindingContext = _vm;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        _vm.PopulateFromSession();
+        await _vm.ProcessAsync();
+    }
+
+    private async void OnDoneClicked(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//home");
+
+    private async void OnViewBookingsClicked(object? sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//bookings");
+}
