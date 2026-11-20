@@ -108,7 +108,7 @@ Alternatively, open `SmartExpense.sln` in Visual Studio or VS Code, select your 
 
 ## Output
 
-![Smart Expense Tracker](ExpenseTracker.gif)
+![Smart Expense Tracker](https://github.com/user-attachments/assets/a952dc5e-f03d-4b9a-8fd4-a0acd7f8e8d9)
 
 ## Project Structure
 
