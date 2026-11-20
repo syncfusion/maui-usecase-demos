@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SmartExpense.InsightCard"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <ContentView.Resources>
+
+        <!-- Card -->
+        <Style x:Key="InsightCardStyle"
+                TargetType="Border">
+            <Setter Property="BackgroundColor"
+                    Value="#F5F7FA"/>
+            <Setter Property="Padding"
+                    Value="{OnPlatform Android=12, iOS=12, WinUI=18, MacCatalyst=18}"/>
+            <Setter Property="StrokeThickness"
+                    Value="0"/>
+        </Style>
+
+        <!-- Title -->
+        <Style x:Key="InsightTitleStyle"
+                TargetType="Label">
+            <Setter Property="FontFamily"
+                    Value="OpenSansRegular"/>
+            <Setter Property="FontSize"
+                   Value="{OnPlatform Android=14, iOS=14, WinUI=17, MacCatalyst=17}"/>
+            <Setter Property="TextColor"
+                    Value="#6B7280"/>
+        </Style>
+
+        <!-- Amount -->
+        <Style x:Key="InsightAmountStyle"
+                TargetType="Label">
+            <Setter Property="FontFamily"
+                    Value="OpenSansRegular"/>
+            <Setter Property="FontSize"
+                    Value="{OnPlatform Android=17, iOS=17, WinUI=22, MacCatalyst=22}"/>
+            <Setter Property="TextColor"
+                    Value="#111827"/>
+            <Setter Property="FontAttributes"
+                    Value="None"/>
+        </Style>
+
+    </ContentView.Resources>
+
+    <Grid>
+
+        <Border IsVisible="{OnPlatform WinUI=True, MacCatalyst=True, Android=False, iOS=False}" Style="{StaticResource InsightCardStyle}" >
+            <Border.Shadow>
+                <Shadow Brush="#000000"
+                        Opacity="0.08"
+                        Radius="6"
+                        Offset="0,2" />
+            </Border.Shadow>
+
+            <Border.StrokeShape>
+            <RoundRectangle CornerRadius="12"/>
+        </Border.StrokeShape>
+
+        <Grid  ColumnDefinitions="Auto,*"
+              ColumnSpacing="16"
+              VerticalOptions="Center">
+
+            <!-- Icon -->
+            <Border Grid.Column="0"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    Stroke="Transparent"
+                    BackgroundColor="{Binding IconBackground,
+                Converter={StaticResource ColorWithOpacityConverter},
+                ConverterParameter=0.2}"
+                    VerticalOptions="Center">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="7"/>
+                </Border.StrokeShape>
+
+                <Label Text="{Binding IconGlyph}"
+                       FontFamily="ExpenseTrackerIcons"
+                       FontSize="30"
+                       TextColor="{Binding IconBackground}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Border>
+
+            <!-- Text -->
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="4"
+                                 VerticalOptions="Center">
+
+                <Label Text="{Binding Title}"
+                        Margin="0,0,0,4"
+                       Style="{StaticResource InsightTitleStyle}"/>
+
+                <Label Text="{Binding Value, StringFormat='${0:N0}'}"
+                       Style="{StaticResource InsightAmountStyle}"
+                       Margin="0,2,0,0"
+                       LineBreakMode="TailTruncation"
+                       MaxLines="1"/>
+            </VerticalStackLayout>
+
+        </Grid>
+        </Border>
+
+        <Border IsVisible="{OnPlatform WinUI=False, MacCatalyst=False, Android=True, iOS=True}" Style="{StaticResource InsightCardStyle}" HeightRequest="80">
+
+            <Border.Shadow>
+                <Shadow Brush="#000000"
+                Opacity="0.08"
+                Radius="6"
+                Offset="0,2" />
+            </Border.Shadow>
+
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12"/>
+            </Border.StrokeShape>
+
+            <Grid  ColumnDefinitions="Auto,*"
+                      ColumnSpacing="10"
+                      VerticalOptions="Center">
+
+                <!-- Icon -->
+                <Border Grid.Column="0"
+            HeightRequest="36"
+            WidthRequest="36"
+            Stroke="Transparent"
+            BackgroundColor="{Binding IconBackground,
+                    Converter={StaticResource ColorWithOpacityConverter},
+                    ConverterParameter=0.2}"
+            VerticalOptions="Center">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="7"/>
+                    </Border.StrokeShape>
+
+                    <Label Text="{Binding IconGlyph}"
+               FontFamily="ExpenseTrackerIcons"
+               FontSize="20"
+               TextColor="{Binding IconBackground}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"/>
+                </Border>
+
+                <!-- Text -->
+                <VerticalStackLayout Grid.Column="1"
+                         Spacing="4"
+                         VerticalOptions="Center">
+
+                    <Label Text="{Binding Title}"
+               Style="{StaticResource InsightTitleStyle}"/>
+
+                    <Label Text="{Binding Value, StringFormat='${0:N0}'}"
+               Style="{StaticResource InsightAmountStyle}"
+               LineBreakMode="TailTruncation"
+               MaxLines="1"/>
+                </VerticalStackLayout>
+
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentView>
