@@ -33,7 +33,8 @@
         <!-- Shared application header (spans both columns) -->
         <views:HeaderView x:Name="Header"
                           Grid.Row="0"
-                          Grid.ColumnSpan="2" />
+                          Grid.ColumnSpan="2"
+                          ZIndex="{OnIdiom Phone=0, Default=10}" />
 
         <BoxView x:Name="HeaderDivider"
                  Grid.Row="0"
