@@ -13,9 +13,31 @@ public partial class NotesContentView : ContentView
         InitializeComponent();
         if (DeviceInfo.Current.Idiom == DeviceIdiom.Phone)
             NotesContentSurface.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(0) };
+        else if (DeviceInfo.Current.Idiom == DeviceIdiom.Desktop)
+            NotesContentSurface.SizeChanged += OnDesktopSurfaceSizeChanged;
 
         ActionFlyout.ActionRequested += OnNoteActionRequested;
 
+    }
+
+
+    /// <summary>
+    /// Windows hit-tests a Border by its rectangular layout bounds, ignoring
+    /// StrokeShape. After the sidebar collapses, this surface's top-left
+    /// rounded corner covers the hamburger, so the second click never fires.
+    /// Clip to the drawn corner on desktop only; phone is left unchanged.
+    /// </summary>
+    private void OnDesktopSurfaceSizeChanged(object? sender, EventArgs e)
+    {
+        const float radius = 14f;
+        var width = NotesContentSurface.Width;
+        var height = NotesContentSurface.Height;
+        if (width <= 0 || height <= 0)
+            return;
+
+        NotesContentSurface.Clip = new RoundRectangleGeometry(
+            new CornerRadius(radius),
+            new Rect(0, 0, width, height));
     }
 
     protected override void OnBindingContextChanged()
