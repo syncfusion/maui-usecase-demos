@@ -1,244 +1,150 @@
-# Hotel Booking Management (HotelManagerSample)
+# Hotel Booking Management - .NET MAUI Sample
 
-A .NET MAUI front-office application for a **15-room hotel**, showing a
-Dashboard / Rooms / Bookings workflow with a dedicated UI surface for
-desktop (sidebar + `NavigationPage`) and mobile (`MobileShell` + `SfTabView`).
+A Syncfusion-powered .NET MAUI front-office application for a 15-room hotel: dashboard, rooms, bookings, and an add-booking flow with adaptive desktop and mobile surfaces.
 
-Everything runs **fully in-memory**: no network calls, no database, no
-login, no cloud sync. A single `HotelStore` singleton is seeded with
-deterministic demo data at startup, and every page projects from it.
+## Overview
 
----
+A small hotel front-office team needs a single app to manage reservations, room inventory, and housekeeping status across a 15-key property.
 
-## Sample overview
+- **What the sample does** - Dashboard with KPI tiles and revenue / inventory charts, a 15-key housekeeping board, paginated bookings grid with selection detail, and a validated add-booking form.
+- **Who it is for** - Hotel front-office staff and managers running a small property.
+- **What AI capability it uses** - None. The sample is a pure Syncfusion UI showcase with deterministic in-memory mock data; no AI service is wired in.
+- **What outcome the user gets** - A working front-office shell that can be extended with AI (e.g. demand forecasting on the revenue chart) in future iterations.
 
-| | |
-|---|---|
-| **Scenario** | Hotel front-office — reservations, room inventory, housekeeping status, revenue |
-| **Inventory** | 15 keys across 3 floors × 5 rooms (`HotelConfig.TotalRooms`) |
-| **Seed data** | 9 hand-authored demo bookings + ~15 generated ones, seeded with `Random(20260910)` |
-| **Reference date** | `2026-09-10` (`HotelConfig.ReferenceToday`) — fixed so the dashboard renders identically on every cold start |
-| **Data store** | `IHotelStore` / `HotelStore` singleton, registered in `MauiProgram` |
-| **UI switch** | `App.CreateWindow` picks the surface at runtime — see [Desktop vs. mobile](#desktop-vs-mobile-routing) |
+## Key Features
 
-### The three pages
+- Dashboard with greeting header, today's-arrivals / in-house / folio KPI tiles, inventory doughnut, revenue spline area chart with a 7D / 1M / 3M toggle.
+- Paginated recent-reservations table with a segmented "Today's Check-Ins / Pending Payments" filter and search box.
+- Rooms housekeeping board with card-view (`SfListView`) and table-view (`SfDataGrid`) toggle, floor / status chip filters, and KPI strip.
+- Paginated bookings grid with live row selection, detail strip, sortable columns, and per-page paging.
+- Add-Booking flow: `SfPopup` with calendar range picker on desktop, two `SfExpander` sections on mobile - both validated identically and routed through `IHotelStore.AddBooking`.
+- Adaptive shell: `MobileShell` (`SfTabView`) on phones and iOS / MacCatalyst, sidebar + `NavigationPage` on tablet / desktop / Windows.
+- Mobile busy overlay via `SfBusyIndicator` and a New-Booking FAB via `SfButton`.
 
-**Dashboard** — greeting header, KPI tiles (today's arrivals, in-house stays,
-folio volume), an inventory doughnut chart, a revenue cartesian chart with a
-7D / 1M / 3M toggle, and a paginated table of recent reservations with a
-segmented "Today's Check-Ins / Pending Payments" filter and a search box.
+## App Flow
 
-**Rooms** — a housekeeping board for all 15 keys. Toggle between a card view
-(`SfListView` + `GridLayout`) and a table view (`SfDataGrid`). Filter by floor
-chip, status chip, or free-text search; KPI strip summarises inventory.
+1. Operator launches the app - `App.CreateWindow` picks `MobileShell` or `NavigationPage(DashboardPage)` based on `App.IsMobileRuntime()`.
+2. Dashboard, Rooms, and Bookings pages subscribe to `IHotelStore.BookingsChanged` / `RoomsChanged`.
+3. Operator switches tabs (mobile) or pages (desktop) and applies filters / paging from the view-model.
+4. Operator opens Add-Booking, fills the form, and commits via `IHotelStore.AddBooking`.
+5. The store flips the assigned room's status and raises `BookingsChanged` + `RoomsChanged`.
+6. KPI tiles, charts, grids, and the rooms board all refresh in a single cascade from the same store.
 
-**Bookings** — the full reservation list with KPI tiles, text search,
-`SfDataGrid` + `SfDataPager` pagination, an Add-Booking popup, and a
-**selection detail strip** that fills in when the user taps a grid row.
+## Controls Used
 
-### Add-Booking flow (both surfaces)
-
-A shared, validated reservation form:
-- **Desktop** — `SfPopup` hosting `AddBookingPopupContent` (`SfTextInputLayout`,
-  `SfCalendar` range selection, `SfChipGroup` floor picker, availability dropdown).
-- **Mobile** — `MobileNewBookingPage`, a modal page with two `SfExpander`
-  sections (Guest / Stay).
-
-Both funnel through their own view-model, validate identically, and commit via
-`IHotelStore.AddBooking`, which flips the assigned room's status and raises
-`BookingsChanged` + `RoomsChanged` so every visible KPI refreshes at once.
-
----
-
-## Controls demonstrated
-
-| Control | Assembly | Where |
-|---|---|---|
-| `SfDataGrid`, `DataGridStyle`, `DataGridTemplateColumn` | `Syncfusion.Maui.DataGrid` | Bookings table, Rooms table view, Dashboard reservations table |
-| `SfDataPager`, `DataPagerStyle` | `Syncfusion.Maui.DataGrid` | Bookings + Dashboard pagination |
-| `SfListView`, `GridLayout` | `Syncfusion.Maui.ListView` | Rooms card view |
-| `SfChipGroup`, `SfChip` | `Syncfusion.Maui.Toolkit` | Floor / status / booking-status filters, Add-Booking floor picker |
-| `SfButton` | `Syncfusion.Maui.Buttons` | Mobile New-Booking FAB |
-| `SfCartesianChart`, `SplineAreaSeries` | `Syncfusion.Maui.Charts` | Revenue trend chart |
-| `SfCircularChart`, `DoughnutSeries` | `Syncfusion.Maui.Charts` | Inventory doughnut |
-| `SfExpander` | `Syncfusion.Maui.Expander` | Mobile New-Booking Guest / Stay sections |
-| `SfPopup` | `Syncfusion.Maui.Popup` | Desktop Add-Booking modal |
-| `SfCalendar` | `Syncfusion.Maui.Calendar` | Add-Booking check-in / check-out range picker |
-| `SfTextInputLayout` | `Syncfusion.Maui.Inputs` | Add-Booking field labels |
-| `SfTabView` | `Syncfusion.Maui.Core` | `MobileShell` bottom-tab host |
-| `SfBusyIndicator` | `Syncfusion.Maui.Core` | Mobile busy overlay |
-| `SfEntry` | *(local control)* | Borderless search inputs — `Controls/SfEntry.cs` |
-
-> `SfGauges` is referenced by the project but no gauge control is currently
-> instantiated in the XAML.
-
----
+- `SfDataGrid` - Bookings table, Rooms table view, Dashboard reservations table.
+- `SfDataPager` - Pagination for Bookings and Dashboard tables.
+- `SfListView` (GridLayout) - Rooms card view.
+- `SfChipGroup` / `SfChip` - Floor / status / booking-status filters; Add-Booking floor picker.
+- `SfButton` - Mobile New-Booking FAB.
+- `SfCartesianChart` (SplineAreaSeries) - Revenue trend chart.
+- `SfCircularChart` (DoughnutSeries) - Inventory doughnut.
+- `SfExpander` - Mobile New-Booking Guest / Stay sections.
+- `SfPopup` - Desktop Add-Booking modal.
+- `SfCalendar` - Add-Booking check-in / check-out range picker.
+- `SfTextInputLayout` - Add-Booking field labels.
+- `SfTabView` - `MobileShell` bottom-tab host.
+- `SfBusyIndicator` - Mobile busy overlay.
+- `SfEntry` - Borderless search inputs (local `Controls/SfEntry.cs`).
 
 ## Architecture
 
-MVVM with a shared in-memory store.
+MVVM with a shared in-memory store. Every view-model subscribes to `IHotelStore` change events; no page talks to another page.
 
-```
-Models/       HotelStore (IHotelStore) · Room · Booking · HotelConfig · HotelData
-ViewModels/   DashboardViewModel · RoomsViewModel · BookingsViewModel · AddBookingViewModel
-Views/        DesktopUI/ (Dashboard, Rooms, Bookings)
-              MobileUI/  (MobileShell + Dashboard, Bookings, Rooms, NewBooking)
-Controls/     AppSidebar · AddBookingPopupContent · SfEntry · PhoneSanitiser
-Converters/   Status→brush · avatars · chips · active-state · mobile CTA
-```
+- **View / Page** - `Views/DesktopUI/` (Dashboard, Rooms, Bookings), `Views/MobileUI/` (MobileShell, Dashboard, Rooms, Bookings, NewBooking)
+- **ViewModel** - `ViewModels/` (DashboardViewModel, RoomsViewModel, BookingsViewModel, AddBookingViewModel)
+- **Models** - `Models/` (Room, Booking, SelectableBooking, HotelConfig, HotelData)
+- **AI service** - *Not used. The single source of truth is `IHotelStore` / `HotelStore` (in-memory).*
+- **Supporting UI components** - `Controls/` (AppSidebar, AddBookingPopupContent, SfEntry, PhoneSanitiser), `Converters/`
 
-**Single source of truth.** `IHotelStore` exposes two events —
-`BookingsChanged` and `RoomsChanged`. Every view-model subscribes, so adding
-a booking on one page updates the Dashboard KPIs, the Rooms board, and the
-Bookings grid in a single cascade. No page talks to another page.
+Data flow: `IHotelStore` exposes `BookingsChanged` and `RoomsChanged`. Mutations (add booking, status changes) raise these events; every visible KPI, chart, and grid refreshes at once.
 
-**Desktop vs. mobile routing.** `App.CreateWindow` calls `App.IsMobileRuntime()`:
-phones (any platform) plus iOS/MacCatalyst get `MobileShell`; everything else
-gets `NavigationPage(DashboardPage)`. Both live in one project.
+## Prerequisites
 
-**State lives on the view-models.** Interactive UI state — the active revenue
-range, the active segment pill, the grid selection, the dynamic grid height —
-is bound from the view-model rather than mutated in code-behind. `DashboardViewModel`
-exposes `IsRevenue7DActive` / `IsRevenue1MActive` / `IsRevenue3MActive` and
-`IsCheckInsActive` / `IsPendingActive`, driven by `SetRevenueRangeCommand` /
-`SetActiveSegmentCommand`. `RoomsViewModel.GridHeight` and
-`BookingsViewModel.BookingsGridHeight` compute the grids' `HeightRequest` from
-the visible row count. Code-behind is limited to control-specific concerns:
-popup open/close, pager reset, visual-tree lookups.
+- **.NET SDK 10.0.x** with the **MAUI workload** (`maui-android`, plus `maui-ios` / `maui-maccatalyst` / `maui-windows` for those targets)
+- **Visual Studio 2026** (or equivalent) with the MAUI workload installed
+- **Syncfusion MAUI licence** - required at build and run time. See [Syncfusion licensing](https://www.syncfusion.com/sales/license).
+- **No AI provider account** - this sample runs fully offline.
 
----
+## AI Configuration
 
-## SfDataGrid interactivity
+This sample does not use AI. See [Data Configuration](#data-configuration) below.
 
-The **Bookings** grid is a live, interactive grid:
+## Data Configuration
 
-- `SelectionMode="Single"` with a two-way `SelectedItem` binding to
-  `BookingsViewModel.SelectedBooking`
-- `CellTapped` handler reads `e.RowData` and updates the selection
-- `SelectionChanged` handler syncs `AddedItems` / `RemovedItems` back to the VM
-- `AllowSorting="True"` — tap any column header to sort
-- A detail strip below the pager renders the selected booking
-  (reference · guest · room · status · total) and has a dismiss button
+### Default Behavior
 
-`BookingsViewModel.SelectedBookingRow`, `HasSelectedBooking`, and
-`SelectedBookingSummary` are the bound projections. The Dashboard and Rooms
-grids remain passive renderers (`InputTransparent="True"`) — they sit inside
-`ScrollView`s alongside other content and only need to paint.
+The sample uses **deterministic, in-memory mock data only**:
 
----
+- Inventory is **15 rooms** across 3 floors × 5 rooms (`HotelConfig.TotalRooms`).
+- Seed data is 9 hand-authored bookings plus ~15 generated ones, seeded with `Random(20260910)`.
+- Reference date is fixed to `2026-09-10` (`HotelConfig.ReferenceToday`) so the dashboard renders identically on every cold start.
+- A single `IHotelStore` / `HotelStore` singleton is registered in `MauiProgram`.
+- No network calls, no database, no external services - the app is fully offline.
 
-## Requirements
+### Environment Variables / Secrets
 
-- **.NET SDK 10.0.x** with the **MAUI workload** (`maui-android`, plus
-  `maui-ios` / `maui-maccatalyst` / `maui-windows` for those targets)
-- **Syncfusion MAUI licence** — required at build and run time. See
-  [Syncfusion licensing](https://www.syncfusion.com/sales/license).
-- **Visual Studio 2026** (or equivalent) with the MAUI workload, or the
-  `maui` workload installed via `dotnet workload install maui`
+| Variable | Required | Description |
+|---|---|---|
+| *None* | - | No environment variables are required. The app has no external dependencies. |
 
-### Target frameworks
+### Notes
 
-| Target | Condition |
-|---|---|
-| `net10.0-android` | always |
-| `net10.0-ios`, `net10.0-maccatalyst` | non-Linux hosts |
-| `net10.0-windows10.0.19041.0` | Windows hosts |
+- Reloading the app restores the original seeded state - there is no persistence.
+- Change `HotelConfig.ReferenceToday` in `Models/HotelModels.cs` to shift the whole dataset relative to a real "today".
+- `SfGauges` is referenced by the project but no gauge control is currently instantiated in the XAML.
+- If you intend to extend the sample with an AI service (e.g. demand forecasting for the revenue chart), wire it through a new service implementation behind an interface so existing view-models remain unchanged.
 
-Minimum OS versions: Android 21, iOS 15, MacCatalyst 15, Windows 10.0.17763.
+## Run
 
-### NuGet dependencies (pinned)
-
-| Package |
-|---|
-| `Syncfusion.Maui.Toolkit` |
-| `Syncfusion.Maui.DataGrid` |
-| `Syncfusion.Maui.ListView` |
-| `Syncfusion.Maui.Charts` |
-| `Syncfusion.Maui.Buttons` |
-| `Syncfusion.Maui.Gauges` |
-| `Syncfusion.Maui.Inputs` |
-| `Syncfusion.Maui.Calendar` |
-| `Syncfusion.Maui.Popup` |
-| `Syncfusion.Maui.Expander` |
-| `Syncfusion.Maui.TabView` |
-
----
-
-## Running the sample
-
-The project lives inside `SfDataGrid/HotelBookingManagement/` alongside its
-solution file `HotelManagerSample.slnx`.
-
-### From the command line
-
-Pick a target framework and run it. On a machine with the Android workload
-installed:
-
-```
-dotnet build HotelManagerSample.slnx -f net10.0-android
-dotnet build HotelManagerSample.slnx -f net10.0-windows10.0.19041.0   # Windows
-dotnet build HotelManagerSample.slnx -f net10.0-ios                   # macOS
+```bash
+dotnet build HotelBookingManagement/HotelManagerSample.slnx -t:Run -f net10.0-android
 ```
 
-Then deploy to a connected emulator/simulator/device, or run the desktop head
-on Windows.
+Other target frameworks:
 
-### From Visual Studio
+```bash
+# iOS (macOS host)
+dotnet build HotelBookingManagement/HotelManagerSample.slnx -t:Run -f net10.0-ios
+# Mac Catalyst (macOS host)
+dotnet build HotelBookingManagement/HotelManagerSample.slnx -t:Run -f net10.0-maccatalyst
+# Windows
+dotnet build HotelBookingManagement/HotelManagerSample.slnx -t:Run -f net10.0-windows10.0.19041.0
+```
 
-1. Open `SfDataGrid/HotelBookingManagement/HotelManagerSample.slnx`.
-2. Set `HotelManagerSample` as the startup project.
-3. Choose a target from the build-configuration dropdown (Android emulator,
-   iOS simulator, or the Windows machine).
-4. Press **F5**.
+From Visual Studio: open `HotelBookingManagement/HotelManagerSample.slnx`, set `HotelManagerSample` as the startup project, pick a target framework, press **F5**.
 
-### Choosing a surface
+To exercise both surfaces on a single machine: run on Windows to get the desktop layout and on an Android emulator (phone profile) to get the mobile layout.
 
-`App.IsMobileRuntime()` decides automatically — you do not need to configure
-anything:
+## Output
 
-- **Phone idiom** (any platform) → mobile `MobileShell`
-- **iOS or MacCatalyst** → mobile `MobileShell`
-- **Tablet / desktop / unknown** → desktop sidebar + `NavigationPage`
+![.NET MAUI Hotel Booking Management Sample demo.](HotelManagementDemo.gif)
 
-To exercise both surfaces on a single developer machine, run on a Windows host
-to get the desktop layout and on an Android emulator (phone profile) to get the
-mobile layout.
+## Project Structure
 
----
+```
+HotelManagerSample/
+├── MauiProgram.cs             # Host bootstrap, Syncfusion + font registration, DI
+├── App.xaml(.cs)              # Application root, surface routing, service-provider capture
+├── Models/                    # IHotelStore, HotelStore, Room, Booking, HotelConfig, HotelData
+├── ViewModels/                # DashboardViewModel, RoomsViewModel, BookingsViewModel, AddBookingViewModel
+├── Views/
+│   ├── DesktopUI/             # DashboardPage, RoomsPage, BookingsPage
+│   └── MobileUI/              # MobileShell + Dashboard, Rooms, Bookings, NewBooking
+├── Controls/                  # AppSidebar, AddBookingPopupContent, SfEntry, PhoneSanitiser
+├── Converters/                # Status→brush, avatars, chips, active-state, mobile CTA
+├── Resources/Fonts/           # OpenSans-Regular, OpenSans-Semibold, MauiMaterialAssets
+└── Platforms/                 # Android / iOS / MacCatalyst / Windows heads
+```
 
-## Project layout reference
+- **Views/** - UI pages and layouts (split by surface)
+- **ViewModels/** - presentation logic
+- **Models/** - data structures and the in-memory store
+- **Services/** - AI and helper services *(no AI service in this sample)*
+- **Resources/** - styles, images, and assets
 
-| Path | Contents |
-|---|---|
-| `MauiProgram.cs` | Host bootstrap, Syncfusion + font registration, DI registrations |
-| `App.xaml.cs` | Application root, surface routing, service-provider capture |
-| `Models/HotelStore.cs` | `IHotelStore` + `HotelStore` singleton |
-| `Models/HotelModels.cs` | `Room`, `Booking`, `SelectableBooking`, `HotelConfig`, `HotelData` seed |
-| `ViewModels/` | One view-model per page + the Add-Booking form |
-| `Views/DesktopUI/` | `DashboardPage`, `RoomsPage`, `BookingsPage` |
-| `Views/MobileUI/` | `MobileShell` + dashboard / rooms / bookings / new-booking pages |
-| `Controls/` | `AppSidebar`, `AddBookingPopupContent`, `SfEntry`, `PhoneSanitiser` |
-| `Converters/` | Value converters used by the XAML |
-| `Resources/Fonts/` | `OpenSans-Regular`, `OpenSans-Semibold`, `MauiMaterialAssets` |
-| `Platforms/` | Android / iOS / MacCatalyst / Windows platform heads |
+## Troubleshooting
 
-### Registered font aliases
+### Path too long exception
 
-| Alias | File |
-|---|---|
-| `OpenSansRegular` | `OpenSans-Regular.ttf` |
-| `OpenSansSemibold` | `OpenSans-Semibold.ttf` |
-| `MaterialAssets` | `MauiMaterialAssets.ttf` (Material icon glyphs) |
-
----
-
-## Notes
-
-- All data is regenerated in memory on every launch; there is no persistence.
-  Reloading the app restores the original seeded state.
-- `HotelConfig.ReferenceToday` is pinned to `2026-09-10` so screenshots and
-  walkthroughs stay reproducible. Change it in `Models/HotelModels.cs` to shift
-  the whole dataset relative to a real "today".
-- The Windows title bar is customised by `Platforms/Windows/TitleBarController.cs`,
-  which uses reflection to subscribe to `WindowCreated` because that event's
-  argument type changed between WinUI SDK versions.
+If you encounter a "Path Too Long" exception while building the project, close Visual Studio, rename the repository folder to a shorter name, and rebuild the project.
