@@ -11,23 +11,24 @@ namespace FluentMail.ViewModels;
 
 public partial class MailWorkspaceViewModel : ObservableObject
 {
-    readonly Mailbox mailbox = MockData.Mailbox;
+    readonly Mailbox mailbox;
     readonly List<MailMessage> folderMessages = [];
+
+    static bool IsPhone => DeviceInfo.Idiom == DeviceIdiom.Phone;
 
     public ObservableCollection<FolderNode> Folders => mailbox.Folders;
     public ObservableCollection<FolderNode> FolderItems { get; } = [];
-    public CalendarViewModel Calendar { get; } = new();
+    public CalendarViewModel Calendar { get; }
 
     [ObservableProperty]
     private bool isCalendarOpen;
     public IReadOnlyList<string> FilterOptions { get; } = ["All", "Unread", "Flagged"];
-    public MailAccount CurrentAccount { get; } = new() { DisplayName = "Kerry Best", Email = "kerry.best@contoso.com" };
+    public MailAccount CurrentAccount { get; } = new() { DisplayName = CurrentUser.DisplayName, Email = CurrentUser.Email };
 
     [ObservableProperty]
     private FolderNode? selectedFolder;
 
-    [ObservableProperty]
-    private ObservableCollection<MailMessage> visibleMessages = [];
+    public ObservableCollection<MailMessage> VisibleMessages { get; } = [];
 
     [ObservableProperty]
     private MailMessage? selectedMessage;
@@ -44,17 +45,17 @@ public partial class MailWorkspaceViewModel : ObservableObject
     [ObservableProperty]
     private bool isComposing;
 
-    public ComposeViewModel Composer { get; } = new();
+    public ComposeViewModel Composer { get; }
 
     public IReadOnlyList<string> SortOptions { get; } = ["Unread first", "Newest first"];
 
-    public IReadOnlyList<string> MobileFolderOptions { get; } = ["Inbox", "Sent Items", "Archive", "Deleted Items"];
+    public IReadOnlyList<string> MobileFolderOptions { get; } = [FolderNames.Inbox, FolderNames.SentItems, FolderNames.Archive, FolderNames.DeletedItems];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MobileTitle))]
-    private string selectedMobileFolder = "Inbox";
+    private string selectedMobileFolder = FolderNames.Inbox;
 
-    public string MobileTitle => SelectedMobileFolder == "Inbox" ? "Mail Inbox" : SelectedMobileFolder;
+    public string MobileTitle => SelectedMobileFolder == FolderNames.Inbox ? "Mail Inbox" : SelectedMobileFolder;
 
     [ObservableProperty]
     private bool isMobileInbox = true;
@@ -68,8 +69,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     public bool IsOtherTab => !IsFocusedTab;
 
-    [ObservableProperty]
-    private ObservableCollection<MailMessage> mobileMessages = [];
+    public ObservableCollection<MailMessage> MobileMessages { get; } = [];
 
     [ObservableProperty]
     private int focusedUnread;
@@ -117,19 +117,27 @@ public partial class MailWorkspaceViewModel : ObservableObject
 
     void RefreshMobile()
     {
-        var focused = mailbox.Inbox.Where(x => x.Folder == "Inbox").ToList();
-        var other = mailbox.Inbox.Where(x => x.Folder != "Inbox").ToList();
+        var focused = mailbox.Inbox.Where(x => x.Folder == FolderNames.Inbox).ToList();
+        var other = mailbox.Inbox.Where(x => x.Folder != FolderNames.Inbox).ToList();
         FocusedUnread = focused.Count(x => !x.IsRead);
         OtherUnread = other.Count(x => !x.IsRead);
         TotalUnread = FocusedUnread + OtherUnread;
 
-        IsMobileInbox = SelectedMobileFolder == "Inbox";
-        MobileMessages = Order(IsMobileInbox ? (IsFocusedTab ? focused : other) : mailbox.GetMessages(SelectedMobileFolder));
+        IsMobileInbox = SelectedMobileFolder == FolderNames.Inbox;
+        Replace(MobileMessages, Order(IsMobileInbox ? (IsFocusedTab ? focused : other) : mailbox.GetMessages(SelectedMobileFolder)));
     }
 
-    ObservableCollection<MailMessage> Order(IEnumerable<MailMessage> source) => new(SelectedSort == "Unread first"
+    List<MailMessage> Order(IEnumerable<MailMessage> source) => (SelectedSort == "Unread first"
         ? source.OrderByDescending(x => x.ReceivedOn.Date).ThenBy(x => x.IsRead).ThenByDescending(x => x.ReceivedOn)
-        : source.OrderByDescending(x => x.ReceivedOn));
+        : source.OrderByDescending(x => x.ReceivedOn)).ToList();
+
+    // Updates the existing collection in place and skips the work when nothing changed.
+    static void Replace(ObservableCollection<MailMessage> target, IReadOnlyList<MailMessage> items)
+    {
+        if (target.SequenceEqual(items)) return;
+        target.Clear();
+        foreach (var item in items) target.Add(item);
+    }
 
     private void Composer_PropertyChanged(object? sender,
      PropertyChangedEventArgs e)
@@ -144,8 +152,11 @@ public partial class MailWorkspaceViewModel : ObservableObject
         }
     }
 
-    public MailWorkspaceViewModel()
+    public MailWorkspaceViewModel(Mailbox mailbox, ComposeViewModel composer, CalendarViewModel calendar)
     {
+        this.mailbox = mailbox;
+        Composer = composer;
+        Calendar = calendar;
         Composer.PropertyChanged += Composer_PropertyChanged;
 
         foreach (var root in mailbox.Folders)
@@ -278,7 +289,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
     }
 
     [RelayCommand]
-    async Task NewMailAsync()
+    void NewMail()
     {
         IsComposing = true;
         Composer.Reset();
@@ -315,7 +326,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
             _ => query
         };
 
-        VisibleMessages = new ObservableCollection<MailMessage>(query);
+        Replace(VisibleMessages, query.ToList());
         IsEmptyFolder = VisibleMessages.Count == 0;
         SelectedMessage = null;
         UpdateFolderCounts();
@@ -324,6 +335,7 @@ public partial class MailWorkspaceViewModel : ObservableObject
     void UpdateFolderCounts()
     {
         mailbox.RefreshCounts();
-        RefreshMobile();
+        // The mobile list is only shown on phones; skip rebuilding it elsewhere.
+        if (IsPhone) RefreshMobile();
     }
 }

@@ -4,13 +4,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentMail.Data;
 using FluentMail.Models;
+using FluentMail.Services;
 using MailContact = FluentMail.Models.Contact;
 
 namespace FluentMail.ViewModels;
 
 public partial class ComposeViewModel : ObservableObject
 {
-    readonly Mailbox mailbox = MockData.Mailbox;
+    readonly Mailbox mailbox;
+    readonly IAlertService alerts;
 
     [ObservableProperty, NotifyCanExecuteChangedFor(nameof(SendCommand))] private string toText = string.Empty;
     [ObservableProperty] private string ccText = string.Empty;
@@ -25,8 +27,10 @@ public partial class ComposeViewModel : ObservableObject
     public ObservableCollection<MailContact> DesktopContacts { get; }
     public ObservableCollection<MailContact> PhoneContacts { get; }
 
-    public ComposeViewModel()
+    public ComposeViewModel(Mailbox mailbox, IAlertService alerts)
     {
+        this.mailbox = mailbox;
+        this.alerts = alerts;
         DesktopContacts = IsPhone ? [] : mailbox.Contacts;
         PhoneContacts = IsPhone ? mailbox.Contacts : [];
         ToContacts.CollectionChanged += OnToContactsCollectionChanged;
@@ -65,18 +69,16 @@ public partial class ComposeViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanSend))]
     async Task SendAsync()
     {
+        // Demo only: a regex is enough to flatten the mock editor's HTML into a preview.
+        // Do not reuse this for sanitising HTML in production code; use a real HTML parser/sanitizer.
         var plainBody = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(Body ?? string.Empty, "<[^>]+>", " ")).Trim();
         plainBody = System.Text.RegularExpressions.Regex.Replace(plainBody, @"\s+", " ");
         var recipients = Resolve(ToContacts, ToText);
         var cc = Resolve(CcContacts, CcText);
-        mailbox.SentItems.Insert(0, new MailMessage { Id = $"sent-{Guid.NewGuid():N}", Folder = "Sent Items", Sender = "Kerry Best", SenderEmail = "kerry.best@contoso.com", Subject = string.IsNullOrWhiteSpace(Subject) ? "(No subject)" : Subject, Preview = plainBody[..Math.Min(plainBody.Length, 80)], Body = plainBody, ReceivedOn = DateTime.Now, Recipients = recipients, RecipientsDisplay = recipients, Cc = cc, CcDisplay = cc, IsRead = true });
+        mailbox.SentItems.Insert(0, new MailMessage { Id = $"sent-{Guid.NewGuid():N}", Folder = FolderNames.SentItems, Sender = CurrentUser.DisplayName, SenderEmail = CurrentUser.Email, Subject = string.IsNullOrWhiteSpace(Subject) ? "(No subject)" : Subject, Preview = plainBody[..Math.Min(plainBody.Length, 80)], Body = plainBody, ReceivedOn = DateTime.Now, Recipients = recipients, RecipientsDisplay = recipients, Cc = cc, CcDisplay = cc, IsRead = true });
         mailbox.RefreshCounts();
         Reset();
         ShowMessage = true;
-        var page = Application.Current?.Windows.FirstOrDefault()?.Page;
-        if (page is not null)
-        {
-            await page.DisplayAlertAsync("Mail sent", "Your message has been sent.", "OK");
-        }
+        await alerts.ShowAsync("Mail sent", "Your message has been sent.", "OK");
     }
 }

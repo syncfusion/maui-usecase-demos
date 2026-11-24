@@ -21,7 +21,7 @@ public class Mailbox
             root.Count = 0;
         }
 
-        foreach (var folder in new[] { "Inbox", "Deleted Items" })
+        foreach (var folder in new[] { FolderNames.Inbox, FolderNames.DeletedItems })
         {
             SetCount(folder, CountFor(folder));
         }
@@ -29,11 +29,11 @@ public class Mailbox
 
     int CountFor(string folder) => folder switch
     {
-        "Inbox" => Inbox.Count(x => x.Folder == "Inbox" && !x.IsRead),
-        "Sent Items" => SentItems.Count,
-        "Drafts" => Drafts.Count,
-        "Archive" => Archive.Count,
-        "Deleted" or "Deleted Items" => Deleted.Count,
+        FolderNames.Inbox => Inbox.Count(x => x.Folder == FolderNames.Inbox && !x.IsRead),
+        FolderNames.SentItems => SentItems.Count,
+        FolderNames.Drafts => Drafts.Count,
+        FolderNames.Archive => Archive.Count,
+        FolderNames.Deleted or FolderNames.DeletedItems => Deleted.Count,
         _ => Inbox.Count(x => x.Folder == folder && !x.IsRead)
     };
 
@@ -51,10 +51,10 @@ public class Mailbox
 
     public IEnumerable<MailMessage> GetMessages(string folder) => folder switch
     {
-        "Sent Items" => SentItems,
-        "Drafts" => Drafts,
-        "Archive" => Archive,
-        "Deleted" or "Deleted Items" => Deleted,
+        FolderNames.SentItems => SentItems,
+        FolderNames.Drafts => Drafts,
+        FolderNames.Archive => Archive,
+        FolderNames.Deleted or FolderNames.DeletedItems => Deleted,
         _ => Inbox.Where(x => x.Folder == folder)
     };
 }

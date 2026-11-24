@@ -17,7 +17,7 @@
                 <Border StrokeThickness="0" BackgroundColor="{AppThemeBinding Light=White, Dark=#2B2B2B}" StrokeShape="RoundRectangle 8" Padding="16,0">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                         <Image Source="{AppThemeBinding Light=ic_search_b.svg, Dark=ic_search_b_d.svg}" WidthRequest="24" HeightRequest="24" />
-                        <controls:SfEntry Grid.Column="1" Text="{Binding Query}" Placeholder="Search mail and contacts" FontSize="16" />
+                        <controls:BorderlessEntry Grid.Column="1" Text="{Binding Query}" Placeholder="Search mail and contacts" FontSize="16" />
                     </Grid>
                 </Border>
 

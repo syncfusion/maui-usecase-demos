@@ -4,9 +4,9 @@ namespace FluentMail.Views;
 
 public partial class SearchPage : ContentPage
 {
-    public SearchPage()
+    public SearchPage(SearchViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new SearchViewModel();
+        BindingContext = viewModel;
     }
 }

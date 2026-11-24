@@ -5,10 +5,11 @@ namespace FluentMail.Views;
 
 public partial class CalendarPage : ContentPage
 {
-    readonly CalendarViewModel viewModel = new();
+    readonly CalendarViewModel viewModel;
 
-    public CalendarPage()
+    public CalendarPage(CalendarViewModel viewModel)
     {
+        this.viewModel = viewModel;
         InitializeComponent();
         BindingContext = viewModel;
         ConfigureCalendar(PhoneCalendar);

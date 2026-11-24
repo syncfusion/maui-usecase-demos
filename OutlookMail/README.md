@@ -8,7 +8,6 @@ Fluent Mail shows how to build a polished mail-style application in .NET MAUI us
 
 - **What the sample does:** presents a mailbox with folders, message lists, search, calendar, compose, archive, and deleted mail flows.
 - **Who it is for:** MAUI developers who want to see how Syncfusion controls can be combined into a real-world productivity UI.
-- **What AI capability it uses:** none. This sample uses local, deterministic app logic rather than an AI service.
 - **What outcome the user gets:** a fully self-contained mail showcase that demonstrates common mail app interactions without any backend or account setup.
 
 ## Key Features
@@ -17,17 +16,6 @@ Fluent Mail shows how to build a polished mail-style application in .NET MAUI us
 - Search with top contacts, recent searches, and tappable message results
 - Compose mail with recipient autocomplete and rich text editing
 - Mobile mail list with swipe actions, folder popup, and message reader
-
-## AI Flow
-
-This sample does not use AI.
-
-1. The user interacts with the mail workspace, search page, calendar, or compose UI.
-2. The app reads local mock mailbox data from in-memory collections.
-3. No AI service is called.
-4. The app applies local filtering, selection, and navigation logic.
-5. The result is rendered directly in the UI.
-6. No fallback or retry behavior is required because the sample is offline and self-contained.
 
 ## Controls Used
 
@@ -38,35 +26,32 @@ This sample does not use AI.
 - **SfRichTextEditor** — supports composing and editing formatted message content.
 - **SfComboBox** — provides folder and sort selection in the workspace UI.
 - **SfButton** — used for primary actions such as Send and Discard.
-- **SfEntry** — lightweight search input used in the search page.
+- **BorderlessEntry** - plain `Entry` subclass (not a Syncfusion control) that removes native input chrome.
 
 ## Architecture
 
 - **View / Page** — `MailWorkspacePage`, `SearchPage`, and `CalendarPage` host the sample UI.
 - **ViewModel** — `MailWorkspaceViewModel`, `SearchViewModel`, and `CalendarViewModel` manage state and commands.
 - **Models** — mail, folder, contact, calendar, and search result models represent the sample data.
-- **Supporting UI components** — `MobileHeader`, `MobileTabBar`, `CalendarFlyout`, `StateView`, and `SfEntry` provide reusable layout pieces.
+- **Supporting UI components** — `MobileHeader`, `MobileTabBar`, `CalendarFlyout`, `StateView`, and `BorderlessEntry` provide reusable layout pieces.
 - **Data layer** — `MockData` and `Mailbox` keep the sample local and self-contained.
 
 ## Prerequisites
 
 - .NET 10 SDK
 - .NET MAUI workload
-- Visual Studio 2022 with MAUI support
+- Visual Studio 2022 17.12 or later with the .NET MAUI workload (the .NET 10 SDK is installed separately; use the latest Visual Studio 2022 or Visual Studio 2026 for full .NET 10 tooling support), or VS Code with the .NET MAUI extension
 - Syncfusion MAUI packages referenced in the project file
 - A Syncfusion license key if your environment requires one
 
-### Environment Variables / Secrets
+## Design Notes
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| None | No | This sample does not use AI credentials or service configuration. |
+This is a demo, so some choices favour readability over production structure:
 
-**Notes**
-
-- Do not commit keys to source control.
-- Use environment variables, user secrets, or secure storage for real AI-backed apps.
-- If configuration is missing, there is no AI fallback path because this sample does not call an AI service.
+- Dependencies (`Mailbox`, `IAlertService`, child view models) are registered in `MauiProgram` and injected, but `Mailbox` is still backed by the static `MockData` and the view models are not covered by unit tests.
+- `MailWorkspacePage.xaml.cs` keeps a few UI-only handlers (swipe/tap forwarding from `SfListView` and closing `SfAutocomplete` drop-downs).
+- `ComposeViewModel` strips HTML from the editor with a regex to build a preview. This is fine for mock data; do not reuse it to sanitise HTML in production.
+- The sender identity and folder names live in `CurrentUser` and `FolderNames`.
 
 ## Run
 

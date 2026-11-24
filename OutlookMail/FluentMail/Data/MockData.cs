@@ -14,23 +14,23 @@ public static class MockData
         {
             Name = "Favorites",
             Children = [
-                new FolderNode { Name = "Inbox", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = FolderNames.Inbox, CanFavourite = true, IsFavourite = true },
                 new FolderNode { Name = "Sales Reports", CanFavourite = true, IsFavourite = true },
                 new FolderNode { Name = "Personnel", CanFavourite = true, IsFavourite = true },
                 new FolderNode { Name = "Marketing Reports", CanFavourite = true, IsFavourite = true },
-                new FolderNode { Name = "Sent Items", CanFavourite = true, IsFavourite = true }
+                new FolderNode { Name = FolderNames.SentItems, CanFavourite = true, IsFavourite = true }
             ]
         });
         mailbox.Folders.Add(new FolderNode
         {
             Name = "Kerry Best",
             Children = [
-                new FolderNode { Name = "Inbox", CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = FolderNames.Inbox, CanFavourite = true, IsFavourite = true },
                 new FolderNode { Name = "Clutter", CanFavourite = true },
-                new FolderNode { Name = "Drafts", CanFavourite = true },
-                new FolderNode { Name = "Sent Items", CanFavourite = true, IsFavourite = true },
-                new FolderNode { Name = "Deleted Items", CanFavourite = true },
-                new FolderNode { Name = "Archive", CanFavourite = true },
+                new FolderNode { Name = FolderNames.Drafts, CanFavourite = true },
+                new FolderNode { Name = FolderNames.SentItems, CanFavourite = true, IsFavourite = true },
+                new FolderNode { Name = FolderNames.DeletedItems, CanFavourite = true },
+                new FolderNode { Name = FolderNames.Archive, CanFavourite = true },
                 new FolderNode { Name = "Junk Mail", CanFavourite = true },
                 new FolderNode { Name = "Personnel", CanFavourite = true, IsFavourite = true },
                 new FolderNode { Name = "Sales Reports", CanFavourite = true, IsFavourite = true },
@@ -65,7 +65,7 @@ public static class MockData
             ("Camila Torres", "camila.torres@contoso.com", "Release notes draft", "I've drafted the release notes for the product update.", false, false),
         };
 
-        string[] categories = ["Personnel", "Sales Reports", "Inbox", "My Team", "Personnel", "Marketing Reports", "Clutter", "Junk Mail", "Sales Reports", "Marketing Reports"];
+        string[] categories = ["Personnel", "Sales Reports", FolderNames.Inbox, "My Team", "Personnel", "Marketing Reports", "Clutter", "Junk Mail", "Sales Reports", "Marketing Reports"];
 
         for (var i = 0; i < 50; i++)
         {
@@ -83,7 +83,7 @@ public static class MockData
             mailbox.Inbox.Add(new MailMessage
             {
                 Id = $"inbox-{i + 1}",
-                Folder = i % 3 == 0 ? categories[i % inbox.Length] : "Inbox",
+                Folder = i % 3 == 0 ? categories[i % inbox.Length] : FolderNames.Inbox,
                 Sender = item.Item1,
                 SenderEmail = item.Item2,
                 Subject = subject,
@@ -116,7 +116,7 @@ public static class MockData
             mailbox.SentItems.Add(new MailMessage
             {
                 Id = $"sent-{i + 1}",
-                Folder = "Sent Items",
+                Folder = FolderNames.SentItems,
                 Sender = "Kerry Best",
                 SenderEmail = "kerry.best@contoso.com",
                 Subject = item.Item3,
@@ -143,7 +143,7 @@ public static class MockData
             mailbox.Drafts.Add(new MailMessage
             {
                 Id = $"draft-{i + 1}",
-                Folder = "Drafts",
+                Folder = FolderNames.Drafts,
                 Sender = "Kerry Best",
                 SenderEmail = "kerrybest@contoso.com",
                 Subject = drafts[i].Item1,
@@ -169,7 +169,7 @@ public static class MockData
             mailbox.Archive.Add(new MailMessage
             {
                 Id = $"archive-{i + 1}",
-                Folder = "Archive",
+                Folder = FolderNames.Archive,
                 Sender = archive[i].Item1,
                 SenderEmail = archive[i].Item2,
                 Subject = archive[i].Item3,
@@ -194,7 +194,7 @@ public static class MockData
             mailbox.Deleted.Add(new MailMessage
             {
                 Id = $"deleted-{i + 1}",
-                Folder = "Deleted",
+                Folder = FolderNames.Deleted,
                 Sender = deleted[i].Item1,
                 SenderEmail = deleted[i].Item2,
                 Subject = deleted[i].Item3,
@@ -220,15 +220,15 @@ public static class MockData
         {
             var local = message.Recipients.Split(',')[0].Trim().Split('@')[0];
             var name = string.Join(' ', local.Split('.', StringSplitOptions.RemoveEmptyEntries).Select(x => char.ToUpper(x[0]) + x[1..]));
-            if (message.Folder != "Inbox" && string.IsNullOrEmpty(message.Cc))
+            if (message.Folder != FolderNames.Inbox && string.IsNullOrEmpty(message.Cc))
                 message.Cc = new[] { "project.office@contoso.com", "hr@contoso.com", "legal@contoso.com" }[Math.Abs(message.Id.GetHashCode()) % 3];
             message.RecipientsDisplay = message.Recipients;
             message.CcDisplay = message.Cc;
             if (message.HasAttachments)
                 message.AttachmentName = new[] { "spec-v2.fig", "Pitch-Final.pptx", "boarding-pass.pdf", "Q3-Forecast.xlsx" }[Math.Abs(message.Id.GetHashCode()) % 4];
-            if (message.Folder == "Inbox" && Math.Abs(message.Id.GetHashCode()) % 3 == 0)
+            if (message.Folder == FolderNames.Inbox && Math.Abs(message.Id.GetHashCode()) % 3 == 0)
                 message.Tag = new[] { "Product Ops", "Strategy", "Engineering" }[Math.Abs(message.Id.GetHashCode()) % 3 == 0 ? Math.Abs(message.Id.GetHashCode() / 3) % 3 : 0];
-            message.Greeting = message.Folder == "Sent Items" ? string.Empty : $"Hi {name},";
+            message.Greeting = message.Folder == FolderNames.SentItems ? string.Empty : $"Hi {name},";
         }
 
         mailbox.RefreshCounts();

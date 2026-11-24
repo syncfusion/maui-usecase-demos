@@ -8,7 +8,7 @@ namespace FluentMail.ViewModels;
 
 public partial class SearchViewModel : ObservableObject
 {
-    readonly Mailbox mailbox = MockData.Mailbox;
+    readonly Mailbox mailbox;
 
     [ObservableProperty] private string query = string.Empty;
     [ObservableProperty] private bool unreadOnly;
@@ -35,8 +35,9 @@ public partial class SearchViewModel : ObservableObject
         new() { Name = "MAUI_Fluent2_Design_System.pptx", Owner = "Elena Rostova", SizeText = "18.4 MB", DateText = "Oct 11", Kind = "PPT", Tint = "#FFF4DD" }
     ];
 
-    public SearchViewModel()
+    public SearchViewModel(Mailbox mailbox)
     {
+        this.mailbox = mailbox;
         string[] roles = ["PM Lead", "Architect", "Design", "Dev Ops"];
         string[] statuses = ["#17B26A", "#F79009", "#17B26A", "#F04462"];
         TopContacts = mailbox.Inbox
@@ -88,7 +89,7 @@ public partial class SearchViewModel : ObservableObject
         if (SelectedContact is not null) list = list.Where(x => x.SenderEmail == SelectedContact.Email);
         if (UnreadOnly) list = list.Where(x => !x.IsRead);
         if (FlaggedOnly) list = list.Where(x => x.IsFlagged);
-        if (ToMeOnly) list = list.Where(x => x.Recipients.Contains("kerry.best", StringComparison.OrdinalIgnoreCase));
+        if (ToMeOnly) list = list.Where(x => x.Recipients.Contains(CurrentUser.Alias, StringComparison.OrdinalIgnoreCase));
         if (WithAttachments) list = list.Where(x => x.HasAttachments);
         Results = new ObservableCollection<MailMessage>(list.OrderByDescending(x => x.ReceivedOn).Take(30));
     }
