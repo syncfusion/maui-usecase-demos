@@ -1,8 +1,6 @@
-# Smart Expense Tracker
+# Expense Tracker
 
 A cross-platform .NET MAUI personal finance and expense tracking application built with Syncfusion controls to manage daily spending, monitor budgets, and visualize financial trends.
-
-> **Naming note:** the folder is named `ExpenseTracker`, while the solution, project and root namespace are named `SmartExpense` (`SmartExpense.slnx`, `Expense Tracker/SmartExpense.csproj`).
 
 ## Overview
 
@@ -77,17 +75,6 @@ This sample does not call any external service. It uses local, deterministic fin
 - Local/offline logic
 - In-memory data persistence
 - No external service required
-
-### Environment Variables / Secrets
-
-| Variable | Required | Description |
-| --- | --- | --- |
-| SYNCFUSION_LICENSE_KEY | no | Syncfusion license key for environments that require registration |
-
-### Notes
-
-- Do not commit keys to source control.
-- Use environment variables, user secrets, or secure storage for license keys.
 - If configuration is missing, the sample runs normally with local sample data and standard Syncfusion evaluation banners if unlicensed.
 
 ## Run
