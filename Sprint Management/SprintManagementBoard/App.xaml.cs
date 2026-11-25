@@ -11,7 +11,7 @@ public partial class App : Application
 
 	public App()
 	{
-		Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1JBaF1cXGFCf1FpRGFGfV5yckVHYVZSQ3xaQE0SNHVRdkdlWH5cc3RSQmheVkRyVkdWYEw=");
+		Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY_HERE");
 		InitializeComponent();
 		ApplySyncfusionTheme();
 		RequestedThemeChanged += (_, _) => ApplySyncfusionTheme();

@@ -1,7 +1,5 @@
 using System.ComponentModel;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Microsoft.Maui.Controls;
 using Syncfusion.Maui.Kanban;
 using Syncfusion.Maui.Scheduler;
 
@@ -20,20 +18,22 @@ public class TasksViewModel : INotifyPropertyChanged
     private DateTime? _startDateFilter;
     private DateTime? _endDateFilter;
     private bool _isBusy;
-    private readonly Random _random = new();
 
     /// <summary>
-    /// TasksViewModel constructor initializes the ViewModel with the provided ITaskService for data operations and sets up commands for loading data, editing tasks, moving tasks, saving tasks, and rescheduling tasks.
+    /// Field to ensure that only one filter application runs at
+    /// </summary>
+    private readonly SemaphoreSlim _applyFiltersLock = new(1, 1);
+
+    /// <summary>
+    /// Initializes a new instance of the TasksViewModel class and configures commands used for loading, filtering, moving and saving tasks.
     /// </summary>
     /// <param name="taskService"></param>
     public TasksViewModel(ITaskService taskService)
     {
         _taskService = taskService;
         LoadCommand = new Command(async () => await LoadAsync());
-        EditTaskCommand = new Command<object>(async (o) => await OpenEditModalAsync(o));
         MoveTaskCommand = new Command<object>(async (o) => await OnTaskMovedAsync(o));
         SaveTaskCommand = new Command<TaskModel>(async (t) => await SaveTaskAsync(t));
-        RescheduleTaskCommand = new Command<object>(async (o) => await OnRescheduleAsync(o));
     }
 
     /// <summary>
@@ -196,11 +196,6 @@ public class TasksViewModel : INotifyPropertyChanged
     public Command LoadCommand { get; }
 
     /// <summary>
-    /// Gets the command to open the edit modal for a task, allowing users to modify task details.
-    /// </summary>
-    public Command<object> EditTaskCommand { get; }
-
-    /// <summary>
     /// Gets the command to handle task movement events from the Kanban board.
     /// </summary>
     public Command<object> MoveTaskCommand { get; }
@@ -209,11 +204,6 @@ public class TasksViewModel : INotifyPropertyChanged
     /// Gets the command to save task changes back to the data source after editing.
     /// </summary>
     public Command<TaskModel> SaveTaskCommand { get; }
-
-    /// <summary>
-    /// Gets the command to handle task rescheduling events from the scheduler view.
-    /// </summary>
-    public Command<object> RescheduleTaskCommand { get; }
 
     /// <summary>
     /// Event triggered when a property value changes, used to notify the UI of updates to bindable properties.
@@ -237,14 +227,24 @@ public class TasksViewModel : INotifyPropertyChanged
             }
 
             Projects.Clear();
-            var projectGroups = Tasks.GroupBy(t => string.IsNullOrEmpty(t.ProjectId) ? "Project1" : t.ProjectId);
-            foreach (var g in projectGroups)
+            foreach (var projectId in Tasks
+                .Select(x =>
+                    string.IsNullOrWhiteSpace(x.ProjectId)
+                        ? "Project1"
+                        : x.ProjectId)
+                .Distinct())
             {
-                var pid = g.Key;
-                var name = pid.StartsWith("project", StringComparison.OrdinalIgnoreCase)
-                    ? pid.Replace("project", "Project ", StringComparison.OrdinalIgnoreCase)
-                    : pid;
-                Projects.Add(new ProjectModel { Id = pid, Name = name });
+                Projects.Add(new ProjectModel
+                {
+                    Id = projectId,
+                    Name = projectId.StartsWith("project",
+                            StringComparison.OrdinalIgnoreCase)
+                        ? projectId.Replace(
+                            "project",
+                            "Project ",
+                            StringComparison.OrdinalIgnoreCase)
+                        : projectId
+                });
             }
 
             if (SelectedProject == null && Projects.Count > 0)
@@ -296,7 +296,7 @@ public class TasksViewModel : INotifyPropertyChanged
             var avatarsToShow = assigneesInOrder.Take(3).ToList();
             foreach (var a in avatarsToShow)
             {
-                // Currently using a generic avatar placeholder; replace with per-user images if available
+                // Sample uses a shared avatar image.
                 VisibleAvatars.Add("user.png");
             }
             var remaining = Math.Max(0, filteredList.Count - avatarsToShow.Count);
@@ -311,17 +311,14 @@ public class TasksViewModel : INotifyPropertyChanged
             {
                 var km = new KanbanModel
                 {
-                    ID = double.TryParse(t.Id.GetHashCode().ToString(), out var _id) ? _id : 0,
+                    ID = Math.Abs(t.Id.GetHashCode()),
                     Title = t.Title,
                     Description = t.Description ?? string.Empty,
                     Category = t.Status,
                     Tags = t.Tags.ToList()
                 };
                 // Avoid adding duplicates if the same task is already present
-                if (!kanbanData.Any(k => k.ID == km.ID && k.Title == km.Title && k.Category == km.Category))
-                {
-                    kanbanData.Add(km);
-                }
+                kanbanData.Add(km);
             }
 
             KanbanData = kanbanData;
@@ -334,15 +331,22 @@ public class TasksViewModel : INotifyPropertyChanged
                     // avoid duplicate appointments
                     if (!Appointments.Any(a => string.Equals(a.Id?.ToString(), t.Id, StringComparison.OrdinalIgnoreCase)))
                     {
-                        Appointments.Add(new SchedulerAppointment
+                        var appointment = new SchedulerAppointment
                         {
                             Id = t.Id,
                             Subject = t.Title,
                             StartTime = t.StartDate.Value,
                             EndTime = t.EndDate.Value,
-                            ResourceIds = new System.Collections.ObjectModel.ObservableCollection<object> { t.AssigneeId! },
-                            Background = GetRandomColor()
-                        });
+                            ResourceIds = new ObservableCollection<object>(),
+                            Background = GetAppointmentColor(t.AssigneeId)
+                        };
+
+                        if (!string.IsNullOrWhiteSpace(t.AssigneeId))
+                        {
+                            appointment.ResourceIds.Add(t.AssigneeId);
+                        }
+
+                        Appointments.Add(appointment);
                     }
                 }
             }
@@ -379,33 +383,39 @@ public class TasksViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Field to ensure that only one filter application runs at
-    /// </summary>
-    readonly System.Threading.SemaphoreSlim _applyFiltersLock = new(1, 1);
-
-    /// <summary>
-    /// Method to generate a random color for appointment backgrounds, used in the scheduler view to visually differentiate tasks.
+    /// Color palette used to assign deterministic appointment colors.
     /// </summary>
     /// <returns></returns>
-    static readonly string[] Palette = { "#6366F1", "#0EA5E9", "#10B981", "#F59E0B", "#EC4899", "#8B5CF6", "#14B8A6" };
+    static readonly string[] Palette =
+{
+    "#6366F1",
+    "#0EA5E9",
+    "#10B981",
+    "#F59E0B",
+    "#EC4899",
+    "#8B5CF6",
+    "#14B8A6"
+};
 
-    Color GetRandomColor() => Color.FromArgb(Palette[_random.Next(Palette.Length)]);
+    private Color GetAppointmentColor(string? resourceId)
+    {
+        if (string.IsNullOrWhiteSpace(resourceId))
+        {
+            return Color.FromArgb(Palette[0]);
+        }
+
+        var index =
+            Math.Abs(resourceId.GetHashCode()) %
+            Palette.Length;
+
+        return Color.FromArgb(Palette[index]);
+    }
 
     /// <summary>
     /// Method to raise the PropertyChanged event for a given property name.
     /// </summary>
     /// <param name="name"></param>
     protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-    /// <summary>
-    /// Method to open the edit modal for a task.
-    /// </summary>
-    /// <param name="arg">The args</param>
-    private Task OpenEditModalAsync(object? arg)
-    {
-        // Placeholder: UI will wire modal navigation. Keep minimal for now.
-        return Task.CompletedTask;
-    }
 
     /// <summary>
     /// Method to handle task movement events from the Kanban board.
@@ -423,7 +433,8 @@ public class TasksViewModel : INotifyPropertyChanged
             if (task == null) return;
             task.Status = data.Category?.ToString() ?? task.Status;
             await _taskService.UpdateTaskAsync(task);
-            await LoadAsync();
+            await ApplyFilters();
+            UpdateCounts();
         }
     }
 
@@ -460,15 +471,5 @@ public class TasksViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(InProgressCount));
         OnPropertyChanged(nameof(TestingCount));
         OnPropertyChanged(nameof(DoneCount));
-    }
-
-    /// <summary>
-    /// Method to handle task rescheduling events from the scheduler view.
-    /// </summary>
-    /// <param name="arg">The object.</param>
-    private async Task OnRescheduleAsync(object? arg)
-    {
-        // Placeholder for scheduler args handling
-        await Task.CompletedTask;
     }
 }

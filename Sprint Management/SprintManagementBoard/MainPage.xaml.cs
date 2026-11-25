@@ -25,8 +25,7 @@ public partial class MainPage : ContentPage
 		_viewModel.LoadCommand?.Execute(null);
 		SetSelectedSidebar(_selectedView);
 #if DEBUG && WINDOWS
-		// Dev aid for scripts/shot.ps1: SPRINT_START_VIEW=scheduler|datagrid|popup
-		var start = Environment.GetEnvironmentVariable("SPRINT_START_VIEW");
+		var start = "SPRINT_START_VIEW";
 		if (start == "scheduler" || start == "datagrid") Dispatcher.DispatchDelayed(TimeSpan.FromSeconds(3), () => ShowView(start));
 		else if (start == "popup") Dispatcher.DispatchDelayed(TimeSpan.FromSeconds(3), () => NewTask_Clicked(null, EventArgs.Empty));
 #endif
@@ -35,8 +34,11 @@ public partial class MainPage : ContentPage
 	private static async Task SafeExecuteAsync(Func<Task> action)
 	{
 		try { await action(); }
-		catch { /* keep the sample resilient */ }
-	}
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
+    }
 
 	// ---------- Date range ----------
 

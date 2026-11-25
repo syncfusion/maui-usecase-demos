@@ -6,15 +6,22 @@ A cross-platform .NET MAUI sprint planning board for visualizing, filtering, and
 
 The Sprint Management Board helps project teams organize work across Kanban, timeline, and tabular views. It provides a unified workspace where managers and developers can monitor task status, assignments, priorities, schedules, and progress.
 
+## Purpose
+
+This sample demonstrates how multiple Syncfusion .NET MAUI controls can work together within a sprint management experience. It is intended as an end-to-end showcase of task planning, scheduling, filtering, and reporting workflows rather than a single-control demonstration.
+
 ## What the Sample Does
 
 - Displays tasks in Kanban, Scheduler, and DataGrid views
 - Filters tasks by project and date range
 - Creates tasks with assignees, statuses, and schedule information
+- Synchronizes updates across multiple task-management views
+- Demonstrates responsive layouts for desktop and mobile devices
 
 ## Who It Is For
 
 - Scrum teams
+- Project managers
 - Developers evaluating Syncfusion controls
 - .NET MAUI application builders
 
@@ -30,6 +37,8 @@ Users get a practical sprint management workspace that works seamlessly across d
 - Status summary cards for To Do, In Progress, Testing, and Done work
 - Responsive navigation and layouts for desktop, tablet, and mobile
 - Light and dark theme support
+- Resource-based scheduling and task planning
+- Mock data service for quick evaluation and learning
 
 ## Workflow
 
@@ -38,8 +47,19 @@ Users get a practical sprint management workspace that works seamlessly across d
 3. The ViewModel filters the in-memory task collection.
 4. The Kanban board, Scheduler, and DataGrid receive the filtered data.
 5. The user creates a task through the task creation popup.
-6. The mock service stores the task and notifies the UI.
+6. The mock service stores the task and updates the UI.
 7. The updated task appears in the selected project view.
+
+## Syncfusion Controls Showcased
+
+The sample demonstrates the following Syncfusion controls working together:
+
+- **SfKanban** for workflow visualization
+- **SfScheduler** for timeline and resource scheduling
+- **SfDataGrid** for detailed task reporting
+- **SfComboBox** for project selection
+- **SfPopup** for task creation workflows
+- **SfButton** for navigation and actions
 
 ## Controls Used
 
@@ -51,14 +71,14 @@ Users get a practical sprint management workspace that works seamlessly across d
 | SfComboBox | Allows project selection |
 | SfPopup | Hosts the new-task dialog |
 | SfButton | Provides primary actions and navigation |
-| Picker | Selects assignees and statuses |
+| Picker | Selects assignees and task statuses |
 | DatePicker | Selects task and filter dates |
 | ProgressBar | Displays task completion progress |
 | Border / Card Styles | Creates consistent, theme-aware UI surfaces |
 
 ## Architecture
 
-The sample follows a simple MVVM architecture:
+The sample follows a simple MVVM architecture.
 
 ### View / Page
 
@@ -77,9 +97,10 @@ The sample follows a simple MVVM architecture:
 Responsibilities:
 
 - Loading sample data
-- Managing filters
+- Managing project and date filters
 - Creating tasks
 - Updating observable collections
+- Synchronizing data across views
 
 ### Service Layer
 
@@ -97,7 +118,8 @@ Responsibilities:
 Used for:
 
 - Formatting progress values
-- Mapping priorities and tags to UI colors
+- Mapping priorities to colors
+- Mapping task metadata to UI elements
 
 ### Supporting UI
 
@@ -106,6 +128,22 @@ Used for:
 - Fonts
 - Icons
 - Application shell and navigation
+
+## Data Source
+
+The sample uses a local in-memory mock service (`MockTaskService`).
+
+The sample does **not** require:
+
+- User authentication
+- Backend APIs
+- Cloud services
+- Databases
+- AI services
+- Environment variables
+- Application secrets
+
+All data is generated locally for demonstration purposes.
 
 ## Prerequisites
 
@@ -117,9 +155,9 @@ Used for:
 
 ## Default Behavior
 
-The sample uses mock in-memory data.
+The application starts with sample projects, users, and sprint tasks loaded into memory.
 
-No cloud services, APIs, AI providers, databases, environment variables, or secrets are required.
+Task creation, filtering, scheduling, and reporting operations are performed locally without external dependencies.
 
 ## Run the Application
 
@@ -153,7 +191,7 @@ The application displays a responsive sprint management workspace featuring:
 - Timeline scheduler
 - DataGrid task view
 
-**Demo**
+## Demo
 
 ![.NET MAUI Sprint Management Demo](SprintManagementDemo.gif)
 
@@ -172,10 +210,25 @@ Sprint Management/
     ├── Services/
     ├── ViewModels/
     ├── App.xaml
+    ├── App.xaml.cs
     ├── AppShell.xaml
     ├── MainPage.xaml
+    ├── MainPage.xaml.cs
     └── SprintManagementBoard.csproj
 ```
+
+## Syncfusion License
+
+Add your Syncfusion license key before running the sample.
+
+```csharp
+// TODO: Add your Syncfusion license key before running the sample.
+SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY_HERE");
+```
+
+For more information, see the Syncfusion licensing documentation:
+
+https://help.syncfusion.com/common/essential-studio/licensing
 
 ## Troubleshooting
 

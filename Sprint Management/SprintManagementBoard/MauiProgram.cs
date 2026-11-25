@@ -10,7 +10,7 @@ public static class MauiProgram
 	{
 		var builder = MauiApp.CreateBuilder();
 
-			// Configure Syncfusion handlers for the controls we will use
+			// Register application services and view models.
 			builder.ConfigureSyncfusionCore();
 			builder.ConfigureSyncfusionToolkit();
 
