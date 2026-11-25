@@ -41,7 +41,7 @@ Visitor data and theme state are held in the running app only. There is no backe
 - `SfPopup`, `SfChipGroup`, `SfTextInputLayout`, `SfDatePicker`, and `SfTimePicker`: registration and filtering.
 - `SfBadgeView`, `SfAvatarView`, and `SfButton`: status presentation, visitor identity, and actions.
 
-## Architecture
+### Notes
 
 The app uses CommunityToolkit.Mvvm and dependency injection:
 
