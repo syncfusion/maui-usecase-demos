@@ -73,7 +73,7 @@ The project also targets Android, iOS, and Mac Catalyst. Build or run with `net1
 
 ## Output
 
-![Digital Queue Management running on Windows](DigitalQueueManagement_Windows.gif)
+![Digital Queue Management](DigitalQueueManagement.gif)
 
 ## Project Structure
 
