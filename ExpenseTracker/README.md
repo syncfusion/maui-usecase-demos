@@ -75,6 +75,7 @@ This sample does not call any external service. It uses local, deterministic fin
 - Local/offline logic
 - In-memory data persistence
 - No external service required
+- If configuration is missing, the sample runs normally with local sample data and standard Syncfusion evaluation banners if unlicensed.
 
 ## Run
 
