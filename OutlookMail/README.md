@@ -1,83 +1,162 @@
-# Fluent Mail
+# Fluent Mail: .NET MAUI Use Case Sample
 
-A Syncfusion .NET MAUI mail workspace sample that demonstrates an Outlook-style inbox, search, compose, calendar, and folder management experience with local mock data.
+An Outlook-style mail workspace built with **Syncfusion .NET MAUI controls**, demonstrating adaptive inbox, search, compose, folder, calendar, and mobile message workflows using local mock data.
 
 ## Overview
 
-Fluent Mail shows how to build a polished mail-style application in .NET MAUI using Syncfusion controls and MVVM.
+Fluent Mail provides a self-contained productivity app experience for desktop, tablet, and phone layouts:
 
-- **What the sample does:** presents a mailbox with folders, message lists, search, calendar, compose, archive, and deleted mail flows.
-- **Who it is for:** MAUI developers who want to see how Syncfusion controls can be combined into a real-world productivity UI.
-- **What outcome the user gets:** a fully self-contained mail showcase that demonstrates common mail app interactions without any backend or account setup.
+- **What the sample does**: Shows a multi-folder mailbox, filters and searches messages, opens and manages mail, composes and sends demo messages, navigates mobile search and calendar pages, and opens a desktop calendar flyout.
+- **Who it is for**: Developers building mail clients, productivity dashboards, or adaptive MAUI applications.
+- **What it demonstrates**: Desktop and phone-specific layouts, grouped `SfListView` and `SfTreeView`-style folder navigation, `SfCalendar`, `SfPopup`, recipient `SfAutocomplete`, rich-text editing, mobile swipe actions, and MVVM state management.
+- **What outcome the user gets**: A runnable local mail showcase with mock folders and messages. It does not connect to an email account or send mail over a network.
 
 ## Key Features
 
-- Folder navigation with favorites, hover actions, and message counts
-- Search with top contacts, recent searches, and tappable message results
-- Compose mail with recipient autocomplete and rich text editing
-- Mobile mail list with swipe actions, folder popup, and message reader
+- **Adaptive mailbox**: Desktop/tablet layouts use a folder column, message list, and reading pane or composer; phone layouts use a focused-mail/other-mail switcher, folder popup, grouped mail list, and bottom tab bar.
+- **Folder navigation**: Mock folders are grouped under Favorites and Kerry Best. Folder counts, favorite folders, archive, delete, and selected-folder state are managed in the in-memory mailbox.
+- **Desktop message actions**: Search within the selected folder, filter All/Unread/Flagged, sort and manage messages, and select a message in the reading pane.
+- **Compose mail**: Desktop uses recipient autocomplete and `SfRichTextEditor`; phone uses autocomplete and a plain editor. Sending creates a Sent Items entry and shows a demo confirmation.
+- **Mobile search**: The Search page supports text search plus unread, flagged, to-me, attachment, and top-contact filters. It can open selected results in a message reader.
+- **Calendar**: The desktop calendar is an in-app flyout. On phones, Calendar is a separate Shell page with Agenda, Day, and Month modes and controls to add or remove events.
+- **Mobile swipe actions**: Swiping a mail item to the right deletes it; swiping left archives it. Each action updates the in-memory mailbox collections.
+
+## Data Flow
+
+1. `MauiProgram.CreateMauiApp()` registers the static mock `Mailbox`, alert service, composer, and page/ViewModels through dependency injection.
+2. `MockData.CreateMailbox()` initializes folder nodes, inbox, sent, draft, archive, deleted, and contact collections in memory.
+3. `MailWorkspaceViewModel` derives desktop folder/message collections and phone focused/other folder collections from `Mailbox`.
+4. Desktop folder, search, and filter changes update `VisibleMessages`; selecting a message marks it read and refreshes unread folder counts.
+5. Mobile folder selection rebuilds `MobileMessages`, while the Search page applies its independent search and filter criteria across inbox, sent, and archive messages.
+6. Archive/delete actions move or remove the selected message in the mailbox collections. Sent mail is appended to `SentItems` by `ComposeViewModel`.
+7. `CalendarViewModel` reads and modifies `CalendarData.Entries` in memory. The data is shared by the desktop flyout and phone calendar page.
 
 ## Controls Used
 
-- **SfListView** — displays folders, mail lists, mobile swipe lists, and agenda items.
-- **SfCalendar** — shows the calendar experience and date selection UI.
-- **SfPopup** — provides the mobile folder picker popup.
-- **SfAutocomplete** — powers recipient lookup in the compose experience.
-- **SfRichTextEditor** — supports composing and editing formatted message content.
-- **SfComboBox** — provides folder and sort selection in the workspace UI.
-- **SfButton** — used for primary actions such as Send and Discard.
-- **BorderlessEntry** - plain `Entry` subclass (not a Syncfusion control) that removes native input chrome.
+- `SfListView` (ListView): Desktop folders and messages, mobile grouped mail, and desktop calendar agenda.
+- `SfCalendar` (Calendar): Desktop calendar flyout and phone Agenda/Day/Month calendar views.
+- `SfPopup` (Popup): Mobile folder-selection menu.
+- `SfAutocomplete` (Inputs): Desktop and phone recipient lookup in the compose experience.
+- `SfRichTextEditor` (Rich Text): Desktop compose body with a formatting toolbar.
+- `SfComboBox` (Inputs): Desktop sort/filter selection and phone sort selection.
+- `SfButton` (Buttons): Desktop New Mail and calendar/compose actions.
+- `SfTreeView` / Syncfusion DataSource grouping: The folder list uses a `SfListView` plus data-source grouping rather than a standalone `SfTreeView`.
+- .NET MAUI `Entry`, `Editor`, `Switch`, `TimePicker`, `Border`, and `ImageButton`: Phone compose fields and supporting controls.
+- `BorderlessEntry`: Project-specific `Entry` subclass that registers platform handler mappings to remove native entry chrome.
 
 ## Architecture
 
-- **View / Page** — `MailWorkspacePage`, `SearchPage`, and `CalendarPage` host the sample UI.
-- **ViewModel** — `MailWorkspaceViewModel`, `SearchViewModel`, and `CalendarViewModel` manage state and commands.
-- **Models** — mail, folder, contact, calendar, and search result models represent the sample data.
-- **Supporting UI components** — `MobileHeader`, `MobileTabBar`, `CalendarFlyout`, `StateView`, and `BorderlessEntry` provide reusable layout pieces.
-- **Data layer** — `MockData` and `Mailbox` keep the sample local and self-contained.
+The sample uses MVVM and a three-route .NET MAUI Shell:
+
+- **Views** (`Views/`): `MailWorkspacePage`, `SearchPage`, and `CalendarPage`, plus reusable mobile header, tab bar, calendar flyout, state view, and borderless entry.
+- **ViewModels** (`ViewModels/`): Mail workspace state, compose state, search/filter state, and calendar agenda/edit state.
+- **Models** (`Models/`): Mail, folder, contact, account, calendar, search, agenda, and file-item data structures.
+- **Data** (`Data/`): Static mock mailbox and calendar data, plus the runtime `Mailbox` collection container.
+- **Services** (`Services/`): `IAlertService` abstraction used to display a demo send confirmation.
+- **Converters** (`Converters/`): Initials, Boolean negation, date grouping, and sorting helpers.
+- **Application shell** (`AppShell.xaml`, `AppShell.xaml.cs`): Registers Mail, Search, and Calendar routes with the Shell tab bar disabled.
+
+The mail state is local and process-lifetime only. `ComposeViewModel` and `CalendarViewModel` update the static/mock collections, but the sample does not persist mailbox or calendar changes after restart.
 
 ## Prerequisites
 
 - .NET 10 SDK
-- .NET MAUI workload
-- Visual Studio 2022 17.12 or later with the .NET MAUI workload (the .NET 10 SDK is installed separately; use the latest Visual Studio 2022 or Visual Studio 2026 for full .NET 10 tooling support), or VS Code with the .NET MAUI extension
-- Syncfusion MAUI packages referenced in the project file
-- A Syncfusion license key if your environment requires one
+- .NET MAUI workload, plus the platform workload for Android, iOS, Mac Catalyst, or Windows
+- Visual Studio 2022 (17.14+) or VS Code with the MAUI extension
+- A configured emulator/simulator or connected target device
+- Syncfusion .NET MAUI packages: restored automatically from NuGet
 
-## Design Notes
+## Configuration
 
-This is a demo, so some choices favour readability over production structure:
+No configuration is required. All messages, folders, contacts, files, and calendar entries are mock data.
 
-- Dependencies (`Mailbox`, `IAlertService`, child view models) are registered in `MauiProgram` and injected, but `Mailbox` is still backed by the static `MockData` and the view models are not covered by unit tests.
-- `MailWorkspacePage.xaml.cs` keeps a few UI-only handlers (swipe/tap forwarding from `SfListView` and closing `SfAutocomplete` drop-downs).
-- `ComposeViewModel` strips HTML from the editor with a regex to build a preview. This is fine for mock data; do not reuse it to sanitise HTML in production.
-- The sender identity and folder names live in `CurrentUser` and `FolderNames`.
+### Default Behavior
+
+- **Local/offline logic**: The sample uses static in-memory collections and does not call an email provider or account service.
+- **Desktop and phone layouts**: Layout selection uses MAUI device idiom. Desktop/tablet behavior is separate from phone behavior.
+- **Demo send**: Sending a composed message adds it to `SentItems` and shows an alert; it does not transmit network mail.
+
+### Environment Variables / Secrets
+
+None required. The sample does not use API keys, credentials, environment variables, or external mail services.
+
+### Notes
+
+- Syncfusion controls run in evaluation mode unless a valid license key is registered. To register one:
+  1. Obtain a license key from <https://www.syncfusion.com/account/license>.
+  2. Add the registration call at the top of `MauiProgram.cs` in `CreateMauiApp()`:
+
+     ```csharp
+     Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY");
+     ```
+
+  See [Syncfusion licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key) for details.
 
 ## Run
 
 ```bash
-dotnet build FluentMail.sln -c Debug
+dotnet build OutlookMail/FluentMail/FluentMail.csproj -t:Run -f net10.0-android
 ```
 
-If you want to target a specific platform, use the matching MAUI target framework from the project file.
+Other supported platforms:
+
+```bash
+dotnet build OutlookMail/FluentMail/FluentMail.csproj -t:Run -f net10.0-ios
+dotnet build OutlookMail/FluentMail/FluentMail.csproj -t:Run -f net10.0-maccatalyst
+dotnet build OutlookMail/FluentMail/FluentMail.csproj -t:Run -f net10.0-windows10.0.19041.0
+```
+
+Or open `OutlookMail/FluentMail.sln` in Visual Studio or VS Code, restore packages, and deploy to your target platform.
+
+The iOS and Mac Catalyst targets are included on non-Linux hosts, and the Windows target is included on Windows hosts.
 
 ## Output
 
-Visual summary: an Outlook-style mail workspace with a folder column, message list, calendar view, and a compose experience.
-
-![.NET MAUI Outlook Sample demo.](OutlookSampleDemo.gif)
+![Outlook-style mail sample](OutlookSampleDemo.gif)
 
 ## Project Structure
 
-- `Views/` — UI pages and layouts
-- `ViewModels/` — presentation logic and commands
-- `Models/` — data structures
-- `Data/` — local mock mailbox and calendar data
-- `Converters/` — UI value converters
-- `Resources/` — styles, images, fonts, and other assets
+- `Views/`: Mail workspace, search, calendar, and reusable controls
+- `ViewModels/`: Mail, compose, search, and calendar presentation logic
+- `Models/`: Message, folder, contact, account, and calendar data structures
+- `Data/`: Mock mailbox and calendar data
+- `Services/`: Alert-service abstraction
+- `Converters/`: XAML date, initials, filtering, and grouping converters
+- `Resources/`: Styles, images, fonts, app icon, and splash asset
+- `Platforms/`: Android, iOS, Mac Catalyst, and Windows entry points
 
 ## Troubleshooting
 
-### Path too long exception
+**Issue 1: A composed message or calendar change disappears after restart**
+Cause: Mailbox and calendar collections are in-memory demo state.
+Fix: Restarting or reloading the app recreates the mock data. Persistence would require a database or local preference/file implementation.
 
-If you encounter a "Path Too Long" exception while building the project, close Visual Studio, rename the repository folder to a shorter name, and rebuild the project.
+**Issue 2: Phone folder or desktop folder counts look stale**
+Cause: Folder counts are recalculated after mailbox actions and message read-state changes.
+Fix: Verify that the operation completed in `Mailbox`; reopening or reselecting a folder triggers the workspace refresh.
+
+**Issue 3: Rich text editing is unavailable on phone**
+Cause: The phone compose layout intentionally uses a plain `Editor`, while `SfRichTextEditor` is bound only for non-phone idioms.
+Fix: Run the desktop/tablet layout to use the rich-text editor.
+
+**Issue 4: Build or workload errors**
+Cause: The .NET 10 SDK or required MAUI/platform workload is missing.
+Fix: Verify `dotnet --version` and install the needed MAUI and platform workloads.
+
+**Issue 5: Trial/evaluation banner shown**
+Cause: No Syncfusion license key is registered.
+Fix: Register a valid license key in `MauiProgram.cs` as shown in the Notes section.
+
+## Security and Privacy Notes
+
+- All mail, sender, recipient, calendar, and contact data is fictional mock data.
+- No account credentials or API keys are used, and no email is transmitted.
+- Compose and calendar changes remain in memory unless you add explicit persistence.
+- If adapting this demo for real mail, use the provider's authenticated APIs and secure credential storage; never hard-code credentials.
+
+## Supported Platforms
+
+- Android
+- iOS
+- Windows
+- macOS (Mac Catalyst)
