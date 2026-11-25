@@ -255,13 +255,6 @@ public partial class AddTransactionViewModel : BaseViewModel
 
             // Add mode UX feedback: show confirmation, reset form and
             // navigate back to the Dashboard tab on mobile.
-            //var page = Application.Current?.Windows.FirstOrDefault()?.Page;
-            //if (page is not null)
-            //    await page.DisplayAlertAsync(
-            //        "Saved",
-            //        "Transaction saved successfully.",
-            //        "OK");
-
             ResetForm();
 
                 try
@@ -274,7 +267,7 @@ public partial class AddTransactionViewModel : BaseViewModel
                         WeakReferenceMessenger.Default.Send(new NavigateToTabMessage(target));
                     });
                 }
-                catch { }
+                catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
 
             // If this page was pushed onto a Navigation stack, pop it so the
             // user returns to the MainPage where the tab change is visible.
@@ -287,11 +280,11 @@ public partial class AddTransactionViewModel : BaseViewModel
 
                     if (nav is not null && nav.NavigationStack.Count > 1)
                     {
-                        try { await nav.PopAsync(); } catch { }
+                        try { await nav.PopAsync(); } catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
                     }
                 });
             }
-            catch { }
+            catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
         }
         catch (Exception ex)
         {

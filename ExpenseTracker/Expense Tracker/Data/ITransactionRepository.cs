@@ -15,7 +15,7 @@ public interface ITransactionRepository
     /// Retrieves transactions for a specific month and year.
     /// </summary>
     /// <param name="year">The year to filter transactions.</param>
-    /// <param name="month">The month (1–12) to filter transactions.</param>
+    /// <param name="month">The month (1-12) to filter transactions.</param>
     Task<List<Transaction>> GetByMonthAsync(int year, int month);
 
     /// <summary>

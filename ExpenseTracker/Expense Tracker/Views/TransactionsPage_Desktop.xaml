@@ -21,13 +21,13 @@
             <Setter Property="FontSize"
                 Value="14"/>
             <Setter Property="FontFamily"
-                Value="Aptos"/>
+                Value="OpenSansRegular"/>
         </Style>
         <converters:IntEqualsConverter x:Key="IntEqualsConverter"/>
         <!-- Ensure row cell font family, size and vertical centering match design -->
         <Style TargetType="syncfusion:DataGridCell">
             <Setter Property="FontFamily"
-                Value="Aptos"/>
+                Value="OpenSansRegular"/>
             <Setter Property="FontSize"
                 Value="14"/>
         </Style>

@@ -117,7 +117,7 @@ public partial class DashboardPage : ContentView
                                     AddTransactionPopup.IsOpen = false;
                             });
                         }
-                        catch { }
+                        catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
                     });
                 }
                 catch (Exception ex)

@@ -49,7 +49,7 @@ public class SelectedIndexToColorConverter : IValueConverter
                 }
             }
         }
-        catch { }
+        catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
         return Colors.Transparent;
     }
 

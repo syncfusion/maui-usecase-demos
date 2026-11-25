@@ -45,7 +45,7 @@ public partial class TransactionsPage_Desktop : ContentView
         {
             if (ViewModel is not null)
             {
-                try { ViewModel.SelectedTransactions.CollectionChanged -= SelectedTransactions_CollectionChanged_FromViewModel; } catch { }
+                try { ViewModel.SelectedTransactions.CollectionChanged -= SelectedTransactions_CollectionChanged_FromViewModel; } catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
             }
             return;
         }
@@ -89,7 +89,7 @@ public partial class TransactionsPage_Desktop : ContentView
                         {
                             ViewModel.SelectedTransactions.CollectionChanged += SelectedTransactions_CollectionChanged_FromViewModel;
                         }
-                        catch { }
+                        catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
                     }
                 }
                 catch (Exception ex)

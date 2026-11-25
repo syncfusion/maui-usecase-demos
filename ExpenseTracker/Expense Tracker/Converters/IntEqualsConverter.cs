@@ -13,7 +13,7 @@ public class IntEqualsConverter : IValueConverter
             if (value is int i && parameter is string p && int.TryParse(p, out var expected))
                 return i == expected;
         }
-        catch { }
+        catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
         return false;
     }
 

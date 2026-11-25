@@ -524,7 +524,7 @@ public partial class TransactionsViewModel : BaseViewModel
             Text = "All",
             TextStyle = new SegmentTextStyle
             {
-                FontFamily = "Aptos",
+                FontFamily = "OpenSansRegular",
                 FontSize = 16
             }
         });

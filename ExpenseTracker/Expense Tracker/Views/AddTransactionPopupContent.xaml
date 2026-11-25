@@ -68,7 +68,7 @@
                     <Label
                         x:Name="HeaderLabel"
                         Text="Create Transaction"
-                        FontFamily="Aptos"
+                        FontFamily="OpenSansRegular"
                         FontSize="24"
                         TextColor="#111827">
 
