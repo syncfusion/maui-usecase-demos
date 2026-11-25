@@ -5,7 +5,7 @@ using Microsoft.Maui.ApplicationModel;
 namespace SmartExpense;
 
 /// <summary>
-/// LoginPage is a ContentPage that serves as the user interface for logging into the SmartExpense application. It binds to a LoginViewModel, which handles the logic for user authentication and navigation. The page listens for events from the ViewModel to navigate to the main page upon successful login or to the registration page when the user opts to create a new account.
+/// Profile setup (onboarding) page. Binds to SetupProfileViewModel and navigates to the main page when setup completes or is skipped.
 /// </summary>
 public partial class SetupProfilePage : ContentPage
 {

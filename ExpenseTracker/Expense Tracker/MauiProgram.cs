@@ -1,4 +1,4 @@
-﻿using Syncfusion.Licensing;
+using Syncfusion.Licensing;
 using Syncfusion.Maui.Core.Hosting;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
@@ -23,7 +23,6 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("expense_tracker_icon.ttf", "ExpenseTrackerIcons");
-                fonts.AddFont("Aptos.ttf", "Aptos");
                 fonts.AddFont("MaterialIconsOutlined-Regular.otf", "MaterialIcons");
             });
 
@@ -68,11 +67,11 @@ public static class MauiProgram
                     {
                         await state.InitializeAsync();
                     }
-                    catch { }
+                    catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
                 });
             }
         }
-        catch { }
+        catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
 
         return app;
     }

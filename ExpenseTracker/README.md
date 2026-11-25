@@ -8,7 +8,7 @@ Managing personal finances across multiple categories, tracking income versus ex
 
 - **What the sample does**: Provides an intuitive dashboard with financial insight cards (balance, income, expense, savings), circular doughnut breakdown charts, spline area income/expense monthly trend charts, a paginated transaction history grid, and a streamlined transaction recording workflow.
 - **Who it is for**: Developers looking to build personal finance, budgeting, or line-of-business data visualization applications in .NET MAUI using Syncfusion controls.
-- **What AI capability it uses**: The sample operates deterministically with local, in-memory repository services and mock financial logic; it does not require an external AI endpoint.
+- **Data processing**: The sample operates deterministically with local, in-memory repository services and mock financial logic; it does not require any external service.
 - **What outcome the user gets**: A ready-to-run, cross-platform personal finance manager that works offline with zero configuration, responsive desktop and mobile views, and rich interactive charts and data grids.
 
 ## Key Features
@@ -20,7 +20,7 @@ Managing personal finances across multiple categories, tracking income versus ex
 - **Add & Edit Transactions**: Modal and page workflows utilizing `SfComboBox`, `SfNumericEntry`, `SfCalendar`, and `SfTextInputLayout` for fast transaction entry.
 - **Adaptive Desktop & Mobile Layouts**: Responsive navigation using `SfTabView` on mobile devices and an adaptive sidebar list layout on desktop platforms.
 
-## AI Flow
+## Data Flow
 
 1. User enters financial transactions or navigates dashboard views.
 2. The app prepares local category, period, and transaction context through the repository services.
@@ -63,18 +63,18 @@ Data flows from the in-memory data store to repositories, which populate the cen
 - .NET 10 SDK
 - .NET MAUI workload (`dotnet workload install maui`)
 - Visual Studio 2022 (17.14+) or VS Code with the .NET MAUI extension
-- Syncfusion .NET MAUI packages (v34.2.7 or latest compatible, restored via NuGet)
+- Syncfusion .NET MAUI packages (v35.x or latest compatible, restored via NuGet)
 - Syncfusion license key, if required by your environment
 
-## AI Configuration
+## Configuration
 
-This sample does not require an external cloud AI endpoint. It uses local, deterministic financial computation and in-memory sample repositories.
+This sample does not call any external service. It uses local, deterministic financial computation and in-memory sample repositories.
 
 ### Default Behavior
 
 - Local/offline logic
 - In-memory data persistence
-- No cloud AI provider required
+- No external service required
 
 ### Environment Variables / Secrets
 
@@ -104,7 +104,7 @@ dotnet build SmartExpense.csproj -t:Run -f net10.0-maccatalyst
 dotnet build SmartExpense.csproj -t:Run -f net10.0-windows10.0.19041.0
 ```
 
-Alternatively, open `SmartExpense.sln` in Visual Studio or VS Code, select your target platform, and run the project.
+Alternatively, open `SmartExpense.slnx` in Visual Studio or VS Code, select your target platform, and run the project.
 
 ## Output
 
@@ -123,11 +123,11 @@ Alternatively, open `SmartExpense.sln` in Visual Studio or VS Code, select your 
 
 ## Troubleshooting
 
-**Issue 1: Missing AI configuration**
+**Issue 1: Syncfusion trial banner or license message**
 
-Cause: Required environment variables or secrets are not set.
+Cause: The license key in `Helpers/AppConstants.cs` is the placeholder `YOUR_LICENSE_KEY`.
 
-Fix: This sample operates offline using in-memory mock data; no external AI configuration is required.
+Fix: Replace the placeholder with your own Syncfusion license key locally. Do not commit it to source control.
 
 **Issue 2: Build or workload errors**
 
@@ -135,9 +135,9 @@ Cause: Missing SDK, MAUI workload, or incompatible package version.
 
 Fix: Verify that the .NET 10 SDK is installed and run `dotnet workload install maui` to update workloads.
 
-**Issue 3: AI response is unexpected**
+**Issue 3: Charts or totals look unexpected**
 
-Cause: Prompt, input, or service configuration may be incomplete.
+Cause: Transaction input may be incomplete.
 
 Fix: Ensure transaction fields (amount, category, date) contain valid values for proper aggregation and chart rendering.
 
@@ -145,7 +145,7 @@ Fix: Ensure transaction fields (amount, category, date) contain valid values for
 
 - Do not hard-code API or license keys in source code.
 - Financial transactions are held in-memory for demonstration purposes and are not transmitted externally.
-- Minimize prompt and data content to only what is needed when integrating external services.
+- Minimize the data shared with any external service you integrate.
 - Prefer secure storage for user preferences and sensitive credentials.
 - Review any external API calls or extensions for unintended data exposure.
 

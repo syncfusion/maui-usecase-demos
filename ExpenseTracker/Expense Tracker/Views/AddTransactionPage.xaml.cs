@@ -26,7 +26,7 @@ public partial class AddTransactionPage : ContentPage
         {
             MainScroll.Scrolled += MainScroll_Scrolled;
         }
-        catch { }
+        catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
     }
 
     /// <summary>

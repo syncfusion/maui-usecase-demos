@@ -20,7 +20,7 @@ public static class AppConstants
     /// </summary>
     public const string CurrencyFormat = "C2";
 
-    public const string SyncfusionLicenseKey = "Ngo9BigBOggjHTQxAR8/V1JGaF5cXGhIfEx1RHxQdld5ZFRHallYTnNWUj0eQnxTdEBiWH1YcXVRQGVbWUNzW0leYQ==";
+    public const string SyncfusionLicenseKey = "YOUR_LICENSE_KEY";
 }
 
 /// <summary>

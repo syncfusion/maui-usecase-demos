@@ -21,7 +21,7 @@ public class IntToBoolConverter : IValueConverter
             // If value is not int, treat null/empty as false
             if (value == null) return false;
         }
-        catch { }
+        catch (Exception ignoredEx) { System.Diagnostics.Debug.WriteLine(ignoredEx); }
         return true;
     }
 

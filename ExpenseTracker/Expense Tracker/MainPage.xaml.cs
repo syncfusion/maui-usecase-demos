@@ -85,9 +85,6 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
         });
 
         SelectedItem = NavItems[0];
-
-        //// Initialize Windows content
-        //UpdateContentForWindows(0);
     }
 
     protected override void OnAppearing()
