@@ -10,7 +10,8 @@
              xmlns:dashboard="clr-namespace:SmartExpense;assembly=SmartExpense"
              xmlns:popups="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
              xmlns:local="clr-namespace:SmartExpense" 
-             x:Class="SmartExpense.DashboardPage">
+             x:Class="SmartExpense.DashboardPage"
+             x:DataType="dashboard:DashboardViewModel">
 
     <Shell.NavBarIsVisible>
         False
@@ -21,7 +22,7 @@
                 <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
                 <converters:StringToInitialsConverter x:Key="StringToInitialsConverter"/>
                 <!-- Icon-only Tab Header -->
-                <DataTemplate x:Key="IconTabHeaderTemplate">
+                <DataTemplate x:Key="IconTabHeaderTemplate" x:DataType="dashboard:NavItem">
                     <Border
                         Padding="8"
                         StrokeThickness="1"
@@ -223,7 +224,7 @@
                                             </chart:DoughnutSeries.DataLabelSettings>
 
 
-                                            <!-- ✅ CENTER VIEW -->
+                                            <!-- CENTER VIEW -->
                                             <chart:DoughnutSeries.CenterView>
                                                 <Label
                                                     Text="{Binding BindingContext.DoughnutCenterText, Source={x:Reference DashboardRoot}}"
@@ -281,7 +282,7 @@
                                                         SelectionMode="None"
                                                      >
                                     <listview:SfListView.ItemTemplate>
-                                        <DataTemplate>
+                                        <DataTemplate x:DataType="dashboard:TransactionDisplayItem">
                                             <VerticalStackLayout>
                                                 <Grid Padding="8,10"
                                                       ColumnDefinitions="Auto,*,Auto">
@@ -666,7 +667,7 @@
                                     <Grid>
                                         <chart:SfCircularChart HeightRequest="430">
                                             <chart:SfCircularChart.Resources>
-                                                <DataTemplate x:Key="legendTemplate">
+                                                <DataTemplate x:Key="legendTemplate" x:DataType="{x:Null}">
                                                     <StackLayout WidthRequest="200"
                                                                  Orientation="Horizontal">
                                                         <Ellipse HeightRequest="12"
@@ -683,7 +684,7 @@
                                             <chart:SfCircularChart.Legend>
                                                 <chart:ChartLegend Placement="Right">
                                                     <chart:ChartLegend.ItemTemplate>
-                                                        <DataTemplate>
+                                                        <DataTemplate x:DataType="{x:Null}">
                                                             <Grid ColumnDefinitions="Auto,*,Auto"
                                                                   Padding="6,4"
                                                                   ColumnSpacing="8">
@@ -732,7 +733,7 @@
                                                 </chart:DoughnutSeries.DataLabelSettings>
 
 
-                                                <!-- ✅ CENTER VIEW -->
+                                                <!-- CENTER VIEW -->
                                                 <chart:DoughnutSeries.CenterView>
                                                     <Label
                                                         Text="{Binding BindingContext.DoughnutCenterText, Source={x:Reference DashboardRoot}}"
@@ -789,7 +790,7 @@
                                                          BackgroundColor="Transparent"
                                                          SelectionMode="None">
                                         <listview:SfListView.ItemTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate x:DataType="dashboard:TransactionDisplayItem">
                                                 <VerticalStackLayout>
                                                     <Grid Padding="8,10"
                                                           ColumnDefinitions="Auto,*,Auto">
@@ -1028,7 +1029,7 @@
             </Border.StrokeShape>
 
             <Border.GestureRecognizers>
-                <!-- ✅ SAME COMMAND AS DESKTOP -->
+                <!-- SAME COMMAND AS DESKTOP -->
                 <TapGestureRecognizer Command="{Binding NavigateToAddCommand}"/>
             </Border.GestureRecognizers>
 

@@ -8,7 +8,8 @@
              xmlns:syncfusion="http://schemas.syncfusion.com/maui"
              xmlns:converters="clr-namespace:SmartExpense;assembly=SmartExpense"
              xmlns:popups="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
-             x:Class="SmartExpense.TransactionsPage_Mobile">
+             x:Class="SmartExpense.TransactionsPage_Mobile"
+             x:DataType="converters:TransactionsViewModel">
     <ContentView.Resources>
         <Style TargetType="syncfusion:DataGridHeaderCell">
             <!-- No colored header background per reference -->
@@ -68,7 +69,7 @@
         </Style>
 
         <!-- Cell template: income = light green pill, expense = light pink pill -->
-        <DataTemplate x:Key="TypeCellTemplate">
+        <DataTemplate x:Key="TypeCellTemplate" x:DataType="converters:Transaction">
             <Border Padding="8,4"
                  HorizontalOptions="Center"
                  VerticalOptions="Center">
@@ -311,12 +312,12 @@
                                         <datagrid:DataGridTemplateColumn Width="50"
                                                                       MappingName="IsSelected">
                                             <datagrid:DataGridTemplateColumn.HeaderTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="{x:Null}">
                                                     <buttons:SfCheckBox IsChecked="{Binding BindingContext.AllVisibleSelected, Source={x:Reference dataGrid}, Mode=TwoWay}"/>
                                                 </DataTemplate>
                                             </datagrid:DataGridTemplateColumn.HeaderTemplate>
                                             <datagrid:DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <buttons:SfCheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
                                                 </DataTemplate>
                                             </datagrid:DataGridTemplateColumn.CellTemplate>
@@ -331,7 +332,7 @@
                                         <datagrid:DataGridTemplateColumn HeaderText="Name" Width="150">
                                             <!-- Ensure header text is left-aligned to match design -->
                                             <datagrid:DataGridTemplateColumn.HeaderTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <Label Text="Name"
                                                         FontSize="14"
                                                         FontAttributes="Bold"
@@ -342,7 +343,7 @@
                                                 </DataTemplate>
                                             </datagrid:DataGridTemplateColumn.HeaderTemplate>
                                             <datagrid:DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <VerticalStackLayout Padding="0,4"
                                                                       Spacing="2">
                                                         <Label Text="{Binding Category}"
@@ -360,7 +361,7 @@
                                         <datagrid:DataGridTemplateColumn HeaderText="Type" Width="100"
                                                                      >
                                             <datagrid:DataGridTemplateColumn.HeaderTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <Label Text="Type"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
@@ -371,7 +372,7 @@
                                                 </DataTemplate>
                                             </datagrid:DataGridTemplateColumn.HeaderTemplate>
                                             <datagrid:DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <Border  HorizontalOptions="Start"
                                                           Stroke="Transparent"
                                                           VerticalOptions="Center" >
@@ -404,14 +405,14 @@
                                                                 VerticalTextAlignment="Center"
                                                                 Margin="8,2,8,4">
                                                                 <Label.Triggers>
-                                                                    <!-- ✅ Income text color -->
+                                                                    <!-- Income text color -->
                                                                     <DataTrigger TargetType="Label"
                                                                               Binding="{Binding Type}"
                                                                               Value="Income">
                                                                         <Setter Property="TextColor"
                                                                              Value="#1F7A1F"/>
                                                                     </DataTrigger>
-                                                                    <!-- ✅ Expense text color -->
+                                                                    <!-- Expense text color -->
                                                                     <DataTrigger TargetType="Label"
                                                                               Binding="{Binding Type}"
                                                                               Value="Expense">
@@ -431,7 +432,7 @@
                                                                      Width="100"
                                                                      Format="C">
                                             <datagrid:DataGridNumericColumn.HeaderTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <Label Text="Amount"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
@@ -442,7 +443,7 @@
                                                 </DataTemplate>
                                             </datagrid:DataGridNumericColumn.HeaderTemplate>
                                             <datagrid:DataGridNumericColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <Label Text="{Binding Amount}"
                                                         VerticalTextAlignment="Center"
                                                         HorizontalTextAlignment="Start"
@@ -457,7 +458,7 @@
                                         <datagrid:DataGridTextColumn HeaderText="Remarks"
                                                                  >
                                             <datagrid:DataGridTextColumn.HeaderTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <Label Text="Remarks"
                                                         FontSize="14"
                                                         FontAttributes="Bold"
@@ -468,7 +469,7 @@
                                                 </DataTemplate>
                                             </datagrid:DataGridTextColumn.HeaderTemplate>
                                             <datagrid:DataGridTextColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
                                                     <Label Text="{Binding Notes}"
                                                         VerticalTextAlignment="Center"
                                                         HorizontalTextAlignment="Start"
@@ -543,7 +544,7 @@
             </Border.StrokeShape>
 
             <Border.GestureRecognizers>
-                <!-- ✅ SAME COMMAND AS DESKTOP -->
+                <!-- SAME COMMAND AS DESKTOP -->
                 <TapGestureRecognizer Command="{Binding NavigateToAddCommand}"/>
             </Border.GestureRecognizers>
 

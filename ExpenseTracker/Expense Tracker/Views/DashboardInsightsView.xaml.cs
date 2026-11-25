@@ -111,7 +111,7 @@ namespace SmartExpense
             RootGrid.RowDefinitions.Clear();
             RootGrid.ColumnDefinitions.Clear();
 
-            // ✅ KEEP EXISTING 720px → 2×2 (UNCHANGED)
+            // KEEP EXISTING 720px → 2×2 (UNCHANGED)
             if (isTabletOrNarrowDesktop  || useSingleColumnMobile)
             {
                 RootGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
@@ -134,7 +134,7 @@ namespace SmartExpense
             }
             else
             {
-                // ✅ DESKTOP: 1 × 4 (UNCHANGED)
+                // DESKTOP: 1 × 4 (UNCHANGED)
                 RootGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
 
                 for (int i = 0; i < 4; i++)

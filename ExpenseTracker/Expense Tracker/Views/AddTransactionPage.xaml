@@ -11,7 +11,8 @@
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
     NavigationPage.HasNavigationBar="False"
-    x:Class="SmartExpense.AddTransactionPage">
+    x:Class="SmartExpense.AddTransactionPage"
+    x:DataType="converters:AddTransactionViewModel">
 
     <Grid BackgroundColor="#E4E9FF">
 

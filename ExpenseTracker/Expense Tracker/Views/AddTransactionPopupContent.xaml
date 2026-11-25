@@ -11,6 +11,7 @@
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
     x:Class="SmartExpense.AddTransactionPopupContent"
+    x:DataType="converters:AddTransactionViewModel"
     x:Name="Root">
 
     <ContentView.Resources>
