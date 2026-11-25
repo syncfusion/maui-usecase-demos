@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:datagrid="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+            xmlns:pager="clr-namespace:Syncfusion.Maui.DataPager;assembly=Syncfusion.Maui.DataPager"
+            xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+            xmlns:input="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+            xmlns:syncfusion="http://schemas.syncfusion.com/maui"
+            xmlns:converters="clr-namespace:SmartExpense;assembly=SmartExpense"
+            xmlns:popups="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             x:Class="SmartExpense.TransactionsPage_Desktop"
+             x:DataType="converters:TransactionsViewModel">
+    <ContentView.Resources>
+        <Style TargetType="syncfusion:DataGridHeaderCell">
+            <!-- No colored header background per reference -->
+            <Setter Property="Background"
+                Value="Transparent"/>
+            <Setter Property="TextColor"
+                Value="Black"/>
+            <Setter Property="FontAttributes"
+                Value="Bold"/>
+            <Setter Property="FontSize"
+                Value="14"/>
+            <Setter Property="FontFamily"
+                Value="OpenSansRegular"/>
+        </Style>
+        <converters:IntEqualsConverter x:Key="IntEqualsConverter"/>
+        <!-- Ensure row cell font family, size and vertical centering match design -->
+        <Style TargetType="syncfusion:DataGridCell">
+            <Setter Property="FontFamily"
+                Value="OpenSansRegular"/>
+            <Setter Property="FontSize"
+                Value="14"/>
+        </Style>
+        <Style x:Key="ActionButtonStyle"
+           TargetType="Button">
+            <!-- Disabled state -->
+            <Setter Property="BackgroundColor"
+                Value="#D3D3D3"/>
+            <Setter Property="TextColor"
+                Value="White"/>
+            <Setter Property="CornerRadius"
+                Value="12"/>
+            <Setter Property="Padding"
+                Value="16,8"/>
+            <Setter Property="WidthRequest"
+                Value="80"/>
+            <Setter Property="HeightRequest"
+                Value="30"/>
+
+            <Style.Triggers>
+                <Trigger TargetType="Button"
+                     Property="IsEnabled"
+                     Value="True">
+                    <!-- Enabled (blue) -->
+                    <Setter Property="BackgroundColor"
+                        Value="#3B82F6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="buttons:SfCheckBox">
+            <Setter Property="CheckedColor"
+                Value="#2F6D86"/>
+            <Setter Property="UncheckedColor"
+                Value="#9CA3AF"/>
+            <Setter Property="TickColor"
+                Value="White"/>
+        </Style>
+
+        <!-- Cell template: income = light green pill, expense = light pink pill -->
+        <DataTemplate x:Key="TypeCellTemplate" x:DataType="converters:Transaction">
+            <Border Padding="8,4"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8"/>
+                </Border.StrokeShape>
+                <Border BackgroundColor="{Binding Type, Converter={StaticResource TypeToColorConverter}}"
+                    Stroke="#AAAAAA"
+                    StrokeThickness="0.5">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8"/>
+                    </Border.StrokeShape>
+                    <Label Text="{Binding Type}"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="8,2"/>
+                </Border>
+            </Border>
+        </DataTemplate>
+    </ContentView.Resources>
+
+    <Grid BackgroundColor="#E4E9FF">
+        <Grid RowDefinitions="Auto,*" BackgroundColor="#E4E9FF" >
+
+            <!-- ================= APP BAR ================= -->
+            <Border Grid.Row="0"
+                BackgroundColor="#F9FAFB"
+                Padding="20,18"
+                Margin="0,0,0,0">
+                <Grid ColumnDefinitions="*,Auto"
+                  VerticalOptions="Center">
+                    <!-- LEFT: APP TITLE -->
+                    <Label
+                    Text="Transaction"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="Black"
+                    VerticalTextAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- ================= Action Toolbar + Datagrid ================= -->
+            <Grid Grid.Row="1"
+              RowDefinitions="*"
+              Padding="20">
+                <Border Padding="20"
+                    Grid.Row="1"
+                    BackgroundColor="#F9FAFB">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18"/>
+                    </Border.StrokeShape>
+                    <Grid RowDefinitions="Auto,*,Auto"
+                      ColumnDefinitions="*"
+                      RowSpacing="12">
+                        <Grid Grid.Row="0"  ColumnDefinitions="*,Auto"  ColumnSpacing="12">
+
+                                <buttons:SfSegmentedControl HeightRequest="47"
+                                                        HorizontalOptions="Start"
+                                                        IsVisible="{Binding ShowToolbar}"
+                                                        Grid.Column="0"
+                                                        SelectedIndex="{Binding SelectedSegmentIndex, Mode=TwoWay}"
+                                                        Stroke="#2F6D86">
+                                    <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                                        <buttons:SelectionIndicatorSettings SelectionIndicatorPlacement="Fill"
+                                                                        Background="#2F6D86"
+                                                                        TextColor="White"/>
+                                    </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                                    <buttons:SfSegmentedControl.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>All</x:String>
+                                            <x:String>Income</x:String>
+                                            <x:String>Expense</x:String>
+                                        </x:Array>
+                                    </buttons:SfSegmentedControl.ItemsSource>
+                                </buttons:SfSegmentedControl>
+                                <Border
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Stroke="Gray"
+                                IsVisible="{Binding ShowToolbar}"
+                                StrokeThickness="0.8"
+                                BackgroundColor="White"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="5"/>
+                                    </Border.StrokeShape>
+                                    <input:SfComboBox
+                                    WidthRequest="170"
+                                    HorizontalOptions="End"
+                                    HeightRequest="40"
+                                    BackgroundColor="#F9FAFB"
+                                    DropDownBackground="#FFFFFF"
+                                    SelectionTextHighlightColor="#111827"
+                                    SelectedDropDownItemBackground="#DBEAFE"
+                                    ItemsSource="{Binding PeriodOptions}"
+                                    SelectedItem="{Binding SelectedFinancialPeriod, Mode=TwoWay}"
+                                    SelectedIndex="{Binding SelectedAccountPeriodIndex, Mode=TwoWay}"
+                                    ShowBorder="False"
+                                    IsClearButtonVisible="False"/>
+                                </Border>
+
+                                <Border HeightRequest="47"
+                                    IsVisible="{Binding HasSelection}"
+                                    BackgroundColor="#F3F4F6">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="29"/>
+                                    </Border.StrokeShape>
+
+                                    <Grid ColumnDefinitions="Auto,Auto, Auto, *"
+                                      ColumnSpacing="24"
+                                      VerticalOptions="Center">
+
+                                        <!-- Close / clear selection -->
+                                        <buttons:SfButton
+                                        Margin="10,0,0,0"
+                                        Text="✕"
+                                        FontSize="14"
+                                        WidthRequest="32"
+                                        HeightRequest="32"
+                                        CornerRadius="25"
+                                        BackgroundColor="Transparent"
+                                        Background="Transparent"
+                                        TextColor="#374151"
+                                        Command="{Binding ClearSelectionCommand}">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup x:Name="CommonStates">
+
+                                                    <!-- Normal -->
+                                                    <VisualState x:Name="Normal">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor"
+                                                                Value="Transparent"/>
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+
+                                                    <!-- Hovered (desktop) -->
+                                                    <VisualState x:Name="Hovered">
+                                                        <VisualState.Setters>
+                                                            <!-- Light circular background -->
+                                                            <Setter Property="BackgroundColor"
+                                                                Value="#E5E7EB"/>
+                                                            <Setter Property="Background"
+                                                                Value="#E5E7EB"/>
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+
+                                                    <!-- Optional: Pressed -->
+                                                    <VisualState x:Name="Pressed">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor"
+                                                                Value="#D1D5DB"/>
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+
+                                        </buttons:SfButton>
+
+                                        <!-- Selected count -->
+                                        <Label
+                                        Grid.Column="1"
+                                        Text="{Binding SelectedCount, StringFormat='{}{0} Selected'}"
+                                        FontSize="14"
+                                        TextColor="#111827"
+                                        VerticalOptions="Center"/>
+
+                                        <!-- Action icons -->
+                                        <HorizontalStackLayout
+                                        Grid.Column="2"
+                                        Spacing="3">
+                                            <buttons:SfButton
+                                            x:Name="EditButton_Desktop"
+                                            Text="edit"
+                                            FontFamily="MaterialIcons"
+                                            FontSize="14"
+                                            HeightRequest="32"
+                                            WidthRequest="32"
+                                            CornerRadius="25"
+                                            BackgroundColor="Transparent"
+                                            Background="Transparent"
+                                            TextColor="#374151"
+                                            Clicked="OnEditClicked"
+                                            IsVisible="{Binding SelectedCount, Converter={StaticResource IntEqualsConverter}, ConverterParameter=1}">
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+
+                                                        <!-- Normal -->
+                                                        <VisualState x:Name="Normal">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor"
+                                                                    Value="Transparent"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <!-- Hovered (desktop) -->
+                                                        <VisualState x:Name="Hovered">
+                                                            <VisualState.Setters>
+                                                                <!-- Light circular background -->
+                                                                <Setter Property="BackgroundColor"
+                                                                    Value="#E5E7EB"/>
+                                                                <Setter Property="Background"
+                                                                    Value="#E5E7EB"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <!-- Optional: Pressed -->
+                                                        <VisualState x:Name="Pressed">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor"
+                                                                    Value="#D1D5DB"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                            </buttons:SfButton>
+
+                                            <!-- Delete -->
+                                            <buttons:SfButton
+                                            Text="🗑"
+                                            FontSize="14"
+                                            BackgroundColor="Transparent"
+                                            Background="Transparent"
+                                            HeightRequest="32"
+                                            WidthRequest="32"
+                                            CornerRadius="25"
+                                            TextColor="#374151"
+                                            Command="{Binding DeleteSelectedMultipleCommand}">
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+
+                                                        <!-- Normal -->
+                                                        <VisualState x:Name="Normal">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor"
+                                                                    Value="Transparent"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <!-- Hovered (desktop) -->
+                                                        <VisualState x:Name="Hovered">
+                                                            <VisualState.Setters>
+                                                                <!-- Light circular background -->
+                                                                <Setter Property="BackgroundColor"
+                                                                    Value="#E5E7EB"/>
+                                                                <Setter Property="Background"
+                                                                    Value="#E5E7EB"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                        <!-- Optional: Pressed -->
+                                                        <VisualState x:Name="Pressed">
+                                                            <VisualState.Setters>
+                                                                <Setter Property="BackgroundColor"
+                                                                    Value="#D1D5DB"/>
+                                                            </VisualState.Setters>
+                                                        </VisualState>
+
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                            </buttons:SfButton>
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </Border>
+                            <!-- Selection action bar (visible when items selected) -->
+                        </Grid>
+                        <Border Grid.Row="1"
+                            Padding="0"
+                            BackgroundColor="Transparent">
+                            <Grid>
+
+                                <!-- Styled Syncfusion DataGrid matching image layout -->
+                                <datagrid:SfDataGrid Grid.Row="1"
+                                                 x:Name="dataGrid"
+                                                 ItemsSource="{Binding Source={x:Reference dataPager}, Path=PagedSource}"
+                                                 SelectionMode="Multiple"
+                                                 SelectedIndex="{Binding SelectedIndex}"
+                                                 SelectedRow="{Binding SelectedTransaction}"
+                                                 AutoGenerateColumnsMode="None"
+                                                 ColumnWidthMode="{OnPlatform WinUI=Fill, MacCatalyst=Fill, Android=Auto, iOS=Auto}"
+                                                 RowHeight="{OnPlatform WinUI=52, MacCatalyst=52, Android=62, iOS=62}"
+                                                 HeaderRowHeight="48"
+                                                 GridLinesVisibility="Horizontal"
+                                                 AllowEditing="True"
+                                                 SelectionChanged="OnDataGridSelectionChanged"
+                                                 CellValueChanged="OnDataGridCellValueChanged">
+
+                                    <datagrid:SfDataGrid.DefaultStyle>
+                                        <datagrid:DataGridStyle
+                                        SelectionBackground="#D9E8F7"
+                                        RowHoveredBackground="#EDF4FC"
+                                        CurrentCellBorderColor="Transparent"/>
+                                    </datagrid:SfDataGrid.DefaultStyle>
+
+                                    <datagrid:SfDataGrid.Columns>
+                                        <!-- Left checkbox column: header checkbox binds to ViewModel.AllVisibleSelected -->
+                                        <datagrid:DataGridTemplateColumn Width="50"
+                                                                     MappingName="IsSelected">
+                                            <datagrid:DataGridTemplateColumn.HeaderTemplate>
+                                                <DataTemplate x:DataType="{x:Null}">
+                                                    <buttons:SfCheckBox IsChecked="{Binding BindingContext.AllVisibleSelected, Source={x:Reference dataGrid}, Mode=TwoWay}"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTemplateColumn.HeaderTemplate>
+                                            <datagrid:DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <buttons:SfCheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTemplateColumn.CellTemplate>
+                                        </datagrid:DataGridTemplateColumn>
+
+                                        <datagrid:DataGridTextColumn HeaderText="Date"
+                                                                 MappingName="Date"
+                                                                 Format="dd-MMM-yyyy" Width="{OnPlatform Android=150, iOS=150}"/>
+
+
+                                        <!-- Combined Name column: primary title with category/subcategory beneath -->
+                                        <datagrid:DataGridTemplateColumn HeaderText="Name" Width="{OnPlatform Android=150, iOS=150}">
+                                            <!-- Ensure header text is left-aligned to match design -->
+                                            <datagrid:DataGridTemplateColumn.HeaderTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <Label Text="Name"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="Black"
+                                                       HorizontalTextAlignment="Start"
+                                                       VerticalTextAlignment="Center"
+                                                       Margin="0,0"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTemplateColumn.HeaderTemplate>
+                                            <datagrid:DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <VerticalStackLayout Padding="0,4"
+                                                                     Spacing="2">
+                                                        <Label Text="{Binding Category}"
+                                                           FontSize="14"
+                                                           FontAttributes="None"
+                                                           TextColor="#111827"/>
+                                                        <Label Text="{Binding Title}"
+                                                           FontSize="12"
+                                                           TextColor="#6B7280"/>
+                                                    </VerticalStackLayout>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTemplateColumn.CellTemplate>
+                                        </datagrid:DataGridTemplateColumn>
+
+                                        <datagrid:DataGridTemplateColumn HeaderText="Type" Width="{OnPlatform Android=100, iOS=100}"
+                                                                    >
+                                            <datagrid:DataGridTemplateColumn.HeaderTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <Label Text="Type"
+                                                      FontSize="14"
+                                                      FontAttributes="Bold"
+                                                      TextColor="Black"
+                                                      HorizontalTextAlignment="Start"
+                                                      VerticalTextAlignment="Center"
+                                                      Margin="5,0"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTemplateColumn.HeaderTemplate>
+                                            <datagrid:DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <Border  HorizontalOptions="Start"
+                                                         Stroke="Transparent"
+                                                         VerticalOptions="Center" >
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="8"/>
+                                                        </Border.StrokeShape>
+                                                        <Border HorizontalOptions="Start" Stroke="#BBBBBB"
+                                                             StrokeThickness="0.5">
+                                                            <Border.Triggers>
+                                                                <DataTrigger TargetType="Border"
+                                                                         Binding="{Binding Type}"
+                                                                         Value="Income">
+                                                                    <Setter Property="BackgroundColor"
+                                                                        Value="#D9FECF"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger TargetType="Border"
+                                                                         Binding="{Binding Type}"
+                                                                         Value="Expense">
+                                                                    <Setter Property="BackgroundColor"
+                                                                        Value="#FFD6D0"/>
+                                                                </DataTrigger>
+                                                            </Border.Triggers>
+
+                                                            <Border.StrokeShape>
+                                                                <RoundRectangle CornerRadius="4"/>
+                                                            </Border.StrokeShape>
+                                                            <Label Text="{Binding Type}"
+                                                               FontSize="14"
+                                                               HorizontalTextAlignment="Start"
+                                                               VerticalTextAlignment="Center"
+                                                               Margin="8,2,8,4">
+                                                                <Label.Triggers>
+                                                                    <!-- Income text color -->
+                                                                    <DataTrigger TargetType="Label"
+                                                                             Binding="{Binding Type}"
+                                                                             Value="Income">
+                                                                        <Setter Property="TextColor"
+                                                                            Value="#1F7A1F"/>
+                                                                    </DataTrigger>
+                                                                    <!-- Expense text color -->
+                                                                    <DataTrigger TargetType="Label"
+                                                                             Binding="{Binding Type}"
+                                                                             Value="Expense">
+                                                                        <Setter Property="TextColor"
+                                                                            Value="#C62828"/>
+                                                                    </DataTrigger>
+                                                                </Label.Triggers>
+                                                            </Label>
+                                                        </Border>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTemplateColumn.CellTemplate>
+                                        </datagrid:DataGridTemplateColumn>
+
+                                        <datagrid:DataGridNumericColumn HeaderText="Amount"
+                                                                    MappingName="Amount"
+                                                                    Width="{OnPlatform Android=100, iOS=100}"
+                                                                    Format="C">
+                                            <datagrid:DataGridNumericColumn.HeaderTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <Label Text="Amount"
+                                                      FontSize="14"
+                                                      FontAttributes="Bold"
+                                                      TextColor="Black"
+                                                      HorizontalTextAlignment="Start"
+                                                      VerticalTextAlignment="Center"
+                                                      Margin="0,0"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridNumericColumn.HeaderTemplate>
+                                            <datagrid:DataGridNumericColumn.CellTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <Label Text="{Binding Amount}"
+                                                       VerticalTextAlignment="Center"
+                                                       HorizontalTextAlignment="Start"
+                                                        FontSize="14"
+                                                        FontAttributes="None"
+                                                        TextColor="#111827"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridNumericColumn.CellTemplate>
+                                        </datagrid:DataGridNumericColumn>
+
+                                        <!-- Remarks column: maps to `Notes` on the transaction model -->
+                                        <datagrid:DataGridTextColumn HeaderText="Remarks"
+                                                                >
+                                            <datagrid:DataGridTextColumn.HeaderTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <Label Text="Remarks"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="Black"
+                                                       HorizontalTextAlignment="Start"
+                                                       VerticalTextAlignment="Center"
+                                                       Margin="0,0"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTextColumn.HeaderTemplate>
+                                            <datagrid:DataGridTextColumn.CellTemplate>
+                                                <DataTemplate x:DataType="converters:Transaction">
+                                                    <Label Text="{Binding Notes}"
+                                                       VerticalTextAlignment="Center"
+                                                       HorizontalTextAlignment="Start"
+                                                        FontSize="14"
+                                                        FontAttributes="None"
+                                                        TextColor="#111827"/>
+                                                </DataTemplate>
+                                            </datagrid:DataGridTextColumn.CellTemplate>
+                                        </datagrid:DataGridTextColumn>
+                                    </datagrid:SfDataGrid.Columns>
+                                </datagrid:SfDataGrid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2"
+                            Padding="10">
+                            <Grid  Padding="12">
+
+                                <pager:SfDataPager
+                                x:Name="dataPager"
+                                TargetGrid="{Reference dataGrid}"
+                                PageSize="8"
+                                PageIndex="{Binding CurrentPageIndex, Mode=TwoWay}"
+                                NumericButtonsGenerateMode="Auto">
+                                    <pager:SfDataPager.DefaultStyle>
+                                        <pager:DataPagerStyle NumericButtonSelectionTextColor="White"
+                                                          NumericButtonSelectionBackgroundColor="#2F6D86">
+                                        </pager:DataPagerStyle>
+                                    </pager:SfDataPager.DefaultStyle>
+                                </pager:SfDataPager>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+        </Grid>
+        <!-- Desktop Add/Edit Transaction Popup (WinUI only). ContentTemplate is set from code-behind -->
+        <popups:SfPopup
+        x:Name="AddTransactionPopup"
+        IsOpen="False"
+        IsVisible="{OnPlatform WinUI=True, Android=False, iOS=False, MacCatalyst=False}"
+        ShowHeader="False"
+        ShowFooter="False"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        HeightRequest="630"
+        WidthRequest="480">
+        </popups:SfPopup>
+        <Grid
+        IsVisible="{Binding IsBusy}"
+        BackgroundColor="#80000000"
+        InputTransparent="False">
+
+            <VerticalStackLayout
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Spacing="12">
+
+                <ActivityIndicator
+                IsRunning="True"
+                Color="White"
+                WidthRequest="40"
+                HeightRequest="40"/>
+
+                <Label
+                Text="Loading transactions..."
+                TextColor="White"
+                FontSize="14"/>
+
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentView>

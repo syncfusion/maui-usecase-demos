@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:input="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:pickers="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
+    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+    xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+    xmlns:popups="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+    xmlns:converters="clr-namespace:SmartExpense;assembly=SmartExpense"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
+    x:Class="SmartExpense.AddTransactionPopupContent"
+    x:DataType="converters:AddTransactionViewModel"
+    x:Name="Root">
+
+    <ContentView.Resources>
+        <Style TargetType="inputLayout:SfTextInputLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Focused">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke" Value="#2F628C"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="UnFocused">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke" Value="#72777F"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke" Value="#72777F"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentView.Resources>
+
+    <Border
+        Padding="18"
+        BackgroundColor="#F9FAFB"
+        StrokeThickness="0">
+
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="12"/>
+        </Border.StrokeShape>
+
+        <Border.Resources>
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter"/>
+        </Border.Resources>
+
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout
+                Spacing="0"
+                Padding="5"
+                HeightRequest="590"
+                WidthRequest="410">
+
+                <!-- Header -->
+                <Grid
+                    Padding="0,5,0,0"
+                    Margin="0,10,0,0"
+                    ColumnDefinitions="*,Auto">
+
+                    <Label
+                        x:Name="HeaderLabel"
+                        Text="Create Transaction"
+                        FontFamily="OpenSansRegular"
+                        FontSize="24"
+                        TextColor="#111827">
+
+                        <Label.Triggers>
+                            <DataTrigger
+                                TargetType="Label"
+                                Binding="{Binding TransactionId, Converter={StaticResource StringToBoolConverter}}"
+                                Value="True">
+                                <Setter Property="Text"
+                                        Value="Edit Transaction"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+
+                    <buttons:SfButton
+                        Grid.Column="1"
+                        Text="✕"
+                        FontSize="24"
+                        WidthRequest="36"
+                        HeightRequest="36"
+                        Padding="0"
+                        CornerRadius="18"
+                        TextColor="#111827"
+                        Background="Transparent"
+                        BackgroundColor="Transparent"
+                        Command="{Binding CancelCommand, Source={x:Reference Root}}">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor"
+                                                Value="Transparent"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="Hovered">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor"
+                                                Value="#E5E7EB"/>
+                                        <Setter Property="Background"
+                                                Value="#E5E7EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor"
+                                                Value="#D1D5DB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
+                </Grid>
+
+                <!-- Type + Category -->
+                <Grid ColumnDefinitions="*,*" Padding="0,30,0,0"
+                      ColumnSpacing="12">
+                    <inputLayout:SfTextInputLayout
+                        Grid.Column="0"
+                        Hint="Type"
+                        HeightRequest="75"
+                        InputViewPadding="15,5,0,6"
+                        ContainerType="Outlined">
+
+                        <input:SfComboBox
+                            IsEditable="False"
+                            HeightRequest="0"
+                            Placeholder="Type"
+                            Stroke="Transparent"
+                            DropDownBackground="#FFFFFF"
+                            SelectionTextHighlightColor="#111827"
+                            SelectedDropDownItemBackground="#DBEAFE"
+                            BackgroundColor="#F9FAFB"
+                            SelectedIndex="{Binding SelectedTypeIndex, Mode=TwoWay}"
+                            IsClearButtonVisible="False">
+
+                            <input:SfComboBox.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>Expense</x:String>
+                                    <x:String>Income</x:String>
+                                </x:Array>
+                            </input:SfComboBox.ItemsSource>
+                        </input:SfComboBox>
+                    </inputLayout:SfTextInputLayout>
+
+                    <inputLayout:SfTextInputLayout
+                        Grid.Column="1"
+                        Hint="Category"
+                        HeightRequest="75"
+                        InputViewPadding="15,5,0,6"
+                        ContainerType="Outlined">
+
+                        <input:SfComboBox
+                            HeightRequest="40"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="#F9FAFB"
+                            DropDownBackground="#FFFFFF"
+                            SelectionTextHighlightColor="#111827"
+                            SelectedDropDownItemBackground="#DBEAFE"
+                            DisplayMemberPath="Name"
+                            IsEditable="False"
+                            ItemsSource="{Binding Categories}"
+                            Placeholder="Category"
+                            SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                            ShowBorder="False"
+                            IsClearButtonVisible="False"/>
+                    </inputLayout:SfTextInputLayout>
+                </Grid>
+
+                <!-- Sub Category + Amount -->
+                <Grid ColumnDefinitions="*,*"
+                      ColumnSpacing="12">
+                    <inputLayout:SfTextInputLayout
+                        Grid.Column="0"
+                        Hint="Sub Category"
+                        HeightRequest="75"
+                        InputViewPadding="15,5,0,6"
+                        ContainerType="Outlined">
+
+                        <input:SfComboBox
+                            HeightRequest="40"
+                            HorizontalOptions="Fill"
+                            BackgroundColor="#F9FAFB"
+                            DropDownBackground="#FFFFFF"
+                            SelectionTextHighlightColor="#111827"
+                            SelectedDropDownItemBackground="#DBEAFE"
+                            DisplayMemberPath="Name"
+                            IsEditable="False"
+                            ItemsSource="{Binding SubCategories}"
+                            SelectedItem="{Binding SelectedSubCategory, Mode=TwoWay}"
+                            Placeholder="Select Sub Category"
+                            ShowBorder="False"
+                            IsClearButtonVisible="False"
+                            IsEnabled="{Binding SelectedCategory, Converter={StaticResource NullToBoolConverter}}"/>
+                    </inputLayout:SfTextInputLayout>
+
+                    <inputLayout:SfTextInputLayout
+                        Grid.Column="1"
+                        Hint="Amount"
+                        HeightRequest="75"
+                        InputViewPadding="15,5,0,6"
+                        ContainerType="Outlined">
+
+                        <input:SfNumericEntry
+                            Value="{Binding Amount}"
+                            Placeholder="Amount"
+                            BackgroundColor="#F9FAFB"/>
+                    </inputLayout:SfTextInputLayout>
+                </Grid>
+
+                <inputLayout:SfTextInputLayout HorizontalOptions="Start" ShowHint="False" HeightRequest="70" WidthRequest="{OnPlatform MacCatalyst=395}" ContainerType="Outlined"  TrailingViewPosition="Inside" >
+                    <inputLayout:SfTextInputLayout.InputViewPadding>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="15,0,0,0" />
+                            <On Platform="WinUI" Value="15,3,0,0"/>
+                            <On Platform="MacCatalyst" Value="15,0,0,0"/>
+                            <On Platform="iOS" Value="15,0,0,0"/>
+                        </OnPlatform>
+                    </inputLayout:SfTextInputLayout.InputViewPadding>
+                    <inputLayout:SfTextInputLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                    </inputLayout:SfTextInputLayout.GestureRecognizers>
+                    <Entry WidthRequest="90"  Text="{Binding TransactionDate, StringFormat='{0:dd-MM-yyyy}'}" HorizontalOptions="Start" VerticalTextAlignment="Center" Margin="10,0,0,0"/>
+                    <inputLayout:SfTextInputLayout.TrailingView >
+                        <Label Text="&#xE72B;" FontFamily="ExpenseTrackerIcons"
+                                FontSize="20"
+                               />
+                    </inputLayout:SfTextInputLayout.TrailingView>
+                </inputLayout:SfTextInputLayout>
+
+                <!-- Notes -->
+                <inputLayout:SfTextInputLayout
+                    Hint="Notes" 
+                    ContainerType="Outlined">
+                    <Editor
+                            Text="{Binding Notes, Mode=TwoWay}"
+                            HeightRequest="110" />
+
+                </inputLayout:SfTextInputLayout>
+
+                <!-- Actions -->
+                <Grid Padding="0,10,0,0" ColumnDefinitions="*,Auto,Auto">
+                    <buttons:SfButton
+                        Grid.Column="1"
+                        Text="Cancel"
+                        Background="Transparent"
+                        BackgroundColor="Transparent"
+                        CornerRadius="30"
+                        TextColor="#2563EB"
+                        Command="{Binding CancelCommand, Source={x:Reference Root}}">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Hovered">
+                                    <VisualState.Setters>
+                                        <Setter Property="Background"
+                                                Value="#E6EDF5"/>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#BFC3C7"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
+
+                    <buttons:SfButton
+                        x:Name="PrimaryButton"
+                        Grid.Column="2"
+                        Text="Create"
+                        IsEnabled="{Binding CanSave}"
+                        Command="{Binding SaveCommand}"
+                        Background="Transparent"
+                        BackgroundColor="Transparent"
+                        CornerRadius="30">
+
+                        <buttons:SfButton.Triggers>
+                            <DataTrigger
+                                TargetType="buttons:SfButton"
+                                Binding="{Binding TransactionId, Converter={StaticResource StringToBoolConverter}}"
+                                Value="True">
+                                <Setter Property="Text"
+                                        Value="Save"/>
+                            </DataTrigger>
+                        </buttons:SfButton.Triggers>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Hovered">
+                                    <VisualState.Setters>
+                                        <Setter Property="Background"
+                                                Value="#E6EDF5"/>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#BFC3C7"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
+                </Grid>
+                <calendar:SfCalendar x:Name="calendar" SelectionChanged="Calendar_SelectionChanged" 
+                                     MaximumDate="{x:Static sys:DateTime.Today}" 
+                                     BackgroundColor="White" Background="#2F6D86" 
+                                     Mode="Dialog" HeightRequest="0" PopupHeight="300" 
+                                     ActionButtonClicked="Calendar_ActionButtonClicked"
+                                     ActionButtonCanceled="Calendar_ActionButtonCanceled"
+                                     PopupWidth="450"  >
+                    <calendar:SfCalendar.FooterView>
+                        <calendar:CalendarFooterView DividerColor="Transparent" Height="70" ShowActionButtons="True"/>
+                    </calendar:SfCalendar.FooterView>
+                </calendar:SfCalendar>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Border>
+</ContentView>

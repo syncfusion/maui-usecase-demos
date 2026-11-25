@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartExpense.SetupProfilePage"
+             xmlns:vm="clr-namespace:SmartExpense"
+             x:DataType="vm:SetupProfileViewModel"
+             xmlns:input="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:pickers="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:popups="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar">
+
+    <ContentPage.Resources>
+        <Style TargetType="core:SfTextInputLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+
+                        <VisualState x:Name="Focused">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke"
+                                        Value="#2F628C"/>
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="UnFocused">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke"
+                                        Value="#72777F"/>
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke"
+                                        Value="#72777F"/>
+                            </VisualState.Setters>
+                        </VisualState>
+
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- Root Grid for Desktop Split -->
+        <Grid x:Name="RootGrid"
+                BackgroundColor="#F9FAFB"
+                IsVisible="{OnPlatform WinUI=True, Android=False, iOS=False, MacCatalyst=True}">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="ImageColumn"
+                        Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.Resources>
+                
+            </Grid.Resources>
+
+            <!-- Desktop Image (never overlaps, hidden on mobile) -->
+            <Image
+                x:Name="CoverImage"
+                Grid.Column="0"
+                Source="screen_cover.png"
+                Aspect="AspectFill"/>
+
+            <!-- FORM AREA -->
+            <ScrollView
+                Grid.Column="1"
+                VerticalScrollBarVisibility="Never">
+
+                <Border Stroke="Transparent"
+                        VerticalOptions="Center"
+                        BackgroundColor="#F9FAFB"
+                        Padding="24">
+                    <VerticalStackLayout
+                        WidthRequest="350"
+                        MaximumWidthRequest="350"
+                        Spacing="0">
+
+                        <!-- Header -->
+                        <Label HorizontalOptions="Center"
+                               Text="Let's Set Up Your Account"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#111827"/>
+
+                        <Label HorizontalOptions="Center" Padding="0,10,0,0"
+                               Text="Complete your profile for personalized insights."
+                               FontSize="14"
+                               TextColor="#6B7280"/>
+
+                        <!-- Names: Responsive container -->
+                        <Grid Padding="0,18,0,0"
+                                x:Name="NameGrid"
+                              ColumnSpacing="12"
+                            >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <core:SfTextInputLayout
+                                x:Name="FirstNameLayout"
+                                HeightRequest="75"
+                                Hint="First Name"
+                                InputViewPadding="18,2,0, 6"
+                                ContainerType="Outlined">
+                                <Entry  Text="{Binding FirstName}"/>
+                            </core:SfTextInputLayout>
+
+                            <core:SfTextInputLayout
+                                x:Name="LastNameLayout"
+                                HeightRequest="75"
+                                Grid.Column="1"
+                                InputViewPadding="18,2,0, 6"
+                                Hint="Last Name"
+                                ContainerType="Outlined">
+                                <Entry Text="{Binding LastName}"/>
+                            </core:SfTextInputLayout>
+                        </Grid>
+
+                        <core:SfTextInputLayout HorizontalOptions="Start" x:Name="textInputLayout" ShowHint="False" HeightRequest="70" ContainerType="Outlined"  TrailingViewPosition="Inside" >
+                            <core:SfTextInputLayout.InputViewPadding>
+                                <OnPlatform x:TypeArguments="Thickness">
+                                    <On Platform="Android" Value="15,0,0,0" />
+                                    <On Platform="WinUI" Value="15,3,0,0"/>
+                                    <On Platform="MacCatalyst" Value="15,0,0,0"/>
+                                    <On Platform="iOS" Value="15,0,0,0"/>
+                                </OnPlatform>
+                            </core:SfTextInputLayout.InputViewPadding>
+                            <core:SfTextInputLayout.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                            </core:SfTextInputLayout.GestureRecognizers>
+                            <Entry x:Name="fromLabel" WidthRequest="90"  Text="{Binding DateOfBirth, StringFormat='{0:dd-MM-yyyy}',Mode=TwoWay}" HorizontalOptions="Start" VerticalTextAlignment="Center" Margin="10,0,0,0"/>
+                            <core:SfTextInputLayout.TrailingView >
+                                <Label Text="&#xE72B;" FontFamily="ExpenseTrackerIcons"
+                                            FontSize="20"
+                                           />
+                            </core:SfTextInputLayout.TrailingView>
+                        </core:SfTextInputLayout>
+
+
+                        <!-- Gender -->
+                        <core:SfTextInputLayout Padding="0,0,0,50"
+                            Hint="Gender"
+                            HeightRequest="75"
+                            InputViewPadding="18,2,0, 6"
+                            ContainerType="Outlined">
+                            <input:SfComboBox
+                                ItemsSource="{Binding Genders}"
+                                DropDownBackground="#FFFFFF"
+                                SelectionTextHighlightColor="#111827"
+                                SelectedDropDownItemBackground="#DBEAFE"
+                                BackgroundColor="#F9FAFB"
+                                IsEditable="False"
+                                IsClearButtonVisible="False"
+                                SelectedItem="{Binding SelectedGender}"/>
+                        </core:SfTextInputLayout>
+
+                        <!-- Actions -->
+                        <Grid Padding="0,0,0,10"
+                                ColumnDefinitions="*,Auto"
+                              ColumnSpacing="12">
+
+                            <buttons:SfButton Grid.Column="0"
+                                              HorizontalOptions="Start"
+                                              Text="Skip"
+                                              TextColor="#457399"
+                                              BackgroundColor="Transparent"
+                                              Background="Transparent"
+                                              CornerRadius="30"
+                                              Command="{Binding SkipCommand}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="TextColor"
+                                                        Value="#2563EB"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Hovered">
+                                            <VisualState.Setters>
+                                                <Setter Property="Background"
+                                                        Value="#E6EDF5"/>
+                                                <Setter Property="TextColor"
+                                                        Value="#2563EB"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Property="TextColor"
+                                                        Value="#BFC3C7"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </buttons:SfButton>
+
+                            <buttons:SfButton
+                                Grid.Column="1"
+                                Text="Next"
+                                IsEnabled="{Binding IsNextEnabled}"
+                                Command="{Binding NextCommand}"
+                                CornerRadius="30"
+                                Background="Transparent"
+                                BackgroundColor="Transparent">
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="TextColor"
+                                                        Value="#457399"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+
+                                        <VisualState x:Name="Hovered">
+                                            <VisualState.Setters>
+                                                <Setter Property="Background"
+                                                        Value="#E6EDF5"/>
+                                                <Setter Property="TextColor"
+                                                        Value="#2563EB"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Property="TextColor"
+                                                        Value="#BFC3C7"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </buttons:SfButton>
+
+                            <calendar:SfCalendar x:Name="calendar" SelectionChanged="Calendar_SelectionChanged" Padding="15"
+                                                 MaximumDate="{x:Static sys:DateTime.Today}" BackgroundColor="White" 
+                                                 ActionButtonClicked="Calendar_ActionButtonClicked"
+                                                 ActionButtonCanceled="Calendar_ActionButtonCanceled"
+                                                 Background="#2F6D86" Mode="Dialog" HeightRequest="0" PopupHeight="300" PopupWidth="400"  >
+                                <calendar:SfCalendar.FooterView>
+                                    <calendar:CalendarFooterView DividerColor="Transparent" Height="70" ShowActionButtons="True"/>
+                                </calendar:SfCalendar.FooterView>
+                            </calendar:SfCalendar>
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </ScrollView>
+
+        </Grid>
+
+
+
+        <Border Stroke="Transparent"
+                IsVisible="{OnPlatform WinUI=False, Android=True, iOS=True, MacCatalyst=False}"
+                VerticalOptions="Center"
+                Padding="24">
+
+            <VerticalStackLayout VerticalOptions="Center"
+                                 WidthRequest="270"
+                                 MaximumWidthRequest="270"
+                                 Spacing="0">
+
+                <!-- Header -->
+                <Label HorizontalOptions="Center"
+                       Text="Let's Set Up Your Account"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="#111827"/>
+
+                <Label HorizontalOptions="Fill"
+                       HorizontalTextAlignment="Center"
+                        Padding="0,10,0,0"
+                       Text="Complete your profile for personalized insights."
+                       FontSize="14"
+                       TextColor="#6B7280"/>
+
+
+                <Grid  Padding="0,18,0,0">
+                    <core:SfTextInputLayout
+                       
+                        HeightRequest="75"
+                        InputViewPadding="18,5,0, 6"
+                        Hint="First Name"
+                        
+                        ContainerType="Outlined">
+                        <Entry  Text="{Binding FirstName}"/>
+                    </core:SfTextInputLayout>
+                </Grid>
+
+                <core:SfTextInputLayout
+                    HeightRequest="75"
+                    InputViewPadding="18,5,0,6"
+                    Grid.Column="1"
+                    Hint="Last Name"
+                    ContainerType="Outlined">
+
+                    <Entry Text="{Binding LastName}"/>
+                </core:SfTextInputLayout>
+
+                <core:SfTextInputLayout HorizontalOptions="Start" ShowHint="False" HeightRequest="70" ContainerType="Outlined"  TrailingViewPosition="Inside" >
+                    <core:SfTextInputLayout.InputViewPadding>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="15,0,0,0" />
+                            <On Platform="WinUI" Value="15,3,0,0"/>
+                            <On Platform="MacCatalyst" Value="15,0,0,0"/>
+                            <On Platform="iOS" Value="15,0,0,0"/>
+                        </OnPlatform>
+                    </core:SfTextInputLayout.InputViewPadding>
+                    <core:SfTextInputLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped1" />
+                    </core:SfTextInputLayout.GestureRecognizers>
+                    <Entry WidthRequest="90"  Text="{Binding DateOfBirth, StringFormat='{0:dd-MM-yyyy}', Mode=TwoWay}" HorizontalOptions="Start" VerticalTextAlignment="Center" Margin="10,0,0,0"/>
+                    <core:SfTextInputLayout.TrailingView >
+                        <Label Text="&#xE72B;" FontFamily="ExpenseTrackerIcons"
+                    FontSize="20"
+                   />
+                    </core:SfTextInputLayout.TrailingView>
+                </core:SfTextInputLayout>
+
+                <!-- Gender -->
+                <core:SfTextInputLayout
+                    Hint="Gender"
+                    InputViewPadding="18,12,0,0"
+                    HeightRequest="75"
+                    ContainerType="Outlined">
+
+                    <input:SfComboBox
+                        ItemsSource="{Binding Genders}"
+                        DropDownBackground="#FFFFFF"
+                        SelectionTextHighlightColor="#111827"
+                        SelectedDropDownItemBackground="#DBEAFE"
+                        BackgroundColor="#F9FAFB"
+                        IsEditable="False"
+                        IsClearButtonVisible="False"
+                        SelectedItem="{Binding SelectedGender}"/>
+                </core:SfTextInputLayout>
+
+                <!-- Actions -->
+                <Grid Padding="0,0,0,40"
+                        ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12">
+
+                    <buttons:SfButton Grid.Column="0"
+                                      HorizontalOptions="Start"
+                                      Text="Skip"
+                                      TextColor="#2563EB"
+                                      BackgroundColor="Transparent"
+                                      Background="Transparent"
+                                      CornerRadius="30"
+                                      Command="{Binding SkipCommand}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="Hovered">
+                                    <VisualState.Setters>
+                                        <Setter Property="Background"
+                                                Value="#E6EDF5"/>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#BFC3C7"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
+
+                    <buttons:SfButton
+                        Grid.Column="1"
+                        Text="Next"
+                        IsEnabled="{Binding IsNextEnabled}"
+                        Command="{Binding NextCommand}"
+                        CornerRadius="30"
+                        Background="Transparent"
+                        BackgroundColor="Transparent">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="Hovered">
+                                    <VisualState.Setters>
+                                        <Setter Property="Background"
+                                                Value="#E6EDF5"/>
+                                        <Setter Property="TextColor"
+                                                Value="#2563EB"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Property="TextColor"
+                                                Value="#BFC3C7"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </buttons:SfButton>
+
+                    <calendar:SfCalendar x:Name="calendar1" SelectionChanged="Calendar_SelectionChanged1" 
+                                         MaximumDate="{x:Static sys:DateTime.Today}" PopupHeight="300" 
+                                         PopupWidth="400" BackgroundColor="White" Background="#2F6D86" 
+                                         Mode="Dialog" HeightRequest="0" 
+                                         ActionButtonClicked="Calendar1_ActionButtonClicked"
+                                         ActionButtonCanceled="Calendar1_ActionButtonCanceled"
+                                         >
+                        <calendar:SfCalendar.FooterView>
+                            <calendar:CalendarFooterView DividerColor="Transparent" Height="70" ShowActionButtons="True"/>
+                        </calendar:SfCalendar.FooterView>
+                    </calendar:SfCalendar>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>
