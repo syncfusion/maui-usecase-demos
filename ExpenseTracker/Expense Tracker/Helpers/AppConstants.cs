@@ -6,16 +6,6 @@ namespace SmartExpense;
 public static class AppConstants
 {
     /// <summary>
-    /// Default local database file name.
-    /// </summary>
-    public const string DatabaseName = "smartexpense.db3";
-
-    /// <summary>
-    /// Standard date display format.
-    /// </summary>
-    public const string DateFormat = "dd MMM yyyy";
-
-    /// <summary>
     /// Standard currency display format.
     /// </summary>
     public const string CurrencyFormat = "C2";

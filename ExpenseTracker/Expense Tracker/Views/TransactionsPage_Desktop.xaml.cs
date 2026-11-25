@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using Syncfusion.Maui.DataGrid;
 using Syncfusion.Maui.TabView;
 
-namespace SmartExpense.Views;
+namespace SmartExpense;
 
 public partial class TransactionsPage_Desktop : ContentView
 {

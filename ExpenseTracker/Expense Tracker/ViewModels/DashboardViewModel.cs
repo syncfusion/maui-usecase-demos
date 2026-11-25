@@ -321,14 +321,14 @@ public partial class DashboardViewModel : BaseViewModel
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                // ✅ Try Shell first
+                // Try Shell first
                 if (Shell.Current != null)
                 {
                     await Shell.Current.Navigation.PushAsync(page);
                     return;
                 }
 
-                // ✅ Fallback to standard navigation
+                // Fallback to standard navigation
                 var nav = Application.Current?.MainPage?.Navigation
                           ?? Application.Current?.Windows.FirstOrDefault()?.Page?.Navigation;
 
@@ -338,7 +338,7 @@ public partial class DashboardViewModel : BaseViewModel
                     return;
                 }
 
-                // ❌ Nothing available
+                // Nothing available
                 System.Diagnostics.Debug.WriteLine("Navigation not available");
             });
         }

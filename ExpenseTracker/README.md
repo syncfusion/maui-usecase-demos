@@ -2,6 +2,8 @@
 
 A cross-platform .NET MAUI personal finance and expense tracking application built with Syncfusion controls to manage daily spending, monitor budgets, and visualize financial trends.
 
+> **Naming note:** the folder is named `ExpenseTracker`, while the solution, project and root namespace are named `SmartExpense` (`SmartExpense.slnx`, `Expense Tracker/SmartExpense.csproj`).
+
 ## Overview
 
 Managing personal finances across multiple categories, tracking income versus expenses, and understanding monthly spending habits can quickly become disorganized without a centralized dashboard. Smart Expense Tracker solves this problem by providing a clean, responsive, and cross-platform experience that helps users record transactions, monitor cash flow, and review categorized spending insights.

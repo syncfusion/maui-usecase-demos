@@ -102,7 +102,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 
         if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
         {
-            // ✅ Ensure Dashboard tab content is created on first load
+            // Ensure Dashboard tab content is created on first load
 
             Dispatcher.Dispatch(() =>
             {
@@ -134,7 +134,6 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
     }
     
     private DashboardPage? _dashboardPage;
-    private AddTransactionPage? _addTransactionPage;
     private TransactionsPage? _transactionsPage;
 
 

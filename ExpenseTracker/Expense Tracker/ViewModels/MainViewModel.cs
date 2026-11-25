@@ -47,26 +47,6 @@ public static class ExpenseTrackerIcons
     public static FontImageSource TransactionSelected =>
         Icon(0xe738, Color.FromArgb("#1C3F50"));
 
-    // Reports
-    public static FontImageSource ReportNormal =>
-        Icon(0xe739, Colors.White);
-
-    public static FontImageSource ReportSelected =>
-        Icon(0xe739, Color.FromArgb("#1C3F50"));
-
-    // Add
-    public static FontImageSource AddNormal =>
-        Icon(0xe737, Colors.White);
-
-    public static FontImageSource AddSelected =>
-        Icon(0xe737, Color.FromArgb("#1C3F50"));
-
-    // About
-    public static FontImageSource AboutNormal =>
-        Icon(0xe73a, Colors.White);
-
-    public static FontImageSource AboutSelected =>
-        Icon(0xe73a, Color.FromArgb("#1C3F50"));
 }
 
 /// <summary>

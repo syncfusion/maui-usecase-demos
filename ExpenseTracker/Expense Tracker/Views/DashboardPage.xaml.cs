@@ -130,7 +130,7 @@ public partial class DashboardPage : ContentView
 
     private void OnYAxisLabelCreated(object sender, ChartAxisLabelEventArgs e)
     {
-        var value = e.Position; // ✅ THIS is the numeric axis value in MAUI
+        var value = e.Position; // THIS is the numeric axis value in MAUI
 
         if (value >= 1000)
         {
@@ -148,7 +148,7 @@ public partial class DashboardPage : ContentView
         if (Width <= 0)
             return;
 
-        // ✅ Desktop charts responsive behavior
+        // Desktop charts responsive behavior
         HandleDesktopChartsLayout();
     }
 
@@ -167,7 +167,7 @@ public partial class DashboardPage : ContentView
 
         if (stackVertically)
         {
-            // ✅ STACKED (Financial → Recent)
+            // STACKED (Financial → Recent)
             DesktopChartsGrid.RowDefinitions.Add(
                 new RowDefinition(GridLength.Auto));
             DesktopChartsGrid.RowDefinitions.Add(
@@ -184,7 +184,7 @@ public partial class DashboardPage : ContentView
         }
         else
         {
-            // ✅ SIDE-BY-SIDE
+            // SIDE-BY-SIDE
             DesktopChartsGrid.RowDefinitions.Add(
                 new RowDefinition(GridLength.Auto));
 
