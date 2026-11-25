@@ -6,6 +6,7 @@
              xmlns:kanban="clr-namespace:Syncfusion.Maui.Kanban;assembly=Syncfusion.Maui.Kanban"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
              xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              xmlns:converters="clr-namespace:SprintManagementBoard;assembly=SprintManagementBoard"
              xmlns:controls="clr-namespace:SprintManagementBoard.Controls;assembly=SprintManagementBoard"
              x:Class="SprintManagementBoard.MainPage"
@@ -552,11 +553,19 @@
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <VerticalStackLayout Spacing="6">
                             <Label Text="Start" Style="{StaticResource MutedLabel}" />
-                            <DatePicker x:Name="RangeStartPicker" Background="Transparent" WidthRequest="170"/>
+                            <picker:SfDatePicker x:Name="RangeStartPicker" Background="Transparent" HeightRequest="120" WidthRequest="{OnIdiom Default=190, Phone=170}">
+                                <picker:SfDatePicker.SelectionView >
+                                    <picker:PickerSelectionView CornerRadius="10" Background="{StaticResource PrimaryBrush}" />
+                                </picker:SfDatePicker.SelectionView>
+                            </picker:SfDatePicker>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="6">
                             <Label Text="End" Style="{StaticResource MutedLabel}" />
-                            <DatePicker x:Name="RangeEndPicker" Background="Transparent" WidthRequest="170"/>
+                            <picker:SfDatePicker x:Name="RangeEndPicker" Background="Transparent" HeightRequest="120" WidthRequest="{OnIdiom Default=190, Phone=170}">
+                                <picker:SfDatePicker.SelectionView >
+                                    <picker:PickerSelectionView CornerRadius="10" Background="{StaticResource PrimaryBrush}" />
+                                </picker:SfDatePicker.SelectionView>
+                            </picker:SfDatePicker>
                         </VerticalStackLayout>
                     </Grid>
                     <HorizontalStackLayout Spacing="10" HorizontalOptions="End">
@@ -637,11 +646,19 @@
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                             <VerticalStackLayout Spacing="6">
                                     <Label Text="Start date" Style="{StaticResource MutedLabel}" />
-                                    <DatePicker x:Name="PopupStartDatePicker" WidthRequest="{OnIdiom Default=240, Phone=170}" HorizontalOptions="Fill"/>
+                                    <picker:SfDatePicker x:Name="PopupStartDatePicker" WidthRequest="{OnIdiom Default=240, Phone=170}" HeightRequest="200" Background="Transparent">
+                                        <picker:SfDatePicker.SelectionView >
+                                            <picker:PickerSelectionView CornerRadius="10" Background="{StaticResource PrimaryBrush}" />
+                                        </picker:SfDatePicker.SelectionView>
+                                    </picker:SfDatePicker>
                                 </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" Spacing="6">
                                     <Label Text="End date" Style="{StaticResource MutedLabel}" />
-                                    <DatePicker x:Name="PopupEndDatePicker" WidthRequest="{OnIdiom Default=240, Phone=170}" HorizontalOptions="Fill"/>
+                                    <picker:SfDatePicker x:Name="PopupEndDatePicker" WidthRequest="{OnIdiom Default=240, Phone=170}" HeightRequest="200" Background="Transparent">
+                                        <picker:SfDatePicker.SelectionView >
+                                            <picker:PickerSelectionView CornerRadius="10" Background="{StaticResource PrimaryBrush}" />
+                                        </picker:SfDatePicker.SelectionView>
+                                    </picker:SfDatePicker>
                                 </VerticalStackLayout>
                         </Grid>
 

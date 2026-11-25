@@ -44,16 +44,16 @@ public partial class MainPage : ContentPage
 
 	private void ShowDateRange_Clicked(object? sender, EventArgs e)
 	{
-		RangeStartPicker.Date = _viewModel.StartDateFilter ?? DateTime.Today;
-		RangeEndPicker.Date = _viewModel.EndDateFilter ?? DateTime.Today.AddDays(7);
+		RangeStartPicker.SelectedDate = _viewModel.StartDateFilter ?? DateTime.Today;
+		RangeEndPicker.SelectedDate = _viewModel.EndDateFilter ?? DateTime.Today.AddDays(7);
 		dateRangePopup.IsVisible = true;
 	}
 
 	private async void ApplyRange_Clicked(object? sender, EventArgs e)
 	{
-		_viewModel.StartDateFilter = RangeStartPicker.Date;
-		_viewModel.EndDateFilter = RangeEndPicker.Date;
-		DateRangeLabel.Text = $"{RangeStartPicker.Date:dd MMM} - {RangeEndPicker.Date:dd MMM yyyy}";
+		_viewModel.StartDateFilter = RangeStartPicker.SelectedDate;
+		_viewModel.EndDateFilter = RangeEndPicker.SelectedDate;
+		DateRangeLabel.Text = $"{RangeStartPicker.SelectedDate:dd MMM} - {RangeEndPicker.SelectedDate:dd MMM yyyy}";
 		await SafeExecuteAsync(() => _viewModel.ApplyFilters());
 		dateRangePopup.IsVisible = false;
 	}
@@ -77,8 +77,8 @@ public partial class MainPage : ContentPage
 		PopupDescriptionEditor.Text = string.Empty;
 		if (PopupUserPicker.ItemsSource != null) PopupUserPicker.SelectedIndex = 0;
 		PopupStatusPicker.SelectedIndex = 0;
-		PopupStartDatePicker.Date = DateTime.Today;
-		PopupEndDatePicker.Date = DateTime.Today.AddDays(1);
+		PopupStartDatePicker.SelectedDate = DateTime.Today;
+		PopupEndDatePicker.SelectedDate = DateTime.Today.AddDays(1);
 		PopupProgressEntry.Text = "0";
 		taskPopup.IsVisible = true;
 	}
@@ -99,8 +99,8 @@ public partial class MainPage : ContentPage
 			AssigneeId = selectedUser?.Id,
 			ProjectId = selectedUser?.ProjectId ?? _viewModel.SelectedProject?.Id ?? "Project1",
 			Status = PopupStatusPicker.SelectedItem?.ToString() ?? "Todo",
-			StartDate = PopupStartDatePicker.Date,
-			EndDate = PopupEndDatePicker.Date,
+			StartDate = PopupStartDatePicker.SelectedDate,
+			EndDate = PopupEndDatePicker.SelectedDate,
 			Progress = int.TryParse(PopupProgressEntry.Text, out var p) ? Math.Clamp(p, 0, 100) : 0
 		};
 
