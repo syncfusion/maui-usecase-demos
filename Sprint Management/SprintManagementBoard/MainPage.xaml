@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:datagrid="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:scheduler="clr-namespace:Syncfusion.Maui.Scheduler;assembly=Syncfusion.Maui.Scheduler"
+             xmlns:kanban="clr-namespace:Syncfusion.Maui.Kanban;assembly=Syncfusion.Maui.Kanban"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Toolkit.Buttons;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:converters="clr-namespace:SprintManagementBoard;assembly=SprintManagementBoard"
+             xmlns:controls="clr-namespace:SprintManagementBoard.Controls;assembly=SprintManagementBoard"
+             x:Class="SprintManagementBoard.MainPage"
+             Shell.NavBarIsVisible="False"
+             SafeAreaEdges="Container">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PercentToFractionConverter x:Key="PercentToFractionConverter" />
+            <converters:TagsToColorConverter x:Key="TagsToColorConverter" />
+            <converters:PriorityToColorConverter x:Key="PriorityToColorConverter" />
+
+            <Style TargetType="datagrid:DataGridHeaderRow">
+                <Setter Property="Background"
+                        Value="{AppThemeBinding Light={StaticResource SurfaceAltLight}, Dark={StaticResource SurfaceAltDark}}" />
+            </Style>
+            <Style TargetType="datagrid:DataGridCaptionSummaryRowView">
+                <Setter Property="Background"
+                        Value="{AppThemeBinding Light={StaticResource SurfaceAltLight}, Dark={StaticResource SurfaceAltDark}}" />
+            </Style>
+            <Style TargetType="datagrid:DataGridCell">
+                <Setter Property="Background"
+                        Value="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!--
+        One page for every platform.
+        Desktop / Tablet : navigation rail on the left, content on the right.
+        Phone            : content on top, navigation bar at the bottom.
+        All differences are expressed with OnIdiom.
+    -->
+    <Grid RowDefinitions="*,Auto">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Phone=0, Default=84}" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ================= CONTENT ================= -->
+        <ScrollView Grid.Row="0"
+                    VerticalScrollBarVisibility="Never"
+                    Grid.Column="{OnIdiom Phone=0, Default=1}"
+                    Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}"
+                    Grid.RowSpan="{OnIdiom Phone=1, Default=2}">
+            <VerticalStackLayout Padding="{OnIdiom Phone='16,12,16,20', Tablet='24,20', Desktop='32,24'}"
+                                 Spacing="{OnIdiom Phone=14, Default=20}">
+
+                <!-- HEADER -->
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12">
+                    <VerticalStackLayout VerticalOptions="Center"
+                                         Spacing="2">
+                        <Label Text="Sprint Board"
+                               Style="{StaticResource PageTitle}"
+                               FontSize="{OnIdiom Phone=22, Default=28}" />
+                        <Label Text="Plan, track and ship your team's work"
+                               Style="{StaticResource MutedLabel}"
+                               IsVisible="{OnIdiom Phone=False, Default=True}" />
+                    </VerticalStackLayout>
+
+                    <buttons:SfButton Grid.Column="1"
+                                    Background="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}"
+                                    TextColor="{AppThemeBinding Light=White, Dark={StaticResource PageBgDark}}"
+                                    FontFamily="OpenSansSemibold"
+                                    HeightRequest="{OnIdiom Phone=40, Default=44}"
+                                    WidthRequest="160"
+                                    Padding="{OnIdiom Phone='14,0', Desktop='20,0', Default='20,0'}"
+                                    VerticalOptions="Center"
+                                    CornerRadius="10"
+                                    Clicked="NewTask_Clicked"
+                                    SemanticProperties.Description="Create a new task">
+
+                        <buttons:SfButton.Content>
+                            <DataTemplate>
+                                <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                                    <!--Plus Icon-->
+                                    <Label FontFamily="MauiMaterialAssets"
+                                           Text="&#xE756;"
+                                           FontSize="18"
+                                           TextColor="White"
+                                           VerticalOptions="Center" />
+
+                                    <!--Text-->
+                                    <Label Text="New Task"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </DataTemplate>
+                        </buttons:SfButton.Content>
+
+                    </buttons:SfButton>
+                </Grid>
+
+                <!-- SUMMARY CARDS : 4 across on Desktop/Tablet, 2x2 on Phone -->
+                <Grid ColumnDefinitions="*,*,*,*"
+                      RowDefinitions="Auto,Auto"
+                      ColumnSpacing="{OnIdiom Phone=12, Default=16}"
+                      RowSpacing="{OnIdiom Phone=12, Default=0}">
+
+                    <Border Style="{StaticResource CardBorder}"
+                            Padding="16,14"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}">
+                        <Grid ColumnDefinitions="4,*" ColumnSpacing="12">
+                            <BoxView BackgroundColor="{StaticResource StatusTodo}" CornerRadius="2" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="TO DO" Style="{StaticResource MutedLabel}" FontAttributes="Bold" />
+                                <Label Text="{Binding ToDoCount}"
+                                       Style="{StaticResource PageTitle}"
+                                       FontSize="{OnIdiom Phone=26, Default=32}" />
+                                <Label Text="active tasks" Style="{StaticResource MutedLabel}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource CardBorder}"
+                            Padding="16,14"
+                            Grid.Column="{OnIdiom Phone=2, Default=1}"
+                            Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}">
+                        <Grid ColumnDefinitions="4,*" ColumnSpacing="12">
+                            <BoxView BackgroundColor="{StaticResource StatusInProgress}" CornerRadius="2" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="IN PROGRESS" Style="{StaticResource MutedLabel}" FontAttributes="Bold" />
+                                <Label Text="{Binding InProgressCount}"
+                                       Style="{StaticResource PageTitle}"
+                                       FontSize="{OnIdiom Phone=26, Default=32}" />
+                                <Label Text="in motion" Style="{StaticResource MutedLabel}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource CardBorder}"
+                            Padding="16,14"
+                            Grid.Row="{OnIdiom Phone=1, Default=0}"
+                            Grid.Column="{OnIdiom Phone=0, Default=2}"
+                            Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}">
+                        <Grid ColumnDefinitions="4,*" ColumnSpacing="12">
+                            <BoxView BackgroundColor="{StaticResource StatusTesting}" CornerRadius="2" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="TESTING" Style="{StaticResource MutedLabel}" FontAttributes="Bold" />
+                                <Label Text="{Binding TestingCount}"
+                                       Style="{StaticResource PageTitle}"
+                                       FontSize="{OnIdiom Phone=26, Default=32}" />
+                                <Label Text="in review" Style="{StaticResource MutedLabel}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource CardBorder}"
+                            Padding="16,14"
+                            Grid.Row="{OnIdiom Phone=1, Default=0}"
+                            Grid.Column="{OnIdiom Phone=2, Default=3}"
+                            Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}">
+                        <Grid ColumnDefinitions="4,*" ColumnSpacing="12">
+                            <BoxView BackgroundColor="{StaticResource StatusDone}" CornerRadius="2" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="DONE" Style="{StaticResource MutedLabel}" FontAttributes="Bold" />
+                                <Label Text="{Binding DoneCount}"
+                                       Style="{StaticResource PageTitle}"
+                                       FontSize="{OnIdiom Phone=26, Default=32}" />
+                                <Label Text="completed" Style="{StaticResource MutedLabel}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- FILTER BAR -->
+                <Border Style="{StaticResource CardBorder}"
+                        Padding="{OnIdiom Phone=12, Default=14}">
+                    <Grid ColumnDefinitions="Auto,*,Auto"
+                          RowDefinitions="Auto,Auto"
+                          ColumnSpacing="12"
+                          RowSpacing="{OnIdiom Phone=12, Default=0}">
+
+                        <editors:SfComboBox Grid.Row="0"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="{OnIdiom Phone=3, Default=1}"
+                                            WidthRequest="{OnIdiom Phone=-1, Default=240}"
+                                            HeightRequest="44"
+                                            ItemsSource="{Binding Projects}"
+                                            DisplayMemberPath="Name"
+                                            SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
+                                            Placeholder="Select project"
+                                            IsClearButtonVisible="False"
+                                            Background="Transparent"
+                                            SelectedDropDownItemBackground="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource SurfaceAltLight}}"
+                                            DropDownBackground="{AppThemeBinding Light={StaticResource SurfaceAltLight}, Dark={StaticResource SurfaceAltDark}}"
+                                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" 
+                                            DropDownItemTextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+
+                        <!-- Assignee avatars -->
+                        <HorizontalStackLayout Grid.Row="{OnIdiom Phone=1, Default=0}"
+                                               Grid.Column="{OnIdiom Phone=0, Default=1}"
+                                               Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}"
+                                               Spacing="-8"
+                                               VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="-8"
+                                                   BindableLayout.ItemsSource="{Binding VisibleAvatars}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border HeightRequest="34"
+                                                WidthRequest="34"
+                                                Padding="0"
+                                                StrokeThickness="2"
+                                                Stroke="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="17" />
+                                            </Border.StrokeShape>
+                                            <Image Source="{Binding .}" Aspect="AspectFill" />
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </HorizontalStackLayout>
+
+                            <Border HeightRequest="34"
+                                    WidthRequest="34"
+                                    Padding="0"
+                                    StrokeThickness="2"
+                                    IsVisible="{Binding HasRemainingAvatars}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceAltLight}, Dark={StaticResource SurfaceAltDark}}"
+                                    Stroke="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="17" />
+                                </Border.StrokeShape>
+                                <Label Text="{Binding RemainingAvatarsText}"
+                                       Style="{StaticResource MutedLabel}"
+                                       FontAttributes="Bold"
+                                       FontSize="11"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center" />
+                            </Border>
+                        </HorizontalStackLayout>
+
+                        <!-- Date range chip -->
+                        <Border Grid.Row="{OnIdiom Phone=1, Default=0}"
+                                Grid.Column="2"
+                                Style="{StaticResource FieldBorder}"
+                                HeightRequest="44"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"
+                                SemanticProperties.Description="Filter by date range">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ShowDateRange_Clicked" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                <Path Data="M4,6 H20 V20 H4 Z M4,10 H20 M8,3 V7 M16,3 V7"
+                                      Stroke="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}"
+                                      StrokeThickness="1.8"
+                                      StrokeLineJoin="Round"
+                                      StrokeLineCap="Round"
+                                      Aspect="Uniform"
+                                      HeightRequest="16"
+                                      WidthRequest="16"
+                                      VerticalOptions="Center" />
+                                <Label x:Name="DateRangeLabel"
+                                       Text="All dates"
+                                       FontSize="13"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- BOARD HOST : Kanban / Scheduler / DataGrid -->
+                <Border Style="{StaticResource CardBorder}"
+                        Padding="{OnIdiom Phone=6, Default=10}">
+                    <Grid HeightRequest="{OnIdiom Phone=520, Tablet=600, Desktop=640}">
+
+                        <!-- KANBAN -->
+                        <Grid x:Name="kanbanView" IsVisible="True" SizeChanged="KanbanHost_SizeChanged">
+                            <kanban:SfKanban x:Name="KanbanBoard"
+                                             ItemsSource="{Binding KanbanData}"
+                                             AutoGenerateColumns="False">
+
+                                <kanban:SfKanban.CardTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="2,4">
+                                            <Border Style="{StaticResource CardBorder}"
+                                                    Padding="0"
+                                                    StrokeShape="RoundRectangle 12">
+                                                <Grid ColumnDefinitions="5,*">
+                                                    <BoxView BackgroundColor="{Binding Tags, Converter={StaticResource TagsToColorConverter}}" />
+                                                    <Grid Grid.Column="1"
+                                                          Padding="12,10"
+                                                          ColumnDefinitions="*,Auto"
+                                                          RowDefinitions="Auto,Auto,Auto"
+                                                          RowSpacing="6"
+                                                          ColumnSpacing="8">
+                                                        <Label Text="{Binding Title}"
+                                                               Style="{StaticResource PageTitle}"
+                                                               FontSize="14"
+                                                               LineBreakMode="TailTruncation"
+                                                               MaxLines="2" />
+                                                        <Label Grid.Row="1"
+                                                               Grid.ColumnSpan="2"
+                                                               Text="{Binding Description}"
+                                                               Style="{StaticResource MutedLabel}"
+                                                               LineBreakMode="TailTruncation"
+                                                               MaxLines="3" />
+                                                        <HorizontalStackLayout Grid.Row="2"
+                                                                               Spacing="6"
+                                                                               VerticalOptions="Center"
+                                                                               BindableLayout.ItemsSource="{Binding Tags}">
+                                                            <BindableLayout.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border Padding="8,2"
+                                                                            StrokeThickness="0"
+                                                                            BackgroundColor="{Binding ., Converter={StaticResource TagsToColorConverter}}">
+                                                                        <Border.StrokeShape>
+                                                                            <RoundRectangle CornerRadius="8" />
+                                                                        </Border.StrokeShape>
+                                                                        <Label Text="{Binding .}"
+                                                                               FontSize="11"
+                                                                               TextColor="White" />
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </BindableLayout.ItemTemplate>
+                                                        </HorizontalStackLayout>
+                                                        <Border Grid.Column="1"
+                                                                Grid.Row="2"
+                                                                HeightRequest="28"
+                                                                WidthRequest="28"
+                                                                Padding="0"
+                                                                StrokeThickness="0">
+                                                            <Border.StrokeShape>
+                                                                <RoundRectangle CornerRadius="14" />
+                                                            </Border.StrokeShape>
+                                                            <Image Source="user.png" Aspect="AspectFill" />
+                                                        </Border>
+                                                    </Grid>
+                                                </Grid>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </kanban:SfKanban.CardTemplate>
+
+                                <kanban:SfKanban.Columns>
+                                    <kanban:KanbanColumn Title="To Do" AllowDrag="False" Categories="Open" />
+                                    <kanban:KanbanColumn Title="In Progress" AllowDrag="False" Categories="InProgress" />
+                                    <kanban:KanbanColumn Title="Testing" AllowDrag="False" Categories="Testing" />
+                                    <kanban:KanbanColumn Title="Done" AllowDrag="False" Categories="Done" />
+                                </kanban:SfKanban.Columns>
+                            </kanban:SfKanban>
+                        </Grid>
+
+                        <!-- SCHEDULER -->
+                        <Grid x:Name="schedulerView" IsVisible="False">
+                            <scheduler:SfScheduler View="TimelineWeek"
+                                                   AllowedViews="TimelineDay,TimelineMonth,TimelineWeek,TimelineWorkWeek"
+                                                   AppointmentsSource="{Binding Appointments}">
+
+                                <scheduler:SfScheduler.TimelineView>
+                                    <scheduler:SchedulerTimelineView TimeInterval="4:0:0">
+                                        <scheduler:SchedulerTimelineView.ViewHeaderSettings>
+                                            <scheduler:SchedulerViewHeaderSettings>
+                                                <scheduler:SchedulerViewHeaderSettings.DateTextStyle>
+                                                    <scheduler:SchedulerTextStyle
+                                                                TextColor="{AppThemeBinding Light=Black,
+                                                                                              Dark=White}" />
+                                                </scheduler:SchedulerViewHeaderSettings.DateTextStyle>
+                                            </scheduler:SchedulerViewHeaderSettings>
+                                        </scheduler:SchedulerTimelineView.ViewHeaderSettings>
+                                    </scheduler:SchedulerTimelineView>
+                                </scheduler:SfScheduler.TimelineView>
+                                <scheduler:SfScheduler.ResourceView>
+                                    <scheduler:SchedulerResourceView Resources="{Binding Users}">
+                                        <scheduler:SchedulerResourceView.TextStyle>
+                                            <scheduler:SchedulerTextStyle
+                                                                TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                        </scheduler:SchedulerResourceView.TextStyle>
+                                    </scheduler:SchedulerResourceView>
+                                </scheduler:SfScheduler.ResourceView>
+                            </scheduler:SfScheduler>
+                        </Grid>
+
+                        <!-- DATAGRID -->
+                        <Grid x:Name="dataGridView" IsVisible="False">
+                            <datagrid:SfDataGrid ItemsSource="{Binding GridUsers}"
+                                                 VerticalScrollBarVisibility="Never"
+                                                 AllowGroupExpandCollapse="True"
+                                                 AutoGenerateColumnsMode="None"
+                                                 ColumnWidthMode="None"
+                                                 HeaderRowHeight="44"
+                                                 RowHeight="{OnIdiom Phone=48, Default=62}">
+                                <datagrid:SfDataGrid.Columns>
+                                    <datagrid:DataGridTextColumn HeaderText="Title" MappingName="Title" Width="140" />
+                                    <datagrid:DataGridTextColumn HeaderText="Description" MappingName="Description" Width="220" />
+                                    <datagrid:DataGridTextColumn HeaderText="Project" MappingName="ProjectId" Width="95" />
+                                    <datagrid:DataGridTextColumn HeaderText="Status" MappingName="Status" Width="130" />
+                                    <datagrid:DataGridDateColumn HeaderText="Start" HeaderTextAlignment="Start" CellTextAlignment="Start" MappingName="StartDate" Format="dd MMM yy" Width="130" />
+                                    <datagrid:DataGridDateColumn HeaderText="End" HeaderTextAlignment="Start" CellTextAlignment="Start" MappingName="EndDate" Format="dd MMM yy" Width="100" />
+                                    <datagrid:DataGridTemplateColumn HeaderText="Progress" Width="160" HeaderTextAlignment="Start" CellTextAlignment="Center">
+                                        <datagrid:DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="*,Auto"
+                                                      Margin="10,0"
+                                                      ColumnSpacing="8"
+                                                      VerticalOptions="Center">
+                                                    <ProgressBar Progress="{Binding Progress, Converter={StaticResource PercentToFractionConverter}}"
+                                                                 ProgressColor="{AppThemeBinding Light={StaticResource AccentLight}, Dark={StaticResource AccentDark}}"
+                                                                 VerticalOptions="Center" />
+                                                    <Label Grid.Column="1"
+                                                           Text="{Binding Progress, StringFormat='{0}%'}"
+                                                           FontSize="12"
+                                                           VerticalOptions="Center" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </datagrid:DataGridTemplateColumn.CellTemplate>
+                                    </datagrid:DataGridTemplateColumn>
+                                    <datagrid:DataGridTemplateColumn HeaderText="Priority" Width="100">
+                                        <datagrid:DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Padding="10,3"
+                                                        StrokeThickness="0"
+                                                        HorizontalOptions="Start"
+                                                        VerticalOptions="Center"
+                                                        Margin="10,0"
+                                                        BackgroundColor="{Binding Priority, Converter={StaticResource PriorityToColorConverter}}">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="10" />
+                                                    </Border.StrokeShape>
+                                                    <Label Text="{Binding Priority}" FontSize="12" TextColor="White" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </datagrid:DataGridTemplateColumn.CellTemplate>
+                                    </datagrid:DataGridTemplateColumn>
+                                </datagrid:SfDataGrid.Columns>
+
+                                <datagrid:SfDataGrid.GroupColumnDescriptions>
+                                    <datagrid:GroupColumnDescription ColumnName="Name" />
+                                </datagrid:SfDataGrid.GroupColumnDescriptions>
+                            </datagrid:SfDataGrid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ================= NAVIGATION : rail (Desktop/Tablet) or bottom bar (Phone) ================= -->
+        <Grid x:Name="NavRoot"
+              Grid.Row="{OnIdiom Phone=1, Default=0}"
+              Grid.Column="0"
+              Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}"
+              Grid.RowSpan="{OnIdiom Phone=1, Default=2}"
+              BackgroundColor="{AppThemeBinding Light={StaticResource NavBgLight}, Dark={StaticResource NavBgDark}}"
+              ColumnDefinitions="*,*,*"
+              RowDefinitions="Auto,Auto,Auto,Auto"
+              Padding="{OnIdiom Phone='8,6', Default='10,20'}"
+              RowSpacing="8"
+              WidthRequest="{OnIdiom Phone=-1, Default=84}">
+
+            <!-- Logo (rail only) -->
+            <Border Grid.ColumnSpan="3"
+                    IsVisible="{OnIdiom Phone=False, Default=True}"
+                    HeightRequest="40"
+                    WidthRequest="40"
+                    Padding="0"
+                    Margin="0,0,0,16"
+                    StrokeThickness="0"
+                    BackgroundColor="{StaticResource Primary}"
+                    HorizontalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Label Text="S"
+                       TextColor="White"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="18"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <Border x:Name="KanbanFrame"
+                    Grid.Row="{OnIdiom Phone=0, Default=1}"
+                    Grid.Column="{OnIdiom Phone=0, Default=0}"
+                    Grid.ColumnSpan="{OnIdiom Phone=1, Default=3}"
+                    Style="{StaticResource NavItem}"
+                    SemanticProperties.Description="Kanban board">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ShowKanban_Clicked" />
+                </Border.GestureRecognizers>
+                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                    <Path x:Name="KanbanIcon"
+                          Data="M4,4 H8 V20 H4 Z M10,4 H14 V14 H10 Z M16,4 H20 V10 H16 Z"
+                          Style="{StaticResource NavIcon}" />
+                    <Label x:Name="KanbanLabel" Text="Board" Style="{StaticResource NavLabel}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border x:Name="SchedulerFrame"
+                    Grid.Row="{OnIdiom Phone=0, Default=2}"
+                    Grid.Column="{OnIdiom Phone=1, Default=0}"
+                    Grid.ColumnSpan="{OnIdiom Phone=1, Default=3}"
+                    Style="{StaticResource NavItem}"
+                    SemanticProperties.Description="Scheduler">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ShowScheduler_Clicked" />
+                </Border.GestureRecognizers>
+                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                    <Path x:Name="SchedulerIcon"
+                          Data="M4,6 H20 V20 H4 Z M4,10 H20 M8,3 V7 M16,3 V7"
+                          Style="{StaticResource NavIcon}" />
+                    <Label x:Name="SchedulerLabel" Text="Timeline" Style="{StaticResource NavLabel}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border x:Name="DataGridFrame"
+                    Grid.Row="{OnIdiom Phone=0, Default=3}"
+                    Grid.Column="{OnIdiom Phone=2, Default=0}"
+                    Grid.ColumnSpan="{OnIdiom Phone=1, Default=3}"
+                    Style="{StaticResource NavItem}"
+                    SemanticProperties.Description="Task grid">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ShowDataGrid_Clicked" />
+                </Border.GestureRecognizers>
+                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                    <Path x:Name="DataGridIcon"
+                          Data="M4,4 H20 V20 H4 Z M4,10 H20 M4,15 H20 M10,4 V20"
+                          Style="{StaticResource NavIcon}" />
+                    <Label x:Name="DataGridLabel" Text="Grid" Style="{StaticResource NavLabel}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ================= POPUP : DATE RANGE ================= -->
+        <Grid x:Name="dateRangePopup"
+              Grid.RowSpan="2"
+              Grid.ColumnSpan="2"
+              IsVisible="False"
+              BackgroundColor="#99000000">
+            <Border Style="{StaticResource CardBorder}"
+                    Padding="{OnIdiom Phone=18, Default=24}"
+                    Margin="{OnIdiom Phone=16, Default=40}"
+                    WidthRequest="{OnIdiom Phone=-1, Default=440}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Select date range"
+                           Style="{StaticResource PageTitle}"
+                           FontSize="18" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Start" Style="{StaticResource MutedLabel}" />
+                            <DatePicker x:Name="RangeStartPicker" Background="Transparent" WidthRequest="170"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="End" Style="{StaticResource MutedLabel}" />
+                            <DatePicker x:Name="RangeEndPicker" Background="Transparent" WidthRequest="170"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="End">
+                        <Button Text="Clear" Style="{StaticResource SecondaryAction}" Clicked="ClearRange_Clicked" />
+                        <Button Text="Cancel" Style="{StaticResource SecondaryAction}" Clicked="CancelRange_Clicked" />
+                        <Button Text="Apply" Style="{StaticResource PrimaryAction}" Clicked="ApplyRange_Clicked" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ================= POPUP : TASK DETAILS ================= -->
+        <Grid x:Name="taskPopup"
+              Grid.RowSpan="2"
+              Grid.ColumnSpan="2"
+              IsVisible="False"
+              BackgroundColor="#99000000">
+            <Border Style="{StaticResource CardBorder}"
+                    Padding="0"
+                    Margin="{OnIdiom Phone=16, Default=40}"
+                    WidthRequest="{OnIdiom Phone=-1, Default=540}"
+                    MaximumHeightRequest="{OnIdiom Phone=700, Default=800}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}">
+                <Grid RowDefinitions="*,Auto">
+                <ScrollView>
+                    <VerticalStackLayout Padding="{OnIdiom Phone=18, Default=24}" Spacing="14">
+                        <Label Text="New task"
+                               Style="{StaticResource PageTitle}"
+                               FontSize="20" />
+
+                        <VerticalStackLayout Spacing="6">
+                                <Label Text="Title" Style="{StaticResource MutedLabel}" />
+                                <Border Style="{StaticResource FieldBorder}">
+                                    <controls:SfEntry x:Name="PopupTitleEntry" Background="Transparent" Placeholder="What needs to be done?" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Description" Style="{StaticResource MutedLabel}" />
+                            <Border Style="{StaticResource FieldBorder}" Padding="10,4">
+                                <controls:SfEntry x:Name="PopupDescriptionEditor"
+                                                    HeightRequest="100"
+                                                    Background="Transparent"
+                                                    Placeholder="Add some detail" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*"
+                              RowDefinitions="Auto,Auto"
+                              ColumnSpacing="12"
+                              RowSpacing="{OnIdiom Phone=14, Default=0}">
+                            <VerticalStackLayout Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}" Spacing="6">
+                                    <Label Text="Assignee" Style="{StaticResource MutedLabel}" />
+                                    <Picker x:Name="PopupUserPicker"
+                                            ItemsSource="{Binding AllUsers}"
+                                            ItemDisplayBinding="{Binding Name}"
+                                            />
+                                </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="{OnIdiom Phone=1, Default=0}"
+                                                 Grid.Column="{OnIdiom Phone=0, Default=1}"
+                                                 Grid.ColumnSpan="{OnIdiom Phone=2, Default=1}"
+                                                 Spacing="6">
+                                    <Label Text="Status" Style="{StaticResource MutedLabel}" />
+                                    <Picker x:Name="PopupStatusPicker">
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>Todo</x:String>
+                                                <x:String>InProgress</x:String>
+                                                <x:String>Testing</x:String>
+                                                <x:String>Done</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+                                </VerticalStackLayout>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <VerticalStackLayout Spacing="6">
+                                    <Label Text="Start date" Style="{StaticResource MutedLabel}" />
+                                    <DatePicker x:Name="PopupStartDatePicker" WidthRequest="{OnIdiom Default=240, Phone=170}" HorizontalOptions="Fill"/>
+                                </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                    <Label Text="End date" Style="{StaticResource MutedLabel}" />
+                                    <DatePicker x:Name="PopupEndDatePicker" WidthRequest="{OnIdiom Default=240, Phone=170}" HorizontalOptions="Fill"/>
+                                </VerticalStackLayout>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Progress (0-100)" Style="{StaticResource MutedLabel}" />
+                            <Border Style="{StaticResource FieldBorder}">
+                                    <controls:SfEntry x:Name="PopupProgressEntry" Background="Transparent"
+                                       Placeholder="0"
+                                       Keyboard="Numeric" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+                <HorizontalStackLayout Grid.Row="1"
+                                       Spacing="10"
+                                       HorizontalOptions="End"
+                                       Padding="{OnIdiom Phone='18,12', Default='24,14'}">
+                    <Button Text="Cancel" Style="{StaticResource SecondaryAction}" Clicked="CancelPopup_Clicked" />
+                    <Button Text="Save task" Style="{StaticResource PrimaryAction}" Clicked="SavePopup_Clicked" />
+                </HorizontalStackLayout>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
