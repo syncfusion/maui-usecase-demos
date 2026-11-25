@@ -551,6 +551,7 @@
 
                                 <pager:SfDataPager
                                 x:Name="dataPager"
+                                TargetGrid="{Reference dataGrid}"
                                 PageSize="8"
                                 PageIndex="{Binding CurrentPageIndex, Mode=TwoWay}"
                                 NumericButtonsGenerateMode="Auto">

@@ -14,6 +14,39 @@
              NavigationPage.HasNavigationBar="False"
              xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar">
 
+    <ContentPage.Resources>
+        <Style TargetType="core:SfTextInputLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+
+                        <VisualState x:Name="Focused">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke"
+                                        Value="#2F628C"/>
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="UnFocused">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke"
+                                        Value="#72777F"/>
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Stroke"
+                                        Value="#72777F"/>
+                            </VisualState.Setters>
+                        </VisualState>
+
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
     <Grid>
         <!-- Root Grid for Desktop Split -->
         <Grid x:Name="RootGrid"
@@ -27,29 +60,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid.Resources>
-                <Style TargetType="core:SfTextInputLayout">
-                    <Setter Property="VisualStateManager.VisualStateGroups">
-                        <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Focused">
-                                        <VisualState.Setters>
-                                            <Setter Property="Stroke" Value="#2F628C"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="UnFocused">
-                                        <VisualState.Setters>
-                                            <Setter Property="Stroke" Value="#72777F"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="Stroke" Value="#72777F"/>
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                        </VisualStateGroupList>
-                    </Setter>
-                </Style>
+                
             </Grid.Resources>
 
             <!-- Desktop Image (never overlaps, hidden on mobile) -->

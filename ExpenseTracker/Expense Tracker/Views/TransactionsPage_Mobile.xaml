@@ -250,34 +250,6 @@
                                         IsClearButtonVisible="False"/>
                             </Grid>
 
-                            <!--<Grid Grid.Row="1"
-                                  Padding="8,0,0,0"
-                                  >
-
-                                --><!-- ICON --><!--
-                                <Label
-                                    Text="&#xE72B;"
-                                    FontFamily="ExpenseTrackerIcons"
-                                    FontSize="33"
-                                    HorizontalOptions="Start"
-                                    VerticalOptions="Center"
-                                    TextColor="Black"/>
-
-                                <input:SfComboBox HorizontalOptions="Start"
-                                                   VerticalOptions="Fill"
-                                                   Opacity="0.01"
-                                                   DropdownWidth="120"
-                                                   BackgroundColor="#F9FAFB"
-                                                   DropDownBackground="#FFFFFF"
-                                                   SelectionTextHighlightColor="#111827"
-                                                   SelectedDropDownItemBackground="#DBEAFE"
-                                                   ItemsSource="{Binding PeriodOptions}"
-                                                   SelectedItem="{Binding SelectedFinancialPeriod, Mode=TwoWay}"
-                                                   SelectedIndex="{Binding SelectedAccountPeriodIndex, Mode=TwoWay}"
-                                                   ShowBorder="False"
-                                                   IsClearButtonVisible="False"/>
-                            </Grid>-->
-                            <!-- Selection action bar (visible when items selected) -->
                         </Grid>
                         <Border Grid.Row="1"
                              Padding="0"
@@ -490,6 +462,7 @@
 
                                 <pager:SfDataPager
                                  x:Name="dataPager"
+                                 TargetGrid="{Reference dataGrid}"
                                  PageSize="8"
                                  PageIndex="{Binding CurrentPageIndex, Mode=TwoWay}"
                                  NumericButtonsGenerateMode="Auto">
