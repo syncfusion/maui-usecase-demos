@@ -1,147 +1,214 @@
 # Patient Care: .NET MAUI Use Case Sample
 
-A healthcare patient-management app built with **Syncfusion .NET MAUI controls**, demonstrating a realistic clinical workflow with dashboard metrics, patient management, appointment scheduling, and care plan tracking using self-contained local data.
+![Patient Care Demo](patient-care-demo.gif)
+
+A clinician-focused healthcare dashboard built with [Syncfusion .NET MAUI controls](https://help.syncfusion.com/maui/overview), demonstrating patient care, schedules, appointments, notifications, and care-plan workflows using local mock data.
+
+---
 
 ## Overview
 
-Clinicians and care staff need a single place to monitor patient status, manage the day's schedule, and track care plan progress. This sample demonstrates how to build that experience with .NET MAUI and Syncfusion controls:
+Patient Care demonstrates a desktop and mobile clinical management experience. It provides Dashboard, Patients, Appointments, and Care Plans destinations backed by local services that seed and expose mock clinical data.
 
-- **What the sample does**: Shows a clinical dashboard with health metrics and care alerts, a searchable patient list with patient detail views, a day-view appointment scheduler with clinician assignment, and a care plan tracker with step-by-step task progress.
-- **Who it is for**: Developers building healthcare, scheduling, or line-of-business management apps with .NET MAUI.
-- **What it demonstrates**: Practical use of Syncfusion MAUI charts, scheduler, list view, progress indicators, chips, segmented control, badge view, avatar view, and popup in one cohesive MVVM app.
-- **What outcome the user gets**: A complete, cross-platform clinical workflow app that runs locally with no backend, network calls, or credentials required.
+The sample does not connect to an electronic health record, notification provider, or external patient system.
+
+---
 
 ## Key Features
 
-- **Dashboard**: Health metric cards, appointment counts by status (circular chart), weekly appointments trend (column chart), care alerts, today's schedule, and care plan progress.
-- **Patient management**: Filterable patient list (status chips + autocomplete search), patient detail view with vitals, timeline activity, and progress indicators.
-- **Appointment scheduling**: Day-view scheduler with appointment blocks, clinician assignment, status styling, and badge counts.
-- **Care plan tracking**: Care plan list with step progress bars showing task completion stages.
-- **Notifications**: Care alert feed with severity levels (High / Medium / Low).
-- **Adaptive navigation**: Sidebar navigation on desktop and bottom navigation bar on mobile, plus a splash page at startup.
+### Dashboard
 
-## Data Flow
+- Show clinician and patient-care summaries.
+- Display schedule, patient, and care-plan information.
+- Navigate between clinical workspace sections.
 
-1. User launches the app and passes through the splash page to the dashboard.
-2. The app loads bundled clinical data from in-memory data services (patients, appointments, clinicians, care plans, alerts).
-3. ViewModels shape the data into observable collections for binding.
-4. The user switches between Dashboard, Patients, Schedule, and Care Plans using the sidebar/bottom navigation, and interacts (search, filter, select a day, tap an alert).
-5. The services update their state and the views re-render the results.
-6. All data stays local: no network calls, retries, or fallbacks are needed.
+### Patients
 
-## Controls Used
+- Browse the local patient directory.
+- Select a patient and review the patient presentation.
+- Use dashboard services and patient services for derived view state.
 
-- `SfCartesianChart` (Charts): Weekly appointments column chart on the dashboard.
-- `SfCircularChart` (Charts): Appointment status breakdown doughnut chart on the dashboard.
-- `SfScheduler` (Scheduler): Day-view appointment calendar with appointment mapping and header view on the Schedule page.
-- `SfListView` (ListView): Patient list, dashboard lists, and alert feeds with grid layout support.
-- `SfCircularProgressBar` / `SfLinearProgressBar` (ProgressBar): Care plan completion and patient vitals progress indicators.
-- `SfStepProgressBar` (ProgressBar): Care plan task step progress on the Care Plans page.
-- `SfSegmentedControl` (Buttons): View switching segments on the Schedule page.
-- `SfButton` (Buttons): Actions and toolbar buttons.
-- `SfBadgeView` (Core): Notification and status badges in headers and lists.
-- `SfAvatarView` (Core): Patient and clinician photos/initials.
-- `SfChipGroup` / `SfChip` (Core): Patient status filters and selection chips.
-- `SfAutocomplete` (Inputs): Patient name search on the Patients page.
-- `SfPopup` (Popup): Patient detail and alert popups.
+### Appointments
 
-## Architecture
+- Show scheduled appointments.
+- Use the scheduler and appointment data models.
+- Navigate and review schedule information.
 
-The sample follows the MVVM pattern with constructor-injected services:
+### Care Plans
 
-- **Views** (`Views/`): XAML pages for Dashboard, Patients, Schedule (Appointments), and Care Plans, plus a Splash page.
-- **ViewModels** (`ViewModels/`): Presentation logic and change notification (`INotifyPropertyChanged`) for each page.
-- **Models** (`Models/`): Data structures for patients, appointments/clinicians, care plans, and dashboard data.
-- **Services** (`Services/`): In-memory data services (`PatientDataService`, `ScheduleDataService`, `CarePlanDataService`, `DashboardDataService`, `NotificationService`) registered in `MauiProgram.cs` via DI.
-- **Supporting UI components** (`Controls/`): Reusable `AppSidebarView` (desktop) and `AppBottomNavView` (mobile) navigation controls; `Converters/` hold XAML value converters.
+- Browse local care plans.
+- Display care-plan details and status.
+- Use care-plan and notification services.
 
-Data flows from the services → ViewModel observable collections → bound XAML views. All data is mock data generated in code.
+### Responsive Navigation
 
-## Prerequisites
+- Desktop layouts use sidebar navigation.
+- Phone layouts use bottom navigation.
+- The app uses device idiom and responsive page layouts.
 
-- .NET 10 SDK
-- .NET MAUI workload (plus platform workloads for Android, iOS, Mac Catalyst, or Windows)
-- Visual Studio 2022 (17.14+) or VS Code with the MAUI extension
-- Syncfusion .NET MAUI packages (v34.2.6): restored automatically from NuGet
+---
 
-## Configuration
+## Syncfusion Controls Used
 
-No configuration is required. All clinical data is mock data created in code and held in memory. There are no API keys, environment variables, or secrets.
+| Control | Purpose |
+|---|---|
+| `SfScheduler` | Appointment scheduling |
+| `SfListView` | Patient, appointment, and care-plan lists |
+| `SfCharts` | Dashboard analytics |
+| `SfProgressBar` | Progress and status visualization |
+| `SfPopup` | Overlay and dialog workflows |
+| `SfTextInputLayout` | Form fields |
+| `SfButton` | Application actions |
 
-### Default Behavior
+### Additional Technologies
 
-- **Local/offline logic**: the sample is fully self-contained and runs without any network access.
+- .NET MAUI Shell
+- Dependency Injection
+- Page-specific MVVM view models
+- Local mock data services
 
-### Environment Variables / Secrets
-
-None required. The sample does not call any external service.
-
-### Notes
-
-- Syncfusion controls run in evaluation mode unless a valid license key is registered. To register one:
-  1. Obtain a license key from <https://www.syncfusion.com/account/license>.
-  2. Add the registration call at the top of `MauiProgram.cs` in `CreateMauiApp()`:
-
-     ```csharp
-     Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY");
-     ```
-
-  See [Syncfusion licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key) for details.
-
-## Run
-
-```bash
-dotnet build PatientCare/PatientCare/PatientCare.csproj -t:Run -f net10.0-android
-```
-
-Other supported platforms:
-
-```bash
-dotnet build PatientCare/PatientCare/PatientCare.csproj -t:Run -f net10.0-ios          # iOS
-dotnet build PatientCare/PatientCare/PatientCare.csproj -t:Run -f net10.0-maccatalyst  # macOS
-dotnet build PatientCare/PatientCare/PatientCare.csproj -t:Run -f net10.0-windows10.0.19041.0  # Windows
-```
-
-Or open `PatientCare/PatientCare.slnx` in Visual Studio / VS Code, restore packages, and deploy to your target platform.
-
-## Output
-
-![Patient care demo](patient-care-demo.gif)
-
-## Project Structure
-
-- `Views/`: UI pages (Dashboard, Patients, Appointments, Care Plans, Splash)
-- `ViewModels/`: presentation logic per page
-- `Models/`: patient, schedule, care plan, and dashboard data structures
-- `Services/`: in-memory data and notification services
-- `Controls/`: custom navigation controls (sidebar, bottom nav)
-- `Converters/`: XAML value converters
-- `Resources/`: styles, fonts, images, and app assets
-
-## Troubleshooting
-
-**Issue 1: Blank pages or missing data**
-Cause: DI services were not registered (modified `MauiProgram.cs`).
-Fix: Ensure all five data services are registered in `MauiProgram.CreateMauiApp()`.
-
-**Issue 2: Build or workload errors**
-Cause: Missing .NET 10 SDK, MAUI workload, or platform workload.
-Fix: Verify the installed .NET version (`dotnet --version`) and install the needed MAUI workload (`dotnet workload install maui`).
-
-**Issue 3: Trial/evaluation banner shown**
-Cause: No Syncfusion license key registered.
-Fix: Register a valid license key in `MauiProgram.cs` (see the Notes section above).
-
-## Security and Privacy Notes
-
-- All patient data in this sample is fictional mock data: it contains no real personal health information.
-- No credentials or API keys are needed, so there is nothing to secure or leak.
-- If you extend the sample to use real patient data, treat it as sensitive: keep it encrypted at rest, never log it, and follow applicable healthcare privacy regulations.
+---
 
 ## Supported Platforms
 
-- Android
-- iOS
-- Windows
-- macOS (Mac Catalyst)
+| Platform | Target Framework |
+|---|---|
+| Android | `net10.0-android` |
+| iOS | `net10.0-ios` |
+| macOS (Mac Catalyst) | `net10.0-maccatalyst` |
+| Windows | `net10.0-windows10.0.19041.0` |
 
+> iOS and Mac Catalyst targets require a compatible non-Linux host. The Windows target is available on Windows hosts.
+
+---
+
+## Prerequisites
+
+- .NET 10 SDK or later
+- .NET MAUI workloads
+- Visual Studio 2022 (17.14+), Visual Studio Code with the .NET MAUI extension, or JetBrains Rider
+- A platform emulator, simulator, or physical device
+- Syncfusion .NET MAUI NuGet packages restored from NuGet
+
+---
+
+## Getting Started
+
+### Open the Solution
+
+```text
+PatientCare/PatientCare.slnx
+```
+
+### Restore Packages
+
+```bash
+dotnet restore PatientCare/PatientCare/PatientCare.csproj
+```
+
+### Build and Run
+
+Example for Android:
+
+```bash
+dotnet build PatientCare/PatientCare/PatientCare.csproj -f net10.0-android
+```
+
+---
+
+## Architecture
+
+### Core Layers
+
+- **Views** (`Views/`) - Dashboard, Patients, Appointments, Care Plans, and Splash pages.
+- **Controls** (`Controls/`) - sidebar and bottom-navigation controls.
+- **ViewModels** (`ViewModels/`) - page state and presentation logic.
+- **Models** (`Models/`) - care-plan, dashboard, patient, and schedule entities.
+- **Services** (`Services/`) - dashboard, patient, schedule, care-plan, and notification data services.
+- **Converters** (`Converters/`) - clinician highlight and status color conversion.
+
+### Runtime Flow
+
+1. `MauiProgram.CreateMauiApp()` registers Syncfusion controls and local data services.
+2. Dashboard, patient, schedule, care-plan, and notification services provide seeded data.
+3. Page view models consume those services and expose observable presentation state.
+4. Desktop and phone navigation surfaces bind to the same application data.
+5. Changes remain local to the application process because the sample uses mock services.
+
+---
+
+## Project Structure
+
+```text
+PatientCare/
+├── PatientCare.slnx
+├── patient-care-demo.gif
+└── PatientCare/
+    ├── Views/
+    ├── Controls/
+    ├── ViewModels/
+    ├── Models/
+    ├── Services/
+    ├── Converters/
+    ├── Resources/
+    └── Platforms/
+```
+
+---
+
+## Configuration
+
+No external service credentials or API keys are required.
+
+- All patient, clinician, schedule, notification, and care-plan data is mock data.
+- The app does not persist changes unless persistence is added.
+- The sample is for interface demonstration and must not be used as a clinical system.
+
+---
+
+## Syncfusion Licensing
+
+Register a valid Syncfusion license for licensed use.
+
+Do not commit license keys to source control. For details, refer to [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+
+---
+
+## Limitations
+
+- Patient and appointment data is not persisted.
+- The app does not integrate with an EHR or medical backend.
+- Notifications are local mock behavior.
+- The sample is not suitable for clinical decision support or real patient data.
+
+---
+
+## Troubleshooting
+
+### Patient or Schedule Data Does Not Persist
+
+The local data services recreate or hold process-local mock data.
+
+### Syncfusion Evaluation Warning
+
+Register a valid Syncfusion license.
+
+### Target Platform Build Errors
+
+Install the required .NET MAUI platform workload and verify the selected target.
+
+---
+
+## Related Documentation
+
+- [.NET MAUI Documentation](https://learn.microsoft.com/dotnet/maui/)
+- [.NET MAUI Shell](https://learn.microsoft.com/dotnet/maui/fundamentals/shell/)
+- [.NET MAUI MVVM Guidance](https://learn.microsoft.com/dotnet/architecture/maui/mvvm)
+- [Syncfusion .NET MAUI Controls](https://help.syncfusion.com/maui/overview)
+- [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key)
+
+---
+
+## License
+
+This sample is provided for demonstration and learning purposes. Syncfusion controls used in this sample require a valid Syncfusion license for production use.

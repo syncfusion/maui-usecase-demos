@@ -1,141 +1,233 @@
 # Visitor Pass Management: .NET MAUI Use Case Sample
 
-A cross-platform facility-operations sample for registering visitors and managing their visit lifecycle. The app combines a dashboard, visitor directory, digital pass, and guided registration flow using .NET MAUI and Syncfusion controls.
+![Visitor Pass Management Demo](VisitorPassManagementDemo.gif)
+
+A visitor-access management application built with [Syncfusion .NET MAUI controls](https://help.syncfusion.com/maui/overview), demonstrating visitor registration, check-in/check-out, directory filtering, dashboard analytics, digital passes, and light/dark theme switching.
+
+---
 
 ## Overview
 
-The sample is designed around the front-desk workflow:
+Visitor Pass Management provides Dashboard, Directory, and visitor-registration surfaces. It uses one singleton `IVisitorStore` instance as the source of truth for visitors, with a pass-code generator, theme service, desktop and mobile layout controls, and local pass-code simulation.
 
-- **Dashboard**: expected, checked-in, checked-out, and overdue KPIs; visitor-status and visit-purpose charts; today's visitor list.
-- **Directory**: visitor search and status filtering, responsive list/table presentation, and an active visitor preview.
-- **Digital Visitor Pass**: visitor and host details, pass barcode, visit-progress timeline, and Check In, Check Out, or Cancel actions.
-- **Registration**: a three-step wizard for visitor identity, visit scheduling, and pass generation.
-- **Theme**: a light/dark appearance toggle.
+The sample does not integrate with a physical access-control system or external visitor management service.
+
+---
 
 ## Key Features
 
-- Search visitors and filter by visit status.
-- Open a visitor record from the Dashboard or Directory.
-- Generate barcode-based passes with a visit timeline.
-- Check in, check out, or cancel a visit; shared-store changes update related screens.
-- Validate visitor and schedule details before generating a new pass.
-- Adapt the registration surface to device idiom: `SfPopup` on desktop/tablet and modal page on phones.
+### Dashboard
 
-## Data Flow
+- Show visitor totals and status breakdowns.
+- Display purpose and status charts.
+- Show the visitor timeline.
+- Recalculate KPIs when visitor state changes.
 
-1. At startup, the DI-registered `VisitorStore` creates fictional seed visitors and assigns pass IDs.
-2. The Dashboard derives KPIs and chart collections from the store; the Directory applies its search and status filters to the same visitor set.
-3. Selecting a visitor opens the Digital Pass with identity, host, schedule, barcode, and journey status.
-4. Check In, Check Out, and Cancel update the visitor in the shared store. Store events trigger dashboard and pass view models to refresh.
-5. Registration validates identity and visit schedule, adds a new Expected visitor, and displays the generated pass.
+### Visitor Directory
 
-Visitor data and theme state are held in the running app only. There is no backend, identity provider, or persistence layer; restarting restores the seed and discards changes.
+- Browse all visitor records.
+- Filter by status and search the directory.
+- Open visitor details.
+- Check in or check out eligible visitors.
 
-## Controls Used
+### Visitor Registration
 
-- `SfDataGrid`: desktop visitor tables on the Dashboard and Directory.
-- `SfListView`: mobile visitor lists and visit-journey details.
-- `SfCircularChart` / `SfCartesianChart`: visitor-status and visit-purpose summaries.
-- `SfBarcodeGenerator`: digital pass barcode.
-- `SfStepProgressBar`: visit journey progress on the Digital Visitor Pass.
-- `SfPopup`, `SfChipGroup`, `SfTextInputLayout`, `SfDatePicker`, and `SfTimePicker`: registration and filtering.
-- `SfBadgeView`, `SfAvatarView`, and `SfButton`: status presentation, visitor identity, and actions.
+- Use a desktop popup or phone page to register a visitor.
+- Select host and visit purpose.
+- Enter visit date/time and expected duration.
+- Generate a pass identifier and pass code.
 
-### Notes
+### Digital Pass
 
-The app uses CommunityToolkit.Mvvm and dependency injection:
+- Display a generated pass identifier.
+- Show check-in/check-out actions for the selected visitor.
+- Cancel an eligible expected visit.
+- Recompute overdue statuses.
 
-- **Application root** (`App.xaml.cs`): creates a `NavigationPage`; page navigation uses `Navigation.PushAsync`, not Shell routing.
-- **Views** (`VisitorPass/Views/`): Dashboard, Directory, Visitor Details, and registration surfaces.
-- **View models** (`VisitorPass/ViewModels/`): dashboard aggregates, directory filters, visitor details, and registration validation.
-- **Models** (`VisitorPass/Models/`): visitor, host, status, purpose, timeline, and chart data types.
-- **Services** (`VisitorPass/Services/`): seed data, singleton `VisitorStore`, pass-code generation, and theme state.
-- **Controls and converters** (`VisitorPass/Controls/`, `VisitorPass/Converters/`): navigation, avatar/status presentation, and binding helpers.
+### Theme Support
+
+- Switch between Light, Dark, and System themes.
+- Persist theme selection through `Application.Current.UserAppTheme`.
+- Reuse the singleton `ThemeService` across navigation.
+
+---
+
+## Syncfusion Controls Used
+
+| Control | Purpose |
+|---|---|
+| `SfDataGrid` | Visitor directory tables |
+| `SfCharts` | Status and purpose analytics |
+| `SfBadgeView` | Status and count indicators |
+| `SfAvatarView` | Visitor profile presentation |
+| `SfStepProgressBar` | Registration and pass workflows |
+| `SfChips` | Filter controls |
+| `SfPopup` | Desktop registration and overlay workflows |
+| `SfTextInputLayout` | Registration form fields |
+| `SfDatePicker` | Visit date selection |
+| `SfTimePicker` | Visit time selection |
+| `SfBarcodeGenerator` | Digital-pass barcode presentation |
+
+### Additional Technologies
+
+- CommunityToolkit.Mvvm
+- Dependency Injection
+- MVVM architecture pattern
+- Singleton visitor store and pass-code generator
+- MAUI `AppThemeBinding` and `UserAppTheme`
+
+---
+
+## Supported Platforms
+
+| Platform | Target Framework |
+|---|---|
+| Android | `net10.0-android` |
+| iOS | `net10.0-ios` |
+| macOS (Mac Catalyst) | `net10.0-maccatalyst` |
+| Windows | `net10.0-windows10.0.19041.0` |
+
+> iOS and Mac Catalyst targets require a compatible non-Linux host. The Windows target is available on Windows hosts.
+
+---
 
 ## Prerequisites
 
-- .NET 10 SDK and the .NET MAUI workload.
-- A platform workload/device for Android, iOS, Mac Catalyst, or Windows.
-- Visual Studio with MAUI support or VS Code with the .NET MAUI extension.
-- Syncfusion MAUI packages restored from NuGet. A valid Syncfusion license may be needed to remove evaluation watermarks.
+- .NET 10 SDK or later
+- .NET MAUI workloads
+- Visual Studio 2022 (17.14+), Visual Studio Code with the .NET MAUI extension, or JetBrains Rider
+- A platform emulator, simulator, or physical device
+- Syncfusion .NET MAUI NuGet packages restored from NuGet
 
-## Configuration
+---
 
-No application configuration is required. Visitor records and pass codes are generated locally.
+## Getting Started
 
-### Default Behavior
+### Open the Solution
 
-- The visitor store seeds fictional sample records at startup.
-- Pass IDs are generated locally; no barcode/pass service is called.
-- Register and lifecycle actions update only the in-memory store.
+```text
+VisitorPassManagement/VisitorPass.slnx
+```
 
-### Environment Variables / Secrets
+### Restore Packages
 
-None required. The sample does not call an external service or require credentials.
+```bash
+dotnet restore VisitorPassManagement/VisitorPass/VisitorPass.csproj
+```
 
-### Notes
+### Build and Run
 
-- Visitor data and theme changes are not persisted after restart.
-- The registration flow creates a sample facility pass; it is not an access-control integration.
-- Register a Syncfusion license through the documented licensing setup if required; do not commit the key. See [Syncfusion MAUI licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
-
-## Run
-
-From the repository root, build for a platform workload installed on your machine:
+Example for Android:
 
 ```bash
 dotnet build VisitorPassManagement/VisitorPass/VisitorPass.csproj -f net10.0-android
 ```
 
-Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and `net10.0-windows10.0.19041.0`. You can also open [`VisitorPass.slnx`](VisitorPass.slnx) in Visual Studio or VS Code, choose a target, and deploy to a device or emulator.
+---
 
-## Output
+## Architecture
 
-![Visitor Pass Management Demo](VisitorPassManagementDemo.gif)
+### Core Layers
+
+- **Views** (`Views/`) - Dashboard, Directory, Registration, and Visitor Details pages.
+- **Controls** (`Controls/`) - side/top navigation, page headers, visitor cards, and status badge controls.
+- **ViewModels** (`ViewModels/`) - dashboard, directory, registration, details, and base presentation state.
+- **Models** (`Models/`) - hosts, purposes, timeline steps, visitors, statuses, and analytics points.
+- **Services** (`Services/`) - visitor store, pass-code generation, seed data, and theme state.
+
+### Runtime Flow
+
+1. `MauiProgram.CreateMauiApp()` registers `IVisitorStore`, `PassCodeGenerator`, `ThemeService`, view models, and pages.
+2. `VisitorStore` seeds visitors through `VisitorData.BuildVisitors()` and exposes an observable collection.
+3. Registration creates a visitor and assigns a pass identifier from `PassCodeGenerator`.
+4. Check-in/check-out/cancel operations update visitor status and raise `VisitorsChanged`.
+5. Dashboard and directory view models subscribe to store changes and refresh derived counts, charts, and lists.
+6. `ThemeService` applies and observes the Light/Dark/System theme choice.
+
+---
 
 ## Project Structure
 
-- `VisitorPass.slnx`: solution file.
-- `VisitorPass/`: MAUI app project.
-- `VisitorPass/Controls/`: reusable navigation, visitor identity, and status controls.
-- `VisitorPass/Converters/`: XAML value converters.
-- `VisitorPass/Models/`: visitor, host, status, purpose, timeline, and chart models.
-- `VisitorPass/Services/`: visitor seed, store, pass-code generator, and theme service.
-- `VisitorPass/ViewModels/`: Dashboard, Directory, Visitor Details, and registration view models.
-- `VisitorPass/Views/`: Dashboard, Directory, Visitor Details, and registration pages/views.
+```text
+VisitorPassManagement/
+├── VisitorPass.slnx
+├── VisitorPassManagementDemo.gif
+└── VisitorPass/
+    ├── Views/
+    ├── Controls/
+    ├── ViewModels/
+    ├── Models/
+    ├── Services/
+    ├── Converters/
+    ├── Resources/
+    └── Platforms/
+```
+
+---
+
+## Configuration
+
+No external account or API configuration is required.
+
+- Visitor records and pass codes are generated locally.
+- The seed list is fixed at store construction.
+- The visitor store is singleton-scoped for the application process.
+- Theme selection follows System unless changed through `ThemeService`.
+
+---
+
+## Syncfusion Licensing
+
+Register a valid Syncfusion license for licensed use.
+
+Do not commit license keys to source control. For details, refer to [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+
+---
+
+## Limitations
+
+- Visitor records reset when the app restarts.
+- Pass codes and pass identifiers are local demonstration values.
+- The sample does not integrate with physical access-control devices.
+- Registration and status changes are not persisted.
+- Theme selection is an app-level preference and is not backed by a database.
+
+---
 
 ## Troubleshooting
 
-**A registered visitor disappears after restarting**
+### Visitor Changes Disappear After Restart
 
-This is expected; visitor records are stored in memory only.
+`VisitorStore` is an in-memory singleton and recreates the seed data.
 
-**Check In, Check Out, or Cancel is unavailable**
+### A Visitor Cannot Be Checked In
 
-The available actions depend on the visitor's current status. For example, Check Out is available only after Check In.
+Only an Expected visitor can be checked in. Checked-in, checked-out, and cancelled visitors follow separate status rules.
 
-**Registration does not advance**
+### A Visitor Cannot Be Cancelled
 
-Complete the required identity and schedule fields; validation messages are shown in the form.
+Checked-out and already cancelled visitors cannot be cancelled.
 
-**Registration appears as a popup or modal page**
+### Theme Does Not Change
 
-This is intentional. The app chooses the registration host based on phone versus desktop/tablet idiom.
+Verify that `ThemeService.SetTheme()` or `Toggle()` is being called and that `Application.Current.UserAppTheme` is supported on the selected target.
 
-**Syncfusion evaluation watermark appears**
+### Syncfusion Evaluation Warning
 
-Register a valid Syncfusion license; see Configuration → Notes.
+Register a valid Syncfusion license.
 
-## Security and Privacy Notes
+---
 
-- Visitor names, contact details, host names, and visits are fictional sample data.
-- The app has no backend, identity provider, or persistence.
-- Do not use the sample for real facility access or enter real visitor information.
-- Keep any Syncfusion license key out of source control.
+## Related Documentation
 
-## Supported Platforms
+- [.NET MAUI Documentation](https://learn.microsoft.com/dotnet/maui/)
+- [.NET MAUI MVVM Guidance](https://learn.microsoft.com/dotnet/architecture/maui/mvvm)
+- [.NET MAUI App Themes](https://learn.microsoft.com/dotnet/maui/user-interface/system-theme-changes)
+- [Syncfusion .NET MAUI Controls](https://help.syncfusion.com/maui/overview)
+- [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key)
 
-- Android
-- iOS
-- Windows
-- macOS (Mac Catalyst)
+---
+
+## License
+
+This sample is provided for demonstration and learning purposes. Syncfusion controls used in this sample require a valid Syncfusion license for production use.

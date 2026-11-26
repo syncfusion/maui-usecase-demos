@@ -1,130 +1,222 @@
 # Weather Forecast: .NET MAUI Use Case Sample
 
-A cross-platform weather dashboard that looks up a city and displays current conditions, hourly details, and a seven-day forecast. It uses Syncfusion controls for charts, city autocomplete, refresh gestures, and responsive presentation.
+![Weather Forecast Demo](WeatherForecastDemo.gif)
+
+A cross-platform weather dashboard built with [Syncfusion .NET MAUI controls](https://help.syncfusion.com/maui/overview), demonstrating city search, live Open-Meteo forecast data, hourly and seven-day forecasts, pull-to-refresh, and responsive desktop/mobile layouts.
+
+---
 
 ## Overview
 
-The app searches for a city using Open-Meteo and displays its current weather and forecast:
+Weather Forecast demonstrates an online weather experience using the Open-Meteo geocoding and forecast APIs. The app accepts a city name, geocodes it to coordinates, and retrieves current, hourly, and daily forecast data.
 
-- Current temperature, feels-like temperature, today's high/low, humidity, and wind.
-- Up to eight upcoming hourly forecast entries.
-- Daily high/low conditions over a seven-day forecast.
-- City search with popular-city suggestions and pull-to-refresh.
-- A desktop page on Windows/Mac Catalyst and a mobile page on Android/iOS; mobile separates Today and Next 6 Days into tabs.
+The sample uses desktop and mobile page surfaces selected by the application at runtime.
+
+---
 
 ## Key Features
 
-- London is loaded the first time the dashboard appears.
-- City names are resolved to coordinates using Open-Meteo's geocoding API.
-- Current, hourly, and daily weather data are mapped from WMO condition codes to display descriptions and icons.
-- Loading state, pull-to-refresh state, invalid-city responses, network errors, and timeouts are surfaced in the UI.
-- Platform-specific layouts share the same `WeatherViewModel` and service.
+### City Search
 
-## Data Flow
+- Search by city name.
+- Use the seeded city suggestion list.
+- Load the selected city from desktop or mobile controls.
 
-1. The dashboard calls `WeatherViewModel.InitializeAsync()` on first appearance.
-2. `WeatherService` sends the selected city name to Open-Meteo's geocoding endpoint and reads the first result.
-3. The service requests current, hourly, and daily forecast data for the returned coordinates, with the API's automatic timezone and seven forecast days.
-4. The response is mapped to current conditions, up to eight upcoming hourly entries, and daily forecast entries; WMO codes become readable conditions and icons.
-5. The view model updates its bound properties and forecast collections. Search selection or pull-to-refresh starts another request.
+### Current Weather
 
-The app needs an internet connection and has no offline forecast cache or local weather seed.
+- Show current temperature and apparent temperature.
+- Display the WMO weather description and icon/emoji.
+- Show humidity and wind speed.
+- Show the current day high and low.
 
-## Controls Used
+### Hourly Forecast
 
-- `SfAutocomplete`: city entry and suggestions.
-- `SfCartesianChart`: hourly temperature trend and daily high/low chart.
-- `SfListView`: hourly and daily forecast collections.
-- `SfTabView`: Today and Next 6 Days tabs on mobile.
-- `SfPullToRefresh`: refresh gesture.
-- `SfLinearProgressBar`, `SfBadgeView`, and `SfBusyIndicator`: temperature range, hottest-day badge, and loading state.
+- Display up to eight upcoming hourly entries.
+- Show temperature, weather description, precipitation chance, and time.
+- Skip hourly entries that are before the current time.
 
-## Architecture
+### Seven-Day Forecast
 
-- **Views** (`WeatherForecast/Views/`): `WeatherDashboardPageMobile` and `WeatherDashboardPageDesktop`.
-- **View model** (`WeatherForecast/ViewModels/WeatherViewModel.cs`): selected city, loading/error state, commands, and presentation-ready weather collections.
-- **Service** (`WeatherForecast/Services/WeatherService.cs`): typed `HttpClient`, Open-Meteo geocoding and forecast requests, response mapping, and WMO condition descriptions.
-- **Models** (`WeatherForecast/Models/`): API response, current result, hourly forecast, and daily forecast data.
-- **Converter** (`WeatherForecast/Converters/`): temperature-progress visualization converter.
-- **Startup** (`WeatherForecast/MauiProgram.cs`): HTTP client and transient view model/page registration.
+- Display daily maximum and minimum temperatures.
+- Show weather descriptions and precipitation probability.
+
+### Responsive and Refresh Behavior
+
+- Use separate desktop and mobile dashboard pages.
+- Show loading and error states.
+- Support pull-to-refresh on the dashboard.
+
+---
+
+## Syncfusion Controls Used
+
+| Control | Purpose |
+|---|---|
+| `SfCardView` | Weather information cards |
+| `SfCartesianChart` | Forecast visualizations |
+| `SfCircularGauge` | Weather metric presentation |
+| `SfTextInputLayout` | City search fields |
+| `SfListView` | Forecast and suggestion collections |
+| `SfLinearProgressBar` | Metric and loading presentation |
+| `SfPullToRefresh` | Pull-to-refresh behavior |
+| `SfTabView` | Mobile tabbed presentation |
+
+### Additional Technologies
+
+- .NET MAUI `HttpClientFactory`
+- Open-Meteo geocoding and forecast APIs
+- MVVM with manual `INotifyPropertyChanged`
+- Dependency Injection
+
+---
+
+## Supported Platforms
+
+| Platform | Target Framework |
+|---|---|
+| Android | `net10.0-android` |
+| iOS | `net10.0-ios` |
+| macOS (Mac Catalyst) | `net10.0-maccatalyst` |
+| Windows | `net10.0-windows10.0.19041.0` |
+
+> iOS and Mac Catalyst targets require a compatible non-Linux host. The Windows target is available on Windows hosts.
+
+---
 
 ## Prerequisites
 
-- .NET 10 SDK and the .NET MAUI workload.
-- A platform workload/device for Android, iOS, Mac Catalyst, or Windows.
-- An internet connection at runtime.
-- Visual Studio with MAUI support or VS Code with the .NET MAUI extension.
-- Syncfusion MAUI packages restored from NuGet. A valid Syncfusion license may be needed to remove evaluation watermarks.
+- .NET 10 SDK or later
+- .NET MAUI workloads
+- Internet connectivity
+- Visual Studio 2022 (17.14+), Visual Studio Code with the .NET MAUI extension, or JetBrains Rider
+- A platform emulator, simulator, or physical device
+- Syncfusion .NET MAUI NuGet packages restored from NuGet
 
-## Configuration
+---
 
-The sample does not require an Open-Meteo API key, account, or user configuration. Weather lookup does require network access.
+## Getting Started
 
-### Default Behavior
+### Open the Solution
 
-- The initial city is London.
-- Temperatures are displayed in Celsius and wind speed in meters per second using the service's default units.
-- Weather data is requested from Open-Meteo when the page loads and when the user searches or refreshes.
+```text
+WeatherForecast/WeatherForecast.sln
+```
 
-### Environment Variables / Secrets
+### Restore Packages
 
-None required. The app does not read an Open-Meteo API key or other runtime secret.
+```bash
+dotnet restore WeatherForecast/WeatherForecast/WeatherForecast.csproj
+```
 
-### Notes
+### Build and Run
 
-- The project currently contains a placeholder Syncfusion license registration string in `MauiProgram.cs`. Replace it locally with a valid key if required; do not commit the key.
-- Network and city-lookup failures are shown in the dashboard; no cached response is substituted.
-- Review Open-Meteo's terms and attribution requirements before redistributing or extending the sample with production use.
-- Open-Meteo documentation: [Geocoding API](https://open-meteo.com/en/docs/geocoding-api) and [Forecast API](https://open-meteo.com/en/docs).
-
-## Run
-
-From the repository root, build for a platform workload installed on your machine:
+Example for Android:
 
 ```bash
 dotnet build WeatherForecast/WeatherForecast/WeatherForecast.csproj -f net10.0-android
 ```
 
-Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and `net10.0-windows10.0.19041.0`. You can also open [`WeatherForecast.sln`](WeatherForecast.sln) in Visual Studio or VS Code, choose a target, and deploy to a device or emulator.
+---
 
-## Output
+## Architecture
 
-![Weather Forecast Demo](WeatherForecastDemo.gif)
+### Core Layers
+
+- **Views** (`Views/`) - `WeatherDashboardPageDesktop` and `WeatherDashboardPageMobile`.
+- **ViewModel** (`ViewModels/`) - `WeatherViewModel`.
+- **Models** (`Models/`) - weather response, current/daily/hourly forecast, and result types.
+- **Services** (`Services/`) - `WeatherService`.
+- **Converters** (`Converters/`) - percent-to-rectangle presentation conversion.
+
+### Runtime Flow
+
+1. `MauiProgram.CreateMauiApp()` registers an `HttpClient`-based `WeatherService` and transient view models/pages.
+2. The page calls `WeatherViewModel.InitializeAsync()` after appearing.
+3. City selection or search sets `SelectedCity`.
+4. `WeatherViewModel` calls `WeatherService.GetForecastAsync()`.
+5. `WeatherService` geocodes the city through Open-Meteo and requests the forecast with current, hourly, and daily fields.
+6. The service maps WMO codes and API response values to `WeatherResult`, hourly entries, and daily entries.
+7. The view model updates loading, error, refresh, and weather presentation properties.
+
+---
 
 ## Project Structure
 
-- `WeatherForecast.sln`: solution file.
-- `WeatherForecast/`: MAUI app project.
-- `WeatherForecast/Views/`: mobile and desktop dashboard XAML/code-behind.
-- `WeatherForecast/ViewModels/`: city search, weather state, and forecast presentation.
-- `WeatherForecast/Services/`: Open-Meteo HTTP integration and response mapping.
-- `WeatherForecast/Models/`: API response and display models.
-- `WeatherForecast/Resources/`: app icon, images, fonts, and styles.
+```text
+WeatherForecast/
+├── WeatherForecast.sln
+├── WeatherForecastDemo.gif
+└── WeatherForecast/
+    ├── Views/
+    ├── ViewModels/
+    ├── Models/
+    ├── Services/
+    ├── Converters/
+    ├── Resources/
+    └── Platforms/
+```
+
+---
+
+## Configuration
+
+Open-Meteo is used without an API key.
+
+- Geocoding and forecast requests use public Open-Meteo endpoints.
+- Requests have a 20-second HTTP timeout.
+- The app does not store API credentials.
+- Forecast data is not persisted.
+
+---
+
+## Syncfusion Licensing
+
+The project contains a license registration call with a placeholder key and catches license validation exceptions.
+
+Replace the placeholder with a valid license key for licensed use. Do not commit a real key to source control.
+
+---
+
+## Limitations
+
+- Weather data requires network connectivity.
+- City geocoding is limited to the first Open-Meteo search result.
+- Forecast data is not cached or persisted.
+- The app does not provide severe-weather alerts or offline historical forecasts.
+- A forecast API failure is displayed through the view-model error state.
+
+---
 
 ## Troubleshooting
 
-**The forecast does not load**  
-Check the device's internet connection and retry. The service needs network access to both Open-Meteo geocoding and forecast endpoints.
+### City Is Not Found
 
-**The city cannot be found**  
-Check the spelling or choose a city from the autocomplete suggestions. The service displays a not-found error when geocoding returns no result.
+Verify the city name and spelling. `WeatherService` reports that no geocoding result was found.
 
-**The dashboard shows a timeout or network error**  
-Retry when the connection is stable. Requests use a 20-second HTTP timeout, and the dashboard displays service errors rather than using offline data.
+### Network or Timeout Error
 
-**Syncfusion evaluation watermark appears**  
-Replace the placeholder license registration value with a valid Syncfusion key; see Configuration → Notes.
+Check internet connectivity and the Open-Meteo endpoint availability.
 
-## Security and Privacy Notes
+### Initial Loading Is Slow
 
-- The app sends the searched city name to Open-Meteo's geocoding endpoint and requests weather for the returned coordinates.
-- No account, API key, or personally identifying information is required by the sample.
-- Avoid entering personal information into the city search field.
-- Keep any Syncfusion license key out of source control.
+The page initializes weather data in `OnAppearing` instead of starting the network call from the view-model constructor.
 
-## Supported Platforms
+### Syncfusion Evaluation Warning
 
-- Android
-- iOS
-- Windows
-- macOS (Mac Catalyst)
+Replace the license placeholder in `MauiProgram.cs` with a valid license key.
+
+---
+
+## Related Documentation
+
+- [.NET MAUI Documentation](https://learn.microsoft.com/dotnet/maui/)
+- [.NET MAUI HttpClient Guidance](https://learn.microsoft.com/dotnet/maui/data-cloud/rest)
+- [Open-Meteo API](https://open-meteo.com/)
+- [Syncfusion .NET MAUI Controls](https://help.syncfusion.com/maui/overview)
+- [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key)
+
+---
+
+## License
+
+This sample is provided for demonstration and learning purposes. Syncfusion controls used in this sample require a valid Syncfusion license for production use.

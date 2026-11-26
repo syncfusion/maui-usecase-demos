@@ -1,129 +1,228 @@
 # Home Inventory Manager: .NET MAUI Use Case Sample
 
-A cross-platform household asset and warranty-management sample built with .NET MAUI and Syncfusion controls. It demonstrates inventory browsing, warranty tracking, lifecycle analytics, and a camera/file-based add-item workflow. Its AI-style features are implemented with local mock logic.
+![Home Inventory Manager Demo](HomeInventoryManagerDemo.gif)
+
+A cross-platform household asset and warranty-management sample built with [Syncfusion .NET MAUI controls](https://help.syncfusion.com/maui/overview). It demonstrates inventory browsing, warranty tracking, lifecycle analytics, and a simulated add-item workflow using local data.
+
+---
 
 ## Overview
 
-Home Inventory Manager is intended for developers exploring household asset tracking and dashboard experiences. The app opens to a summary dashboard and provides Inventory, Scan, and Warranty tabs. Seed data and the mock recommendation service make the workflow available without an account, backend, or network connection.
+Home Inventory Manager provides Dashboard, Inventory, Scan, and Warranty experiences. The app starts with seeded household assets and uses `MockAIService` to provide deterministic category, lifespan, health, and recommendation calculations.
+
+The scan workflow accepts a camera photo or selected file and presents an editable review form. Recognition is simulated; it does not perform OCR or send files to a remote AI service.
+
+---
 
 ## Key Features
 
-- **Dashboard**: inventory and warranty counts, asset-value/category visualization, local recommendations, and upcoming warranty actions.
-- **Inventory**: seeded household items, category chips, search by name/brand/category, item details, and an empty state.
-- **Add an item**: capture or select a product photo, attach an invoice PDF or product photo, edit the item details, validate, and save.
-- **Warranty Center**: warranty status and expiration summaries, appliance health scores, age and replacement analytics, and health/warranty filters.
-- **Responsive navigation**: four Shell destinations with a sidebar on wider layouts and bottom navigation on phones.
+### Dashboard
 
-## Data Flow
+- Summarize inventory and warranty counts.
+- Show asset value and category charts.
+- Generate local household health and dashboard insight copy.
+- List upcoming warranty actions.
 
-1. The app starts with a locally seeded set of household assets. Dashboard and Inventory view models read the shared process-local item collection.
-2. The Dashboard derives inventory and warranty KPIs, category totals, upcoming actions, and recommendation text from the current assets.
-3. Inventory applies the selected category and search term to the shared item list.
-4. The Scan page accepts a camera photo, image selection, or invoice PDF; its review form lets the user edit product name, brand, category, price, dates, and image before saving.
-5. Saving validates required item fields, adds the item to the shared in-memory list, and navigates to Inventory. Warranty analytics are derived from that inventory.
+### Inventory
 
-**Scanning is simulated:** the app can capture or select files, but it does not perform OCR or send the files to an AI service. `MockAIService` provides deterministic, local category, lifespan, health, and maintenance recommendation logic. Inventory is not persisted; the seeded state returns when the app restarts.
+- Browse seeded household items.
+- Filter by category and search by name, brand, or category.
+- Open item details and an empty state for unmatched items.
 
-## Controls Used
+### Scan and Add Item
 
-- `SfListView`: dashboard summary/recommendation/action collections and inventory/warranty rows.
-- `SfCircularChart` / `SfCartesianChart`: category and lifecycle visualizations.
-- `SfChipGroup`: category and warranty/health filters.
-- `SfTextInputLayout`, `SfNumericEntry`, and `SfMaskedEntry`: add-item form fields.
-- `SfAvatarView`, `SfButton`, and `SfShimmer`: profile/insight visuals, actions, and loading placeholders.
-- MAUI Shell and a custom `AppSideBar`: Dashboard, Inventory, Scan, and Warranty navigation.
+- Capture or select a product image.
+- Attach a PDF or image for the demo workflow.
+- Edit product name, brand, category, purchase price, purchase date, warranty dates, and image.
+- Validate required fields and save the item to the shared in-memory inventory.
 
-## Architecture
+### Warranty Center
 
-The sample uses CommunityToolkit.Mvvm view models with XAML pages:
+- Summarize active, expiring, and expired warranty state.
+- Calculate appliance health scores.
+- Show age and replacement analytics.
+- Filter assets by warranty or health status.
 
-- **Views** (`Views/`): `DashboardPage`, `InventoryPage`, `ScanPage`, `WarrantyPage`, and the shared sidebar.
-- **View models** (`ViewModel/`): dashboard metrics, inventory filters, scan/review state, and warranty analytics.
-- **Models** (`Model/`): inventory items, warranties, scan data, recommendations, and chart summaries.
-- **Services** (`Services/`): `IAIService` and the local `MockAIService`.
-- **Supporting UI** (`Behaviors/`, `Converters/`, `Style/`, `Resources/`): tap behavior, binding converters, styles, fonts, and images.
+---
 
-The Scan page updates the inventory view model when an item is saved. The dashboard and warranty projections are calculated from the same local inventory data; no database or remote service is configured.
+## Syncfusion Controls Used
+
+| Control | Purpose |
+|---|---|
+| `SfListView` | Dashboard collections and inventory/warranty rows |
+| `SfCircularChart` | Asset category and lifecycle summaries |
+| `SfCartesianChart` | Age and lifecycle visualizations |
+| `SfChipGroup` | Category, warranty, and health filters |
+| `SfTextInputLayout` | Add-item form fields |
+| `SfNumericEntry` | Purchase price and numeric values |
+| `SfMaskedEntry` | Formatted value entry |
+| `SfAvatarView` | Profile and item visuals |
+| `SfButton` | Add, save, and navigation actions |
+| `SfShimmer` | Loading placeholders |
+
+### Additional Technologies
+
+- CommunityToolkit.Mvvm
+- .NET MAUI Shell
+- Dependency Injection
+- MVVM architecture pattern
+- `IAIService` and deterministic `MockAIService`
+- Local in-memory inventory collections
+
+---
+
+## Supported Platforms
+
+| Platform | Target Framework |
+|---|---|
+| Android | `net10.0-android` |
+| iOS | `net10.0-ios` |
+| macOS (Mac Catalyst) | `net10.0-maccatalyst` |
+| Windows | `net10.0-windows10.0.19041.0` |
+
+> iOS and Mac Catalyst targets require a compatible non-Linux host. The Windows target is available on Windows hosts.
+
+---
 
 ## Prerequisites
 
-- .NET 10 SDK and the .NET MAUI workload.
-- A platform workload/device for Android, iOS, Mac Catalyst, or Windows.
-- Visual Studio with MAUI support or VS Code with the .NET MAUI extension.
-- Syncfusion MAUI packages restored from NuGet. A valid Syncfusion license may be needed to remove evaluation watermarks.
+- .NET 10 SDK or later
+- .NET MAUI workloads
+- Visual Studio 2022 (17.14+), Visual Studio Code with the .NET MAUI extension, or JetBrains Rider
+- Camera permission for device capture, or access to a device photo/file picker
+- Syncfusion .NET MAUI NuGet packages restored from NuGet
 
-## Configuration
+---
 
-No application configuration is required. The sample uses local seed data and a mock AI service.
+## Getting Started
 
-### Default Behavior
+### Open the Solution
 
-- The initial inventory and AI-style recommendations are local sample data/logic.
-- Camera capture and file selection are initiated by the user; selected content is processed only by the sample’s simulated flow.
-- Inventory additions are held in memory for the current app session and are not saved after restart.
+```text
+HomeInventoryManager/HomeInventoryManager.slnx
+```
 
-### Environment Variables / Secrets
+### Restore Packages
 
-None required. There is no AI endpoint, weather feed, database connection, or credential.
+```bash
+dotnet restore HomeInventoryManager/HomeInventoryManager/HomeInventoryManager.csproj
+```
 
-### Notes
+### Build and Run
 
-- Camera capture may prompt for camera permission; if camera capture is unavailable, choose an existing image.
-- An invoice PDF can be attached for the demo workflow, but the app does not extract text from it.
-- If a Syncfusion license is required, register it in the MAUI startup configuration. Do not commit the license key. See [Syncfusion MAUI licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
-- A SQLite package is listed as a project dependency, but the inventory workflow described here uses the in-memory collection and does not persist inventory to SQLite.
-
-## Run
-
-From the repository root, build for a platform workload installed on your machine:
+Example for Android:
 
 ```bash
 dotnet build HomeInventoryManager/HomeInventoryManager/HomeInventoryManager.csproj -f net10.0-android
 ```
 
-Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and `net10.0-windows10.0.19041.0`. Alternatively, open [`HomeInventoryManager.slnx`](HomeInventoryManager.slnx) in Visual Studio or VS Code, choose a target, and deploy to a device or emulator.
+---
 
-## Output
+## Architecture
 
-![Home Inventory Manager demo](HomeInventoryManagerDemo.gif)
+### Core Layers
+
+- **Views** (`Views/`) - Dashboard, Inventory, Scan, and Warranty pages plus `AppSideBar`.
+- **ViewModels** (`ViewModel/`) - Dashboard, Inventory, Scan, and Warranty presentation state.
+- **Models** (`Model/`) - inventory, warranty, scan, recommendation, analytics, and chart summary types.
+- **Services** (`Services/`) - `IAIService` and the deterministic `MockAIService`.
+- **Converters**, **Behaviors**, **Style**, and **Resources** - binding conversion, tap behavior, styles, fonts, and app assets.
+
+### Runtime Flow
+
+1. The app starts with seeded inventory items.
+2. Dashboard and Inventory view models read the shared process-local item collection.
+3. Search and category filters create projected inventory views.
+4. The Scan page captures or selects a file and validates an editable review form.
+5. Saving adds the item to the shared inventory collection and navigates to Inventory.
+6. Dashboard, warranty, and health projections derive from the current inventory and warranty data.
+7. `MockAIService` calculates category, lifespan, risk, health, and insight values locally.
+
+---
 
 ## Project Structure
 
-- `HomeInventoryManager.slnx`: solution file.
-- `HomeInventoryManager/`: MAUI project.
-- `HomeInventoryManager/Views/`: Dashboard, Inventory, Scan, Warranty, and sidebar XAML.
-- `HomeInventoryManager/ViewModel/`: page view models.
-- `HomeInventoryManager/Model/`: inventory, warranty, scan, and analytics models.
-- `HomeInventoryManager/Services/`: mock AI service contracts and implementation.
-- `HomeInventoryManager/Resources/`: app icon, images, fonts, and styles.
+```text
+HomeInventoryManager/
+├── HomeInventoryManager.slnx
+├── HomeInventoryManager/
+│   ├── Views/
+│   ├── ViewModel/
+│   ├── Model/
+│   ├── Services/
+│   ├── Behaviors/
+│   ├── Converters/
+│   ├── Style/
+│   ├── Resources/
+│   └── Platforms/
+└── HomeInventoryManagerDemo.gif
+```
+
+---
+
+## Configuration
+
+No API key, backend, database connection, or external AI endpoint is required.
+
+- Initial inventory and recommendations are local seed data.
+- Camera capture and file selection are user-initiated.
+- PDF and image attachments are not processed with OCR.
+- Inventory additions remain in memory for the current app session.
+
+---
+
+## Syncfusion Licensing
+
+Syncfusion controls may display evaluation notices until a valid license is registered.
+
+Do not commit license keys to source control. For details, refer to [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+
+---
+
+## Limitations
+
+- New inventory items are not persisted after restart.
+- `MockAIService` provides deterministic simulated classification and health calculations.
+- Camera, photo, and PDF workflows do not upload or recognize real document content.
+- The sample does not synchronize with a household asset database.
+- `sqlite-net-pcl` is referenced by the project, but the inventory workflow currently uses in-memory collections.
+
+---
 
 ## Troubleshooting
 
-**Camera is unavailable or permission is denied**  
-Use the photo-library/file-selection option instead, or enable camera permission for the app in the device settings.
+### Camera Is Unavailable
 
-**The scan screen does not fill in product details automatically**  
-This is expected: image/PDF recognition is simulated. Enter or correct the fields in the review form before saving.
+Enable camera permission or use the photo/file-selection option.
 
-**Save is unavailable or validation reports missing data**  
-Provide a product name, brand, category, positive purchase price, and image.
+### Product Details Are Not Filled Automatically
 
-**New inventory disappears after restarting**  
-Inventory is held in memory only. The app starts from its sample seed on each launch.
+This is expected: the scan workflow is simulated and does not perform OCR or AI extraction.
 
-**Syncfusion evaluation watermark appears**  
-Register a valid Syncfusion license in the app startup configuration; see Configuration → Notes.
+### Save Is Disabled or Validation Fails
 
-## Security and Privacy Notes
+Provide the required product name, brand, category, positive purchase price, and image fields implemented by the review form.
 
-- Seeded inventory and recommendation content is fictional.
-- The app does not send inventory details, photos, or PDFs to a remote AI provider or backend.
-- Do not use this sample as a warranty authority or enter real household information that should be private.
-- Keep any Syncfusion license key out of source control.
+### Inventory Disappears After Restart
 
-## Supported Platforms
+The inventory is stored in memory only.
 
-- Android
-- iOS
-- Windows
-- macOS (Mac Catalyst)
+### Syncfusion Evaluation Warning
+
+Register a valid Syncfusion license in the app startup configuration.
+
+---
+
+## Related Documentation
+
+- [.NET MAUI Documentation](https://learn.microsoft.com/dotnet/maui/)
+- [.NET MAUI Shell](https://learn.microsoft.com/dotnet/maui/fundamentals/shell/)
+- [.NET MAUI MVVM Guidance](https://learn.microsoft.com/dotnet/architecture/maui/mvvm)
+- [Syncfusion .NET MAUI Controls](https://help.syncfusion.com/maui/overview)
+- [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key)
+
+---
+
+## License
+
+This sample is provided for demonstration and learning purposes. Syncfusion controls used in this sample require a valid Syncfusion license for production use.

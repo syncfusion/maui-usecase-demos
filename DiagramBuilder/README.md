@@ -1,131 +1,237 @@
 # Diagram Builder: .NET MAUI Use Case Sample
 
-Diagram Builder is a diagram-editing sample built with .NET MAUI and Syncfusion controls. It lets users create flow charts, mind maps, and organization charts from blank canvases or bundled templates, edit diagram elements, and save, export, or print their work.
+![Diagram Builder Demo](Diagram-Builder-sample-demo.gif)
+
+A diagram-design application built with [Syncfusion .NET MAUI controls](https://help.syncfusion.com/maui/overview) for creating flow charts, mind maps, and organization charts, editing diagram elements, and saving or exporting diagrams locally.
+
+---
 
 ## Overview
 
-The sample demonstrates a diagram designer with a stencil, canvas, toolbar, menus, and a property panel. It is intended for developers exploring diagram-editing workflows and Syncfusion's .NET MAUI Diagram control.
+Diagram Builder demonstrates a responsive diagram-editing workspace using Syncfusion `SfDiagram` and related controls. It includes a template picker, stencil palette, canvas, toolbar, menu commands, property editor, zoom controls, local file operations, export, and print workflows.
 
-- **Diagram types**: Flow charts, mind maps, and organization charts.
-- **Starting points**: Blank diagrams and bundled examples for credit-card processing, product planning, and company hierarchy.
-- **Editing**: Add shapes and connectors, edit selected element properties, arrange objects, and control zoom, grid, and snapping.
-- **Files**: Open diagram JSON files and save diagrams as JSON. Export to PNG, JPEG, PDF, or SVG, or print with region and page settings.
-- **Execution**: The app uses bundled template data and local file storage; it does not require a backend or external data service.
+The sample starts from bundled templates or blank diagrams. It uses local JSON templates and local file storage; it does not require a backend or external data service.
+
+---
 
 ## Key Features
 
-- Create blank diagrams or start from one of the bundled predefined templates.
-- Browse flow-shape, basic-shape, and connector stencils and add items to the canvas.
-- Edit selected nodes and connectors, including dimensions, fill and border appearance, opacity, and text properties.
-- Use menu and toolbar commands for selection, copy/paste, delete, undo/redo, zoom, object ordering, alignment, distribution, matching sizes, grouping, and ungrouping.
-- Toggle the toolbar, stencil, and property panel; the designer switches to a compact layout on narrower windows.
-- Open supported local `.json` diagram files and save diagrams as JSON.
-- Export the canvas content or page region to PNG, JPEG, PDF, or SVG.
-- Print the content or page region with paper size, orientation, and scale-to-fit options.
+### Diagram Creation
 
-## User Workflow
+- Create blank Flow Chart, Mind Map, or Organization Chart diagrams.
+- Start from a credit-card processing flow, product planning mind map, or company hierarchy template.
+- The template service loads packaged JSON templates and falls back to built-in C# seed templates if a JSON asset cannot be loaded.
 
-1. Choose a blank diagram or a predefined template from the Flow Chart, Mind Map, or Organization Chart category.
-2. Add stencil shapes or connectors to the canvas and edit them with the toolbar, menus, or property panel.
-3. Use File > Open to select a JSON diagram, or use Save / Save As to save the current diagram.
-4. Use File > Export or File > Print to choose the required output options.
+### Diagram Editing
 
-## File Behavior
+- Add nodes and connectors from the stencil.
+- Edit selected node and connector properties.
+- Use toolbar, menu, arrangement, selection, zoom, alignment, grouping, copy, paste, undo, and redo commands.
+- Switch between the workspace, stencil, toolbar, and property panel surfaces.
+- Use a compact layout when the application window is narrow.
 
-- **Open** accepts JSON files containing a Diagram Builder document. Other file extensions and invalid diagram documents are rejected.
-- **Save** does not request a name. The first save uses `Untitled Diagram` (adding a number if that name already exists); later saves update that same file.
-- **Save As** prompts for a file name and creates a uniquely named file; later Save commands update that file.
-- **Export** supports PNG, JPEG, PDF, and SVG, with the content or page settings region as the export area.
-- **Print** supports the content or page settings region, Letter, Legal, Tabloid, A3, A4, A5, A6, or custom paper size, portrait or landscape orientation, and scale-to-fit.
-- On Windows, saved files are written to the user's `Downloads` folder. On other platforms, files are written to an app-specific `Downloads` folder under `FileSystem.AppDataDirectory`.
+### File Operations
 
-## Controls Used
+- Open local `.json` diagram documents.
+- Save to the current document path or use Save As.
+- Reject JSON files that do not contain the expected diagram document structure.
+- Generate unique file names when a requested diagram name already exists.
+- Export diagram content or page-region settings to PNG, JPEG, PDF, or SVG.
+- Print diagram content or page-region settings with supported paper sizes and orientations.
 
-- **`SfDiagram` and `SymbolPalette`** (`Syncfusion.Maui.Diagram`): Diagram canvas, nodes, connectors, and stencil symbols.
-- **`SfPopup`** (`Syncfusion.Maui.Popup`): Menu popups and Save As, Export, and Print dialogs.
-- **`SfButton` and `SfSwitch`** (`Syncfusion.Maui.Buttons`): Menu, toolbar, and toggle interactions.
-- **`SfListView`** (`Syncfusion.Maui.ListView`): Diagram-category selection in the create dialog.
-- **`SfComboBox`, `SfNumericEntry`, and `SfColorPicker`** (`Syncfusion.Maui.Inputs`): Option selection, numeric properties, and color selection.
-- **`SfExpander`** (`Syncfusion.Maui.Expander`): Expandable property sections.
-- **`SfSlider`** (`Syncfusion.Maui.Sliders`): Continuous property values such as opacity.
-- **CommunityToolkit.Mvvm**: Observable view-model properties and commands.
+### Responsive Workspace
 
-## Architecture
+- The designer exposes menu, toolbar, stencil, canvas, zoom, and property panels.
+- The layout adapts to wider and narrower application widths.
 
-The sample uses MVVM with `CommunityToolkit.Mvvm`.
+---
 
-- **Views**: `CreateDiagramPage` presents the category/template chooser. `DiagramDesignerPage` hosts the designer, manages responsive layout, and connects dialog and diagram interactions.
-- **Controls**: `DiagramWorkspaceControl` hosts the diagram and symbol palette. Other controls implement the menu bar, toolbar, stencil-related UI, zoom indicator, property panel, and color picker button.
-- **ViewModels**: `CreateDiagramViewModel` handles template selection and diagram creation. `DiagramDesignerViewModel` coordinates document commands and child view models for menus, toolbar, properties, zoom, arrangement, export, and print.
-- **Services**: `TemplateService` loads bundled template JSON and supplies seed templates if those assets cannot be loaded. `DiagramFileService` handles local file picking and saving. `DiagramModelAdapter` maps between sample document models and Syncfusion diagram models. Other services handle diagram state, selection, properties, page background settings, and dialogs.
-- **Models**: Diagram documents, shapes, connectors, templates, export formats, print options, and property-editor data.
-- **Resources**: Theme styles, fonts, app assets, and the bundled templates in `Resources/Raw/Templates/`.
+## Syncfusion Controls Used
 
-## Prerequisites
+| Control | Purpose |
+|---|---|
+| `SfDiagram` | Diagram canvas, nodes, connectors, selection, and editing |
+| `SymbolPalette` | Shape and connector stencil |
+| `SfPopup` | Menus and Save, Export, and Print dialogs |
+| `SfButton` | Toolbar and menu actions |
+| `SfSwitch` | Toolbar and panel toggle options |
+| `SfListView` | Diagram-category and template selection |
+| `SfComboBox` | Property and dialog option selection |
+| `SfNumericEntry` | Numeric property editing |
+| `SfColorPicker` | Node and connector color selection |
+| `SfExpander` | Property-panel sections |
+| `SfSlider` | Continuous property values |
 
-- .NET 10 SDK.
-- .NET MAUI workload and the workload for the target platform.
-- An Android emulator/device, Windows machine, or Apple build environment as appropriate for the selected target.
-- A valid Syncfusion license for non-evaluation use.
+### Additional Technologies
 
-The project declares target frameworks for Android, iOS, Mac Catalyst, and Windows. Platform targets are included conditionally based on the build host. Syncfusion and CommunityToolkit.Mvvm package references use floating versions in the project file, so NuGet resolves versions during restore.
+- CommunityToolkit.Mvvm
+- Dependency Injection
+- MVVM architecture pattern
+- JSON serialization
+- Local file picker and app-package file access
+- `PdfExportWriter` for PDF export content
 
-## Configuration and Licensing
-
-The sample requires no API keys or backend configuration. For licensed Syncfusion use, provide a valid license key through the `SYNCFUSION_LICENSE_KEY` environment variable before launching the app. The app skips license registration when the variable is unset or contains the placeholder. Do not commit a real license key to source control. See [Syncfusion MAUI license registration](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
-
-## Run
-
-From the `DiagramBuilder` sample directory, build and run on Windows:
-
-```bash
-dotnet build DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj -t:Run -f net10.0-windows10.0.19041.0
-```
-
-Other target frameworks configured by the project:
-
-```bash
-dotnet build DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj -t:Run -f net10.0-android
-dotnet build DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj -t:Run -f net10.0-ios
-dotnet build DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj -t:Run -f net10.0-maccatalyst
-```
-
-Open `DiagramBuilder/DiagramBuilder.slnx` in Visual Studio or VS Code with .NET MAUI support to select a target device and run the sample.
-
-## Output
-
-![Diagram builder demo](Diagram-Builder-sample-demo.gif)
-
-## Project Structure
-
-- `DiagramBuilder/DiagramBuilder/Views/` — Create and designer pages, plus Save As, Export, and Print dialogs.
-- `DiagramBuilder/DiagramBuilder/Controls/` — Diagram workspace, toolbar, menu bar, property panel, and supporting controls.
-- `DiagramBuilder/DiagramBuilder/ViewModels/` — MVVM state and commands for pages and designer features.
-- `DiagramBuilder/DiagramBuilder/Models/` — Diagram, template, export, print, and property models.
-- `DiagramBuilder/DiagramBuilder/Services/` — Diagram mapping and state, templates, properties, dialogs, and local file operations.
-- `DiagramBuilder/DiagramBuilder/Behaviors/` — Diagram interaction and keyboard behavior.
-- `DiagramBuilder/DiagramBuilder/Resources/` — Styles, fonts, images, and bundled template JSON.
-
-## Troubleshooting
-
-**The project cannot build for the selected target.**  
-Confirm the .NET 10 SDK and the corresponding .NET MAUI platform workload are installed. iOS and Mac Catalyst builds require an Apple build environment.
-
-**A selected file cannot be opened.**  
-Open supports `.json` diagram files in the Diagram Builder document format; arbitrary JSON files are not diagram documents.
-
-**A Syncfusion evaluation notice is displayed.**  
-Set `SYNCFUSION_LICENSE_KEY` to a valid Syncfusion MAUI license key before launching the app. Confirm the key matches the Syncfusion package version resolved during restore.
-
-## Security and Privacy Notes
-
-- The sample does not use a backend or external data service.
-- Diagram templates are bundled with the app, and diagram files are stored locally.
-- Keep Syncfusion license keys out of committed source code.
+---
 
 ## Supported Platforms
 
-- Android
-- iOS
-- Windows
-- macOS (Mac Catalyst)
+| Platform | Target Framework |
+|---|---|
+| Android | `net10.0-android` |
+| iOS | `net10.0-ios` |
+| macOS (Mac Catalyst) | `net10.0-maccatalyst` |
+| Windows | `net10.0-windows10.0.19041.0` |
+
+> iOS and Mac Catalyst targets require a compatible non-Linux host. The Windows target is available on Windows hosts.
+
+---
+
+## Prerequisites
+
+- .NET 10 SDK or later
+- .NET MAUI workloads
+- Visual Studio 2022 (17.14+), Visual Studio Code with the .NET MAUI extension, or JetBrains Rider
+- A platform emulator, simulator, or physical device
+- A valid Syncfusion license for production use
+
+---
+
+## Getting Started
+
+### Open the Solution
+
+```text
+DiagramBuilder/DiagramBuilder.slnx
+```
+
+### Restore Packages
+
+```bash
+dotnet restore DiagramBuilder/DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj
+```
+
+### Build and Run
+
+Select a supported target and run the `DiagramBuilder` project.
+
+Example for Windows:
+
+```bash
+dotnet build DiagramBuilder/DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj -f net10.0-windows10.0.19041.0
+```
+
+Example for Android:
+
+```bash
+dotnet build DiagramBuilder/DiagramBuilder/DiagramBuilder/DiagramBuilder.csproj -f net10.0-android
+```
+
+---
+
+## Architecture
+
+### Core Layers
+
+- **Views** (`Views/`) - `CreateDiagramPage` and `DiagramDesignerPage`.
+- **Controls** (`Controls/`) - diagram workspace, menu bar, toolbar, property panel, zoom indicator, color picker, and supporting controls.
+- **ViewModels** (`ViewModels/`) - template creation and document, menu, toolbar, stencil, property, zoom, arrangement, export, and print state.
+- **Models** (`Models/`) - diagram documents, items, connectors, templates, export artifacts, print settings, stencil groups, and property models.
+- **Services** (`Services/`) - template loading, file operations, diagram mapping, document state, selection, properties, page settings, dialogs, and PDF export.
+- **Behaviors** (`Behaviors/`) - keyboard and diagram surface interaction behavior.
+- **Templates** (`Templates/`) - property editor and template-card templates.
+- **Resources** (`Resources/`) - styles and bundled assets.
+
+### Runtime Flow
+
+1. `MauiProgram.CreateMauiApp()` registers diagram, template, file, selection, property, page-settings, and dialog services.
+2. `TemplateService.PreloadAsync()` loads bundled JSON templates or built-in fallback templates.
+3. `CreateDiagramViewModel` presents blank and predefined templates and creates the initial diagram document.
+4. `DiagramDesignerViewModel` coordinates document commands and the child view models for menu, toolbar, stencil, properties, zoom, arrangement, export, and print.
+5. `DiagramModelAdapter` maps sample document models to Syncfusion diagram models and maps changes back to the sample document.
+6. `DiagramFileService` validates, opens, saves, and exports local JSON and output files.
+
+---
+
+## Project Structure
+
+```text
+DiagramBuilder/
+├── DiagramBuilder.slnx
+└── DiagramBuilder/
+    └── DiagramBuilder/
+        ├── Views/
+        ├── Controls/
+        ├── ViewModels/
+        ├── Models/
+        ├── Services/
+        ├── Behaviors/
+        ├── Templates/
+        ├── Resources/
+        └── Platforms/
+```
+
+---
+
+## Configuration
+
+No API keys or backend configuration are required.
+
+- Set `SYNCFUSION_LICENSE_KEY` to a valid license key before launching the app for licensed use.
+- The sample skips license registration when the environment variable is unset or contains the placeholder value `SYNCFUSION_LICENSE_KEY`.
+- Template JSON assets are loaded from the app package.
+- Diagram and export files are written to local storage.
+
+---
+
+## Syncfusion Licensing
+
+```bash
+set SYNCFUSION_LICENSE_KEY=YOUR_LICENSE_KEY
+```
+
+Do not commit a real license key to source control. For additional information, refer to the [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+
+---
+
+## Limitations
+
+- Open accepts only `.json` files in the implemented diagram document format.
+- Save and export operations use local storage only.
+- Windows saves to the user's Downloads folder; other platforms use an app-data Downloads folder.
+- Diagram changes are not persisted until the user saves or exports a file.
+- External diagram collaboration and cloud storage are not implemented.
+
+---
+
+## Troubleshooting
+
+### A JSON File Cannot Be Opened
+
+The file must use the `DiagramDocument` structure and contain valid `Items`, `Connectors`, and `Category` values.
+
+### A Template Is Missing
+
+`TemplateService` uses built-in C# fallback templates if packaged JSON assets cannot be loaded.
+
+### Syncfusion Evaluation Warning
+
+Set `SYNCFUSION_LICENSE_KEY` before starting the app or register a valid license key through the documented licensing setup.
+
+### Target Platform Build Errors
+
+Install the .NET MAUI workload and the platform-specific workload for the selected target.
+
+---
+
+## Related Documentation
+
+- [.NET MAUI Documentation](https://learn.microsoft.com/dotnet/maui/)
+- [.NET MAUI MVVM Guidance](https://learn.microsoft.com/dotnet/architecture/maui/mvvm)
+- [Syncfusion .NET MAUI Diagram](https://help.syncfusion.com/maui/diagram/overview)
+- [Syncfusion MAUI Licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key)
+
+---
+
+## License
+
+This sample is provided for demonstration and learning purposes. Syncfusion controls used in this sample require a valid Syncfusion license for production use.
