@@ -1,143 +1,227 @@
 # Hotel Booking Management: .NET MAUI Use Case Sample
 
-A cross-platform front-office application for a 15-room hotel. This .NET MAUI sample demonstrates reservation management, room and housekeeping status, operational dashboards, and adaptive mobile/desktop layouts using Syncfusion controls.
+![Hotel Booking Management Demo](HotelBookingManagementDemo.gif)
+
+A cross-platform hotel front-office application built with [Syncfusion .NET MAUI controls](https://help.syncfusion.com/maui/overview), demonstrating reservations, room and housekeeping status, dashboard analytics, and responsive desktop/mobile layouts.
+
+---
 
 ## Overview
 
-The application has three main destinations:
+Hotel Booking Management demonstrates a 15-room hotel sample with Dashboard, Rooms, and Bookings surfaces. A shared `IHotelStore` instance provides the rooms and reservations to desktop and mobile view models.
 
-- **Dashboard**: arrivals and in-house KPIs, folio totals, room inventory breakdown, revenue chart, and a searchable/paged list of recent reservations.
-- **Rooms**: housekeeping board with floor and status filters, room cards, and a table presentation on desktop.
-- **Bookings**: searchable reservation list, booking KPIs, pagination, Add Booking, and a selected-booking detail strip.
+The app uses deterministic local seed data anchored to a fixed reference date. It does not implement authentication, database persistence, network hotel services, or payment processing.
 
-Phones and iOS/Android devices use the mobile `SfTabView` shell. Other device idioms use the desktop sidebar and `NavigationPage`.
+---
 
 ## Key Features
 
-- A 15-room inventory arranged across three floors, with room type, nightly rate, and operational status.
-- Dashboard visualizations for room status and revenue with selectable 7-day, 1-month, and 3-month ranges.
-- Reservation filtering, paging, row selection, and a booking-detail summary.
-- Validated Add Booking flow with guest and stay information, date selection, floor selection, and available-room selection.
-- Responsive booking entry: desktop `SfPopup` form and mobile modal page with expandable Guest and Stay sections.
-- Shared state: a booking added in one surface updates the store and refreshes related room and dashboard summaries.
+### Dashboard
 
-## Data Flow
+- Show arrivals, in-house guests, folio totals, and room inventory KPIs.
+- Visualize room status and revenue.
+- Select 7-day, 1-month, or 3-month chart ranges.
+- Search and page recent reservations.
 
-1. On startup, `HotelStore` seeds 15 rooms and 24 demo bookings (9 named records plus 15 generated records).
-2. The Dashboard, Rooms, and Bookings view models project data from the same DI-registered `IHotelStore` singleton.
-3. The user searches or filters reservations/rooms, inspects dashboard metrics, or opens Add Booking.
-4. The form validates the stay and room selection. A successful booking is appended to the shared store and the assigned room becomes Reserved.
-5. Store events notify the view models, which refresh lists, chart summaries, pagers, and KPI values.
+### Rooms
 
-The seed is deterministic and anchored to **September 10, 2026** (`HotelConfig.ReferenceToday`) so date-dependent content remains stable. Data is in memory only: restarting restores the seed. The sample has no database, login, network service, or payment processing.
+- Browse a 15-room inventory across three floors.
+- Filter by floor and room status.
+- Show room type, nightly rate, and operational status.
+- Display room cards on narrow layouts and table views on desktop layouts.
 
-## Controls Used
+### Bookings
 
-- `SfDataGrid` / `SfDataPager`: desktop dashboard and booking tables, plus the Rooms table view.
-- `SfListView`: room cards and mobile lists.
-- `SfCartesianChart` / `SfCircularChart`: revenue and room-status summaries.
-- `SfChipGroup`: room, floor, and reservation filters.
-- `SfPopup`, `SfCalendar`, `SfComboBox`, and `SfTextInputLayout`: desktop Add Booking form.
-- `SfTabView` and `SfExpander`: mobile navigation and booking form sections.
-- `SfButton` and `SfBusyIndicator`: mobile actions and busy feedback.
+- Search and page reservation records.
+- Show booking KPIs and selected-booking detail.
+- Validate and create bookings from a desktop popup or mobile page.
+- Update shared room and dashboard state after a successful booking.
 
-## Architecture
+### Responsive Experience
 
-The sample uses page-specific view models backed by a shared in-memory store:
+- Android and iOS phone layouts use the mobile `SfTabView` shell.
+- Desktop and other idioms use the sidebar and `NavigationPage` experience.
 
-- **Models** (`HotelManagerSample/Models/`): room and booking types, hotel configuration, seed data, and `IHotelStore`/`HotelStore`.
-- **View models** (`HotelManagerSample/ViewModels/`): Dashboard, Rooms, Bookings, and desktop Add Booking logic.
-- **Desktop views** (`HotelManagerSample/Views/DesktopUI/`): Dashboard, Rooms, and Bookings.
-- **Mobile views** (`HotelManagerSample/Views/MobileUI/`): three-tab shell, dashboard, rooms, bookings, and new-booking form.
-- **Controls** (`HotelManagerSample/Controls/`): sidebar, booking popup content, and supporting entry control.
-- **Converters and resources**: presentation converters, platform themes, fonts, and images.
+---
 
-`MauiProgram.cs` registers the store as a singleton and registers desktop/mobile view models and pages. The app chooses its root surface at runtime using platform and device idiom.
+## Syncfusion Controls Used
+
+| Control | Purpose |
+|---|---|
+| `SfDataGrid` | Desktop dashboard and booking tables |
+| `SfDataPager` | Reservation paging |
+| `SfListView` | Room cards and mobile lists |
+| `SfCartesianChart` | Revenue visualizations |
+| `SfCircularChart` | Room-status visualizations |
+| `SfChipGroup` | Room, floor, and reservation filters |
+| `SfPopup` | Desktop add-booking form |
+| `SfCalendar` | Stay-date selection |
+| `SfComboBox` | Booking form selections |
+| `SfTextInputLayout` | Guest and stay form fields |
+| `SfTabView` | Mobile section navigation |
+| `SfExpander` | Mobile booking form sections |
+| `SfButton` | Booking and action commands |
+| `SfBusyIndicator` | Mobile busy feedback |
+
+### Additional Technologies
+
+- Dependency Injection
+- Page-specific view models
+- Shared `IHotelStore` singleton
+- MVVM architecture pattern
+
+---
+
+## Supported Platforms
+
+| Platform | Target Framework |
+|---|---|
+| Android | `net10.0-android` |
+| iOS | `net10.0-ios` |
+| macOS (Mac Catalyst) | `net10.0-maccatalyst` |
+| Windows | `net10.0-windows10.0.19041.0` |
+
+> iOS and Mac Catalyst targets require a compatible non-Linux host. The Windows target is available on Windows hosts.
+
+---
 
 ## Prerequisites
 
-- .NET 10 SDK and the .NET MAUI workload.
-- A platform workload/device for Android, iOS, Mac Catalyst, or Windows.
-- Visual Studio with MAUI support or VS Code with the .NET MAUI extension.
-- Syncfusion MAUI packages restored from NuGet. A valid Syncfusion license may be needed to remove evaluation watermarks.
+- .NET 10 SDK or later
+- .NET MAUI workloads
+- Visual Studio 2022 (17.14+), Visual Studio Code with the .NET MAUI extension, or JetBrains Rider
+- A platform emulator, simulator, or physical device
+- Syncfusion .NET MAUI NuGet packages restored from NuGet
 
-## Configuration
+---
 
-No runtime configuration is required. Seed data, hotel settings, and the reference date are defined in the project.
+## Getting Started
 
-### Default Behavior
+### Open the Solution
 
-- All room and reservation data is generated locally at startup.
-- The sample uses one shared in-memory store for both mobile and desktop surfaces.
-- The reference date stays fixed at September 10, 2026; it is not the device's current date.
+```text
+HotelBookingManagement/HotelManagerSample.slnx
+```
 
-### Environment Variables / Secrets
+### Restore Packages
 
-None required. The sample does not connect to a hotel system, payment provider, or remote API.
+```bash
+dotnet restore HotelBookingManagement/HotelManagerSample/HotelManagerSample.csproj
+```
 
-### Notes
+### Build and Run
 
-- Change `HotelConfig.ReferenceToday` in `HotelManagerSample/Models/HotelModels.cs` to move the sample's date-dependent data.
-- Changes to rooms and bookings are not persisted; a restart restores the seed.
-- Booking totals and payment/status labels are for demonstration only. No card data is collected or payment is charged.
-- Register a Syncfusion license through the documented licensing setup if required; do not commit the key. See [Syncfusion MAUI licensing](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
-
-## Run
-
-From the repository root, build for a platform workload installed on your machine:
+Example for Android:
 
 ```bash
 dotnet build HotelBookingManagement/HotelManagerSample/HotelManagerSample.csproj -f net10.0-android
 ```
 
-Other supported target frameworks are `net10.0-ios`, `net10.0-maccatalyst`, and `net10.0-windows10.0.19041.0`. You can also open [`HotelManagerSample.slnx`](HotelManagerSample.slnx) in Visual Studio or VS Code and deploy to a device or emulator.
+---
 
-## Output
+## Architecture
 
-![Hotel Booking Management Demo](HotelBookingManagementDemo.gif)
+### Core Layers
+
+- **Models** (`Models/`) - hotel configuration, rooms, bookings, navigation tabs, selectable bookings, and `IHotelStore`/`HotelStore`.
+- **Desktop ViewModels** (`ViewModels/`) - Dashboard, Rooms, Bookings, and Add Booking state.
+- **Desktop Views** (`Views/DesktopUI/`) - desktop Dashboard, Rooms, and Bookings pages.
+- **Mobile Views** (`Views/MobileUI/`) - mobile shell, dashboard, rooms, bookings, and new-booking pages/view models.
+- **Controls** (`Controls/`) - sidebar, booking popup content, entry, and platform behavior helpers.
+- **Converters** and **Resources** - presentation conversion and platform styles/assets.
+
+### Runtime Flow
+
+1. `HotelStore` seeds 15 rooms and the configured demonstration bookings.
+2. Dashboard, Rooms, and Bookings view models resolve the same singleton `IHotelStore`.
+3. Filters, searches, paging, and selections derive local view data from the shared store.
+4. Add Booking validates guest and stay details, floor, date, and available room selection.
+5. A successful booking is appended to `Bookings`, and the assigned room status becomes `Reserved`.
+6. `BookingsChanged` and `RoomsChanged` notify view models to refresh derived lists and KPI values.
+
+---
 
 ## Project Structure
 
-- `HotelManagerSample.slnx`: solution file.
-- `HotelManagerSample/`: MAUI app project.
-- `HotelManagerSample/Models/`: hotel configuration, seeded data, store, rooms, and bookings.
-- `HotelManagerSample/ViewModels/`: shared and surface-specific page view models.
-- `HotelManagerSample/Views/DesktopUI/`: desktop Dashboard, Rooms, and Bookings pages.
-- `HotelManagerSample/Views/MobileUI/`: mobile shell and tab pages, including new booking.
-- `HotelManagerSample/Controls/`, `Converters/`, and `Resources/`: reusable UI, binding converters, themes, and assets.
+```text
+HotelBookingManagement/
+├── HotelManagerSample.slnx
+├── HotelBookingManagementDemo.gif
+└── HotelManagerSample/
+    ├── Models/
+    ├── ViewModels/
+    ├── Views/
+    │   ├── DesktopUI/
+    │   └── MobileUI/
+    ├── Controls/
+    ├── Converters/
+    ├── Resources/
+    └── Platforms/
+```
+
+---
+
+## Configuration
+
+- No runtime API configuration is required.
+- The sample uses `HotelConfig.ReferenceToday`, fixed to September 10, 2026, for date-dependent seed data.
+- Room and booking changes remain in memory.
+- Restarting recreates the seeded hotel state.
+
+---
+
+## Syncfusion Licensing
+
+Register a valid Syncfusion license for licensed use.
+
+Do not commit license keys to source control. For details, refer to [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key).
+
+---
+
+## Limitations
+
+- The sample does not provide a database or persistence layer.
+- Room and booking changes reset after an app restart.
+- No authentication or guest account system is implemented.
+- No payment provider or card information is used.
+- Booking totals and status labels are demonstration data.
+
+---
 
 ## Troubleshooting
 
-**The app opens with the wrong layout**
+### The App Opens in the Wrong Layout
 
-The app selects mobile for Android/iOS and phone idioms; other idioms use the desktop surface. Check the selected target and device idiom.
+The app chooses mobile presentation for Android/iOS phone idioms and desktop presentation for other idioms. Check the selected target and device idiom.
 
-**Dashboard dates do not match today's date**
+### Dashboard Dates Do Not Match Today
 
-The demo is intentionally anchored to September 10, 2026. Update `HotelConfig.ReferenceToday` if a different sample date is needed.
+Date-dependent demo content is intentionally anchored to September 10, 2026 through `HotelConfig.ReferenceToday`.
 
-**A booking or room change disappears after restart**
+### Changes Disappear After Restart
 
-The store is in memory only. The seeded room and booking data is restored on launch.
+The shared hotel store is in memory and recreates its seed on launch.
 
-**Changes do not update across pages**
+### Changes Do Not Update Across Pages
 
-The pages must resolve the shared `IHotelStore` registered in `MauiProgram.cs`; avoid creating separate store instances.
+Desktop and mobile pages should resolve the singleton `IHotelStore` registered in `MauiProgram.cs`.
 
-**Syncfusion evaluation watermark appears**
+### Syncfusion Evaluation Warning
 
-Register a valid Syncfusion license; see Configuration → Notes.
+Register a valid Syncfusion license.
 
-## Security and Privacy Notes
+---
 
-- Guest names, reservation details, and payment labels are fictional demo data.
-- The app has no authentication, backend, data persistence, or payment integration.
-- Do not enter real guest or payment information.
-- Keep any Syncfusion license key out of source control.
+## Related Documentation
 
-## Supported Platforms
+- [.NET MAUI Documentation](https://learn.microsoft.com/dotnet/maui/)
+- [.NET MAUI Shell and Navigation](https://learn.microsoft.com/dotnet/maui/fundamentals/)
+- [.NET MAUI MVVM Guidance](https://learn.microsoft.com/dotnet/architecture/maui/mvvm)
+- [Syncfusion .NET MAUI Controls](https://help.syncfusion.com/maui/overview)
+- [Syncfusion Licensing Documentation](https://help.syncfusion.com/common/licensing/how-to-register-maui-license-key)
 
-- Android
-- iOS
-- Windows
-- macOS (Mac Catalyst)
+---
+
+## License
+
+This sample is provided for demonstration and learning purposes. Syncfusion controls used in this sample require a valid Syncfusion license for production use.
